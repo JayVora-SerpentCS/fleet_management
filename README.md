@@ -1,2 +1,1 @@
-# fleet_management
-Fleet Management in Odoo
+# Fleet Management in Odoo
