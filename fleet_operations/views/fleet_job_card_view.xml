@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model='ir.ui.view' id='job_card_form'>
+            <field name="name">job.card.form</field>
+            <field name="model">job.card</field>
+            <field name="arch" type="xml">
+                <form string="Job Card">
+                    <header>
+                        <button name="action_quotation_send" string="Send by Email" type="object" states="done" class="oe_highlight" groups="base.group_user"/>
+                        <button name="action_confirm" string="Confirm" type="object" states="draft" class="oe_highlight" />
+                        <button name="action_done" string="Done" type="object" states="confirm" class="oe_highlight" />
+                        <button name="action_cancel" states="draft,confirm,done" type="object" string="Cancel" />
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <group string="Vehicle Details" col="6" colspan="2">
+                            <group>
+                                <field name='company_id'/>
+                                <field name="vehicle_id" />
+                                <field name="fvlc_id_ref" />
+                            </group>
+                            <group>
+                                <field name='is_comp_vehicle' />
+                                <field name="customer_id" attrs="{'required':[('is_comp_vehicle','=',False)],'invisible':[('is_comp_vehicle','=',True)]}"/>
+                            </group>
+                        </group>
+                        <group col="4" string="Job Card Detailes">
+                            <field name="job_number" />
+                            <field name="priority" required="1"/>
+                            <field name="date_scheduled" />
+                            <field name="date_complete" />
+                            <field name="odometer" />
+                        </group>
+                        <group col="4">
+                            <field name="sale_order" />
+                            <field name="invoice" />
+                            <field name="type" />
+                        </group>
+                        <group>
+                            <notebook>
+                                <page string="Maintenance">
+                                    <group string="Maitanance Details" colspan="4">
+                                        <field name="maintain_line" nolabel="1" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                                    </group>
+                                    <group col="2">
+                                        <field name="job_part_tax_ids" string="" widget="many2many_tags"  domain="[('parent_id','=',False),('type_tax_use','&lt;&gt;','purchase')]" attrs="{'readonly': [('state','not in',('draft'))]}"/>                              
+                                    </group>
+                                    <group class="oe_subtotal_footer oe_right">
+                                        <div class="oe_subtotal_footer_separator oe_inline">
+                                            <label for="part"/>
+                                        </div>
+                                        <field name="part" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary"/>
+                                        <div class="oe_subtotal_footer_separator oe_inline">
+                                            <label for="total_tax_amount"/>
+                                        </div>
+                                        <field name="total_tax_amount" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary"/>
+                                        <div class="oe_subtotal_footer_separator oe_inline">
+                                            <label for="total"/>
+                                        </div>
+                                        <field name="total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary"/>
+                                    </group>
+                                </page>
+                                <page string="Attachments">
+                                    <field name="job_order_attach_ids" nolabel="1" />
+                                </page>
+                                <page string="Other Info">
+                                    <field name="note" nolabel="1" placeholder="Put an internal note..." />
+                                </page>
+                            </notebook>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='job_card_tree'>
+                <field name="name">job.card.tree</field>
+                <field name="model">job.card</field>
+                <field name="arch" type="xml">
+                    <tree string="Job Card">
+                        <field name="customer_id" />
+                        <field name="date_scheduled" />
+                        <field name="date_complete" />
+                        <field name="state" />
+                    </tree>
+                </field>
+        </record>
+
+        <record model='ir.ui.view' id='job_card_maintenance_task_form'>
+            <field name="name">job.card.maintenance.task.form</field>
+            <field name="model">job.maintenance.task</field>
+            <field name="arch" type="xml">
+                <form string="Maintenance">
+                    <sheet>
+                        <group col="2" colspan="1">
+                            <field name="type" required="1"/>
+                        </group>
+                        <group string="Products">
+                            <field name="product_line" nolabel="1">
+                                <tree string="Maintenance" editable="bottom" >
+                                    <field name='product_id'/>
+                                    <field name='qty' />
+                                    <field name='product_uom' />
+                                    <field name='price_unit' />
+                                    <field name='total' />
+                                </tree>
+                            </field>
+                        </group>
+                        <group >
+                            <field name="jobcard_maintenance_info" nolabel="1" placeholder="Additional Information..."/>    
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='job_card_maintenance_task_tree'>
+            <field name="name">job.card.maintenance.task.tree</field>
+            <field name="model">job.maintenance.task</field>
+            <field name="arch" type="xml">
+                <tree string="Maintenance" >
+                    <field name='type' />
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='job_card_maintenance_line_tree'>
+            <field name="name">job.card.maintenance.line.tree</field>
+            <field name="model">job.maintenance.line</field>
+            <field name="arch" type="xml">
+                <tree string="Maintenance">
+                    <field name='product_id'/>
+                    <field name='qty' />
+                    <field name='product_uom' />
+                    <field name='price_unit' />
+                    <field name='total' />
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='job_card_maintenance_line_form'>
+            <field name="name">job.card.maintenance.line.form</field>
+            <field name="model">job.maintenance.line</field>
+            <field name="arch" type="xml">
+                <form string="Maintenance">
+                    <group col="4">
+                        <field name='product_id'/>
+                        <field name='qty' />
+                        <field name='product_uom' />
+                        <field name='price_unit' />
+                        <field name='total' />
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_job_card" model="ir.actions.act_window">
+            <field name="name">Job Card</field>
+            <field name="res_model">job.card</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</openerp>

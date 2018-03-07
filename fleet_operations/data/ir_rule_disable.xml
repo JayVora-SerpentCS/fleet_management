@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <function model="ir.rule" name="disable_manager_record_rule"/>
+
+    </data>
+</openerp>

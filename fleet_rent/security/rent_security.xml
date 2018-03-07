@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="0">
+        <record model="ir.module.category" id="special_right_rent">
+            <field name="name">Fleet Rent Access Right</field>
+            <field name="sequence">12</field>
+        </record>
+
+        <record id="group_vehicle_manager" model="res.groups">
+            <field name="name">Vehicle Rent Manager</field>
+            <field name="category_id" ref="special_right_rent"/>
+        </record>
+
+        <record id="group_vehicle_user" model="res.groups">
+            <field name="name">Vehicle Tenant</field>
+            <field name="category_id" ref="special_right_rent"/>
+        </record>
+    </data>
+</openerp>

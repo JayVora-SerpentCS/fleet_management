@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data noupdate="1">
+        
+        <!-- Vechical Id Sequence  -->
+        <record id="seq_vechical_id" model="ir.sequence.type">
+            <field name="name">vechical_id</field>
+            <field name="code">fleet.vehicle</field>
+        </record>
+
+        <record id="seq_subject_book" model="ir.sequence">
+            <field name="name">vechical_id</field>
+            <field name="code">fleet.vehicle</field>
+            <field name="prefix">%(year)s-</field>
+            <field name="suffix"></field>
+            <field name="implementation">no_gap</field>
+            <field name="number_next">1</field>
+            <field name="padding">4</field>
+        </record>
+        
+        <record id="seq_internal_daily_transaction_id" model="ir.sequence.type">
+            <field name="name">daily_transc_id</field>
+            <field name="code">parts.daily.internal.transaction</field>
+        </record>
+
+        <record id="seq_internal_daily_transaction_seq_id" model="ir.sequence">
+            <field name="name">daily_transc_id</field>
+            <field name="code">parts.daily.internal.transaction</field>
+            <field name="prefix">%(year)s-INT-D</field>
+            <field name="suffix"></field>
+            <field name="implementation">no_gap</field>
+            <field name="number_next">1</field>
+            <field name="padding">4</field>
+        </record>
+    </data>
+</openerp>

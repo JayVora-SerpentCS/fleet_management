@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+         <!-- Export XLS Report For Fleet Rental Vehicle History Report -->
+         <report
+             id="fleet_rental_vehicle_history_report_xlsx"
+             model="account.analytic.account"
+             string="Rental Vehicle History"
+             report_type="xlsx"
+             name="fleet.rental.vehicle.history.xls"
+             file="fleet.rental.vehicle.history.xls"
+             attachment_use="False"/>
+        <record model="ir.values" id="account.account_analytic_invert_balance_values">
+            <field name="key2"> </field>
+        </record>
+        <record model="ir.values" id="account.account_analytic_cost_values">
+            <field name="key2"> </field>
+        </record>
+        <record model="ir.values" id="account.account_analytic_cost_ledger_journal_values">
+            <field name="key2"> </field>
+        </record>
+        <record model="ir.values" id="account.account_analytic_balance_values">
+            <field name="key2"> </field>
+        </record>
+        <record model="ir.values" id="account_budget.account_budget_analytic_values">
+            <field name="key2"> </field>
+        </record>
+    </data>
+</openerp>

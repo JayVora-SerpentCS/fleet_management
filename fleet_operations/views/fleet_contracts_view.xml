@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model='ir.ui.view' id='fleet_vehicle_log_services_view_extended'>
+            <field name="name">fleet.vehicle.log.services_view.extended</field>
+            <field name="model">fleet.vehicle.log.contract</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_log_contract_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='cost_ids']" position="replace">
+                    <group col="6">
+                        <button  name="action_work_order_create" attrs="{'invisible':[('vehicle_id','=',False),('work_order','=',True)]}"  type="object" class="oe_highlight" string="Work Order Create" groups="fleet.group_fleet_manager"/>
+                        <field name="work_order"/>
+                        <button name="action_job_card_create"  string="Job Card Create" type="object" class="oe_highlight" groups="fleet.group_fleet_manager"/>
+                        <field name="job_number"/>
+                    </group>
+                </xpath>
+    
+                <xpath expr="/form/sheet/group/group/field[@name='amount']" position="after">
+                            <field name="contract_no"/>
+                </xpath>
+                <xpath expr="/form/header/field[@name='state']" position="before">
+                    <button name="action_confirm" string="Confirm" class="oe_highlight" states="draft,open" type="object"/>
+                    <button name="action_close" string="Close" class="oe_highlight" type="object" 
+                    attrs="{'invisible':[('state','in','toclose')]}" groups="fleet.group_fleet_manager"/>
+                    <!-- <button name="action_close" string="Close" class="oe_highlight" type="object" 
+                    attrs="{'invisible':[('state','in',['toclose','cancel'])]}" groups="fleet.group_fleet_manager"/> -->
+                    <!-- <button icon="gtk-cancel" name="action_cancel" string="Cancel" state="draft,open"
+                    attrs="{'invisible':[('state','=','cancel')]}" type="object" groups="fleet.group_fleet_manager"/> -->
+                </xpath>
+                <button name="contract_close" position="attributes">
+                    <attribute name="attrs">{'invisible': [('state', '=', 'toclose')]}</attribute>
+                </button>
+                <button name="act_renew_contract" position="attributes">
+                    <attribute name="attrs">{'invisible': [('state', '=', 'draft')]}</attribute>
+                </button>
+                <field name="insurer_id" position="attributes">
+                    <attribute name="required">True</attribute>
+                </field>
+                <xpath expr="//field[@name='odometer_unit']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                    <attribute name="required">1</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
