@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--  Form view for Service Department  -->
+        <record model='ir.ui.view' id='service_department_tree_view'>
+            <field name="name">service.department.tree.view</field>
+            <field name="model">service.department</field>
+            <field name="arch" type="xml">
+                <tree string="Service Department" editable="top">
+                    <field name="code" />
+                    <field name='name' />
+                </tree>
+            </field>
+        </record>
+        
+        <!--  Action and menu for creating service department from config. menu -->
+        <record model='ir.actions.act_window' id='vehicle_service_department_act'>
+            <field name="name">Registration State</field>
+            <field name="res_model">service.department</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!--  Menuitem for Service Department  -->
+        <menuitem action="vehicle_service_department_act"
+            parent="fleet.fleet_configuration" groups="fleet.fleet_group_manager"
+            id="vehicle_department_menu" sequence="8" />
+    </data>
+</odoo>

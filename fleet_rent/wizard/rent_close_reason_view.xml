@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--Renew Tenancy Wizard Form View  -->
+        <record model="ir.ui.view" id="view_rent_close_reason_wizard">
+            <field name="name">rent.close.reason.form</field>
+            <field name="model">rent.close.reason</field>
+            <field name="arch" type="xml">
+                <form>
+                    <separator string="Reason To Cancel Rent" />
+                    <group>
+	                    <field name="reason" />
+                    </group>
+                    <footer>
+		                <button name="close_rent" type="object" string="OK" class="oe_highlight"/>
+		                <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!--  Action for Renew Tenancy Wizard -->
+        <record model="ir.actions.act_window" id="action_rent_close_reason_wizard">
+            <field name="name">Rent Close Wizard</field>
+            <field name="res_model">rent.close.reason</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="assets_backend_rent_inherit" name="Rent Kanban Assets" inherit_id="web.assets_backend">
+              <xpath expr="." position="inside">
+                  <link rel="stylesheet" href="/fleet_rent/static/src/css/fleet_rent.less" />
+                  <link rel="stylesheet" href="/fleet_rent/static/src/css/rent_order.css" />
+              </xpath>
+        </template>
+    </data>
+</odoo>

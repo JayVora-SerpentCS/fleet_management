@@ -1,0 +1,43 @@
+# -*- coding: utf-8 -*-
+# See LICENSE file for full copyright and licensing details.
+
+{
+    'name': 'Fleet Operations',
+    'author': 'Serpent Consulting Services Pvt. Ltd.',
+    'version': '10.0.0.1.0',
+    'website': 'http://www.serpentcs.com',
+    'category': 'Managing vehicles and contracts',
+    'description': """
+        This module extends the fleet module and provides extra features and
+        manage fleet operations.
+    """,
+    'depends': ['fleet', 'stock', 'report_xlsx',
+                'web_widget_multi_image'],
+    'data': [
+              'security/fleet_security.xml',
+              'security/ir.model.access.csv',
+              'data/color.color.csv',
+              'data/vehicle.type.csv',
+              'data/fleet_extended_data.xml',
+              'data/vechical_sequence.xml',
+              'wizard/pending_repair_confirm_view.xml',
+              'wizard/continue_pending_repair_view.xml',
+              'wizard/add_parts_contact_team_trip_view.xml',
+              'wizard/add_parts_work_order_view.xml',
+              'wizard/update_history_view.xml',
+              'wizard/writoff_cancel_reason_view.xml',
+              'report/report_xlsx.xml',
+              'report/report_write_off_qweb.xml',
+              'views/workflow_sequence.xml',
+              'views/department_location_view.xml',
+              'views/fleet_extended_view.xml',
+              'views/fleet_service_view.xml',
+              'views/update_pending_history_view.xml',
+              'views/template.xml',
+              'wizard/vehicle_change_history_view.xml',
+              'wizard/repair_line_summary_view.xml',
+              ],
+    'demo': ['data/fleet_extended_demo.xml'],
+    'installable': True,
+    'application': True,
+}

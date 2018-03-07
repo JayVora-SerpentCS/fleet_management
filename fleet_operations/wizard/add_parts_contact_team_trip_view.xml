@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <data>
+    
+    <!-- Form View for contact Team Trip. -->
+    <record id="view_add_conatct_team_trip" model="ir.ui.view">
+            <field name="name">parts.contact.trip.wiz</field>
+            <field name="model">parts.contact.trip</field>
+            <field name="arch" type="xml">
+                <form string="Add Parts on contact Team Trip">
+                    <separator string="Add Parts on contact Team Trip" colspan="4" />
+                    <newline/>
+                    <field name="part_ids" context="{'trip_date':context.get('trip_date'),'return_date':context.get('return_date'),'default_state':context.get('state')}">
+                        <tree string="Loading Parts" editable="bottom">
+                            <field name="product_id" options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+                            <field name="name" readonly="1"/>
+                            <field name="vehicle_make_id" readonly="1"/>
+                            <field name="qty_on_hand" readonly="1" />
+                            <field name="qty_on_truck"/>
+                            <field name="qty_with_team" readonly="1"/>
+                            <field name="qty_used" attrs="{'readonly':[('state','not in', ['returned'])]}"/>
+                            <field name="qty_missing" attrs="{'readonly':[('state','not in', ['returned'])]}"/>
+                            <field name="qty_damage" attrs="{'readonly':[('state','not in', ['returned'])]}"/>
+                            <field name="remark"/>
+                            <field name="issue_date" readonly="1"/>
+                            <field name="state" invisible="1"/>
+                        </tree>
+                    </field>
+                    <footer>
+                        <button name="add_part_on_contact_team_trip" string="ADD" type="object" class="oe_highlight" context="{'trip_date':context.get('trip_date'),'return_date':context.get('return_date'),'state':context.get('state')}"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action for contact Team Trip. -->
+        <record id="action_add_conatct_team_trip" model="ir.actions.act_window">
+            <field name="name">Add Part on Contact team trip</field>
+            <field name="res_model">parts.contact.trip</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_id" ref="view_add_conatct_team_trip"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="context">{'trip_date':context.get('trip_date'),'return_date':context.get('return_date'),'state':context.get('state')}</field>
+            <field name="target">new</field>
+       </record>
+       
+       <!-- Form View for Edit Part on Contact team trip. -->
+       <record id="view_edit_conatct_team_trip" model="ir.ui.view">
+            <field name="name">edit.parts.contact.team.trip.wiz</field>
+            <field name="model">edit.parts.contact.team.trip</field>
+            <field name="arch" type="xml">
+                <form string="Edit Parts on contact Team Trip">
+                    <separator string="Edit Parts on contact Team Trip" colspan="4" />
+                    <newline/>
+                    <field name="part_ids" context="{'trip_date':context.get('trip_date'),'return_date':context.get('return_date')}">
+                        <tree string="Loading Parts" editable="bottom" create='false'>
+                            <field name="product_id" readonly="1" options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+                            <field name="name" readonly="1"/>
+                            <field name="vehicle_make_id" readonly="1"/>
+                            <field name="qty_on_hand" readonly="1"/>
+                            <field name="qty_on_truck" attrs="{'readonly':[('state','in',('returned','close'))]}"/>
+                            <field name="qty_with_team" readonly="1"/>
+                            <field name="qty_used" attrs="{'readonly':[('state','not in', ['returned'])]}"/>
+                            <field name="qty_missing" attrs="{'readonly':[('state','not in', ['returned'])]}"/>
+                            <field name="qty_damage" attrs="{'readonly':[('state','not in', ['returned'])]}"/>
+                            <field name="qty_remaining" />
+                            <field name="encode_qty" invisible="1"/>
+                            <field name="remark" attrs="{'readonly':[('state','=','close')]}"/>
+                            <field name="state" invisible="1"/>
+                            <field name="issue_date" readonly="1"/>
+                        </tree>
+                    </field>
+                    <footer>
+                        <button name="save_part_on_contact_team_trip" string="Save" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action for Edit Part on Contact team trip. -->
+        <record id="action_edit_conatct_team_trip" model="ir.actions.act_window">
+            <field name="name">Edit Part on Contact team trip</field>
+            <field name="res_model">edit.parts.contact.team.trip</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_id" ref="view_edit_conatct_team_trip"/>
+            <field name="context">{'trip_date':context.get('trip_date'),'return_date':context.get('return_date')}</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+       </record>
+    </data>
+</odoo>

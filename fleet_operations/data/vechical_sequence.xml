@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Sequence for Vehicle -->
+        <record id="seq_subject_book" model="ir.sequence">
+            <field name="name">vechical_id</field>
+            <field name="code">fleet.vehicle</field>
+            <field name="prefix">%(year)s-</field>
+            <field name="suffix"></field>
+            <field name="implementation">no_gap</field>
+            <field name="number_next">1</field>
+            <field name="padding">4</field>
+        </record>
+
+        <!-- Sequence for Transaction -->
+        <record id="seq_internal_daily_transaction_seq_id" model="ir.sequence">
+            <field name="name">daily_transc_id</field>
+            <field name="code">parts.daily.internal.transaction</field>
+            <field name="prefix">%(year)s-INT-D</field>
+            <field name="suffix"></field>
+            <field name="implementation">no_gap</field>
+            <field name="number_next">1</field>
+            <field name="padding">4</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+     
+        <!--Scheduler of Email for Vehicle Service -->
+        <record model="ir.cron" id="fleet_mail_service">
+            <field name="name">Fleet Service Alert</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="model" eval="'fleet.vehicle.log.services'"/>
+            <field name="function" eval="'service_send_mail'"/>
+            <field name="args" eval="'()'" />
+        </record>
+
+       <!--Scheduler of Email for Contract Terminate-->
+        <!-- <record model="ir.cron" id="fleet_contract_mail_send">
+            <field name="name">Fleet Contract Alert</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="model" eval="'fleet.vehicle.log.contract'"/>
+            <field name="function" eval="'contract_email_send'"/>
+            <field name="args" eval="'()'" />
+        </record> -->
+
+        <!-- Out going Email configuration -->
+        <record id="ir_mail_server_service" model="ir.mail_server">
+            <field name="name">Vehicle Service</field>
+            <field name="smtp_host">smtp.gmail.com</field>
+            <field eval="465" name="smtp_port"/>
+            <field eval="11" name="sequence"/>
+            <field name="smtp_encryption">ssl</field>
+        </record>
+
+        <!--Email template  for Vehicle Service-->
+        <record id="email_template_edi_fleet" model="mail.template">
+            <field name="name">Fleet - Send by Email</field>
+            <field name="subject">For Demo</field>
+            <field name="email_from">${user.partner_id.email}</field>
+            <field name="email_to">${object.purchaser_id.email}</field>
+            <field name="model_id" ref="model_fleet_vehicle"/>
+            <field name="mail_server_id" ref="ir_mail_server_service"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html"><![CDATA[
+		<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+		           <p>Hello ${object.purchaser_id.name}</p>
+		           <p>Your Vehicle ${object.vehicle_id  or ''} 's service Date is ${object.next_service_date  or ''}.
+		        <div style="width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;">
+		            <span style="color: #222; margin-bottom: 5px; display: block; ">
+		            <p>Thank you,</p>
+		            <p>Regards,</p>
+		            <p>Fleet Manager</p>
+		        </div>
+		</div>
+            ]]></field>
+        </record>
+         <!-- and Service Odometer Value is ${object.odometer or ''} -->
+
+        <record id="work_order_vehicle_location" model="stock.location">
+            <field name="name">Vehicle</field>
+            <field name="location_id" ref="stock.stock_location_company"/>
+            <field name="usage">internal</field>
+        </record>
+        
+        <!--Email template for contract -->
+        <!-- <record id="email_template_edi_contract" model="mail.template">
+            <field name="name">Fleet- contract send mail</field>
+            <field name="subject">For Demo Contract</field>
+            <field name="email_from">${user.partner_id.email}</field>
+            <field name="email_to">${object.insurer_id.email}</field>
+            <field name="model_id" ref="model_fleet_vehicle_log_contract"/>
+            <field name="mail_server_id" ref="ir_mail_server_service"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+           <p>Hello ${object.insurer_id.name}</p>
+           <p>Your Vehicel Contract Expiration  Date is ${object.expiration_date}.
+        <div style="width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;">
+            <span style="color: #222; margin-bottom: 5px; display: block; ">
+            <p>Thank you,</p>
+            <p>Regards,</p>
+            <p>Fleet Manager</p>
+        </div>
+        
+</div>
+            ]]></field>
+             </record> -->
+
+        	<!-- NDS Repair Types -->
+        	<record id="nds_repair_type01" model="repair.type">
+	            <field name="name">Inspection</field>
+        	</record>
+        	<record id="nds_repair_type02" model="repair.type">
+	            <field name="name">AC Repair</field>
+        	</record>
+        	<record id="nds_repair_type03" model="repair.type">
+	            <field name="name">AC Gas</field>
+        	</record>
+        	<record id="nds_repair_type04" model="repair.type">
+	            <field name="name">Beyond Economical Repair</field>
+        	</record>
+        	<record id="nds_repair_type05" model="repair.type">
+	            <field name="name">Body Repair</field>
+        	</record>
+        	<record id="nds_repair_type06" model="repair.type">
+	            <field name="name">Body Repaint</field>
+        	</record>
+        	<record id="nds_repair_type07" model="repair.type">
+	            <field name="name">Break System</field>
+        	</record>
+        	<record id="nds_repair_type08" model="repair.type">
+	            <field name="name">Cooling System</field>
+        	</record>
+        	<record id="nds_repair_type09" model="repair.type">
+	            <field name="name">Drive Train</field>
+        	</record>
+        	<record id="nds_repair_type10" model="repair.type">
+	            <field name="name">Electrical System</field>
+        	</record>
+        	<record id="nds_repair_type11" model="repair.type">
+	            <field name="name">Engine Overhaul</field>
+        	</record>
+        	<record id="nds_repair_type12" model="repair.type">
+	            <field name="name">Engine Repair</field>
+        	</record>
+        	<record id="nds_repair_type13" model="repair.type">
+	            <field name="name">Exhaust System</field>
+        	</record>
+        	<record id="nds_repair_type14" model="repair.type">
+	            <field name="name">Fuel System</field>
+        	</record>
+        	<record id="nds_repair_type15" model="repair.type">
+	            <field name="name">Insurgent Attack</field>
+        	</record>
+        	<record id="nds_repair_type16" model="repair.type">
+	            <field name="name">Road Wheel and Tire</field>
+        	</record>
+        	<record id="nds_repair_type17" model="repair.type">
+	            <field name="name">Routine Service and Inspection</field>
+        	</record>
+        	<record id="nds_repair_type18" model="repair.type">
+	            <field name="name">Steering System</field>
+        	</record>
+        	<record id="nds_repair_type19" model="repair.type">
+	            <field name="name">Suspension System</field>
+        	</record>
+        	<record id="nds_repair_type20" model="repair.type">
+	            <field name="name">Vehicle Roll Over</field>
+        	</record>
+    </data>
+</odoo>

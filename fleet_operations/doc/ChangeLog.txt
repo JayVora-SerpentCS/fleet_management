@@ -1,0 +1,9 @@
+============================================================================================================================
+ Version Change Log (fleet_operations)
+============================================================================================================================
+1.1  --> April 24, 2017 : Hetal Zala
+    * Migrated parts_received, general_parts_listing and need_to_order_parts xlsx rpeort.
+
+1.0  --> March 22,2017 : Yogendrasinh Chavda
+    * Added fleet_operations Module
+

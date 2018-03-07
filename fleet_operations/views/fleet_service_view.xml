@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Service category editable tree view. -->
+        <record model='ir.ui.view' id='service_category_tree_view'>
+            <field name="name">service.category.tree</field>
+            <field name="model">service.category</field>
+            <field name="arch" type="xml">
+                <tree string="Service Category" editable="top">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Service category Action. -->
+        <record model='ir.actions.act_window' id='service_category_tree_act'>
+            <field name="name">Service Category</field>
+            <field name="res_model">service.category</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+        
+        <!-- Inherited Fleet Service Form View. -->
+        <record model='ir.ui.view' id='fleet_vehicle_log_services_view'>
+	        <field name="name">fleet.vehicle.log.services_view</field>
+	        <field name="model">fleet.vehicle.log.services</field>
+	        <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form" />
+	        <field name="arch" type="xml">
+	            <xpath expr="//sheet" position="before">
+	                <header>
+	                    <field name="from_migration" invisible="1"/>
+	                    <button name="action_confirm" string="Confirm"
+	                            class="oe_highlight" type="object" states="draft"
+	                            confirm="Are you sure you want to open this work order?" 
+	                            groups="base.group_system,base.group_erp_manager,fleet.fleet_group_manager"/>
+	                    <button name="action_done" string="Close"
+	                            type="object" states="confirm" class="oe_highlight"
+	                            groups="base.group_system,base.group_erp_manager,fleet.fleet_group_manager"/>
+	                    
+	                    <button name="action_reopen" 
+	                        attrs="{'invisible':['|',('from_migration','=',True),('state','!=','done')]}"
+	                        type="object" string="Re-Open"
+	                        groups="fleet_operations.group_reopen_work_order" />
+	                    <field name="state" widget="statusbar" statusbar_visible="confirm,done" 
+	                        statusbar_colors='{"confirm":"blue","done":"blue", "cancel":"red"}'/>
+	                </header>
+	            </xpath>
+	            <xpath expr="//field[@name='vehicle_id']" position="attributes">
+	                <attribute name="string">Identification</attribute>
+	                <attribute name="readonly">1</attribute>
+	                <attribute name="widget">selection</attribute>
+	            </xpath>
+	            
+	            <xpath expr="//field[@name='odometer']" position="attributes">
+	                <attribute name="attrs">{'readonly':[('state','in',('draft','done'))]}</attribute>
+	            </xpath>
+	            <xpath expr="//field[@name='odometer_unit']" position="attributes">
+	                <attribute name="readonly">1</attribute>
+	                <attribute name="required">1</attribute>
+	            </xpath>
+	            <xpath expr="//field[@name='cost_subtype_id']" position="replace">
+	                <field name="fmp_id" readonly="True"/>
+	                <field name="f_brand_id" readonly="True"
+	                    options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+	                <field name="vechical_type_id" readonly="True"
+	                    options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+	                <field name="cost_subtype_id" string="Service Type"
+	                    options="{'no_open': True, 'create': false, 'create_edit': false}"
+	                    attrs="{'readonly':[('state','in',('draft','done'))],'required':[('state','in',('confirm'))]}"/>
+	            </xpath>
+	            <xpath expr="//sheet/group/group[2]" position="inside">
+	              <field name="next_service_odometer" class="oe_inline"/>
+	              <field name="vechical_location_id" string="Registration State"
+	                  readonly="True" options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+	              <field name="vehical_division_id" invisible="1" readonly="True"
+	                  options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+	            </xpath>
+	            <xpath expr="//field[@name='inv_ref']" position="replace">
+	            </xpath>
+	            <xpath expr="//field[@name='date']" position="attributes">
+	                <attribute name="string">Issue Date</attribute>
+	                <attribute name="readonly">1</attribute>
+	            </xpath>
+	            <xpath expr="//field[@name='date']" position="after">
+	                <field name="open_days" />
+	                <field name="date_open" readonly="True" string="Date Opened"/>
+	                <field name="date_close" readonly="True"  string="Date Closed" />
+	                <field name="closed_by" readonly="True"
+	                    options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+	                <field name="next_service_date" readonly="True"
+	                    attrs="{'readonly':[('state','=','done')]}"/>
+	            </xpath>
+	            <xpath expr="//field[@name='vendor_id']" position="replace">
+	            </xpath>
+	            <xpath expr="//field[@name='purchaser_id']" position="replace">
+	                <field name="purchaser_id" string="Driver" readonly="1"
+	                    attrs="{'readonly':[('state','=','done')]}"/>
+	            </xpath>    
+	            <xpath expr="//field[@name='date']" position="before">
+	                <field name="name" string="Work Order#"/>
+	            </xpath>
+	            <xpath expr="//field[@name='amount']" invisible="True" position="attributes">
+	               <attribute name="required">1</attribute>
+	            </xpath>
+	            <xpath expr="//sheet/group[2]" position="inside">
+	                <group string="Work Order Details" col="2">
+                        <field name="priority" required="1"
+	                        attrs="{'readonly':[('state','in',('draft','done'))]}"/>
+	                        <div name="option">
+	                            <field name="etic"
+	                                attrs="{'readonly':[('state','in',('draft','done'))]}"/>
+	                                <label for="etic"/>
+	                        </div>
+                        <field name="date_complete" required="1" nolabel="1"
+                            attrs="{'invisible':[('etic','=',False)], 'readonly': [('state','=','done')]}"/>
+                        <field name="warehouse_id"
+                            attrs="{'readonly':[('state','in',('draft','done'))]}" invisible="1"/>
+                        <field name="delivery_id" invisible="1"/>
+                        <field name="is_parts" invisible="1"/>
+                        <field name="team_id" string="Work Shop" attrs="{'readonly':['|',('state','in',('draft','done')),('is_parts','=',True)],'required':[('state','in',('confirm'))]}"
+                            context="{'wo':True,'default_is_company':True}"
+                            domain="[('is_company','=',True)]" />
+                    </group>
+                </xpath>
+                <xpath expr="//sheet/group[3]" position="replace">
+                     <notebook>
+	                 <page string="Repairs" >
+	                     <field name="repair_line_ids"
+	                         attrs="{'readonly':[('state','in',('draft','done'))]}"
+	                         context="{'default_issue_date':date}">
+	                         <tree editable="top">
+	                             <field name="repair_type_id" />
+	                             <field name="categ_id" invisible="1"
+	                                 options="{'no_open': True, 'create': false, 'create_edit': false}" />
+	                             <field name="issue_date" invisible="1"/>
+	                             <field name="date_complete" invisible="1"/>
+	                             <field name="target_date"/>
+	                             <field name="complete"/>
+	                         </tree>
+	                     </field>
+	                 </page>
+	                 <page string="Parts Used" invisible="1" >
+                        <button name="%(action_add_work_order)d" string="Add"
+	                        type="action" class="oe_stat_button"
+	                        context="{'date_open':date_open,'team_id':team_id,'state':state,'already_closed':already_closed}"
+	                        attrs="{'invisible':['|',('state','!=','confirm'),('team_id','=',False)]}"/>
+	                    
+	                    <button name="%(action_edit_work_order)d" string="Edit"
+	                        type="action" class="oe_stat_button"
+	                        context="{'date_open':date_open,'team_id':team_id,'state':state,'already_closed':already_closed}"
+	                        attrs="{'invisible':['|',('state','!=','confirm'),('team_id','=',False)]}"/>
+                          <newline/>
+                          <group>
+                              <field name="total_parts_line"/>
+                          </group>
+                          <newline/>
+                          <group colspan="4">
+	                         <field name="parts_ids" readonly='1' nolabel="1"
+	                             context="{'date_open':date_open}" create='false' delete='false'>
+	                             <tree string="Maintenance" editable="top">
+	                                 <field name='product_id' string="Part No"
+	                                     attrs="{'readonly':[('is_deliver','=',True)]}"
+	                                     options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+	                                 <field name="name" attrs="{'readonly':[('is_deliver','=',True)]}"/>
+	                                 <field name="vehicle_make_id" attrs="{'readonly':[('is_deliver','=',True)]}"/>
+	                                 <field name="qty_hand" />
+	                                 <field name="encoded_qty" />
+	                                 <field name='qty' attrs="{'readonly':[('is_deliver','=',True)]}"/>
+	                                 <field name='product_uom' attrs="{'readonly':[('is_deliver','=',True)]}"/>
+	                                 <field name='price_unit' attrs="{'readonly':[('is_deliver','=',True)]}"/>
+	                                 <field name='total' />
+	                                 <field name="date_issued"/>
+	                                 <field name="old_part_return" />
+	                                 <field name="issued_by" readonly="1"
+	                                     options="{'no_open': True, 'create': false, 'create_edit': false}" />
+	                                 <field name="is_deliver" invisible="1"/>
+	                             </tree>
+	                         </field>
+	                     </group>
+	                     <group class="oe_subtotal_footer oe_right" col="2">
+	                         <div class="oe_subtotal_footer_separator oe_inline">
+	                             <label for="sub_total"/>
+	                         </div>
+	                         <field name="sub_total" nolabel="1" class="oe_subtotal_footer_separator"
+	                             widget="monetary"/>
+	                     </group>
+	                 </page>
+	                 <page string="Attachments">
+	                     <field name="wrk_attach_ids"
+	                         attrs="{'readonly':[('state','in',('draft','done'))]}" >
+	                         <tree>
+	                             <field name='name' />
+	                             <field name='datas' />
+	                         </tree>
+	                         <form>
+	                             <field name='name' />   
+	                             <group>
+	                                 <field name='datas' />
+	                             </group>            
+	                         </form>
+	                     </field>
+	                 </page>
+	                 <page string="History" invisible="1">
+	                     <separator string="Outgoing parts for Maintenance " colspan="4" />
+	                     <field name="out_going_ids" >
+	                        <tree colors="blue:state == 'draft';grey:state == 'cancel';red:state not in ('cancel', 'done')"
+	                            string="Delivery Orders">
+	                             <field name="name"/>
+	                             <field name="origin"/>
+	                             <field name="date"/>
+	                             <field name="state"/>
+	                         </tree>
+	                     </field>
+	                     <separator string="Incoming Old Parts in Scrapped Location" colspan="4" />
+	                     <field name="old_parts_incoming_ship_ids"> 
+	                          <tree colors="blue:state == 'draft';grey:state == 'done';red:state not in ('cancel', 'done') and date &lt; current_date"
+	                              string="Picking list">
+	                             <field name="name"/>
+	                             <field name="origin"/>
+	                             <field name="date"/>
+	                             <field name="state"/>
+	                         </tree>
+	                     </field>
+	                 </page>
+	                 <page string="Notes">
+	                     <field name="note" attrs="{'readonly':[('state','in',('draft','done'))]}"
+	                         nolabel="1" placeholder="Put an internal note..." />
+	                     <field name="already_closed" invisible="1"/>
+	                 </page>
+                 </notebook> 
+                </xpath>
+                <xpath expr="//sheet/group[3]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+	        </field>
+        </record>
+        
+        <record model='ir.ui.view' id='fleet.fleet_vehicle_log_services_view_tree'>
+            <field name="name">fleet.vehicle.log.services.tree</field>
+            <field name="model">fleet.vehicle.log.services</field>
+            <field name="arch" type="xml">
+                <tree string="Services Logs" create="false"
+                    colors="blue:state=='confirm';black:state=='done';">
+                     <field name="name" string="Work Order#"/>
+                    <field name="vehicle_id" string="Vehicle-Identification"/>
+                    <field name="fmp_id" />
+                    <field name="vechical_type_id" />
+                    <field name="cost_subtype_id" string="Service Type"/>
+                    <field name="date" string="Issue Date" />
+                    <field name="date_open" string="Date Opened"/>
+                    <field name="date_close" string="Date Closed" />
+                    <field name="open_days" />
+                    <field name="odometer" />
+                    <field name="next_service_odometer" />
+                    <field name="purchaser_id" string="Driver"/>
+                    <field name="team_id" string="Work Shop"/>
+                    <field name="amount" sum="Total price"/>
+                    <field name="state" string="Status"/>
+                    <field name="closed_by" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+         <record model='ir.ui.view' id='fleet.fleet_vehicle_log_services_view_search'>
+                <field name="name">fleet.vehicle.log.services_search_view</field>
+                <field name="model">fleet.vehicle.log.services</field>
+                <field name="arch" type="xml">
+                    <search string="Work Orders">
+                        <filter name="groupby_vehicle" string="Vehicle" domain="[]"
+                            context="{'group_by':'vehicle_id'}" />
+                        <field name="name" filter_domain="[('name','ilike',self)]"/>
+                        <field name="fmp_id" filter_domain="[('fmp_id','ilike',self)]"/>
+                        <filter string="Todays Issue WO" name="today_issue_wo_date"
+                            icon="terp-stock_effects-object-colorize"
+                            domain="[('date','=',context_today().strftime('%%Y-%%m-%%d'))]" />
+                        <filter string="Todays Open WO" name="today_open_wo_date"
+                            icon="terp-stock_effects-object-colorize"
+                            domain="[('date_open','=',context_today().strftime('%%Y-%%m-%%d'))]" />
+                        <filter string="Todays Closed WO" name="today_close_wo_date"
+                            icon="terp-stock_effects-object-colorize"
+                            domain="[('date_close','=',context_today().strftime('%%Y-%%m-%%d'))]" />
+                        <group expand="0" string="Group By...">
+                            <filter string="Vehicle" domain="[]" context="{'group_by':'vehicle_id'}"/>
+                            <filter string="Service Type" domain="[]" context="{'group_by':'cost_subtype_id'}"/>
+                            <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
+                            <filter string="Location(Team)" domain="[]" context="{'group_by':'team_id'}"/>
+                            <filter string="Vehicle Type" domain="[]" context="{'group_by':'vechical_type_id'}"/>
+                            <filter string="Make" domain="[]" context="{'group_by':'f_brand_id'}"/>
+                            <filter string="Registration State" domain="[]" context="{'group_by':'vechical_location_id'}"/>
+                            <filter string="Repair Type" domain="[]" context="{'group_by':'repair_line_ids'}"/>
+                        </group>
+                    </search>
+               </field>
+        </record>
+
+         <!--Task Tree View. -->
+         <record model='ir.ui.view' id='fleet_vehicle_maintain_task_tree'>
+            <field name="name">fleet.vehicle.maintain.task.tree</field>
+            <field name="model">service.task</field>
+            <field name="arch" type="xml">
+            <tree string="Maintenance">
+                <field name='type' />
+                <field name="total_type"/>
+            </tree>
+            </field>
+        </record>
+ 
+        <!-- Vehicle Team form view -->
+        <record model='ir.ui.view' id='fleet_team_form_view'>
+            <field name="name">fleet.team.form</field>
+            <field name="model">fleet.team</field>
+            <field name="arch" type="xml">
+                <form string="Fleet Team">
+                    <header>
+                       <field name="from_migration" invisible="1" />
+                       <button name="open_trip" string="Open" states="draft"
+                           type="object" class="oe_highlight"
+                           help="When you Open this team trip it will generate the delivery order before openining load your parts."/>
+                       <button name="close_trip" string="Close" states="returned"
+                           type="object" class="oe_highlight"
+                           help="When you Close this team trip it will generate the Incoming shipment based on return parts."
+                           confirm="Do you want to close?"/>
+                       <button name="open_trip" string="Open" states="draft"
+                           type="object" class="oe_highlight"
+                           help="When you Open this team trip it will generate the delivery order before openining load your parts."
+                           groups="fleet_operations.group_contact_team_trip"/>
+                       <button name="close_trip" string="Close" states="returned"
+                           type="object" class="oe_highlight"
+                           help="When you Close this team trip it will generate the Incoming shipment based on return parts."
+                           confirm="Do you want to close?" groups="fleet_operations.group_contact_team_trip"/>
+                       <button name="reopen_trip" string="Re-Open"  type="object"
+                           attrs="{'invisible':['|',('from_migration','=',True),('state','!=','close')]}"/>
+                       <button name="reopen_trip" string="Re-Open"  type="object"
+                           groups="fleet_operations.group_reopen_contact_team_trip"
+                           attrs="{'invisible':['|',('from_migration','=',True),('state','!=','close')]}"/>
+                       <field name="state" widget="statusbar" statusbar_visible="draft,open,close" />
+                    </header>
+                        <group colspan="4" col="4">
+                            <group>
+                                <field name="id" readonly="1" string="Trip ID"/>
+                                <field name ="destination_location_id" context="{'t_trip':True}" attrs="{'readonly':[('state','in',('sent','returned','close'))]}" options="{'no_open': True, 'create': false, 'create_edit': false}" domain="[('is_team','=',True), ('trip','=',True)]" required="1"/>
+                            </group>
+                            <group>
+                                <button string="Send" name="send_parts_to_trip"
+                                    states="open" type="object" class="oe_highlight"
+                                    confirm="Do you want to sent the team?"
+                                    groups="fleet_operations.group_contact_team_trip"/>
+                                <button string="Return" name="get_return_from_trip"
+                                    states="sent" type="object" class="oe_highlight"
+                                    confirm="Are you sure to return the trip? After returning you can't edit Qty on Truck!!!"
+                                    groups="fleet_operations.group_contact_team_trip"/>
+                                <button string="Send" name="send_parts_to_trip" states="open"
+                                    type="object" class="oe_highlight"
+                                    confirm="Do you want to sent the team?"/>
+                                <button string="Return" name="get_return_from_trip"
+                                    states="sent" type="object" class="oe_highlight"
+                                    confirm="Are you sure to return the trip? After returning you can't edit Qty on Truck!!!"/>
+                            </group>
+                        </group>
+                        <group colspan="4" col="4">
+                              <field name ="trip_date"
+                                  attrs="{'readonly':[('state','in',('sent','returned','close'))]}"/>
+                              <field name ="return_date"
+                                  attrs="{'readonly':[('state','in',('sent','returned','close'))]}"/>
+                         </group>
+                         <separator string="Locations" colspan="4" />
+                         <group colspan="4" col="4">
+                             <field name="source_location_id"
+                                 attrs="{'readonly':[('state','in',('sent','returned','close'))]}"
+                                 options="{'no_open': True, 'create': false, 'create_edit': false}"
+                                 domain="[('is_team','=',False)]" required="1" />
+                             <field name="location_id"
+                                 attrs="{'readonly':[('state','in',('sent','returned','close'))]}" />
+                         </group>
+                         <notebook>
+                            <!-- <page string="Parts Loaded" >
+                               <button name="%(action_add_conatct_team_trip)d" string="Add" type="action" states="open,sent" context="{'trip_date':trip_date,'return_date':return_date,'state':state}"/>
+                               <button name="%(action_edit_conatct_team_trip)d" string="Edit" type="action" states="open,sent,returned" context="{'trip_date':trip_date,'return_date':return_date,'state':state}"/>
+                               <button name="%(action_add_conatct_team_trip)d" string="Add" type="action" states="open,sent" context="{'trip_date':trip_date,'return_date':return_date,'state':state}" groups="fleet_operations.group_contact_team_trip"/>
+                               <button name="%(action_edit_conatct_team_trip)d" string="Edit" type="action" states="open,sent,returned" context="{'trip_date':trip_date,'return_date':return_date,'state':state}" groups="fleet_operations.group_contact_team_trip"/>
+                               <newline/>
+                               <group>
+                                    <field name="total_parts_line"/>
+                               </group>
+                               <newline/>
+                                <field name="allocate_part_ids" readonly='1' context="{'trip_date':trip_date,'return_date':return_date}" create='false' delete='false'>
+                                    <tree string="Loading Parts" editable="top">
+                                        <field name="product_id" attrs="{'readonly':[('state','!=','open')]}" options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+                                        <field name="name" readonly="1"/>
+                                        <field name="vehicle_make_id" readonly="1"/>
+                                        <field name="qty_on_hand" readonly="1"/>
+                                        <field name="qty_on_truck" attrs="{'readonly':['|',('state','=','sent'),('state','=','close')]}" on_change="check_used_qty_in_truck(qty_on_hand, qty_on_truck)" />
+                                        <field name="qty_with_team" readonly="1"/>
+                                        <field name="qty_used" attrs="{'readonly':[('state','!=','sent')]}" on_change="check_used_damage(qty_with_team, qty_on_truck, qty_used, qty_missing, qty_damage)"/>
+                                        <field name="qty_missing" attrs="{'readonly':[('state','!=','sent')]}" on_change="check_used_damage(qty_with_team, qty_on_truck, qty_used, qty_missing, qty_damage)"/>
+                                        <field name="qty_damage" attrs="{'readonly':[('state','!=','sent')]}" on_change="check_used_damage(qty_with_team, qty_on_truck, qty_used, qty_missing, qty_damage)"/>
+                                        <field name="qty_remaining" />
+                                        <field name="encode_qty" />
+                                        <field name="remark" attrs="{'readonly':[('state','=','close')]}"/>
+                                        <field name="state" invisible="1"/>
+                                        <field name="issued_by"/>
+                                        <field name="issue_date"/>
+                                        <field name="dummy_encode_qty" invisible="1"/>
+                                    </tree>
+                                 </field>
+                            </page>
+                            <page string="Notes">
+                                <separator string="Note" colpan="4" />
+                                <field name="note" nolabel="1"/>
+                            </page> -->
+                            <!-- <page string="Move History">
+                                <separator string="Delivered for Trip" colspan="4" />
+                                <field name="outgoing_ship_ids">
+                                 <tree colors="blue:state == 'draft';grey:state == 'cancel';red:state not in ('cancel', 'done')" string="Delivery Orders">
+                                    <field name="name"/>
+                                    <field name="origin"/>
+                                    <field name="date"/>
+                                    <field name="state"/>
+                                </tree>
+                                </field>
+                                <separator string="Used in Trip" colspan="4" />
+                                <field name="incoming_ship_ids" nolabel="1" colpan="4">
+                                    <tree colors="blue:state == 'draft';grey:state == 'cancel';red:state not in ('cancel', 'done')" string="Delivery Orders">
+                                        <field name="name"/>
+                                        <field name="origin"/>
+                                        <field name="date"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page> -->
+                            <page string="Trip History">
+                               <separator string="Trip Parts Usage History" colspan="4" />
+                                <field name="trip_parts_ids" readonly="1" colspan="4" nolabel="1">
+                                    <tree>
+                                        <field name="product_id"/>
+                                        <field name="part_name"/>
+                                        <field name="used_qty"/>
+                                        <field name="encoded_qty" invisible="1"/>
+                                        <field name="dummy_encoded_qty"/>
+                                        <field name="available_qty"/>
+                                    </tree>
+                                </field>
+                                <separator string="Workorder Parts Usage History" colspan="4" />
+                                <field name="wo_parts_ids" readonly="1" colspan="4" nolabel="1">
+                                    <tree>
+                                        <field name="product_id"/>
+                                        <field name="name"/>
+                                        <field name="vehicle_make"/>
+                                        <field name="wo_encoded_qty"/>
+                                        <field name="used_qty"/>
+                                        <field name="new_encode_qty"/>
+                                        <field name="used_date"/>
+                                        <field name="issued_by"/>
+                                        <field name="wo_id"/>
+                                    </tree>
+                                </field>
+                            </page>
+                          </notebook>
+                         <field name="name" invisible="1" />
+                         <field name="is_work_order_done" invisible="1"/>
+                         <field name="is_return" invisible="1"/>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Fleet Team Tree View. -->
+         <record model='ir.ui.view' id='fleet_team_tree_view'>
+            <field name="name">fleet.team.tree.form</field>
+            <field name="model">fleet.team</field>
+            <field name="arch" type="xml">
+                <tree string="Fleet Team">
+                    <field name="id" string="Trip ID"/>
+                    <field name ="destination_location_id" string="Team"/>
+                     <field name ="trip_date" />
+                     <field name ="return_date" />
+                     <field name="location_id" />
+                     <field name="state"  />
+                     <field name="is_work_order_done" invisible="1" />
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Fleet Team Search View. -->
+        <record model='ir.ui.view' id='fleet_team_search_view'>
+                <field name="name">fleet.team_search_view</field>
+                <field name="model">fleet.team</field>
+                <field name="arch" type="xml">
+                    <search string="Fleet Team">
+                        <group expand="0" string="Group By...">
+                            <filter string="Team" domain="[]" context="{'group_by':'destination_location_id'}"/>
+                            <filter string="Trip Date" domain="[]" context="{'group_by':'trip_date'}"/>
+                            <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
+                        </group>
+                    </search>
+               </field>
+        </record>
+        
+        <!-- Fleet Team Action. -->
+        <record model='ir.actions.act_window' id='contact_team_trip_tree_act'>
+            <field name="name">Contact Team Trip</field>
+            <field name="res_model">fleet.team</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        <!-- Work Order Search Action. -->
+        <record model='ir.actions.act_window' id='fleet_work_order_advance_search_act'>
+            <field name="name">Work Order Search</field>
+            <field name="res_model">fleet.work.order.search</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record> 
+
+        <!-- Work Order Search Action. -->
+        <record model='ir.actions.act_window' id='fleet.fleet_vehicle_log_services_action'>
+            <field name="name">Work Orders</field>
+            <field name="res_model">fleet.vehicle.log.services</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="context">{"search_default_groupby_vehicle" : True}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new service entry. 
+              </p><p>
+                OpenERP helps you keeping track of all the services done
+                on your vehicle. Services can be of many type: occasional
+                repair, fixed maintenance, etc.
+              </p>
+            </field>
+        </record>
+
+        <!-- Work Order Menu. -->
+        <menuitem action="fleet.fleet_vehicle_log_services_action"
+            parent="fleet.fleet_vehicles" id="fleet.fleet_vehicle_log_services_menu"
+            sequence="5" groups="fleet.fleet_group_user"/>
+        
+         <!-- Vehicle Work order advance search view -->
+        <record model='ir.ui.view' id='fleet_work_order_advance_search_form_view'>
+            <field name="name">fleet.work_order.advance.search.form</field>
+            <field name="model">fleet.work.order.search</field>
+            <field name="arch" type="xml">
+                <form string="Work Order Advance Search">
+                    <sheet>
+                        <separator string="By Status and Priority" col="4" />
+                        <group colspan="4" col="4">
+                            <field name="state" />
+                            <field name="priority" />
+                        </group>
+                        <separator string="By Responsible and Division" col="4" />
+                        <group colspan="4" col="4" >
+                            <field name="work_order_id"
+                                options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                            <field name="fmp_id"
+                                options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                            <field name="make_id"
+                                options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                            <field name="model_id" domain="[('brand_id','=',make_id)]"
+                                options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                            <field name="vehical_division_id" invisible="1"
+                                options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                            <field name="team_id"
+                                options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                            <field name="part_id"
+                                options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                            <field name="cost_subtype_id"
+                                options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                            <field name="repair_type_id"
+                                options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                            <field name="open_days"/>
+                        </group>
+                        <separator string="By Date Range" colspan="4" />
+                        <group colspan="4" col="4">
+                            <field name="issue_date_from" />
+                            <field name="issue_date_to" />
+                            <field name="open_date_from" />
+                            <field name="open_date_to" />
+                            <field name="close_date_form" />
+                            <field name="close_date_to" />
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="get_work_order_detail_by_advance_search"
+                            type="object" string="Search" class="oe_highlight" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Work Order Search Action. -->
+        <record model='ir.actions.act_window' id='fleet_work_order_advance_search_act'>
+            <field name="name">Work Order Search</field>
+            <field name="res_model">fleet.work.order.search</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+        </record>   
+        
+        <!-- Work Order Search Menu. -->
+        <menuitem action="fleet_work_order_advance_search_act" string="Work Order Search" 
+                  parent="fleet.menu_fleet_reporting" id="work_order_advance_search_sub_menu" 
+                  sequence="2" groups="fleet.fleet_group_manager,fleet.fleet_group_user"/>
+        
+        <!-- View and action for repiar type -->        
+        <record model='ir.ui.view' id='fleet_work_order_repair_type_tree_view'>
+            <field name="name">fleet.work_order.repair.type.tree</field>
+            <field name="model">repair.type</field>
+            <field name="arch" type="xml">
+                <tree string="Repair Type" editable="top">
+                    <field name="name" required="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Repair Type Action. -->
+        <record model='ir.actions.act_window' id='fleet_work_order_repair_type_tree_act'>
+            <field name="name">Repair Type</field>
+            <field name="res_model">repair.type</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+        
+        <!-- Repair Type Menu. -->
+        <menuitem action="fleet_work_order_repair_type_tree_act" string="Repair Type"
+            parent="fleet.fleet_configuration" groups="fleet.fleet_group_manager"
+            id="fleet_repair_type_menu" sequence="2"/>
+        
+        <!-- Fleet Service Type Form View -->
+        <record model='ir.ui.view' id='fleet_vehicle_service_types_form'>
+            <field name="name">fleet.service.type.form</field>
+            <field name="model">fleet.service.type</field>
+            <field name="arch" type="xml">
+                <form string="Service types">
+                    <group>
+                        <field name="name"/>
+                    </group>
+                    <separator string="Repair Types" colspan="4" />
+                    <group>
+                        <field name="repair_type_ids" nolabel="1" colspan="4" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Fleet Service Type Tree View -->
+        <record model='ir.ui.view' id='fleet.fleet_vehicle_service_types_view_tree'>
+            <field name="name">fleet.service.type.tree</field>
+            <field name="model">fleet.service.type</field>
+            <field name="arch" type="xml">
+                <tree string="Service types">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Fleet Service Type Menuitem -->
+        <menuitem action="fleet.fleet_vehicle_service_types_action"
+                parent="fleet.fleet_configuration" groups="fleet.fleet_group_manager"
+                id="fleet.fleet_vehicle_service_types_menu" sequence="1"/>
+        
+        <!-- Form view of work order reopen days -->
+<!--         <record model='ir.ui.view' id='work_order_reopen_days_form'>
+            <field name="name">work.order.reopen.days.form</field>
+            <field name="model">work.order.reopen.days</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+	                    <field name="vehicle_id" required="1"/>
+	                    <field name="days" required="1"/>
+                    </group>
+                </form>
+            </field>
+        </record> -->
+        
+        <!-- Tree view of work order reopen days -->
+<!--         <record model='ir.ui.view' id='work_order_reopen_days_tree'>
+            <field name="name">work.order.reopen.days.tree</field>
+            <field name="model">work.order.reopen.days</field>
+            <field name="arch" type="xml">
+                <tree string="Work Order Re-Open" editable="top">
+                    <field name="vehicle_id" required="1"/>
+                    <field name="days" required="1"/>
+                </tree>
+            </field>
+        </record> -->
+        
+        <!-- Search view of work order reopen days -->
+<!--         <record model='ir.ui.view' id='work_order_reopen_days_search'>
+            <field name="name">work.order.reopen.days.search</field>
+            <field name="model">work.order.reopen.days</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter name="groupby_vehicle_reopen_days" string="Vehicle"
+                    domain="[]" context="{'group_by':'vehicle_id'}" />
+                    <field name="vehicle_id" />
+                </search>
+            </field>
+        </record> -->
+        
+        <!-- Order Re-Open Days Action. -->
+<!--         <record model='ir.actions.act_window' id='work_order_reopen_days_tree_act'>
+            <field name="name">Order Re-Open Days</field>
+            <field name="res_model">work.order.reopen.days</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record> -->
+        
+        <!-- Order Re-Open Days Menu. -->
+<!--         <menuitem action="work_order_reopen_days_tree_act" parent="fleet.fleet_configuration"
+            id="work_order_reopen_days_menu" sequence="8"/> -->
+            <!-- groups="-base.group_no_one,-fleet.fleet_group_manager"/> -->
+        
+        <!-- Service Type Action. -->
+        <menuitem action="fleet.fleet_vehicle_service_types_action"
+            parent="fleet.fleet_configuration"
+            id="fleet.fleet_vehicle_service_types_menu"
+            groups="base.group_no_one" sequence="2"/>
+        
+        <!-- Override the Service menu to remove groups. -->
+        <menuitem action="fleet.fleet_vehicle_service_types_action"
+            parent="fleet.fleet_configuration"
+            id="fleet.fleet_vehicle_service_types_menu"
+            groups="-base.group_no_one"/>
+    
+    </data>
+</odoo>

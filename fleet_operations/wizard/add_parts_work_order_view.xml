@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <data>
+        
+    <!-- Form View for Add Parts on Work Order. -->
+    <record id="view_add_work_order" model="ir.ui.view">
+            <field name="name">parts.work.order.wiz</field>
+            <field name="model">parts.work.order</field>
+            <field name="arch" type="xml">
+                <form string="Add Parts on Work Order">
+                    <separator string="Add Parts on Work Order" colspan="4" />
+                    <newline/>
+                    <field name="part_ids"  context="{'date_open':context.get('date_open'),'team_id':context.get('team_id'),'state':context.get('state'),'already_closed':context.get('already_closed')}">
+                        <tree string="Maintenance" editable="bottom">
+                           <field name='product_id' required="1" string="Part No" options="{'no_open': True, 'create': false, 'create_edit': false}" context="{'team_id':context.get('team_id')}"/>
+                           <field name="name" invisible="1"/>
+                           <field name="dummy_name" readonly="1"/>
+                           <field name="vehicle_make_id" invisible="1"/>
+                           <field name="dummy_vehicle_make_id" readonly="1"/>
+                           <field name="qty_hand" invisible="1"/>
+                           <field name="dummy_qty_hand" readonly="1"/>
+                           <field name="encoded_qty" invisible="1"/>
+                           <field name="dummy_encoded_qty" readonly="1"/>
+                           <field name='qty'/>
+                           <field name='product_uom' invisible="1"/>
+                           <field name='dummy_product_uom' readonly="1"/>
+                           <field name='price_unit' invisible="1"/>
+                           <field name='dummy_price_unit' readonly="1"/>
+                           <field name="date_issued" invisible="1"/>
+                           <field name="dummy_date_issued" readonly="1"/>
+                           <field name="old_part_return" />
+                       </tree>
+                    </field>
+                    <footer>
+                        <button name="add_part_on_work_order" string="ADD" type="object" class="oe_highlight" />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action for Add Parts on Work Order. -->
+        <record id="action_add_work_order" model="ir.actions.act_window">
+            <field name="name">Add Part on Work Order</field>
+            <field name="res_model">parts.work.order</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_id" ref="view_add_work_order"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="context">{'date_open':context.get('date_open'),'team_id':context.get('team_id'),'state':context.get('state'),'already_closed':context.get('already_closed')}</field>
+            <field name="target">new</field>
+       </record>
+       
+       <!-- Form View for Edit Parts on Work Order. -->
+       <record id="view_edit_work_order" model="ir.ui.view">
+            <field name="name">edit.parts.work.order.trip.wiz</field>
+            <field name="model">edit.parts.work.order</field>
+            <field name="arch" type="xml">
+                <form string="Edit Parts on Work Order">
+                    <separator string="Edit Parts on Work Order" colspan="4" />
+                    <newline/>
+                    <field name="part_ids" context="{'date_open':context.get('date_open'),'team_id':context.get('team_id'),'team_trip_id':context.get('team_trip_id'),'state':context.get('state'),'already_closed':context.get('already_closed')}">
+                          <tree string="Maintenance" editable="bottom" create='false'>
+                              <field name='product_id' readonly="1" attrs="{'readonly':[('is_deliver','=',True)]}" string="Part No" options="{'no_open': True, 'create': false, 'create_edit': false}" context="{'team_id':context.get('team_id')}"/>
+                              <field name="name" readonly="1" attrs="{'readonly':[('is_deliver','=',True)]}"/>
+                              <field name="vehicle_make_id" readonly="1" options="{'no_open': True, 'create': false, 'create_edit': false}" attrs="{'readonly':[('is_deliver','=',True)]}"/>
+                              <field name="qty_hand" readonly="1"/>
+                              <field name='qty'/>
+                              <field name='product_uom' readonly="1" options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+                              <!-- <field name='price_unit' readonly="1"/>
+                              <field name='total'/> -->
+                              <field name="date_issued" readonly="1"/>
+                              <field name="old_part_return" />
+                              <field name="is_deliver" invisible="1"/>
+                          </tree>
+                    </field>
+                    <footer>
+                        <button name="save_part_on_work_order" string="Save" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action for Edit Parts on Work Order. -->
+        <record id="action_edit_work_order" model="ir.actions.act_window">
+            <field name="name">Edit Part on Work Order</field>
+            <field name="res_model">edit.parts.work.order</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_id" ref="view_edit_work_order"/>
+            <field name="context">{'date_open':context.get('date_open'),'team_id':context.get('team_id'),'state':context.get('state'),'already_closed':context.get('already_closed')}</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+       </record>
+    </data>
+</odoo>
