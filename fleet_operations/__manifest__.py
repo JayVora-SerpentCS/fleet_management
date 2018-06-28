@@ -4,7 +4,7 @@
 {
     'name': 'Fleet Operations',
     'author': 'Serpent Consulting Services Pvt. Ltd.',
-    'version': '10.0.0.1.0',
+    'version': '11.0.1.0.0',
     'website': 'http://www.serpentcs.com',
     'category': 'Managing vehicles and contracts',
     'description': """
@@ -28,6 +28,8 @@
               'wizard/writoff_cancel_reason_view.xml',
               'report/report_xlsx.xml',
               'report/report_write_off_qweb.xml',
+              'report/vehicle_change_history_qweb.xml',
+              'report/repair_line_summary_qweb.xml',
               'views/workflow_sequence.xml',
               'views/department_location_view.xml',
               'views/fleet_extended_view.xml',

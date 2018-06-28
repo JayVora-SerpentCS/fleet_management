@@ -4,7 +4,7 @@
 from odoo import models, fields, api
 
 
-class update_pending_repair_history(models.Model):
+class UpdatePendingRepairHistory(models.Model):
     _name = 'update.pending.repair.history'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle ID", size=64)
@@ -55,7 +55,7 @@ class update_pending_repair_history(models.Model):
         return True
 
 
-class pending_applied_history(models.Model):
+class PendingAppliedHistory(models.Model):
     _name = 'pending.applied.history'
 
     updated_pending_id = fields.Many2one("update.pending.repair.history",

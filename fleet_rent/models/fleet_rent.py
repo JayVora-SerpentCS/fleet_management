@@ -3,14 +3,13 @@
 
 import re
 import threading
-
 from datetime import datetime
 from odoo.exceptions import Warning, except_orm, ValidationError
 from odoo import models, fields, api, sql_db, _
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, ustr
 
 
-class res_partner(models.Model):
+class ResPartner(models.Model):
     _inherit = "res.partner"
 
     tenant = fields.Boolean(string="Is Tenant?")
@@ -166,7 +165,7 @@ class MaintenanaceCost(models.Model):
 
 class PropertyMaintenace(models.Model):
     _name = "property.maintenance"
-    _inherit = ['ir.needaction_mixin', 'mail.thread']
+    _inherit = ['mail.thread']
 
     date = fields.Date(
         string='Date',
@@ -702,7 +701,7 @@ class TenancyRentSchedule(models.Model):
         return created_move_ids
 
 
-class account_payment(models.Model):
+class AccountPayment(models.Model):
     _inherit = 'account.payment'
 
     tenancy_id = fields.Many2one(
@@ -712,7 +711,7 @@ class account_payment(models.Model):
 
     @api.multi
     def post(self):
-        res = super(account_payment, self).post()
+        res = super(AccountPayment, self).post()
         inv_obj = self.env['account.invoice']
         tenancy_invoice_rec = inv_obj.browse(self._context['active_ids'])
         tenancy_rent_obj = self.env['tenancy.rent.schedule']

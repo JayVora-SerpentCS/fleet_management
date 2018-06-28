@@ -2,16 +2,12 @@
 # See LICENSE file for full copyright and licensing details.
 
 import base64
-
-try:
-    from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
-except ImportError:
-    class ReportXlsx(object):
-        def __init__(self, *args, **kwargs):
-            pass
+from odoo import models
 
 
-class ContactTeamTrip(ReportXlsx):
+class ContactTeamTrip(models.AbstractModel):
+    _name = 'report.fleet_operations.contact.team.trip.ticket.xls'
+    _inherit = 'report.report_xlsx.abstract'
 
     def get_heading(self):
         head_title = {'name': '',
@@ -181,6 +177,3 @@ class ContactTeamTrip(ReportXlsx):
             worksheet.write(row, 1, obj.prepairdby_id and
                             obj.prepairdby_id.name or '')
             row += 2
-
-
-ContactTeamTrip('report.contact.team.trip.ticket.xls', 'fleet.team')

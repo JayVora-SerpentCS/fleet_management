@@ -3,16 +3,12 @@
 
 import time
 import base64
-
-try:
-    from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
-except ImportError:
-    class ReportXlsx(object):
-        def __init__(self, *args, **kwargs):
-            pass
+from odoo import models
 
 
-class DailyPartIssuance(ReportXlsx):
+class DailyPartIssuance(models.AbstractModel):
+    _name = 'report.fleet_operations.daily.parts.issuance.xls'
+    _inherit = 'report.report_xlsx.abstract'
 
     def get_heading(self):
         head_title = {'name': '',
@@ -152,7 +148,3 @@ class DailyPartIssuance(ReportXlsx):
                 line_row += 1
                 counter += 1
                 worksheet.write(line_row, line_col, '********', border)
-
-
-DailyPartIssuance('report.daily.parts.issuance.xls',
-                  'fleet.vehicle.log.services')

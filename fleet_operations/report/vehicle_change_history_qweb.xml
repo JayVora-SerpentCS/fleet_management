@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="vehicle_change_history_qweb">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h3 style="text-align:center;">List of the Vehicle Which Engine and color has changed in CMF workshop</h3>
+                        <table class="table table-bordered table-condensed">
+                            <thead>
+                            <tr>
+                                <td style="text-align:center;background-color: #E0EBEB;">No.</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Description</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Type of Vehicle</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Vehicle Color</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Vehicle VIN #</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Plate #</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Old Engine #</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">New Engine #</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Old Color</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">New color</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Old Vin</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">New Vin</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Change Date</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Work Order No</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Work Order Closed Date</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Remarks</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <t t-set="counter" t-value="1"/>
+                            <tr t-foreach="get_vehicle_history" t-as="line">
+                                <t t-if="line">
+                                    <td style="text-align:center;"><span t-esc="counter"/><t t-set="counter" t-value="counter+1"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('description', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('vehicle_type', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('color_id', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('vin', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('plate', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('old_engine', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('new_engine', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('old_color', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('new_color', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('old_vin', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('new_vin', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('change_date', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('work_order', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('wo_close_date', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('remarks', '')"/></td>
+                                </t>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

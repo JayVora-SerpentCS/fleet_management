@@ -5,7 +5,7 @@ from datetime import date
 from odoo import models, fields, api
 
 
-class wizard_rent_close_reason(models.TransientModel):
+class WizardRentCloseReason(models.TransientModel):
     _name = 'rent.close.reason'
 
     reason = fields.Char(string='Reason', required=True)

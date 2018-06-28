@@ -24,11 +24,9 @@ class TestWriteOff(TransactionCase):
                                 'license_plate': 'MH-04-7777',
                                 'odometer': 3000,
                                 'odometer_unit': 'kilometers',
-                                'fuel_type': 'diesel'
-                                    })
+                                'fuel_type': 'diesel'})
         self.writeoff = self.writeoff_obj.create({
                                 'vehicle_id': self.vehicle.id,
                                 'cost_esitmation': 2000,
                                 'write_off_type': 'general_accident',
-                                'report_date': cr_dt,
-                                    })
+                                'report_date': cr_dt})

@@ -4,7 +4,7 @@
 {
     'name': 'Fleet Rental Vehicle',
     'author': 'Serpent Consulting Services Pvt. Ltd.',
-    'version': '10.0.0.1.0',
+    'version': '11.0.1.0.0',
     'website': 'http://www.serpentcs.com',
     'category': 'Fleet Rent',
     'description': """

@@ -2,16 +2,12 @@
 # See LICENSE file for full copyright and licensing details.
 
 import base64
-
-try:
-    from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
-except ImportError:
-    class ReportXlsx(object):
-        def __init__(self, *args, **kwargs):
-            pass
+from odoo import models
 
 
-class FleetHistoryWorkOrder(ReportXlsx):
+class FleetHistoryWorkOrder(models.AbstractModel):
+    _name = 'report.fleet_operations.fleet.history.work.order.xls'
+    _inherit = 'report.report_xlsx.abstract'
 
     def get_heading(self):
         head_title = {'name': '',
@@ -231,7 +227,3 @@ class FleetHistoryWorkOrder(ReportXlsx):
         worksheet.write(row, 5, '**************************')
         worksheet.write(row, 6, '**************************')
         worksheet.write(row, 7, '**************************')
-
-
-FleetHistoryWorkOrder('report.fleet.history.work.order.xls',
-                      'fleet.vehicle.log.services')

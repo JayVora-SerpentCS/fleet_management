@@ -10,7 +10,7 @@ from odoo.tools.float_utils import float_compare
 from odoo.exceptions import Warning, ValidationError
 
 
-class service_category(models.Model):
+class ServiceCategory(models.Model):
     _name = 'service.category'
 
     name = fields.Char(string="Service Category", size=2, translate=True)
@@ -20,22 +20,22 @@ class service_category(models.Model):
         if not default:
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
-        return super(service_category, self).copy(default=default)
+        return super(ServiceCategory, self).copy(default=default)
 
     @api.multi
     def unlink(self):
         raise Warning(_('You can\'t delete record !'))
-        return super(service_category, self).unlink()
+        return super(ServiceCategory, self).unlink()
 
 
-class fleet_vehicle_log_services(models.Model):
+class FleetVehicleLogServices(models.Model):
 
     @api.multi
     def copy(self, default=None):
         if not default:
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
-        return super(fleet_vehicle_log_services, self).copy(default=default)
+        return super(FleetVehicleLogServices, self).copy(default=default)
 
     @api.multi
     def unlink(self):
@@ -43,7 +43,7 @@ class fleet_vehicle_log_services(models.Model):
             if rec.state != 'draft':
                 raise Warning(_('You can\'t delete Work Order which \
                                   in Confirmed or Done state!'))
-        return super(fleet_vehicle_log_services, self).unlink()
+        return super(FleetVehicleLogServices, self).unlink()
 
     @api.onchange('vehicle_id')
     def get_vehicle_info(self):
@@ -543,8 +543,7 @@ class fleet_vehicle_log_services(models.Model):
                         work_order.vehicle_id.vechical_location_id and
                         work_order.vehicle_id.vechical_location_id.id or False,
                         })
-        res = super(fleet_vehicle_log_services, self).write(vals)
-        return res
+        return super(FleetVehicleLogServices, self).write(vals)
 
     @api.model
     def _get_location(self):
@@ -599,7 +598,7 @@ class fleet_vehicle_log_services(models.Model):
                     raise Warning(_("New work order can only be \
                             generated either vehicle status is in \
                             Inspection or Released!"))
-        res = super(fleet_vehicle_log_services, self).default_get(fields)
+        res = super(FleetVehicleLogServices, self).default_get(fields)
         repair_type_ids = repair_type_obj.search([])
         if not repair_type_ids:
             raise Warning(_("There is no data for \
@@ -790,7 +789,7 @@ class fleet_vehicle_log_services(models.Model):
                         break
 
 
-class fleet_team(models.Model):
+class FleetTeam(models.Model):
     _name = 'fleet.team'
 
     _order = 'id desc'
@@ -800,12 +799,12 @@ class fleet_team(models.Model):
         if not default:
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
-        return super(fleet_team, self).copy(default=default)
+        return super(FleetTeam, self).copy(default=default)
 
     @api.multi
     def unlink(self):
         raise Warning(_('You can\'t delete record !'))
-        return super(fleet_team, self).unlink()
+        return super(FleetTeam, self).unlink()
 
     @api.multi
     def _get_wo_done(self):
@@ -1181,7 +1180,7 @@ class fleet_team(models.Model):
             self.allocate_part_ids = part_assign_list
 
 
-class workorder_parts_history_details(models.Model):
+class WorkorderPartsHistoryDetails(models.Model):
     _name = 'workorder.parts.history.details'
 
     team_id = fields.Many2one('fleet.team', string='Contract Trip')
@@ -1208,7 +1207,7 @@ class workorder_parts_history_details(models.Model):
     _order = 'used_date desc'
 
 
-class trip_parts_history_details(models.Model):
+class TripPartsHistoryDetails(models.Model):
     _name = 'trip.encoded.history'
 
     @api.multi
@@ -1256,7 +1255,7 @@ class trip_parts_history_details(models.Model):
                                  help='The Quantity which is available to use')
 
 
-class trip_parts_history_details_temp(models.Model):
+class TripPartsHistoryDetailsTemp(models.Model):
     _name = 'trip.encoded.history.temp'
 
     team_id = fields.Many2one('fleet.team', string='Contract Trip')
@@ -1268,7 +1267,7 @@ class trip_parts_history_details_temp(models.Model):
                                     string="Work Order")
 
 
-class stock_picking(models.Model):
+class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     _order = 'id desc'
@@ -1291,7 +1290,7 @@ class stock_picking(models.Model):
             vals.update({'origin': vals['origin'][1:]})
         if vals.get('origin', False) and vals['origin'][-1] == ':':
             vals.update({'origin': vals['origin'][:-1]})
-        return super(stock_picking, self).create(vals)
+        return super(StockPicking, self).create(vals)
 
     @api.multi
     def write(self, vals):
@@ -1299,12 +1298,12 @@ class stock_picking(models.Model):
             vals.update({'origin': vals['origin'][1:]})
         if vals.get('origin', False) and vals['origin'][-1] == ':':
             vals.update({'origin': vals['origin'][:-1]})
-        return super(stock_picking, self).write(vals)
+        return super(StockPicking, self).write(vals)
 
     @api.multi
     def unlink(self):
         raise Warning(_('You can\'t delete record !'))
-        return super(stock_picking, self).unlink()
+        return super(StockPicking, self).unlink()
 
     @api.multi
     def do_partial_from_migration_script(self):
@@ -1420,7 +1419,7 @@ class stock_picking(models.Model):
         return True
 
 
-class stock_move(models.Model):
+class StockMove(models.Model):
     _inherit = 'stock.move'
 
     _order = 'id desc'
@@ -1478,7 +1477,7 @@ class stock_move(models.Model):
         return location_dest_id
 
 
-class team_assign_parts(models.Model):
+class TeamAssignParts(models.Model):
     _name = 'team.assign.parts'
 
     @api.multi
@@ -1552,7 +1551,7 @@ class team_assign_parts(models.Model):
             elif product.is_delete_line:
                 raise Warning('Warning!', 'You can delete parts when contact \
                                             team trip is already return!')
-        return super(team_assign_parts, self).unlink()
+        return super(TeamAssignParts, self).unlink()
 
     @api.model
     def create(self, vals):
@@ -1577,7 +1576,7 @@ class team_assign_parts(models.Model):
                 raise Warning(_('You can not have duplicate \
                                 parts assigned !!! \n Part No :- ' +
                                 str(product_rec.default_code)))
-        return super(team_assign_parts, self).create(vals)
+        return super(TeamAssignParts, self).create(vals)
 
     @api.multi
     def write(self, vals):
@@ -1585,7 +1584,7 @@ class team_assign_parts(models.Model):
             vals.update({
                      'issued_by': self._uid,
                      'issue_date': time.strftime(DEFAULT_SERVER_DATE_FORMAT)})
-        return super(team_assign_parts, self).write(vals)
+        return super(TeamAssignParts, self).write(vals)
 
     @api.onchange('qty_with_team', 'qty_on_truck', 'qty_used',
                   'qty_missing', 'qty_damage')
@@ -1611,7 +1610,7 @@ class team_assign_parts(models.Model):
         if not default:
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
-        return super(team_assign_parts, self).copy(default=default)
+        return super(TeamAssignParts, self).copy(default=default)
 
     @api.onchange('product_id')
     def onchange_product_id(self):
@@ -1685,7 +1684,7 @@ class team_assign_parts(models.Model):
         self.issue_date = issue_date_o
 
 
-class stock_location(models.Model):
+class StockLocation(models.Model):
     _inherit = 'stock.location'
 
     @api.multi
@@ -1742,13 +1741,13 @@ class stock_location(models.Model):
                 team_ids = wo_team_ids
             if team_trip_ids:
                 args = [('id', 'in', team_ids)]
-        return super(stock_location, self).name_search(name=name,
+        return super(StockLocation, self).name_search(name=name,
                                                        args=args,
                                                        operator=operator,
                                                        limit=limit)
 
 
-class fleet_work_order_search(models.TransientModel):
+class FleetWorkOrderSearch(models.TransientModel):
     _name = 'fleet.work.order.search'
 
     _rec_name = 'state'
@@ -1923,20 +1922,20 @@ class fleet_work_order_search(models.TransientModel):
         return True
 
 
-class res_users(models.Model):
+class ResUsers(models.Model):
     _inherit = 'res.users'
 
     usersql_id = fields.Char(string='User ID',
                              help="Take this field for data migration")
 
 
-class ir_attachment(models.Model):
+class IrAttachment(models.Model):
     _inherit = 'ir.attachment'
 
     wo_attachment_id = fields.Many2one('fleet.vehicle.log.services')
 
 
-class service_task(models.Model):
+class ServiceTask(models.Model):
     _name = 'service.task'
 
     _description = 'Maintenance of the Task '
@@ -1949,7 +1948,7 @@ class service_task(models.Model):
     maintenance_info = fields.Text(string='Information', translate=True)
 
 
-class task_line(models.Model):
+class TaskLine(models.Model):
 
     @api.multi
     def _amount_line(self):
@@ -2021,7 +2020,7 @@ class task_line(models.Model):
                             parts assigned !!! \n Part No :- ' + \
                     product_rec.default_code
                 raise Warning(_('User Error!'), _(warrnig))
-        return super(task_line, self).create(vals)
+        return super(TaskLine, self).create(vals)
 
     @api.multi
     def write(self, vals):
@@ -2039,7 +2038,7 @@ class task_line(models.Model):
                 vals.update({'issued_by': self._uid,
                              'date_issued':
                              time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)})
-        return super(task_line, self).write(vals)
+        return super(TaskLine, self).write(vals)
 
     @api.multi
     def unlink(self):
@@ -2067,7 +2066,7 @@ class task_line(models.Model):
                         assign_part_rec.write(
                           {'encode_qty': assign_part_rec.encode_qty +
                            task_line_rec.qty})
-        return super(task_line, self).unlink()
+        return super(TaskLine, self).unlink()
 
     @api.onchange('date_issued')
     def check_onchange_part_issue_date(self):
@@ -2199,7 +2198,7 @@ class task_line(models.Model):
                                    greater than product quantity on hand !'))
 
 
-class repair_type(models.Model):
+class RepairType(models.Model):
     _name = 'repair.type'
 
     name = fields.Char(string='Repair Type', size=264,
@@ -2210,15 +2209,15 @@ class repair_type(models.Model):
         if not default:
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
-        return super(repair_type, self).copy(default=default)
+        return super(RepairType, self).copy(default=default)
 
     @api.multi
     def unlink(self):
         raise Warning(_('You can\'t delete record !'))
-        return super(repair_type, self).unlink()
+        return super(RepairType, self).unlink()
 
 
-class service_repair_line(models.Model):
+class ServiceRepairLine(models.Model):
     _name = 'service.repair.line'
 
     @api.constrains('date', 'target_date')
@@ -2248,7 +2247,7 @@ class service_repair_line(models.Model):
     complete = fields.Boolean(string='Completed')
 
 
-class fleet_service_type(models.Model):
+class FleetServiceType(models.Model):
     _inherit = 'fleet.service.type'
 
     category = fields.Selection([('contract', 'Contract'),
@@ -2280,7 +2279,7 @@ class fleet_service_type(models.Model):
 #        return True
 
 
-class contact_team_trip_search(models.TransientModel):
+class ContactTeamTripSearch(models.TransientModel):
     _name = 'contact.team.trip.search'
 
     destination_location_id = fields.Many2one('stock.location',

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
     <!--Inherited account move form view to add button for printing report-->
         <record id="view_account_move_form_inherit_id" model="ir.ui.view">
             <field name="name">account.move.form</field>
@@ -520,8 +519,8 @@
 		<field name="model">account.asset.asset</field>
 		<field name="arch" type="xml">
 			<gantt date_start="date" date_stop="sale_date" string="Sale"
-				progress="progress">
-				<field name="name" />
+				progress="progress" default_group_by="name">
+				<!--<field name="name" />-->
 			</gantt>
 		</field>
 	</record>
@@ -609,6 +608,4 @@
 	<!-- <menuitem id="menu_account_asset_asset_hierarch_action"
 		parent="menu_property_sub" action="action_account_asset_asset_hierarch"
 		groups='base.group_erp_manager,property_management.group_property_manager' /> -->
-
-    </data>
 </odoo>

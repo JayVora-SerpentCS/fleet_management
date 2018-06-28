@@ -6,7 +6,7 @@ from odoo import models, fields, api, _
 from odoo.exceptions import Warning
 
 
-class parts_contact_trip(models.TransientModel):
+class PartsContactTrip(models.TransientModel):
     _name = 'parts.contact.trip'
 
     part_ids = fields.One2many('add.parts.contact.trip', 'wizard_part_id',
@@ -174,7 +174,7 @@ class parts_contact_trip(models.TransientModel):
         return True
 
 
-class add_parts_contact_trip(models.TransientModel):
+class AddPartsContactTrip(models.TransientModel):
     _name = 'add.parts.contact.trip'
 
     wizard_part_id = fields.Many2one('parts.contact.trip', string='PartNo')
@@ -292,7 +292,7 @@ class add_parts_contact_trip(models.TransientModel):
         self.issue_date = issue_date_o
 
 
-class edit_parts_contact_team_trip(models.Model):
+class EditPartsContactTeamTrip(models.Model):
     _name = 'edit.parts.contact.team.trip'
 
     part_ids = fields.One2many('team.assign.parts', 'wizard_parts_id',
@@ -302,7 +302,7 @@ class edit_parts_contact_team_trip(models.Model):
     def default_get(self, fields):
         if self._context is None:
             self._context = {}
-        res = super(edit_parts_contact_team_trip, self).default_get(fields)
+        res = super(EditPartsContactTeamTrip, self).default_get(fields)
         team_assign_obj = self.env['fleet.team']
         team_line_ids = []
         if self._context.get('active_id', False):

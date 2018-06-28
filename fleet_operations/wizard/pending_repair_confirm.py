@@ -7,7 +7,7 @@ from odoo.exceptions import Warning
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 
 
-class pending_repair_confirm(models.TransientModel):
+class PendingRepairConfirm(models.TransientModel):
     _name = 'pending.repair.confirm'
 
     @api.multi
@@ -33,7 +33,7 @@ class pending_repair_confirm(models.TransientModel):
             if not next_service_day_ids:
                 raise Warning(_("Next service days is \
                      not configured for %s please set it from \
-                     configuration!") % (wo_obj.vehicle_id.name))
+                     configuration!") % (work_order.vehicle_id.name))
             work_order_vals = {}
             if work_order.odometer == 0:
                 raise Warning(_("Please set the \

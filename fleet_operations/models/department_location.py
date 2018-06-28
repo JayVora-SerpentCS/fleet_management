@@ -2,11 +2,9 @@
 # See LICENSE file for full copyright and licensing details.
 
 from odoo import models, fields
-import logging
-_logger = logging.getLogger(__name__)
 
 
-class service_department(models.Model):
+class ServiceDepartment(models.Model):
     _name = 'service.department'
 
     code = fields.Char(string='Code', size=3,

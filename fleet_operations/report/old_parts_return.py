@@ -1,34 +1,13 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-import base64
 from datetime import datetime, timedelta
-
-try:
-    from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
-except ImportError:
-    class ReportXlsx(object):
-        def __init__(self, *args, **kwargs):
-            pass
+from odoo import models
 
 
-class OldPartReturn(ReportXlsx):
-
-    def get_heading(self):
-        head_title = {'name': '',
-                      'rev_no': '',
-                      'doc_no': '',
-                      }
-        head_object = self.env['report.heading']
-        head_ids = head_object.search([], order='id')
-        if head_ids:
-            head_rec = head_ids[0]
-            if head_rec:
-                head_title['name'] = head_rec.name or ''
-                head_title['rev_no'] = head_rec.revision_no or ''
-                head_title['doc_no'] = head_rec.document_no or ''
-                head_title['image'] = head_rec.image or ''
-        return head_title
+class OldPartReturn(models.AbstractModel):
+    _name = 'report.fleet_operations.old.part.return.wizard.xls'
+    _inherit = 'report.report_xlsx.abstract'
 
     def get_old_part_detail(self, date_range):
         work_order_obj = self.env['fleet.vehicle.log.services']
@@ -41,7 +20,6 @@ class OldPartReturn(ReportXlsx):
                 work_order_obj.search([('date_close', '=', start.date()),
                                        ('state', '=', 'done')])
             if work_order_ids:
-                parts_data = {}
                 parts_value = []
                 for work_order in work_order_ids:
                     for inc_shiping in work_order.old_parts_incoming_ship_ids:
@@ -77,7 +55,6 @@ class OldPartReturn(ReportXlsx):
         worksheet.set_column(6, 6, 10)
         worksheet.set_column(7, 7, 10)
         worksheet.set_column(8, 8, 10)
-#        result = self.get_heading()
         tot = workbook.add_format({'border': 2,
                                    'bold': True,
                                    'font_name': 'Arial',
@@ -91,24 +68,10 @@ class OldPartReturn(ReportXlsx):
                                        'font_name': 'Arial',
                                        'font_size': '10',
                                        'num_format': 'dd/mm/yy'})
-#        worksheet.merge_range('C2:E2', 'Merged Cells', merge_format)
         worksheet.merge_range('C3:F3', 'Merged Cells', merge_format)
 
-#        file_name = result.get('image', False)
-#        if file_name:
-#            file1 = open('/tmp/' + 'logo.png', 'wb')
-#            file_data = base64.decodestring(file_name)
-#            file1.write(file_data)
-#            file1.close()
         row = 0
         row += 1
-#        if file_name:
-#            worksheet.insert_image(row, 0, '/tmp/logo.png')
-#        worksheet.write(row, 2, result.get('name') or '', border)
-#        worksheet.write(row, 5, 'Rev. No. :', tot)
-#        worksheet.write(row, 6, result.get('rev_no') or '', border)
-#        worksheet.write(row, 7, 'Document No. :', tot)
-#        worksheet.write(row, 8, result.get('doc_no') or '', border)
         row += 1
         worksheet.write(row, 2, 'Old Part Return', tot)
         row += 1
@@ -147,6 +110,3 @@ class OldPartReturn(ReportXlsx):
                 line_row += 1
                 counter += 1
                 worksheet.write(line_row, line_col, '********', border)
-
-
-OldPartReturn('report.old.part.return.wizard.xls', 'part.summary')

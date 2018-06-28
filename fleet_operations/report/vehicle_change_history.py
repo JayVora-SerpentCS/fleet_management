@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-try:
-    from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
-except ImportError:
-    class ReportXlsx(object):
-        def __init__(self, *args, **kwargs):
-            pass
+import time
+from odoo import api, models, _
+from odoo.exceptions import UserError
 
 
-class VehicleChangeHistory(ReportXlsx):
+class VehicalChangeHistoryReport(models.AbstractModel):
+    _name = 'report.fleet_operations.vehicle_change_history_qweb'
 
     def get_vehicle_history(self, date_range):
         engine_obj = self.env['engine.history']
@@ -31,7 +29,6 @@ class VehicleChangeHistory(ReportXlsx):
             for engine_rec in engine_ids:
                 seq = engine_rec.vehicle_id and \
                     engine_rec.vehicle_id.name or ''
-                values = {}
                 values = {
                     'description': seq,
                     'vehicle_type': engine_rec.vehicle_id and
@@ -62,7 +59,6 @@ class VehicleChangeHistory(ReportXlsx):
         if color_ids:
             for color_rec in color_ids:
                 seq = color_rec.vehicle_id and color_rec.vehicle_id.name or ''
-                cvalues = {}
                 cvalues = {
                     'description': seq,
                     'vehicle_type': color_rec.vehicle_id and
@@ -95,7 +91,6 @@ class VehicleChangeHistory(ReportXlsx):
         if vin_ids:
             for vin_rec in vin_ids:
                 seq = vin_rec.vehicle_id and vin_rec.vehicle_id.name or ''
-                vvalues = {}
                 vvalues = {
                     'description': seq,
                     'vehicle_type': vin_rec.vehicle_id and
@@ -128,112 +123,22 @@ class VehicleChangeHistory(ReportXlsx):
                                             key=lambda k: k['seq'])
         return vehicle_change_history
 
-    def generate_xlsx_report(self, workbook, data, vehicle):
-        worksheet = workbook.add_worksheet('vehicle_change_histoty')
-        worksheet.set_column(0, 0, 5)
-        worksheet.set_column(1, 1, 20)
-        worksheet.set_column(2, 2, 15)
-        worksheet.set_column(3, 3, 10)
-        worksheet.set_column(4, 4, 15)
-        worksheet.set_column(5, 5, 15)
-        worksheet.set_column(6, 6, 15)
-        worksheet.set_column(7, 7, 15)
-        worksheet.set_column(8, 8, 10)
-        worksheet.set_column(9, 9, 10)
-        worksheet.set_column(9, 9, 10)
-        worksheet.set_column(10, 10, 10)
-        worksheet.set_column(11, 11, 10)
-        worksheet.set_column(12, 12, 20)
-        worksheet.set_column(13, 13, 10)
-        tot = workbook.add_format({'border': 2,
-                                   'bold': True,
-                                   'font_name': 'Arial',
-                                   'font_size': '10'})
-        border = workbook.add_format({'border': 2,
-                                      'font_name': 'Arial',
-                                      'font_size': '10'})
-        merge_format = workbook.add_format({'align': 'center'})
-        format1 = workbook.add_format({'border': 2,
-                                       'bold': True,
-                                       'font_name': 'Arial',
-                                       'font_size': '10'})
-        worksheet.merge_range('A2:N2', 'Merged Cells', merge_format)
-        worksheet.merge_range('G4:H4', 'Merged Cells', merge_format)
-        worksheet.merge_range('I4:J4', 'Merged Cells', merge_format)
-        row = 1
-        worksheet.write(row, 0, 'List of the Vehicle Which Engine and color \
-                                    has changed in CMF workshop', tot)
-        row += 2
-        worksheet.write(row, 6, 'Engine History', format1)
-        worksheet.write(row, 8, 'Color History', format1)
-        row += 1
-        worksheet.write(row, 0, 'No.', format1)
-        worksheet.write(row, 1, 'Description', format1)
-        worksheet.write(row, 2, 'Type of Vehicle', format1)
-        worksheet.write(row, 3, 'Vehicle Color ', format1)
-        worksheet.write(row, 4, 'Vehicle VIN # ', format1)
-        worksheet.write(row, 5, 'Plate #', format1)
-        worksheet.write(row, 6, 'Old Engine # ', format1)
-        worksheet.write(row, 7, 'New Engine # ', format1)
-        worksheet.write(row, 8, 'Old Color ', format1)
-        worksheet.write(row, 9, 'New color ', format1)
-        worksheet.write(row, 10, 'Old Vin ', format1)
-        worksheet.write(row, 11, 'New Vin ', format1)
-        worksheet.write(row, 10, 'Change Date', format1)
-        worksheet.write(row, 11, 'Work Order No', format1)
-        worksheet.write(row, 12, 'Work Order Closed Date', format1)
-        worksheet.write(row, 13, 'Remarks ', format1)
-        result = self.get_vehicle_history(data['form'])
-        line_row = row + 1
-        line_col = 0
-        counter = 1
-        row += 1
-        for obj in result:
-                worksheet.write(line_row, line_col, counter, border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['description'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['vehicle_type'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['color_id'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['vin'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['plate'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['old_engine'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['new_engine'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['old_color'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['new_color'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['change_date'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['work_order'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['wo_close_date'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['remarks'] or '',
-                                border)
-                line_col = 0
-                line_row += 1
-                counter += 1
-                worksheet.write(line_row, line_col, '********', border)
+    @api.model
+    def get_report_values(self, docids, data=None):
+        if not data.get('form') or \
+                not self.env.context.get('active_model') or \
+                not self.env.context.get('active_id'):
+            raise UserError(_("Form content is missing, \
+                    this report cannot be printed."))
 
-
-VehicleChangeHistory('report.vehicle.change.history.xls',
-                     'vehicle.change.history')
+        self.model = self.env.context.get('active_model')
+        docs = self.env[self.model].browse(self.env.context.get('active_id'))
+        result = self.get_vehicle_history(data.get('form'))
+        return {
+            'doc_ids': self.ids,
+            'doc_model': self.model,
+            'data': data['form'],
+            'docs': docs,
+            'time': time,
+            'get_vehicle_history': result
+        }

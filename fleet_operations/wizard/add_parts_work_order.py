@@ -7,7 +7,7 @@ from odoo import models, fields, api, _
 from odoo.exceptions import Warning
 
 
-class parts_work_order(models.TransientModel):
+class PartsWorkOrder(models.TransientModel):
     _name = 'parts.work.order'
 
     part_ids = fields.One2many('add.parts.work.order', 'wizard_part_id',
@@ -73,7 +73,7 @@ class parts_work_order(models.TransientModel):
         return True
 
 
-class add_parts_work_order(models.TransientModel):
+class AddPartsWorkOrder(models.TransientModel):
     _name = 'add.parts.work.order'
 
     wizard_part_id = fields.Many2one('parts.work.order', string='PartNo')
@@ -215,7 +215,7 @@ class add_parts_work_order(models.TransientModel):
                                 than product quantity on hand !"))
 
 
-class edit_parts_work_order(models.Model):
+class EditPartsWorkOrder(models.Model):
     _name = 'edit.parts.work.order'
 
     part_ids = fields.One2many('task.line', 'wizard_parts_id',
@@ -225,7 +225,7 @@ class edit_parts_work_order(models.Model):
     def default_get(self, fields):
         if self._context is None:
             self._context = {}
-        res = super(edit_parts_work_order, self).default_get(fields)
+        res = super(EditPartsWorkOrder, self).default_get(fields)
         work_order_obj = self.env['fleet.vehicle.log.services']
         work_order_line_ids = []
         trip_encoded_temp__obj = self.env['trip.encoded.history.temp']

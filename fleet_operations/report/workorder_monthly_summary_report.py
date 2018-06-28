@@ -1,36 +1,13 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-import base64
-from odoo.osv import osv
-
-try:
-    from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
-except ImportError:
-    class ReportXlsx(object):
-        def __init__(self, *args, **kwargs):
-            pass
+from odoo import models
+from odoo.exceptions import Warning
 
 
-class WorkorderMontltReportXlsx(ReportXlsx):
-
-    def get_heading(self):
-        head_title = {
-            'name': '',
-            'rev_no': '',
-            'doc_no': '',
-            'image': ''
-        }
-        head_object = self.env['report.heading']
-        head_ids = head_object.search([], order='id')
-        if head_ids:
-            head_rec = head_ids[0]
-            if head_rec:
-                head_title['name'] = head_rec.name or ''
-                head_title['rev_no'] = head_rec.revision_no or ''
-                head_title['doc_no'] = head_rec.document_no or ''
-                head_title['image'] = head_rec.image or ''
-        return head_title
+class WorkorderMontltReportXlsx(models.AbstractModel):
+    _name = 'report.fleet_operations.workorder.monthly.summary.xls'
+    _inherit = 'report.report_xlsx.abstract'
 
     def get_wo_mthly_smry(self, workorder_browse):
         wo_summary_data = []
@@ -40,7 +17,6 @@ class WorkorderMontltReportXlsx(ReportXlsx):
             for work_rec in workorder_browse:
                 if work_rec.state and work_rec.state == 'done':
                     no += 1
-                    parts_data = {}
                     identification = ''
                     repair_line_data = ''
                     if work_rec.vehicle_id:
@@ -59,7 +35,6 @@ class WorkorderMontltReportXlsx(ReportXlsx):
                                     repaire_line.repair_type_id.name + ', '
                     if work_rec.parts_ids:
                         for parts_line in work_rec.parts_ids:
-                            parts_data = {}
                             if wo_check_dict. has_key(work_rec.id):
                                 parts_data = {
                                     'no': -1,
@@ -108,7 +83,6 @@ class WorkorderMontltReportXlsx(ReportXlsx):
                                 }
                                 wo_summary_data.append(parts_data)
                     else:
-                        parts_data = {}
                         parts_data = {
                             'no': no,
                             'location': work_rec.team_id and
@@ -130,8 +104,8 @@ class WorkorderMontltReportXlsx(ReportXlsx):
                         }
                         wo_summary_data.append(parts_data)
         if not wo_summary_data:
-            raise osv.except_osv(
-                ('Warning!'), ("No data Available for selected work order."))
+            raise Warning("Warning! \n\
+                No data Available for selected work order.")
         return wo_summary_data
 
     def generate_xlsx_report(self, workbook, data, workorder):
@@ -154,10 +128,6 @@ class WorkorderMontltReportXlsx(ReportXlsx):
         worksheet.set_column(14, 14, 15)
         worksheet.set_column(15, 15, 15)
 
-        tot = workbook.add_format({'border': 2,
-                                   'bold': True,
-                                   'font_name': 'Arial',
-                                   'font_size': '10'})
         border = workbook.add_format({'border': 2,
                                       'font_name': 'Arial',
                                       'font_size': '10'})
@@ -167,25 +137,9 @@ class WorkorderMontltReportXlsx(ReportXlsx):
                                        'font_size': '10'})
         format1.set_bg_color('gray')
         merge_format = workbook.add_format({'border': 2, 'align': 'center'})
-#        worksheet.merge_range('C2:D2', 'Merged Cells', merge_format)
         worksheet.merge_range('C3:E3', 'Merged Cells', merge_format)
-#        res = self.get_heading()
-
-#        file_name = res.get('image', False)
-#        if file_name:
-#            file1 = open('/tmp/' + 'logo.png', 'wb')
-#            file_data = base64.decodestring(file_name)
-#            file1.write(file_data)
-#            file1.close()
         row = 0
         row += 1
-#        if file_name:
-#            worksheet.insert_image(row, 0, '/tmp/logo.png')
-#        worksheet.write(row, 2, res['name'] or '', border)
-#        worksheet.write(row, 4, 'Rev. No. :', tot)
-#        worksheet.write(row, 5, res['rev_no'] or '', border)
-#        worksheet.write(row, 6, 'Document No. :', tot)
-#        worksheet.write(row, 7, res['doc_no'] or '', border)
         row += 1
         worksheet.write(row, 2,
                         'Work Order Monthly Summary Report', merge_format)
@@ -222,7 +176,3 @@ class WorkorderMontltReportXlsx(ReportXlsx):
                 worksheet.write(row, 7, line.get('work_performed'), border)
             row += 1
             counter += 1
-
-
-WorkorderMontltReportXlsx('report.workorder.monthly.summary.xls',
-                          'fleet.vehicle.log.services')

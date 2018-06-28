@@ -1,35 +1,14 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-import base64
-from odoo.osv import osv
-
-try:
-    from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
-except ImportError:
-    class ReportXlsx(object):
-        def __init__(self, *args, **kwargs):
-            pass
+from odoo import models
+from odoo.exceptions import Warning
 
 
-class MostUsedPartsXlsx(ReportXlsx):
-    def get_heading(self):
-        head_title = {
-            'name': '',
-            'rev_no': '',
-            'doc_no': '',
-            'image': ''
-        }
-        head_object = self.env['report.heading']
-        head_ids = head_object.search([], order='id')
-        if head_ids:
-            head_rec = head_ids[0]
-            if head_rec:
-                head_title['name'] = head_rec.name or ''
-                head_title['rev_no'] = head_rec.revision_no or ''
-                head_title['doc_no'] = head_rec.document_no or ''
-                head_title['image'] = head_rec.image or ''
-        return head_title
+class MostUsedPartsXlsx(models.AbstractModel):
+    _name = 'report.fleet_operations.most.used.parts.xls'
+    _inherit = 'report.report_xlsx.abstract'
+
     most_part_used_garnd_total = 0.0
 
     def get_grand_total(self):
@@ -81,8 +60,8 @@ class MostUsedPartsXlsx(ReportXlsx):
             part_list_data = sorted(part_list_data,
                                     key=lambda k: k['qty'], reverse=True)
         else:
-            raise osv.except_osv(('Warning!'),
-                                 ("No parts were used in selected date."))
+            raise Warning("Warning! \n\
+                    No parts were used in selected date.")
 
         flag = 1
         final_data = []
@@ -129,26 +108,10 @@ class MostUsedPartsXlsx(ReportXlsx):
                                       'font_name': 'Arial',
                                       'font_size': '10'})
         merge_format = workbook.add_format({'border': 2, 'align': 'center'})
-#        worksheet.merge_range('C2:E2', 'Merged Cells', merge_format)
         worksheet.merge_range('C3:F3', 'Merged Cells', merge_format)
-#        result = self.get_heading()
         res = self.get_grand_total()
-
-#        file_name = result.get('image', False)
-#        if file_name:
-#            file1 = open('/tmp/' + 'logo.png', 'wb')
-#            file_data = base64.decodestring(file_name)
-#            file1.write(file_data)
-#            file1.close()
         row = 0
         row += 1
-#        if file_name:
-#            worksheet.insert_image(row, 0, '/tmp/logo.png')
-#        worksheet.write(row, 2, result.get('name') or '', border)
-#        worksheet.write(row, 5, 'Rev. No. :', tot)
-#        worksheet.write(row, 6, result.get('rev_no') or '', border)
-#        worksheet.write(row, 7, 'Document No. :', tot)
-#        worksheet.write(row, 8, result.get('doc_no') or '', border)
         row += 1
         worksheet.write(row, 2, 'MOST USED PARTS', tot)
         row += 2
@@ -203,6 +166,3 @@ class MostUsedPartsXlsx(ReportXlsx):
         row += 3
         worksheet.write(row, 7, 'Grand Total Cost', border)
         worksheet.write(row, 8, res, border)
-
-
-MostUsedPartsXlsx('report.most.used.parts.xls', 'product.product')

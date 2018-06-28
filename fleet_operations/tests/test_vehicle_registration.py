@@ -19,5 +19,4 @@ class TestRegistration(TransactionCase):
                                 'license_plate': 'MH-04-7777',
                                 'odometer': 3000,
                                 'odometer_unit': 'kilometers',
-                                'fuel_type': 'diesel'
-                                    })
+                                'fuel_type': 'diesel'})

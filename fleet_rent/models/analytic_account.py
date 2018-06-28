@@ -2,7 +2,6 @@
 # See LICENSE file for full copyright and licensing details.
 
 import time
-
 from datetime import datetime
 from datetime import timedelta
 from odoo.exceptions import Warning, ValidationError
@@ -195,7 +194,7 @@ class AccountAnalyticAccount(models.Model):
                 color.color = 4
 
     vehicle_image = fields.Binary(related="vehicle_id.image",
-                                  string="Vehicle Image")
+                                  string="Vehicle Image", store=True)
     color = fields.Integer(string='Color', compute='change_color')
     odometer = fields.Float(
         compute='_get_odometer',
@@ -256,6 +255,10 @@ class AccountAnalyticAccount(models.Model):
         help="Manager of Rental Vehicle.")
     vehicle_id = fields.Many2one(
         comodel_name='fleet.vehicle',
+        string='Vehicle',
+        help="Name of Vehicle.")
+    vehicle_property_id = fields.Many2one(
+        comodel_name='account.asset.asset',
         string='Vehicle',
         help="Name of Vehicle.")
     tenant_id = fields.Many2one(
