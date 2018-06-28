@@ -5,6 +5,7 @@
     'name': 'Fleet Rental Vehicle',
     'author': 'Serpent Consulting Services Pvt. Ltd.',
     'version': '11.0.1.0.0',
+    'license': 'AGPL-3',
     'website': 'http://www.serpentcs.com',
     'category': 'Fleet Rent',
     'description': """
