@@ -5,6 +5,7 @@
     'name': 'Fleet Operations',
     'author': 'Serpent Consulting Services Pvt. Ltd.',
     'version': '10.0.0.1.0',
+    'license': 'AGPL-3',
     'website': 'http://www.serpentcs.com',
     'category': 'Managing vehicles and contracts',
     'description': """
