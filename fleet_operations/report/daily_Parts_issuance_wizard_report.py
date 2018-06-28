@@ -4,16 +4,12 @@
 import base64
 from datetime import datetime, timedelta
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
-
-try:
-    from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
-except ImportError:
-    class ReportXlsx(object):
-        def __init__(self, *args, **kwargs):
-            pass
+from odoo import models
 
 
-class DailyPartWizard(ReportXlsx):
+class DailyPartWizard(models.AbstractModel):
+    _name = 'report.fleet_operations.daily.parts.issuance.wizard.xls'
+    _inherit = 'report.report_xlsx.abstract'
 
     def get_heading(self):
         head_title = {'name': '',
@@ -207,6 +203,4 @@ class DailyPartWizard(ReportXlsx):
                 line_row += 1
                 counter += 1
                 worksheet.write(line_row, line_col, '********', border)
-
-
-DailyPartWizard('report.daily.parts.issuance.wizard.xls', 'part.summary')
+                

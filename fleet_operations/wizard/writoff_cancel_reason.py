@@ -5,7 +5,7 @@ from datetime import date
 from odoo import models, fields, api
 
 
-class wizard_writoff_cancel_reason(models.TransientModel):
+class WizardWritOffCancelReason(models.TransientModel):
     _name = 'writeoff.cancel.reason'
 
     reason = fields.Char(string='Reason', required=True)

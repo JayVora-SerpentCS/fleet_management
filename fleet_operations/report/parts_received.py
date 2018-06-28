@@ -1,34 +1,13 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-import base64
-
-try:
-    from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
-except ImportError:
-    class ReportXlsx(object):
-        def __init__(self, *args, **kwargs):
-            pass
+from odoo import models
 
 
-class ReceivedPartsXlsx(ReportXlsx):
-    def get_heading(self):
-        head_title = {
-            'name': '',
-            'rev_no': '',
-            'doc_no': '',
-            'image': ''
-        }
-        head_object = self.env['report.heading']
-        head_ids = head_object.search([], order='id')
-        if head_ids:
-            head_rec = head_ids[0]
-            if head_rec:
-                head_title['name'] = head_rec.name or ''
-                head_title['rev_no'] = head_rec.revision_no or ''
-                head_title['doc_no'] = head_rec.document_no or ''
-                head_title['image'] = head_rec.image or ''
-        return head_title
+class ReceivedPartsXlsx(models.AbstractModel):
+    _name = 'report.fleet_operations.receved.parts.xls'
+    _inherit = 'report.report_xlsx.abstract'
+
 
     def get_purchase_id(self, picking):
         query = """
@@ -71,23 +50,9 @@ class ReceivedPartsXlsx(ReportXlsx):
                                    'font_name': 'Arial',
                                    'font_size': '10'})
         tot.set_bg_color('gray')
-#        res = self.get_heading()
-#        file_name = res.get('image', False)
-#        if file_name:
-#            file1 = open('/tmp/' + 'logo.png', 'wb')
-#            file_data = base64.decodestring(file_name)
-#            file1.write(file_data)
-#            file1.close()
         row = 0
         for picking in stock_picking_ids:
             row += 1
-#            if file_name:
-#                worksheet.insert_image(row, 0, '/tmp/logo.png')
-#            worksheet.write(row, 3, res['name'])
-#            worksheet.write(row, 4, 'Rev No.')
-#            worksheet.write(row, 5, res['rev_no'])
-#            worksheet.write(row, 6, 'Document No. :')
-#            worksheet.write(row, 7, res['doc_no'])
             row += 1
             worksheet.write(row, 3, 'Parts Received ', bold)
             row += 3
@@ -137,6 +102,4 @@ class ReceivedPartsXlsx(ReportXlsx):
                     row += 2
                     counter += 1
         row += 5
-
-
-ReceivedPartsXlsx('report.receved.parts.xls', 'stock.picking')
+        

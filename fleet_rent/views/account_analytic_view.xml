@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
 	<!--Vehicle Rent Tree View -->
 	<record id="property_analytic_view_tree" model="ir.ui.view">
 		<field name="name">property.analytic.view.tree</field>
@@ -188,7 +187,7 @@
 									    options="{&quot;no_open&quot;:True}" />
 									<field name="account_id"
 									    options="{&quot;no_open&quot;:True}"
-										domain="[('company_id', '=', company_id)]" />
+										domain="[('company_id', '=', parent.company_id)]" />
 									<field name="debit" sum="Total Debit" widget='monetary' />
 									<field name="credit" sum="Total Credit" />
 									<field name="currency_id" invisible="1"
@@ -233,6 +232,7 @@
         <field name="model">account.analytic.account</field>
         <field name="arch" type="xml">
             <kanban class="o_event_kanban_view">
+				<field name="id"/>
                 <field name="color"/>
                 <field name="name"/>
                 <field name="vehicle_id"/>
@@ -254,7 +254,7 @@
                                 </div>
                             </div>
                             <div class="o_event_right">
-	                            <div style="background: #7c7bad;width: 216px;border-color: darkblue;border-width: thin;color: white;margin-left: -16px;margin-right: -7px;padding: 3px;margin-top: -8px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+	                           <div style="background: #7c7bad;width: 216px;border-color: darkblue;border-width: thin;color: white;margin-left: -16px;margin-right: -7px;padding: 3px;margin-top: -8px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
 		                            <img t-att-src="kanban_image('account.analytic.account', 'vehicle_image', record.id.value)"
 		                                              t-att-title="record.vehicle_image.value" width="30" height="30"
 		                                              class="oe_kanban_avatar" style="border-radius:15px;margin-right:10px;margin-left:5px;"/>
@@ -308,7 +308,7 @@
 	</record>
 
 	<!--Rent Graph View -->
-    <!-- <record model="ir.ui.view" id="vehicle_rent_graph_view">
+	<record model="ir.ui.view" id="vehicle_rent_graph_view">
            <field name="name">view.analytic.graph</field>
            <field name="model">account.analytic.account</field>
            <field name="arch" type="xml">
@@ -318,7 +318,7 @@
                     <field name="total_rent" type="measure"/>
                 </graph>
             </field>
-    </record> -->
+    </record>
 	
 	<!--Vehicle Rent gantt View -->
 	<record id="view_analytic_gantt" model="ir.ui.view">
@@ -343,12 +343,12 @@
 	</record>
 
 	<!--Action For Vehicle Rent Graph view -->
-    <!-- <record id="action_vehicle_rent_graph_view" model="ir.actions.act_window.view">
+    <record id="action_vehicle_rent_graph_view" model="ir.actions.act_window.view">
         <field eval="5" name="sequence" />
         <field name="view_mode">graph</field>
         <field name="view_id" ref="vehicle_rent_graph_view" />
         <field name="act_window_id" ref="action_vehicle_rent_analytic_view" />
-    </record> -->
+    </record>
 	
 	<!--Action For Vehicle Rent Form view -->
 	<record id="action_analytic_form_view" model="ir.actions.act_window.view">
@@ -398,5 +398,4 @@
 			</field>
 		</field>
 	</record>
-    </data>
 </odoo>

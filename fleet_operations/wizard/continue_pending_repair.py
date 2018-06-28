@@ -4,6 +4,6 @@
 from odoo import models
 
 
-class continue_pending_repair(models.TransientModel):
+class ContinuePendingRepair(models.TransientModel):
 
     _name = 'continue.pending.repair'

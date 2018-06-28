@@ -9,7 +9,7 @@ from odoo import models, fields, api, _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DT
 
 
-class wizard_renew_tenancy(models.TransientModel):
+class WizardRenewTenancy(models.TransientModel):
     _name = 'renew.tenancy'
 
     start_date = fields.Datetime(

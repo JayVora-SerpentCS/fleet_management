@@ -6,7 +6,7 @@ from datetime import datetime
 from odoo import models, fields, api
 
 
-class update_engine_info(models.TransientModel):
+class UpdateEngineInfo(models.TransientModel):
     _name = 'update.engine.info'
 
     workorder_id = fields.Many2one('fleet.vehicle.log.services',
@@ -33,7 +33,7 @@ class update_engine_info(models.TransientModel):
     @api.model
     def default_get(self, fields):
         vehical_obj = self.env['fleet.vehicle']
-        res = super(update_engine_info, self).default_get(fields)
+        res = super(UpdateEngineInfo, self).default_get(fields)
         if self._context.get('active_id', False):
             vehicle = vehical_obj.browse(self._context['active_id'])
             res.update({'previous_engine_no': vehicle.engine_no or "",
@@ -59,7 +59,7 @@ class update_engine_info(models.TransientModel):
         return True
 
 
-class update_color_info(models.TransientModel):
+class UpdateColorInfo(models.TransientModel):
     _name = 'update.color.info'
 
     workorder_id = fields.Many2one('fleet.vehicle.log.services',
@@ -85,7 +85,7 @@ class update_color_info(models.TransientModel):
     @api.model
     def default_get(self, fields):
         vehical_obj = self.env['fleet.vehicle']
-        res = super(update_color_info, self).default_get(fields)
+        res = super(UpdateColorInfo, self).default_get(fields)
         if self._context.get('active_id', False):
             vehicle = vehical_obj.browse(self._context['active_id'])
             res.update({'previous_color_id': vehicle.vehical_color_id and
@@ -116,7 +116,7 @@ class update_color_info(models.TransientModel):
         return True
 
 
-class update_vin_info(models.TransientModel):
+class UpdateVinInfo(models.TransientModel):
     _name = 'update.vin.info'
 
     workorder_id = fields.Many2one('fleet.vehicle.log.services',
@@ -134,7 +134,7 @@ class update_vin_info(models.TransientModel):
     @api.model
     def default_get(self, fields):
         vehical_obj = self.env['fleet.vehicle']
-        res = super(update_vin_info, self).default_get(fields)
+        res = super(UpdateVinInfo, self).default_get(fields)
         if self._context.get('active_id', False):
             vehicle = vehical_obj.browse(self._context['active_id'])
             res.update({'previous_vin_no': vehicle.vin_sn or "",
@@ -160,7 +160,7 @@ class update_vin_info(models.TransientModel):
         return True
 
 
-class update_tire_info(models.TransientModel):
+class UpdateTireInfo(models.TransientModel):
     _name = 'update.tire.info'
 
     previous_tire_size = fields.Char(string='Previous Tire Size', size=124)
@@ -200,7 +200,7 @@ class update_tire_info(models.TransientModel):
     @api.model
     def default_get(self, fields):
         vehical_obj = self.env['fleet.vehicle']
-        res = super(update_tire_info, self).default_get(fields)
+        res = super(UpdateTireInfo, self).default_get(fields)
         if self._context.get('active_id', False):
             vehicle = vehical_obj.browse(self._context['active_id'])
             res.update({
@@ -238,7 +238,7 @@ class update_tire_info(models.TransientModel):
         return True
 
 
-class update_battery_info(models.TransientModel):
+class UpdateBatteryInfo(models.TransientModel):
     _name = 'update.battery.info'
 
     previous_battery_size = fields.Char(string='Previous Battery Size',
@@ -280,7 +280,7 @@ class update_battery_info(models.TransientModel):
     @api.model
     def default_get(self, fields):
         vehical_obj = self.env['fleet.vehicle']
-        res = super(update_battery_info, self).default_get(fields)
+        res = super(UpdateBatteryInfo, self).default_get(fields)
         if self._context.get('active_id', False):
             vehicle = vehical_obj.browse(self._context['active_id'])
             res.update({

@@ -1,37 +1,14 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-import base64
 from datetime import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
-
-try:
-    from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
-except ImportError:
-    class ReportXlsx(object):
-        def __init__(self, *args, **kwargs):
-            pass
+from odoo import models
 
 
-class WoOver10DaysXlsx(ReportXlsx):
-
-    def get_heading(self):
-        head_title = {
-            'name': '',
-            'rev_no': '',
-            'doc_no': '',
-            'image': ''
-        }
-        head_object = self.env['report.heading']
-        head_ids = head_object.search([], order='id')
-        if head_ids:
-            head_rec = head_ids[0]
-            if head_rec:
-                head_title['name'] = head_rec.name or ''
-                head_title['rev_no'] = head_rec.revision_no or ''
-                head_title['doc_no'] = head_rec.document_no or ''
-                head_title['image'] = head_rec.image or ''
-        return head_title
+class WoOver10DaysXlsx(models.AbstractModel):
+    _name = 'report.fleet_operations.wo.over.daysxls'
+    _inherit = 'report.report_xlsx.abstract'
 
     def get_wo_over_10days(self, work_orders):
         over_orders = []
@@ -51,7 +28,6 @@ class WoOver10DaysXlsx(ReportXlsx):
         return over_orders
 
     def get_identification(self, vehicles_id):
-
         ident = ""
         if vehicles_id:
             if vehicles_id.name:
@@ -63,7 +39,6 @@ class WoOver10DaysXlsx(ReportXlsx):
         return ident
 
     def get_wo_status(self, status):
-        wo_status = ""
         if status == 'done':
             wo_status = "Closed"
         elif status == 'confirm':
@@ -116,24 +91,8 @@ class WoOver10DaysXlsx(ReportXlsx):
                                        'font_name': 'Arial',
                                        'font_size': '12'})
         format1.set_bg_color('gray')
-#        res = self.get_heading()
-#        worksheet.merge_range('C2:D2', 'Merged Cells', merge_format)
-
-#        file_name = res.get('image', False)
-#        if file_name:
-#            file1 = open('/tmp/' + 'logo.png', 'wb')
-#            file_data = base64.decodestring(file_name)
-#            file1.write(file_data)
-#            file1.close()
         row = 0
         row += 1
-#        if file_name:
-#            worksheet.insert_image(row, 0, '/tmp/logo.png')
-#        worksheet.write(row, 2, res['name'] or '', border)
-#        worksheet.write(row, 4, 'Rev. No. :', tot)
-#        worksheet.write(row, 5, res['rev_no'] or '', border)
-#        worksheet.write(row, 6, 'Document No. :', tot)
-#        worksheet.write(row, 7, res['doc_no'] or '', border)
         row += 1
         worksheet.write(row, 2, 'Work Order Over 10 Days', tot)
         row += 3
@@ -164,6 +123,3 @@ class WoOver10DaysXlsx(ReportXlsx):
             row += 1
             counter += 1
         row += 5
-
-
-WoOver10DaysXlsx('report.wo.over.daysxls', 'fleet.vehicle.log.services')

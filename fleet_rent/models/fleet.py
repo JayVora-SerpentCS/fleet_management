@@ -2,12 +2,11 @@
 # See LICENSE file for full copyright and licensing details.
 
 from odoo import models, fields, api
-
 import logging
 _logger = logging.getLogger(__name__)
 
 
-class fleet_extended_rent(models.Model):
+class FleetVehicleExtend(models.Model):
     _inherit = 'fleet.vehicle'
 
     @api.multi

@@ -1,34 +1,12 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-import base64
-
-try:
-    from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
-except ImportError:
-    class ReportXlsx(object):
-        def __init__(self, *args, **kwargs):
-            pass
+from odoo import models
 
 
-class NeedToOrderPartsXlsx(ReportXlsx):
-    def get_heading(self):
-        head_title = {
-            'name': '',
-            'rev_no': '',
-            'doc_no': '',
-            'image': ''
-        }
-        head_object = self.env['report.heading']
-        head_ids = head_object.search([], order='id')
-        if head_ids:
-            head_rec = head_ids[0]
-            if head_rec:
-                head_title['name'] = head_rec.name or ''
-                head_title['rev_no'] = head_rec.revision_no or ''
-                head_title['doc_no'] = head_rec.document_no or ''
-                head_title['image'] = head_rec.image or ''
-        return head_title
+class NeedToOrderPartsXlsx(models.AbstractModel):
+    _name = 'report.fleet_operations.need.to.order.parts.xls'
+    _inherit = 'report.report_xlsx.abstract'
 
     def generate_xlsx_report(self, workbook, data, parts):
         # add the worksheet
@@ -57,23 +35,9 @@ class NeedToOrderPartsXlsx(ReportXlsx):
                                    'font_name': 'Arial',
                                    'font_size': '10'})
         tot.set_bg_color('gray')
-#        res = self.get_heading()
-#        file_name = res.get('image', False)
-#        if file_name:
-#            file1 = open('/tmp/' + 'logo.png', 'wb')
-#            file_data = base64.decodestring(file_name)
-#            file1.write(file_data)
-#            file1.close()
         row = 0
         for pr in parts:
             row += 1
-#            if file_name:
-#                worksheet.insert_image(row, 0, '/tmp/logo.png')
-#            worksheet.write(row, 3, res['name'], bold)
-#            worksheet.write(row, 5, 'Rev No.', bold)
-#            worksheet.write(row, 6, res['rev_no'])
-#            worksheet.write(row, 7, 'Document No. :', bold)
-#            worksheet.write(row, 8, res['doc_no'])
             row += 1
             worksheet.write(row, 3, ' General Parts Listing ', bold)
             row += 3
@@ -107,6 +71,3 @@ class NeedToOrderPartsXlsx(ReportXlsx):
                 worksheet.write(row, 11, line.re_order_qty or 0.0)
                 counter += 1
         row += 8
-
-
-NeedToOrderPartsXlsx('report.need.to.order.parts.xls', 'product.product')

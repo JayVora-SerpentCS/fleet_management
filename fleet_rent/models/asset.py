@@ -342,7 +342,7 @@ class AccountAssetAsset(models.Model):
         string='Children Assets')
     tenancy_property_ids = fields.One2many(
         comodel_name='account.analytic.account',
-        inverse_name='vehicle_id',
+        inverse_name='vehicle_property_id',
         string='Tenancy Property')
     account_move_ids = fields.One2many(
         comodel_name='account.move',
