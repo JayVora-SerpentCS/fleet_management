@@ -1,0 +1,76 @@
+from odoo import api, fields, models, _
+
+
+class FleetVehicle(models.Model):
+    _inherit = 'fleet.vehicle'
+    _inherits = {'product.product': 'product_id'}
+
+    product_id = fields.Many2one('product.product', 'Product',
+                            ondelete="cascade", delegate=True, required=True)
+
+    @api.model
+    def create(self, vals):
+        new_vehicle = super(FleetVehicle, self).create(vals)
+        ctx = dict(self.env.context)
+        ctx.update({"from_vehicle_create": True})
+        if new_vehicle.product_id:
+            new_vehicle.product_id.with_context(ctx).write({
+                'name': new_vehicle.name,
+                'image_medium': new_vehicle.image_medium,
+                'is_vehicle': True})
+        return new_vehicle
+
+    @api.multi
+    def write(self, vals):
+        res = super(FleetVehicle, self).write(vals)
+        update_prod_vals = {}
+        for vehicle in self:
+            if vehicle.product_id:
+                if vals.get('image_medium', False):
+                    update_prod_vals.update({
+                        'image_medium': vehicle.image_medium})
+                if vals.get('model_id', False) or \
+                    vals.get('license_plate', False):
+                    update_prod_vals.update({'name': vehicle.name})
+                vehicle.product_id.write(update_prod_vals)
+        return res
+
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
+
+    is_vehicle = fields.Boolean(string="Vehicle")
+
+
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+
+    # is_vehicle = fields.Boolean(string="Vehicle")
+
+    @api.model
+    def create(self, vals):
+        if not vals.get('name', False) and \
+            self._context.get('params', {}).\
+            get('model', False) == 'fleet.vehicle':
+            vals.update({'name': 'NEW VEHICLE',
+                         'type': 'product',
+                         'is_vehicle': True})
+        return super(ProductProduct, self).create(vals)
+
+    @api.multi
+    def write(self, vals):
+        ctx = dict(self.env.context)
+        res = super(ProductProduct, self).write(vals)
+        for product in self:
+            if ctx and not ctx.get("from_vehicle_create", False):
+                vehicles = self.env['fleet.vehicle'].search([
+                                ('product_id', '=', product.id)])
+                update_vehicle_vals = {}
+                if vals.get('image_medium', False):
+                    update_vehicle_vals.update({
+                        'image_medium': product.image_medium})
+                if vals.get('name', False):
+                    update_vehicle_vals.update({'name': product.name})
+                if update_vehicle_vals and vehicles:
+                    for vehicle in vehicles:
+                        vehicle.write(update_vehicle_vals)
+        return res

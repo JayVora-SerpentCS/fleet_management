@@ -119,6 +119,7 @@ class FleetOperations(models.Model):
                 vehicle.model_id.name or ""
             vv_id = "%s" % (vehical_unique_id)
             res.append((vehicle['id'], vv_id))
+        print ("\n res ::::name_get:::::::", res)
         return res
 
     @api.multi
@@ -227,6 +228,7 @@ class FleetOperations(models.Model):
         else:
             self.image_medium = False
 
+    @api.multi
     @api.depends('model_id', 'license_plate')
     def _compute_vehicle_name(self):
         for record in self:
@@ -238,7 +240,8 @@ class FleetOperations(models.Model):
                     record.model_id.brand_id.name + '/' + \
                     record.model_id.name + '/' + lic_plate
 
-    name = fields.Char(compute="_compute_vehicle_name", store=True)
+    name = fields.Char(compute="_compute_vehicle_name", string="Vehicle-ID",
+                       store=True)
     odometer_check = fields.Boolean('Odometer Change', default=True)
     fuel_qty = fields.Char(string='Fuel Quality')
     fuel_type = fields.Selection([('gasoline', 'Gasoline'),
@@ -251,7 +254,7 @@ class FleetOperations(models.Model):
     oil_capacity = fields.Char(string='Oil Capacity')
     fleet_id = fields.Integer(string='Fleet ID',
                               help="Take this field for data migration")
-    name = fields.Char(string='Vehicle ID', size=64, translate=True)
+    # name = fields.Char(string='Vehicle ID', size=64, translate=True)
     f_brand_id = fields.Many2one('fleet.vehicle.model.brand', string='Make')
     model_no = fields.Char(string='Model No', translate=True)
     license_plate = fields.Char(string='License Plate',

@@ -1,8 +1,8 @@
 odoo.define("fleet_operations.disable_drag_drop_kanban",function(require){
 
-    var KanbanView = require('web_kanban.KanbanView');
-    var KanbanColumn = require('web_kanban.Column');
-    var quick_create = require('web_kanban.quick_create');
+    var KanbanView = require('web.KanbanView');
+    var KanbanColumn = require('web.KanbanColumn');
+    var quick_create = require('web.kanban_quick_create');
     var ColumnQuickCreate = quick_create.ColumnQuickCreate;
 
     KanbanView.include({
