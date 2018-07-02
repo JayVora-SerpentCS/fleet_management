@@ -119,7 +119,6 @@ class FleetOperations(models.Model):
                 vehicle.model_id.name or ""
             vv_id = "%s" % (vehical_unique_id)
             res.append((vehicle['id'], vv_id))
-        print ("\n res ::::name_get:::::::", res)
         return res
 
     @api.multi
