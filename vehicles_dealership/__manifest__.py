@@ -13,7 +13,8 @@
      """,
     'depends': ['fleet','sale', 'purchase'],
     'data': [
-        "views/product_views.xml"
+        "views/product_views.xml",
+        "views/res_company_views.xml",
      ],
     'auto_install': False,
     'installable': True,

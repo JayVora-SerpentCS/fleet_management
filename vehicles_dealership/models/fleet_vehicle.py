@@ -10,8 +10,8 @@ class FleetVehicle(models.Model):
 
     @api.model
     def create(self, vals):
-        new_vehicle = super(FleetVehicle, self).create(vals)
         ctx = dict(self.env.context)
+        new_vehicle = super(FleetVehicle, self.with_context(create_fleet_vehicle=True)).create(vals)
         ctx.update({"from_vehicle_create": True})
         if new_vehicle.product_id:
             new_vehicle.product_id.with_context(ctx).write({
@@ -32,25 +32,27 @@ class FleetVehicle(models.Model):
                 if vals.get('model_id', False) or \
                     vals.get('license_plate', False):
                     update_prod_vals.update({'name': vehicle.name})
-                vehicle.product_id.write(update_prod_vals)
+                if update_prod_vals:
+                    vehicle.product_id.write(update_prod_vals)
         return res
+
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    is_vehicle = fields.Boolean(string="Vehicle")
+#    is_vehicle = fields.Boolean(string="Vehicle")
 
 
 class ProductProduct(models.Model):
     _inherit = 'product.product'
 
-    # is_vehicle = fields.Boolean(string="Vehicle")
+    is_vehicle = fields.Boolean(string="Vehicle")
 
     @api.model
     def create(self, vals):
+        ctx = dict(self.env.context)
         if not vals.get('name', False) and \
-            self._context.get('params', {}).\
-            get('model', False) == 'fleet.vehicle':
+            self._context.get('create_fleet_vehicle', False):
             vals.update({'name': 'NEW VEHICLE',
                          'type': 'product',
                          'is_vehicle': True})
