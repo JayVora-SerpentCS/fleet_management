@@ -1708,12 +1708,12 @@ class StockLocation(models.Model):
     is_team_trip = fields.Boolean(compute="_get_teamp_trip_status",
                                   string="Is Team Trip", store=True)
 
-    @api.multi
-    def name_get(self):
-        res = {}
-        for m in self:
-            res[m.id] = m.name
-        return res.items()
+#    @api.multi
+#    def name_get(self):
+#        res = {}
+#        for m in self:
+#            res[m.id] = m.name
+#        return res.items()
 
     @api.model
     def name_search(self, name='', args=None, operator='ilike', limit=100):
