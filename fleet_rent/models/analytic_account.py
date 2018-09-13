@@ -93,11 +93,11 @@ class AccountAnalyticAccount(models.Model):
         boolean field accordingly to current Tenancy.
         @param self: The object pointer
         """
-        total = 0
         for data in self:
+            total = 0
             for data_1 in data.cost_id:
                 total += data_1.cost
-            data.main_cost = 0.0
+            data.main_cost = total
 
     @api.model
     def rent_send_mail(self):

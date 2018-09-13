@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherited product.template form view -->
+<!--     <record id="inherit_product_template_form_view" model="ir.ui.view">
+        <field name="name">product.template.common.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]/div[@name='options']" position="inside">
+                <div name="is_vehicle">
+                    <field name="is_vehicle"/>
+                    <label for="is_vehicle"/>
+                </div>
+            </xpath>
+        </field>
+    </record> -->
+    
+    <!-- Inherited product.product form view -->
+     <record id="inherit_product_normal_form_view" model="ir.ui.view">
+        <field name="name">inherit.product.product.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <label for="purchase_ok" position="after">
+                <br/><field name="is_vehicle"/>
+                <label for="is_vehicle"/>
+            </label>
+        </field>
+    </record>
+</odoo>
