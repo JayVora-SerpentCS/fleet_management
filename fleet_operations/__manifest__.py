@@ -12,7 +12,7 @@
         This module extends the fleet module and provides extra features and
         manage fleet operations.
     """,
-    'depends': ['fleet', 'stock', 'report_xlsx',
+    'depends': ['fleet', 'stock', 'report_xlsx', 'account',
                 'web_widget_multi_image'],
     'data': [
               'security/fleet_security.xml',

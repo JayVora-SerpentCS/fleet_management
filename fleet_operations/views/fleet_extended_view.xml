@@ -1521,6 +1521,19 @@
        <field name="view_type">form</field>
        <field name="view_mode">tree,form</field>
    </record>
+   
+    <!-- Inherited product.product form view -->
+    <record id="inherit_product_normal_form_views" model="ir.ui.view">
+        <field name="name">inherit.product.product.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <field name="lst_price" position="after">
+                <field name="in_active_part"/>
+                <field name="vehicle_make_id" options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+            </field>
+        </field>
+    </record>
 
     <!-- Report Heading Menuitem -->
     <!-- <menuitem action="report_heading_act" id="report_heading_menu"
