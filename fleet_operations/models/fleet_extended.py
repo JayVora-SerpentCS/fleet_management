@@ -20,6 +20,13 @@ class MultiImages(models.Model):
                                            'WriteOff Images')
 
 
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+
+    in_active_part = fields.Boolean('In-Active Part?')
+    vehicle_make_id = fields.Many2one('fleet.vehicle.model.brand', string='Vehicle Make')
+
+
 class FleetOperations(models.Model):
     _inherit = 'fleet.vehicle'
 
