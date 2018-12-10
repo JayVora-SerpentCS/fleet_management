@@ -24,3 +24,4 @@ from . import fleet_workorder
 from . import most_used_parts
 from . import repair_line_summary
 from . import fleet_history_work_order
+from . import work_order_reports

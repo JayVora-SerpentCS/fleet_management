@@ -12,6 +12,7 @@ from odoo.exceptions import Warning, ValidationError
 
 class ServiceCategory(models.Model):
     _name = 'service.category'
+    _description = 'Vehicle Service Category'
 
     name = fields.Char(string="Service Category", size=2, translate=True)
 
@@ -29,6 +30,8 @@ class ServiceCategory(models.Model):
 
 
 class FleetVehicleLogServices(models.Model):
+    _inherit = 'fleet.vehicle.log.services'
+    _order = 'id desc'
 
     @api.multi
     def copy(self, default=None):
@@ -619,13 +622,13 @@ class FleetVehicleLogServices(models.Model):
             diff = 0
             if work_order.state == 'confirm':
                 diff = (datetime.today() -
-                        datetime.strptime(work_order.date_open,
+                        datetime.strptime(str(work_order.date_open),
                                           DEFAULT_SERVER_DATE_FORMAT)).days
                 work_order.open_days = str(diff)
             elif work_order.state == 'done':
-                diff = (datetime.strptime(work_order.date_close,
+                diff = (datetime.strptime(str(work_order.date_close),
                                           DEFAULT_SERVER_DATE_FORMAT) -
-                        datetime.strptime(work_order.date_open,
+                        datetime.strptime(str(work_order.date_open),
                                           DEFAULT_SERVER_DATE_FORMAT)).days
                 work_order.open_days = str(diff)
             else:
@@ -663,10 +666,6 @@ class FleetVehicleLogServices(models.Model):
                 if vehicle.date_complete < vehicle.date:
                     raise ValidationError('ETIC Date Should Be \
                     Greater Than Issue Date.')
-
-    _inherit = 'fleet.vehicle.log.services'
-
-    _order = 'id desc'
 
     wono_id = fields.Integer(string='WONo',
                              help="Take this field for data migration")
@@ -791,6 +790,7 @@ class FleetVehicleLogServices(models.Model):
 
 class FleetTeam(models.Model):
     _name = 'fleet.team'
+    _description = 'Fleet Team'
 
     _order = 'id desc'
 
@@ -1182,6 +1182,8 @@ class FleetTeam(models.Model):
 
 class WorkorderPartsHistoryDetails(models.Model):
     _name = 'workorder.parts.history.details'
+    _description = 'Workorder Parts History'
+    _order = 'used_date desc'
 
     team_id = fields.Many2one('fleet.team', string='Contract Trip')
     product_id = fields.Many2one('product.product', string='Part No',
@@ -1204,11 +1206,10 @@ class WorkorderPartsHistoryDetails(models.Model):
     issued_by = fields.Many2one('res.users', string='Issued by',
                                 help='The user who would issue the parts')
 
-    _order = 'used_date desc'
-
 
 class TripPartsHistoryDetails(models.Model):
     _name = 'trip.encoded.history'
+    _description = 'Trip History'
 
     @api.multi
     def _get_encoded_qty(self):
@@ -1257,6 +1258,7 @@ class TripPartsHistoryDetails(models.Model):
 
 class TripPartsHistoryDetailsTemp(models.Model):
     _name = 'trip.encoded.history.temp'
+    _description = 'Trip History Temparery'
 
     team_id = fields.Many2one('fleet.team', string='Contract Trip')
     product_id = fields.Many2one('product.product', string='Part No',
@@ -1269,7 +1271,6 @@ class TripPartsHistoryDetailsTemp(models.Model):
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
-
     _order = 'id desc'
 
     out_team_id = fields.Many2one('fleet.team', string='Contact Team Trip')
@@ -1421,7 +1422,6 @@ class StockPicking(models.Model):
 
 class StockMove(models.Model):
     _inherit = 'stock.move'
-
     _order = 'id desc'
 
     type = fields.Many2one(related='picking_id.picking_type_id',
@@ -1479,6 +1479,7 @@ class StockMove(models.Model):
 
 class TeamAssignParts(models.Model):
     _name = 'team.assign.parts'
+    _description = 'Team Assign Parts'
 
     @api.multi
     def _get_remaining_parts(self):
@@ -1749,7 +1750,7 @@ class StockLocation(models.Model):
 
 class FleetWorkOrderSearch(models.TransientModel):
     _name = 'fleet.work.order.search'
-
+    _description = 'Fleet Workorder Search'
     _rec_name = 'state'
 
     priority = fields.Selection([('normal', 'NORMAL'), ('high', 'HIGH'),
@@ -1937,7 +1938,6 @@ class IrAttachment(models.Model):
 
 class ServiceTask(models.Model):
     _name = 'service.task'
-
     _description = 'Maintenance of the Task '
 
     main_id = fields.Many2one('fleet.vehicle.log.services',
@@ -1957,6 +1957,7 @@ class TaskLine(models.Model):
             line.total = price
 
     _name = 'task.line'
+    _description = 'Task Line'
 
     partshist_id = fields.Integer(string='Parts History ID',
                                   help="Take this field for data migration")
@@ -2200,6 +2201,7 @@ class TaskLine(models.Model):
 
 class RepairType(models.Model):
     _name = 'repair.type'
+    _description = 'Vehicle Repair Type'
 
     name = fields.Char(string='Repair Type', size=264,
                        translate=True)
@@ -2219,6 +2221,7 @@ class RepairType(models.Model):
 
 class ServiceRepairLine(models.Model):
     _name = 'service.repair.line'
+    _description = 'Service Repair Line'
 
     @api.constrains('date', 'target_date')
     def check_target_completion_date(self):
@@ -2281,6 +2284,7 @@ class FleetServiceType(models.Model):
 
 class ContactTeamTripSearch(models.TransientModel):
     _name = 'contact.team.trip.search'
+    _description = 'Contact Team Trip Search'
 
     destination_location_id = fields.Many2one('stock.location',
                                               string="Team (Location)")

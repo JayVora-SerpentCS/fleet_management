@@ -1,47 +1,51 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
+import io
+import xlwt
+import base64
 from odoo import models
 
 
 class FleetWaitingColletion(models.AbstractModel):
     _name = 'report.fleet_operations.fleet.wait.collection.xls'
-    _inherit = 'report.report_xlsx.abstract'
 
-    def generate_xlsx_report(self, workbook, data, fleet_waiting):
-        worksheet = workbook.add_worksheet('fleet_waiting_collection')
-        worksheet.set_column(0, 0, 10)
-        worksheet.set_column(1, 1, 25)
-        worksheet.set_column(2, 2, 8)
-        worksheet.set_column(3, 3, 10)
-        worksheet.set_column(4, 4, 8)
-        worksheet.set_column(5, 5, 8)
-        worksheet.set_column(6, 6, 15)
-        worksheet.set_column(7, 7, 17)
-        worksheet.set_column(8, 8, 10)
-        worksheet.set_column(9, 9, 15)
-        worksheet.set_column(10, 10, 15)
-        worksheet.set_column(11, 11, 20)
-        worksheet.set_column(12, 12, 10)
-        worksheet.set_column(13, 13, 5)
-        worksheet.set_column(14, 14, 5)
-        worksheet.set_column(15, 15, 5)
+    def generate_complete_stage_xlsx_report(self, res, fleet_waiting):
+        workbook = xlwt.Workbook()
+        worksheet = workbook.add_sheet('fleet_waiting_collection')
+        worksheet.col(0).width = 5000
+        worksheet.col(1).width = 12500
+        worksheet.col(2).width = 4000
+        worksheet.col(3).width = 5000
+        worksheet.col(4).width = 4000
+        worksheet.col(5).width = 4000
+        worksheet.col(6).width = 7500
+        worksheet.col(7).width = 8000
+        worksheet.col(8).width = 5000
+        worksheet.col(9).width = 7500
+        worksheet.col(10).width = 7500
+        worksheet.col(11).width = 10000
+        worksheet.col(12).width = 5000
+        worksheet.col(13).width = 2500
+        worksheet.col(14).width = 2500
+        worksheet.col(15).width = 2500
+        font = xlwt.Font()
+        font.bold = True
+        font.name = 'Arial'
+        font.height = 200
+        pattern = xlwt.Pattern()
+        border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
         
-        border = workbook.add_format({'border': 2,
-                                      'font_name': 'Arial',
-                                      'font_size': '10'})
-        merge_format = workbook.add_format({'border': 2, 'align': 'center'})
-        format1 = workbook.add_format({'border': 2,
-                                       'bold': True,
-                                       'font_name': 'Arial',
-                                       'font_size': '10'})
-        format1.set_bg_color('gray')
-        worksheet.merge_range('C3:E3', 'Merged Cells', merge_format)
+#        merge_format = workbook.add_format({'border': 2, 'align': 'center'})
+#        format1.set_bg_color('gray')
+#        worksheet.merge_range('C3:E3', 'Merged Cells', merge_format)
         row = 0
         row += 1
 
         row += 1
-        worksheet.write(row, 2, 'Fleet In Complete Stage', merge_format)
+#        worksheet.write(row, 2, 'Fleet In Complete Stage', merge_format)
+        worksheet.write(row, 2, 'Fleet In Complete Stage')
         row += 4
         worksheet.write(row, 0, 'No', format1)
         worksheet.write(row, 1, 'Vehicle ID', format1)
@@ -88,4 +92,10 @@ class FleetWaitingColletion(models.AbstractModel):
                 line_row += 1
                 counter += 1
                 worksheet.write(line_row, line_col, '********', border)
-                
+        fp = io.BytesIO()
+        workbook.save(fp)
+        fp.seek(0)
+        data = fp.read()
+        fp.close()
+        res = base64.encodestring(data)
+        return res

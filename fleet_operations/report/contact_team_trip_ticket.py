@@ -7,7 +7,6 @@ from odoo import models
 
 class ContactTeamTrip(models.AbstractModel):
     _name = 'report.fleet_operations.contact.team.trip.ticket.xls'
-    _inherit = 'report.report_xlsx.abstract'
 
     def get_heading(self):
         head_title = {'name': '',

@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
+import io
+import xlwt
+import base64
 from odoo import models
 
 
 class FleetWorkOrder(models.AbstractModel):
     _name = 'report.fleet_operations.workorder.summary.xls'
-    _inherit = 'report.report_xlsx.abstract'
 
     def get_wo_status(self, status):
         if status == 'done':
@@ -81,35 +83,36 @@ class FleetWorkOrder(models.AbstractModel):
             wo_summary_data.append(workorder_data)
         return wo_summary_data
 
-    def generate_xlsx_report(self, workbook, data, product):
-        worksheet = workbook.add_worksheet('workorder_summary')
-        worksheet.set_column(0, 0, 10)
-        worksheet.set_column(1, 1, 15)
-        worksheet.set_column(2, 2, 50)
-        worksheet.set_column(3, 3, 15)
-        worksheet.set_column(4, 4, 15)
-        worksheet.set_column(5, 5, 12)
-        worksheet.set_column(6, 6, 8)
-        worksheet.set_column(7, 7, 12)
-        worksheet.set_column(8, 8, 20)
-        worksheet.set_column(9, 9, 50)
-        worksheet.set_column(10, 10, 15)
+#    def generate_xlsx_report(self, workbook, data, product):
+    def generate_xlsx_report(self, product):
+        workbook = xlwt.Workbook()
+        worksheet = workbook.add_sheet('workorder_summary')
+        worksheet.col(0).width = 5000
+        worksheet.col(1).width = 7500
+        worksheet.col(2).width = 20000
+        worksheet.col(3).width = 7500
+        worksheet.col(4).width = 7500
+        worksheet.col(5).width = 6000
+        worksheet.col(6).width = 4000
+        worksheet.col(7).width = 6000
+        worksheet.col(8).width = 10000
+        worksheet.col(9).width = 20000
+        worksheet.col(10).width = 7500
+        
+        font = xlwt.Font()
+        borders = xlwt.Borders()
+        font.bold = True
+        font.name = 'Arial'
+        font.height = 200
+        pattern = xlwt.Pattern()
+        tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
 
-        tot = workbook.add_format({'border': 2,
-                                   'font_name': 'Arial',
-                                   'font_size': '12'})
-        border = workbook.add_format({'border': 2,
-                                      'font_name': 'Arial',
-                                      'font_size': '10'})
-        format1 = workbook.add_format({'border': 2,
-                                       'bold': True,
-                                       'font_name': 'Arial',
-                                       'font_size': '10'})
-        format1.set_bg_color('gray')
         row = 0
         row += 1
         row += 1
-        worksheet.write(row, 2, 'Work Order Summary', tot)
+        worksheet.write(row, 2, 'Work Order Summary', border)
         row += 4
         worksheet.write(row, 0, 'NO.', format1)
         worksheet.write(row, 1, 'WO No.', format1)
@@ -126,35 +129,42 @@ class FleetWorkOrder(models.AbstractModel):
         counter = 1
         for obj in self.get_wo_smry(product):
             for line in obj.get('value'):
-                worksheet.write(line_row, line_col, counter, border)
+                worksheet.write(line_row, line_col, counter)
                 line_col += 1
                 worksheet.write(line_row, line_col,
-                                line.get('name') or '', border)
+                                line.get('name') or '')
                 line_col += 1
                 worksheet.write(line_row, line_col,
-                                line.get('identification') or '', border)
+                                line.get('identification') or '')
                 line_col += 1
                 worksheet.write(line_row, line_col,
-                                line.get('vin') or '', border)
+                                line.get('vin') or '')
                 line_col += 1
                 worksheet.write(line_row, line_col,
-                                line.get('date_open') or '', border)
+                                line.get('date_open') or '')
                 line_col += 1
                 worksheet.write(line_row, line_col,
-                                line.get('state') or '', border)
+                                line.get('state') or '')
                 line_col += 1
                 worksheet.write(line_row, line_col,
-                                line.get('etic') or '', border)
+                                line.get('etic') or '')
                 line_col += 1
                 worksheet.write(line_row, line_col,
-                                line.get('date_close') or '', border)
+                                line.get('date_close') or '')
                 line_col += 1
                 worksheet.write(line_row, line_col,
-                                obj.get('team_id')or '', border)
+                                obj.get('team_id')or '')
                 line_col += 1
                 worksheet.write(line_row, line_col,
-                                line.get('work_performed') or '', border)
+                                line.get('work_performed') or '')
                 line_col = 0
                 line_row += 1
                 counter += 1
-            worksheet.write(line_row, line_col, '********', border)
+            worksheet.write(line_row, line_col, '********')
+        fp = io.BytesIO()
+        workbook.save(fp)
+        fp.seek(0)
+        data = fp.read()
+        fp.close()
+        res = base64.encodestring(data)
+        return res

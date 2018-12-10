@@ -20,7 +20,7 @@ class report_qweb_write_off(models.AbstractModel):
         return work_order_name
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         if data is None:
             data = {}
         if not docids:

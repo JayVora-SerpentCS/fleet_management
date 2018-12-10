@@ -1,146 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Export XLS Report For Fleet Work Order Report -->
-    <report
-         id="fleet_history_report_xlsx"
-         model="fleet.vehicle"
-         string="Fleet History"
-         report_type="xlsx"
-         name="fleet_operations.fleet.history.xls"
-         file="fleet_operations.fleet.history.xls"
-         attachment_use="False"/>
-
-    <!-- Export XLS Report For Fleet Listing Report -->
-    <report
-         id="fleet_vehicle_listing_report_xlsx"
-         model="fleet.vehicle"
-         string="Fleet Listing"
-         report_type="xlsx"
-         name="fleet_operations.fleet.summary.xls"
-         file="fleet_operations.fleet.summary.xls"
-         attachment_use="False"/>
-
-    <!-- Export XLS Report For Fleet Pending Repair Report -->
-    <report
-         id="fleet_pending_repairs_xlsx"
-         model="fleet.vehicle"
-         string="Fleet Pending Repairs"
-         report_type="xlsx"
-         name="fleet_operations.fleet.pending.repairs.xls"
-         file="fleet_operations.fleet.pending.repairs.xls"
-         attachment_use="False"/>
-
-    <!-- Export XLS Report For Fleet Pending Repair Summary Report -->
-    <report
-         id="fleet_pending_report_xlsx"
-         model="fleet.vehicle"
-         string="Fleet Pending Repairs Summary"
-         report_type="xlsx"
-         name="fleet_operations.fleet.pending.xls"
-         file="fleet_operations.fleet.pending.xls"
-         attachment_use="False"/>
-
-    <!-- Export XLS Report For Fleet Waiting Collection Report -->
-    <report
-         id="fleet_waiting_collection_report_xlsx"
-         model="fleet.vehicle"
-         string="Fleet Complete Stage"
-         report_type="xlsx"
-         name="fleet_operations.fleet.wait.collection.xls"
-         file="fleet_operations.fleet.wait.collection.xls"
-         attachment_use="False"/>
-
-    <!-- Export XLS Report For Next Service By Odometer Report -->
-    <report
-         id="next_services_by_odometer_report_xlsx"
-         model="fleet.vehicle"
-         string="Next services by odometer"
-         report_type="xlsx"
-         name="fleet_operations.next.services.by.odometer.xls"
-         file="fleet_operations.next.services.by.odometer.xls"
-         attachment_use="False"/>
-
-    <!-- Export XLS Report For Next Service By Date Report -->
-    <report
-         id="next_services_by_date_report_xlsx"
-         model="fleet.vehicle"
-         string="Next services by Date"
-         report_type="xlsx"
-         name="fleet_operations.next.services.by.date.xls"
-         file="fleet_operations.next.services.by.date.xls"
-         attachment_use="False"/>
-
-    <!-- workorder monthly summary report -->
-     <report
-         id="workorder_monthly_summary_xlsx"
-         model="fleet.vehicle.log.services"
-         string="Workorder monthly summary report"
-         report_type="xlsx"
-         name="fleet_operations.workorder.monthly.summary.xls"
-         file="fleet_operations.workorder.monthly.summary.xls"
-         attachment_use="False"/>
-
-     <!-- Export XLS Report For Daily Parts Inssuance Report -->
-    <!-- <report
-         id="daily_Parts_insuance_report_xlsx"
-         model="fleet.vehicle.log.services"
-         string="Daily Parts Issuance"
-         report_type="xlsx"
-         name="daily.parts.issuance.xls"
-         file="daily.parts.issuance.xls"
-         attachment_use="False"/> -->
-
-    <!-- WO over 10 days report -->
-     <report
-         id="wo_over_10_days_xlsx"
-         model="fleet.vehicle.log.services "
-         string="WO Over 10 days"
-         report_type="xlsx"
-         name="fleet_operations.wo.over.10days.xls"
-         file="fleet_operations.wo.over.10days.xls"
-         attachment_use="False"/>
-
-     <!-- Export XLS Report For WO over 10 Days Report -->
-     <report
-         id="wo_over_10_days_report_xlsx"
-         model="fleet.vehicle.log.services"
-         string="WO Over 10 days"
-         report_type="xlsx"
-         name="fleet_operations.wo.over.daysxls"
-         file="fleet_operations.wo.over.daysxls"
-         attachment_use="False"/>
-
-    <!-- Export XLS Report For Fleet Outstanding Wo Report -->
-     <report
-         id="outstanding_wo_report_xlsx"
-         model="fleet.vehicle.log.services"
-         string="Outstanding WO"
-         report_type="xlsx"
-         name="fleet_operations.outstanding.wo.xls"
-         file="fleet_operations.outstanding.wo.xls"
-         attachment_use="False"/>
-
-    <!-- Export XLS Report For Fleet Workorder Summary Report -->
-    <report
-        id="workorder_summary_report_xlsx"
-        model="fleet.vehicle.log.services"
-        string="Work Order Summary"
-        report_type="xlsx"
-        name="fleet_operations.workorder.summary.xls"
-        file="fleet_operations.workorder.summary.xls"
-        attachment_use="False"/>
-
-     <!-- Export XLS Report For Fleet History Work Order Report -->
-    <report
-        id="fleet_history_work_order_report_xlsx"
-        model="fleet.vehicle.log.services"
-        string="Work Order"
-        report_type="xlsx"
-        name="fleet_operations.fleet.history.work.order.xls"
-        file="fleet_operations.fleet.history.work.order.xls"
-        attachment_use="False"/>
-
-     <!-- Paper Format For Write-off -->
+    <!-- Paper Format For Write-off -->
     <record id="wittenoff_format" model="report.paperformat">
         <field name="name">Hostel Demo</field>
         <field name="default" eval="True" />
@@ -192,48 +52,38 @@
         attachment_use="False"
         menu="False"/>
 
-    <!--  Received Parts XLS Report-->
-    <report
-         id="received_part_xlsx"
-         model="stock.picking"
-         string="Received Parts"
-         report_type="xlsx"
-         name="fleet_operations.receved.parts.xls"
-         file="fleet_operations.received.part.xls"
-         attachment_use="False"/>
-
     <!-- Export XLS Report For Contact Team Trip Ticket-->
-    <report
+    <!-- <report
          id="contact_team_trip_ticket_xlsx"
          model="fleet.team"
          string="Contact Team Trip Ticket"
          report_type="xlsx"
          name="fleet_operations.contact.team.trip.ticket.xls"
          file="fleet_operations.contact.team.trip.ticket.xls"
-         attachment_use="False"/>
+         attachment_use="False"/> -->
 
     <!-- General Part Listing Report -->
-    <report
+    <!-- <report
          id="general_parts_listing_xlsx"
          model="product.product"
          string="General Part Listing"
          report_type="xlsx"
          name="fleet_operations.general.parts.listing.xls"
          file="fleet_operations.general.parts.listing.xls"
-         attachment_use="False"/>
+         attachment_use="False"/> -->
 
     <!-- Need to order parts report -->
-    <report
+    <!-- <report
          id="need_to_order_parts_xlsx"
          model="product.product"
          string="Need to order parts"
          report_type="xlsx"
          name="fleet_operations.need.to.order.parts.xls"
          file="fleet_operations.need.to.order.parts.xls"
-         attachment_use="False"/>
+         attachment_use="False"/> -->
 
     <!-- Most used parts Report -->
-    <report
+    <!-- <report
          id="most_used_parts_xlsx"
          model="product.product"
          string="Most used parts"
@@ -241,35 +91,35 @@
          name="fleet_operations.most.used.parts.xls"
          file="fleet_operations.most.used.parts.xls"
          attachment_use="False"
-         menu="False"/>
+         menu="False"/> -->
 
     <!-- Export XLS Report For Daily Parts Inssuance Wizard Report -->
-    <report
+    <!-- <report
          id="daily_Parts_insuance_wizard_report_wizard_xlsx"
          model="part.summary"
          string="Daily Parts Issuance wizard"
          report_type="xlsx"
          name="fleet_operations.daily.parts.issuance.wizard.xls"
          file="fleet_operations.daily.parts.issuance.wizard.xls"
-         attachment_use="False"/>
+         attachment_use="False"/> -->
 
     <!-- Export XLS Report For Old Part Return Wizard Report -->
-    <report
+    <!-- <report
          id="old_part_return_wizard_report_xlsx"
          model="part.summary"
          string="Old Parts Return wizard"
          report_type="xlsx"
          name="fleet_operations.old.part.return.wizard.xls"
          file="fleet_operations.old.part.return.wizard.xls"
-         attachment_use="False"/>
+         attachment_use="False"/> -->
 
     <!-- Export XLS Report For Stock Adjustment Report -->
-    <report
+    <!-- <report
          id="stock_adjustment_report_xlsx"
          model="qty.update.history"
          string="Stock Adjustments"
          report_type="xlsx"
          name="fleet_operations.stock.adjustment.xls"
          file="fleet_operations.stock.adjustment.xls"
-         attachment_use="False"/>
+         attachment_use="False"/> -->
 </odoo>

@@ -278,14 +278,14 @@
                         icon="terp-stock_effects-object-colorize"
                         domain="[('date_close','=',context_today().strftime('%%Y-%%m-%%d'))]" />
                     <group expand="0" string="Group By...">
-                        <filter string="Vehicle" domain="[]" context="{'group_by':'vehicle_id'}"/>
-                        <filter string="Service Type" domain="[]" context="{'group_by':'cost_subtype_id'}"/>
-                        <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
-                        <filter string="Location(Team)" domain="[]" context="{'group_by':'team_id'}"/>
-                        <filter string="Vehicle Type" domain="[]" context="{'group_by':'vechical_type_id'}"/>
-                        <filter string="Make" domain="[]" context="{'group_by':'f_brand_id'}"/>
-                        <filter string="Registration State" domain="[]" context="{'group_by':'vechical_location_id'}"/>
-                        <filter string="Repair Type" domain="[]" context="{'group_by':'repair_line_ids'}"/>
+                        <filter string="Vehicle" name="vehicle" domain="[]" context="{'group_by':'vehicle_id'}"/>
+                        <filter string="Service Type" name="service_type" domain="[]" context="{'group_by':'cost_subtype_id'}"/>
+                        <filter string="Status" name="status" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Location(Team)" name="location" domain="[]" context="{'group_by':'team_id'}"/>
+                        <filter string="Vehicle Type" name="vehicle_type" domain="[]" context="{'group_by':'vechical_type_id'}"/>
+                        <filter string="Make" domain="[]" name="make" context="{'group_by':'f_brand_id'}"/>
+                        <filter string="Registration State" name="registration_state" domain="[]" context="{'group_by':'vechical_location_id'}"/>
+                        <filter string="Repair Type" name="repair_type" domain="[]" context="{'group_by':'repair_line_ids'}"/>
                     </group>
                 </search>
            </field>
@@ -485,9 +485,9 @@
             <field name="arch" type="xml">
                 <search string="Fleet Team">
                     <group expand="0" string="Group By...">
-                        <filter string="Team" domain="[]" context="{'group_by':'destination_location_id'}"/>
-                        <filter string="Trip Date" domain="[]" context="{'group_by':'trip_date'}"/>
-                        <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Team" name="team" domain="[]" context="{'group_by':'destination_location_id'}"/>
+                        <filter string="Trip Date" name="trip_date" domain="[]" context="{'group_by':'trip_date'}"/>
+                        <filter string="Status" name="status" domain="[]" context="{'group_by':'state'}"/>
                     </group>
                 </search>
            </field>

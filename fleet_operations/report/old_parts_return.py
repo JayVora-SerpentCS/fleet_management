@@ -7,7 +7,6 @@ from odoo import models
 
 class OldPartReturn(models.AbstractModel):
     _name = 'report.fleet_operations.old.part.return.wizard.xls'
-    _inherit = 'report.report_xlsx.abstract'
 
     def get_old_part_detail(self, date_range):
         work_order_obj = self.env['fleet.vehicle.log.services']

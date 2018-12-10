@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
+import io
+import xlwt
 import base64
 from odoo import models
 
 
 class FleetOutstandingWO(models.AbstractModel):
     _name = 'report.fleet_operations.outstanding.wo.xls'
-    _inherit = 'report.report_xlsx.abstract'
 
     def get_heading(self):
         head_title = {'name': '',
@@ -45,40 +46,38 @@ class FleetOutstandingWO(models.AbstractModel):
                     repair_type += repair_line.repair_type_id.name + ","
         return repair_type[:-1]
 
-    def generate_xlsx_report(self, workbook, data, product):
-        worksheet = workbook.add_worksheet('outstanding_wo')
-        worksheet.set_column(0, 0, 10)
-        worksheet.set_column(1, 1, 15)
-        worksheet.set_column(2, 2, 25)
-        worksheet.set_column(3, 3, 10)
-        worksheet.set_column(4, 4, 10)
-        worksheet.set_column(5, 5, 12)
-        worksheet.set_column(6, 6, 8)
-        worksheet.set_column(7, 7, 12)
-        worksheet.set_column(8, 8, 20)
-        worksheet.set_column(9, 9, 10)
-        worksheet.set_column(10, 10, 15)
-        worksheet.set_column(11, 11, 10)
-        worksheet.set_column(12, 12, 20)
-        worksheet.set_column(13, 13, 5)
-        worksheet.set_column(14, 14, 5)
-        worksheet.set_column(15, 15, 5)
+#    def generate_xlsx_report(self, workbook, data, product):
+    def generate_xlsx_report(self, product):
+        workbook = xlwt.Workbook()
+        worksheet = workbook.add_sheet('outstanding_wo')
+        worksheet.col(0).width = 5000
+        worksheet.col(1).width = 7500
+        worksheet.col(2).width = 12000
+        worksheet.col(3).width = 5000
+        worksheet.col(4).width = 5000
+        worksheet.col(5).width = 6000
+        worksheet.col(6).width = 4000
+        worksheet.col(7).width = 6000
+        worksheet.col(8).width = 10000
+        worksheet.col(9).width = 5000
+        worksheet.col(10).width = 7500
+        worksheet.col(11).width = 5000
+        worksheet.col(12).width = 10000
+        worksheet.col(13).width = 2500
+        worksheet.col(14).width = 2500
+        worksheet.col(15).width = 2500
+        
+        font = xlwt.Font()
+        borders = xlwt.Borders()
+        font.bold = True
+        font.name = 'Arial'
+        font.height = 200
+        pattern = xlwt.Pattern()
+        tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
 
-#        result = self.get_heading()
-        tot = workbook.add_format({'border': 2,
-                                   'font_name': 'Arial',
-                                   'font_size': '12'})
-        border = workbook.add_format({'border': 2,
-                                      'font_name': 'Arial',
-                                      'font_size': '10'})
-        merge_format = workbook.add_format({'border': 2, 'align': 'center'})
-        format1 = workbook.add_format({'border': 2,
-                                       'bold': True,
-                                       'font_name': 'Arial',
-                                       'font_size': '10'})
-        format1.set_bg_color('gray')
 #        worksheet.merge_range('C2:E2', 'Merged Cells', merge_format)
-        worksheet.merge_range('C3:F3', 'Merged Cells', merge_format)
 
 #        file_name = result.get('image', False)
 #        if file_name:
@@ -96,7 +95,7 @@ class FleetOutstandingWO(models.AbstractModel):
 #        worksheet.write(row, 7, 'Document No. :', tot)
 #        worksheet.write(row, 8, result.get('doc_no') or '', border)
         row += 1
-        worksheet.write(row, 2, 'Outstanding Work Order', tot)
+        worksheet.write(row, 2, 'Outstanding Work Order', border)
         row += 2
         worksheet.write(row, 0, 'NO.', format1)
         worksheet.write(row, 1, 'WO NO.', format1)
@@ -111,39 +110,46 @@ class FleetOutstandingWO(models.AbstractModel):
         line_col = 0
         counter = 1
         for obj in product:
-            worksheet.write(line_row, line_col, counter, border)
+            worksheet.write(line_row, line_col, counter)
             line_col += 1
             worksheet.write(line_row, line_col,
-                            obj.name or '', border)
-            line_col += 1
-            worksheet.write(line_row, line_col,
-                            obj.vehicle_id and
-                            obj.vehicle_id.name or '', border)
+                            obj.name or '')
             line_col += 1
             worksheet.write(line_row, line_col,
                             obj.vehicle_id and
-                            obj.vehicle_id.vin_sn or '', border)
+                            obj.vehicle_id.name or '')
+            line_col += 1
+            worksheet.write(line_row, line_col,
+                            obj.vehicle_id and
+                            obj.vehicle_id.vin_sn or '')
             line_col += 1
             worksheet.write(line_row, line_col,
                             obj.vehicle_id and
                             obj.vehicle_id.f_brand_id and
-                            obj.vehicle_id.f_brand_id.name or '', border)
+                            obj.vehicle_id.f_brand_id.name or '')
             line_col += 1
             worksheet.write(line_row, line_col,
                             obj.vehicle_id and
                             obj.vehicle_id.model_id and
-                            obj.vehicle_id.model_id.name or '', border)
+                            obj.vehicle_id.model_id.name or '')
             line_col += 1
             worksheet.write(line_row, line_col,
-                            self.get_wo_status(obj.state) or '', border)
+                            self.get_wo_status(obj.state) or '')
             line_col += 1
             worksheet.write(line_row, line_col,
                             obj.etic and
-                            obj.date_complete or '', border)
+                            obj.date_complete or '')
             line_col += 1
             worksheet.write(line_row, line_col,
-                            self.get_work_incomplete(obj) or '', border)
+                            self.get_work_incomplete(obj) or '')
             line_col = 0
             line_row += 1
             counter += 1
-            worksheet.write(line_row, line_col, '********', border)
+        worksheet.write(line_row, line_col, '********')
+        fp = io.BytesIO()
+        workbook.save(fp)
+        fp.seek(0)
+        data = fp.read()
+        fp.close()
+        res = base64.encodestring(data)
+        return res

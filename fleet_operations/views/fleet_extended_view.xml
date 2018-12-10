@@ -721,6 +721,7 @@
             </xpath>
             <xpath expr="//field[@name='amount']" position="attributes">
                 <attribute name="required">1</attribute>
+                <attribute name="readonly">1</attribute>
             </xpath>
             <xpath expr="//field[@name='price_per_liter']" position="attributes">
                 <attribute name="string">Price Per Quantity</attribute>
@@ -857,7 +858,7 @@
     </record>
 
      <!--  Form view of write-off  -->
-    <record model='ir.ui.view' id='fleet_vehicle_wittenoff_form_view'>
+    <record id='fleet_vehicle_wittenoff_form_view' model='ir.ui.view'>
         <field name="name">fleet.vehicle.wittenoff.off</field>
         <field name="model">fleet.wittenoff</field>
         <field name="arch" type="xml">
@@ -1000,14 +1001,14 @@
                     </page>
                     <page string="Preventive Causes">
                         <h1>
-                            <label string="Preventive Note" />
+                            <label for="note" string="Preventive Note" />
                         </h1>
                         <field name="note" placeholder="Preventive Note.." colspan="4"
                             attrs="{'readonly':[('state','in',['confirm','cancel'])]}" />
                     </page>
                     <page string="Note" colspan="4">
                         <h1>
-                            <label string="Other Note" />
+                            <label for="cancel_note" string="Other Note" />
                         </h1>
                         <field name="cancel_note" placeholder="Extra Note.." colspan="4"
                             attrs="{'readonly':[('state','in',['confirm','cancel'])]}" />
