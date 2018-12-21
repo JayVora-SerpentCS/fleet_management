@@ -2,7 +2,7 @@
 # See LICENSE file for full copyright and licensing details.
 
 {
-    'name': 'Fleet Operations',
+    'name': 'Fleet Operations - Fleet Management',
     'author': 'Serpent Consulting Services Pvt. Ltd.',
     'version': '10.0.0.1.0',
     'license': 'AGPL-3',
@@ -11,6 +11,10 @@
     'description': """
         This module extends the fleet module and provides extra features and
         manage fleet operations.
+    """,
+    'summary': """
+        fleet management
+        fleet operations
     """,
     'depends': ['fleet', 'stock', 'report_xlsx',
                 'web_widget_multi_image'],
