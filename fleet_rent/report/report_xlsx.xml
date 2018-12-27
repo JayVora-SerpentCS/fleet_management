@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
      <!-- Export XLS Report For Fleet Rental Vehicle History Report -->
-     <report
+     <!-- <report
          id="fleet_rental_vehicle_history_report_xlsx"
          model="account.analytic.account"
          string="Rental Vehicle History"
          report_type="xlsx"
          name="fleet_rent.fleet.rental.vehicle.history.xls"
          file="fleet_rent.fleet.rental.vehicle.history.xls"
-         attachment_use="False"/>
+         attachment_use="False"/> -->
 </odoo>

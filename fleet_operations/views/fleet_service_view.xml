@@ -128,7 +128,7 @@
                          attrs="{'readonly':[('state','in',('draft','done'))]}"
                          context="{'default_issue_date':date}">
                          <tree editable="top">
-                             <field name="repair_type_id" />
+                             <field name="repair_type_id" required="1"/>
                              <field name="categ_id" invisible="1"
                                  options="{'no_open': True, 'create': false, 'create_edit': false}" />
                              <field name="issue_date" invisible="1"/>

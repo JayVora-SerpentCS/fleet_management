@@ -105,8 +105,6 @@ class PrintFleetHistory(models.TransientModel):
         worksheet.col(7).width = 7000
 
         font = xlwt.Font()
-        borders = xlwt.Borders()
-#        borders.left = borders.right =  borders.top = borders.bottom = 6
         font.bold = True
         font.name = 'Arial'
         font.height = 200
@@ -123,56 +121,56 @@ class PrintFleetHistory(models.TransientModel):
         row = 2
         for obj in fleet_history:
             row += 3
-            worksheet.write(row, 0, 'Identification :', tot)
+            worksheet.write(row, 0, 'Identification :', format1)
             worksheet.write(row, 1, obj.name or '', border)
-            worksheet.write(row, 2, 'Driver Name :', tot)
+            worksheet.write(row, 2, 'Driver Name :', format1)
             worksheet.write(row, 3, obj.driver_id and
                             obj.driver_id.name or '', border)
             row += 1
-            worksheet.write(row, 0, 'Vehicle Type :', tot)
+            worksheet.write(row, 0, 'Vehicle Type :', format1)
             worksheet.write(row, 1, obj.vechical_type_id and
                             obj.vechical_type_id.name or '', border)
-            worksheet.write(row, 2, 'Driver Contact No :', tot)
+            worksheet.write(row, 2, 'Driver Contact No :', format1)
             worksheet.write(row, 3, obj.driver_contact_no or '', border)
             row += 1
-            worksheet.write(row, 0, 'VIN No :', tot)
+            worksheet.write(row, 0, 'VIN No :', format1)
             worksheet.write(row, 1, obj.vin_sn or '', border)
-            worksheet.write(row, 2, 'Engine No :', tot)
+            worksheet.write(row, 2, 'Engine No :', format1)
             worksheet.write(row, 3, obj.engine_no or '', border)
             row += 1
-            worksheet.write(row, 0, 'Vehicle Color :', tot)
+            worksheet.write(row, 0, 'Vehicle Color :', format1)
             worksheet.write(row, 1, obj.vehical_color_id and
                             obj.vehical_color_id.name or '', border)
-            worksheet.write(row, 2, 'Last Meter :', tot)
+            worksheet.write(row, 2, 'Last Meter :', format1)
             worksheet.write(row, 3, obj.odometer or '', border)
             row += 1
-            worksheet.write(row, 0, 'Plate No :', tot)
+            worksheet.write(row, 0, 'Plate No :', format1)
             worksheet.write(row, 1, obj.license_plate or '', border)
-            worksheet.write(row, 2, 'Registration State :', tot)
+            worksheet.write(row, 2, 'Registration State :', format1)
             worksheet.write(row, 3, obj.vechical_location_id and
                             obj.vechical_location_id.name or '', border)
             row += 2
             for order in obj.work_order_ids:
                 row += 1
-                worksheet.write(row, 0, 'WO No :', tot)
+                worksheet.write(row, 0, 'WO No :', format1)
                 worksheet.write(row, 1, order.name or '', border)
-                worksheet.write(row, 2, 'Kilometer :', tot)
+                worksheet.write(row, 2, 'Kilometer :', format1)
                 worksheet.write(row, 3, order.odometer or '', border)
                 row += 1
-                worksheet.write(row, 0, 'Actual Date Issued :', tot)
+                worksheet.write(row, 0, 'Actual Date Issued :', format1)
                 worksheet.write(row, 1, order.date or '', border)
-                worksheet.write(row, 2, 'Location :', tot)
+                worksheet.write(row, 2, 'Location :', format1)
                 worksheet.write(row, 3, order.vechical_location_id and
                                 order.vechical_location_id.name or '', border)
                 row += 1
-                worksheet.write(row, 2, 'Notes :', tot)
+                worksheet.write(row, 2, 'Notes :', format1)
                 worksheet.write(row, 3, order.notes or '', border)
                 row += 2
                 worksheet.write(row, 0, 'REPAIRS PERFORMED', size)
                 row += 2
-                worksheet.write(row, 0, 'No', tot)
-                worksheet.write(row, 1, 'Repair Type', tot)
-                worksheet.write(row, 2, 'Category', tot)
+                worksheet.write(row, 0, 'No', format1)
+                worksheet.write(row, 1, 'Repair Type', format1)
+                worksheet.write(row, 2, 'Category', format1)
                 line_row = row + 1
                 line_col = 0
                 counter = 1
@@ -210,7 +208,6 @@ class PrintFleetHistory(models.TransientModel):
                 worksheet.write(row, 5, '**************************')
                 worksheet.write(row, 6, '**************************')
                 worksheet.write(row, 7, '**************************')
-        
         fp = io.BytesIO()
         workbook.save(fp)
         fp.seek(0)

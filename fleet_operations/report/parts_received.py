@@ -55,7 +55,6 @@ class ReceivedPartsXlsx(models.AbstractModel):
             return self.env['purchase.order'].browse(purchase_ids[0])
         return False
 
-#    def generate_xlsx_report(self, workbook, data, stock_picking_ids):
     def generate_xlsx_report(self, res, stock_picking_ids):
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('invoice')
@@ -142,4 +141,3 @@ class ReceivedPartsXlsx(models.AbstractModel):
         fp.close()
         res = base64.encodestring(data)
         return res
-        
