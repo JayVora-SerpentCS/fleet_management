@@ -8,6 +8,7 @@ from odoo.exceptions import Warning
 
 class PartsContactTrip(models.TransientModel):
     _name = 'parts.contact.trip'
+    _description = 'Parts Contract Trip'
 
     part_ids = fields.One2many('add.parts.contact.trip', 'wizard_part_id',
                                string='Assign Parts')
@@ -176,6 +177,7 @@ class PartsContactTrip(models.TransientModel):
 
 class AddPartsContactTrip(models.TransientModel):
     _name = 'add.parts.contact.trip'
+    _description = 'Add Parts Contract Trip'
 
     wizard_part_id = fields.Many2one('parts.contact.trip', string='PartNo')
     product_id = fields.Many2one('product.product', string='PartNo',
@@ -294,6 +296,7 @@ class AddPartsContactTrip(models.TransientModel):
 
 class EditPartsContactTeamTrip(models.Model):
     _name = 'edit.parts.contact.team.trip'
+    _description = 'Edit Parts Contact Team Trip'
 
     part_ids = fields.One2many('team.assign.parts', 'wizard_parts_id',
                                string='Assign Parts')

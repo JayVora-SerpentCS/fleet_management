@@ -6,6 +6,7 @@ from odoo import models, api
 
 class report_qweb_write_off(models.AbstractModel):
     _name = 'report.fleet_operations.write_off_qweb'
+    _description = 'Write Off Vehicle Report'
 
     def _get_last_work_order(self, vehicle_id):
         work_order_obj = self.env['fleet.vehicle.log.services']

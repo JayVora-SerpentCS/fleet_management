@@ -9,6 +9,7 @@ from odoo import models
 
 class DailyPartWizard(models.AbstractModel):
     _name = 'report.fleet_operations.daily.parts.issuance.wizard.xls'
+    _description = 'Daily Parts Insurance'
 
     def get_heading(self):
         head_title = {'name': '',

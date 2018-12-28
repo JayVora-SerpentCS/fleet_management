@@ -10,6 +10,7 @@ from odoo import models
 
 class NextServiceDate(models.AbstractModel):
     _name = 'report.fleet_operations.next.services.by.date.xls'
+    _description = 'Next Service by Date'
 
     def generate_service_date_xlsx_report(self, res, next_service):
         workbook = xlwt.Workbook()

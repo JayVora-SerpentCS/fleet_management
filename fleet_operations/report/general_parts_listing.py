@@ -9,6 +9,7 @@ from odoo import models
 
 class GeneralPartsListingXlsx(models.AbstractModel):
     _name = 'report.fleet_operations.general.parts.listing.xls'
+    _description = 'Genral Parts Listing Reports'
 
     def generate_xlsx_report(self, parts):
         # add the worksheet
@@ -42,10 +43,6 @@ class GeneralPartsListingXlsx(models.AbstractModel):
         
         row = 0
         for pr in parts:
-            print ("\npr::::::::::::::::::::::::", pr)
-            print ("\n\n*****************************", pr.read(['default_code', \
-                                 'name', 'vehicle_make_id', 'virtual_available'\
-                                 're_order_point', 're_order_qty']))
             row += 1
             row += 1
             worksheet.write(row, 3, ' General Parts Listing ', size)
@@ -65,7 +62,6 @@ class GeneralPartsListingXlsx(models.AbstractModel):
             row += 2
             counter = 1
             for line in pr:
-                print ("line:::::::::::::::::::", line, dir(line))
                 worksheet.write(row, 0, counter, size)
                 worksheet.write(row, 1, line.default_code or "")
                 worksheet.write(row, 2, line.name or "")

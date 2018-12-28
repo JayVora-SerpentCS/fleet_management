@@ -3,3 +3,4 @@
 
 from . import renew_tenancy
 from . import rent_close_reason
+from . import fleet_rental_vehicle_history

@@ -692,7 +692,7 @@ class FleetVehicleLogServices(models.Model):
     etic = fields.Boolean(string='ETIC', help="Estimated Time In Completion",
                           default=True)
     wrk_location_id = fields.Many2one('stock.location',
-                                      string='Location', readonly=True)
+                                      string='Location ', readonly=True)
     wrk_attach_ids = fields.One2many('ir.attachment', 'wo_attachment_id',
                                      string='Attachments')
     task_ids = fields.One2many('service.task', 'main_id',
@@ -1311,7 +1311,7 @@ class StockPicking(models.Model):
         assert len(self._ids) == 1, 'Partial picking processing \
                                     may only be done one at a time.'
         stock_move = self.env['stock.move']
-        uom_obj = self.env['product.uom']
+        uom_obj = self.env['uom.uom']
         partial = self and self[0]
         partial_data = {
             'delivery_date': partial and partial.date or False
@@ -1977,7 +1977,7 @@ class TaskLine(models.Model):
     dummy_encoded_qty = fields.Float(string='Encoded Qty',
                                      help='Quantity that can be used')
     qty = fields.Float(string='Used')
-    product_uom = fields.Many2one('product.uom', string='UOM', required=True)
+    product_uom = fields.Many2one('uom.uom', string='UOM', required=True)
     price_unit = fields.Float(string='Unit Cost')
     total = fields.Float(compute="_amount_line",  string='Total Cost')
     vehicle_make_id = fields.Many2one('fleet.vehicle.model.brand',

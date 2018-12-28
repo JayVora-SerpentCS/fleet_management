@@ -6,6 +6,7 @@ from odoo import models
 
 class StockAdjustment(models.AbstractModel):
     _name = 'report.fleet_operations.stock.adjustment.xls'
+    _description = 'Stock Adjustment Report'
 
     def generate_xlsx_report(self, workbook, data, stock):
         worksheet = workbook.add_worksheet('stock_adjustment')

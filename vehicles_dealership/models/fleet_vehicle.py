@@ -5,7 +5,7 @@ class FleetVehicle(models.Model):
     _inherit = 'fleet.vehicle'
     _inherits = {'product.product': 'product_id'}
 
-    product_id = fields.Many2one('product.product', 'Product',
+    product_id = fields.Many2one('product.product', 'Product ',
                             ondelete="cascade", delegate=True, required=True)
 
     @api.model

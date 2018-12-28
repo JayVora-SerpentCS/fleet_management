@@ -9,6 +9,7 @@ from odoo import models
 
 class NextServiceByOdometer(models.AbstractModel):
     _name = 'report.fleet_operations.next.services.by.odometer.xls'
+    _description = 'Next Service by Odometer'
 
     def generate_service_odometer_xlsx_report(self, res, next_service):
         workbook = xlwt.Workbook()

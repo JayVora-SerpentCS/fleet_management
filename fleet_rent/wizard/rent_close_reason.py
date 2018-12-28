@@ -7,6 +7,7 @@ from odoo import models, fields, api
 
 class WizardRentCloseReason(models.TransientModel):
     _name = 'rent.close.reason'
+    _description = 'Rent Closing Reason'
 
     reason = fields.Char(string='Reason', required=True)
 

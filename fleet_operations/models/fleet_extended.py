@@ -271,7 +271,7 @@ class FleetOperations(models.Model):
     description = fields.Text(string='About Vehicle', translate=True)
     engine_size = fields.Char(string='Engine Size', size=16)
     cylinders = fields.Integer(string='No of Cylinders')
-    front_tire_size = fields.Float(string='Size')
+    front_tire_size = fields.Float(string='Size ')
     front_tire_pressure = fields.Integer(string='Front Tire Pressure')
     rear_tire_size = fields.Float(string='Size')
     rear_tire_pressure = fields.Integer(string='Rear Tire Pressure')
@@ -280,12 +280,12 @@ class FleetOperations(models.Model):
     last_odometer = fields.Float(string='Last Service Odometer')
     last_odometer_unit = fields.Selection([('kilometers', 'Kilometers'),
                                            ('miles', 'Miles')],
-                                          string='Odometer Unit',
+                                          string='Odometer Unit ',
                                           help='Unit of the odometer ')
     due_odometer = fields.Float(string='Next Service Odometer', readonly=True)
     due_odometer_unit = fields.Selection([('kilometers', 'Kilometers'),
                                           ('miles', 'Miles')],
-                                         string='Odometer Unit',
+                                         string='Odometer Units',
                                          help='Unit of the odometer ')
     left_wiper_blade = fields.Char(string='Wiper Blade(L)', size=8)
     right_wiper_blade = fields.Char(string='Wiper Blade(R)', size=8)
@@ -315,12 +315,12 @@ class FleetOperations(models.Model):
                                        string='Attachments')
     sale_purchase_attach_ids = fields.One2many('ir.attachment',
                                                'attachment_id_2',
-                                               string='Attachments')
+                                               string='Attachments ')
     odometer = fields.Float(compute='_get_odometer', inverse='_set_odometer',
                             string='Last Odometer',
                             help='Odometer measure of the vehicle at the \
                                 moment of this log')
-    vehical_color_id = fields.Many2one('color.color', string='Color')
+    vehical_color_id = fields.Many2one('color.color', string='Color ')
     vechical_location_id = fields.Many2one('service.department',
                                            string='Registration State')
     vehical_division_id = fields.Many2one('vehicle.divison', string='Division')
@@ -339,7 +339,7 @@ class FleetOperations(models.Model):
                               ('rent', 'On Rent'), ('complete', 'Completed'),
                               ('released', 'Released'),
                               ('write-off', 'Write-Off')],
-                             string='State', default='inspection')
+                             string='Vehicle State', default='inspection')
     is_id_generated = fields.Boolean(string='Is Id Generated?', default=False)
     increment_odometer = fields.Float(string='Next Increment Odometer')
     last_change_status_date = fields.Date(string='Last Status Changed Date',
@@ -848,7 +848,7 @@ class FleetWittenOff(models.Model):
     engine_repair = fields.Boolean(string='ENGINE REPAIR')
     electrical_system = fields.Boolean(string='ELECTRICAL SYSTEM')
     exhaust_system = fields.Boolean(string='EXHAUST SYSTEM')
-    location_id = fields.Many2one('vehicle.location', string='Location')
+    location_id = fields.Many2one('vehicle.location', string='Location ')
     driver_id = fields.Many2one('res.partner', string='Driver')
     write_off_type = fields.Selection([
                            ('general_accident', 'General Accident'),

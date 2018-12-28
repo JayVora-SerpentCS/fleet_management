@@ -9,6 +9,7 @@ from odoo import models
 
 class FleetHistoryWorkOrder(models.AbstractModel):
     _name = 'report.fleet_operations.fleet.history.work.order.xls'
+    _description = 'Fleet History Work Order'
 
     def get_heading(self):
         head_title = {'name': '',

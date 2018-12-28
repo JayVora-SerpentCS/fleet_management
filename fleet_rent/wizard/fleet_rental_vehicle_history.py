@@ -3,13 +3,32 @@
 import io
 import xlwt
 import base64
-from odoo import models
+from odoo import models, fields, api, _
 
 
-class FleetRentalVehicleHistory(models.AbstractModel):
-    _name = 'report.fleet_rent.fleet.rental.vehicle.history.xls'
+class FleetRentalVehicleHistory(models.TransientModel):
+    _name = 'rental.fleet.history'
+    _description = 'Rental Fleet History Report'
+    
+    name = fields.Char(string="File Name")
+    file = fields.Binary(string="File", readonly=True)
+    
+    def rental_vehicle_history(self):
+        docids = self.env.context.get('active_ids')
+        fleet_rental = self.env[self.env.context.get('active_model')].browse(docids) or False
+        file = self.generate_xlsx_report(fleet_rental)
+        self.write({'name': 'Vehicle Rental History.xls',
+                   'file': file})
+        return {
+                  'view_type': 'form',
+                  'view_mode': 'form',
+                  'res_model': 'rental.fleet.history',
+                  'type': 'ir.actions.act_window',
+                  'target': 'new',
+                  'res_id': self.id
+                }
 
-    def generate_xlsx_report(self, workbook, data, fleet_rental):
+    def generate_xlsx_report(self, fleet_rental):
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('fleet_rental')
         worksheet.col(0).width = 7000
@@ -27,6 +46,7 @@ class FleetRentalVehicleHistory(models.AbstractModel):
         worksheet.col(12).width = 10000
         worksheet.col(13).width = 10000
         worksheet.col(14).width = 2500
+        
         font = xlwt.Font()
         font.bold = True
         font.name = 'Arial'
@@ -99,10 +119,10 @@ class FleetRentalVehicleHistory(models.AbstractModel):
             counter += 1
         worksheet.write(line_row, line_col, '********', border)
         row += 5
-#        fp = io.BytesIO()
-#        workbook.save(fp)
-#        fp.seek(0)
-#        data = fp.read()
-#        fp.close()
-#        res = base64.encodestring(data)
-#        return res
+        fp = io.BytesIO()
+        workbook.save(fp)
+        fp.seek(0)
+        data = fp.read()
+        fp.close()
+        res = base64.encodestring(data)
+        return res

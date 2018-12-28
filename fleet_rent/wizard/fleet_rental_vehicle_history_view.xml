@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rental_fleet_wizard" model="ir.ui.view">
+        <field name="name">Rental Fleet History</field>
+        <field name="model">rental.fleet.history</field>
+        <field name="arch" type="xml">
+            <form string="Renatl Vehicle">
+                <group>
+                    <field name="name" invisible="1"/>
+                    <field name="file" filename="name" string="Download"/>
+                </group>
+                <footer>
+                    <button name="rental_vehicle_history" string="Print" type="object"
+                        class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <act_window name="Rental Vehicle History"
+                res_model="rental.fleet.history"
+                src_model="account.analytic.account"
+                view_mode="form"
+                multi="True"
+                target="new"
+                key2="client_print_multi"
+                id="action_print_rental_fleet_history"
+                view_id="rental_fleet_wizard"
+                />
+</odoo>

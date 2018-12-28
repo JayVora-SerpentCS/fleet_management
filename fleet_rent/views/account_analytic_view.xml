@@ -43,7 +43,7 @@
 							<field name="name" default_focus="1"
 							    placeholder="Rental Name" class="oe_inline" />
 						</h1>
-						<label string="Rental Vehicle #" class="oe_edit_only" />
+						<label for="ref" string="Rental Vehicle #" class="oe_edit_only" />
 						<h4>
 							<field name="ref" readonly="1" invisible="1"/>
 							<field name="vehicle_image" widget="image" invisible="1"/>
@@ -256,7 +256,7 @@
                             <div class="o_event_right">
 	                           <div style="background: #7c7bad;width: 216px;border-color: darkblue;border-width: thin;color: white;margin-left: -16px;margin-right: -7px;padding: 3px;margin-top: -8px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
 		                            <img t-att-src="kanban_image('account.analytic.account', 'vehicle_image', record.id.value)"
-		                                              t-att-title="record.vehicle_image.value" width="30" height="30"
+		                                              t-att-title="record.vehicle_image.value" width="30" height="30" alt="Brand"
 		                                              class="oe_kanban_avatar" style="border-radius:15px;margin-right:10px;margin-left:5px;"/>
 		                            <b><field name="vehicle_id"/></b>
                                 </div>
@@ -301,7 +301,7 @@
 						domain="[]" context="{'group_by':'rent_type_id'}" />
 					<filter string="State" name="state" icon="terp-personal"
 						domain="[]" context="{'group_by':'state'}" />
-					<filter string="Date" context="{'group_by':'ten_date'}" />
+					<filter string="Date" name="date" context="{'group_by':'ten_date'}" />
 				</group>
 			</search>
 		</field>

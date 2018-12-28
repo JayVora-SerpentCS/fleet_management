@@ -10,6 +10,7 @@ from odoo.exceptions import Warning
 
 class WorkorderMontltReportXlsx(models.AbstractModel):
     _name = 'report.fleet_operations.workorder.monthly.summary.xls'
+    _description = 'Work Order Monthly Summary Report'
 
     def get_wo_mthly_smry(self, workorder_browse):
         wo_summary_data = []

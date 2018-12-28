@@ -26,7 +26,7 @@
         </record>
         
 	<!-- Property Form View -->
-	<record id="account_asset.view_account_asset_asset_form" model="ir.ui.view">
+	<record id="ow_account_asset.view_account_asset_asset_form" model="ir.ui.view">
 		<field name="name">account.asset.asset.form</field>
 		<field name="model">account.asset.asset</field>
 		<field name="arch" type="xml">
@@ -150,7 +150,7 @@
 									<label for="method_time" />
 									<div>
 										<field name="method_time" class="oe_inline" />
-										<button name="%(account_asset.action_asset_modify)d"
+										<button name="%(ow_account_asset.action_asset_modify)d"
 											states="draft" string="Change Duration"
 											type="action" icon="fa-retweet"
 											class="oe_inline" colspan="1" />
@@ -387,14 +387,17 @@
 				<field name="age_of_property" />
 				<newline />
 				<group expand="0" string="Group By..." colspan="4" col="10">
-					<filter string="Property Type" icon="terp-personal" domain="[]" />
-					<filter string="Furnish Type" icon="terp-personal" domain="[]"
+					<filter string="Property Type" icon="terp-personal"
+					    name="property_type" domain="[]" />
+					<filter string="Furnish Type" icon="terp-personal"
+					    name="furnish_type" domain="[]"
 						context="{'group_by':'furnished'}" />
 					<filter string="State" name="grpstate" icon="terp-personal"
 						domain="[]" context="{'group_by':'state'}" />
 					<filter string="Country" name="country" icon="terp-personal"
 						domain="[]" context="{'group_by':'country_id'}" />
-					<filter string="Date" context="{'group_by':'age_of_property'}" />
+					<filter string="Date" context="{'group_by':'age_of_property'}"
+					    name="date" />
 				</group>
 			</search>
 		</field>
@@ -428,13 +431,14 @@
 												<div class="o_kanban_image">
 													<img
 														t-att-src="kanban_image('account.asset.asset', 'image', record.id.value)"
-														style="width:100% !important;height:150% !important;" />
+														style="width:100% !important;height:150% !important;" alt="Image" />
 												</div>
 											</t>
 											<t t-if="record.has_image.raw_value === false">
 												<div class="o_kanban_image">
 													<img t-att-src='_s + "/base/static/src/img/company_image.png"'
-														style="width:100% !important;height:150% !important;" />
+														style="width:100% !important;height:150% !important;"
+														alt="Company Image" />
 												</div>
 											</t>
 										</a>

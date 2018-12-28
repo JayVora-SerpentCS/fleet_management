@@ -7,6 +7,7 @@ from odoo import models, fields, api
 
 class WizardWritOffCancelReason(models.TransientModel):
     _name = 'writeoff.cancel.reason'
+    _description = 'Vehicle Write-off Cancel Reason'
 
     reason = fields.Char(string='Reason', required=True)
 

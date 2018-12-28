@@ -9,6 +9,7 @@ from odoo import models
 
 class FleetWaitingColletion(models.AbstractModel):
     _name = 'report.fleet_operations.fleet.wait.collection.xls'
+    _description = 'Fleet Waiting Collection Report'
 
     def generate_complete_stage_xlsx_report(self, res, fleet_waiting):
         workbook = xlwt.Workbook()

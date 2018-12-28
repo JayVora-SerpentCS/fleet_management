@@ -9,6 +9,7 @@ from odoo import models
 
 class FleetPending(models.AbstractModel):
     _name = 'report.fleet_operations.fleet.pending.xls'
+    _description = 'Fleet Pending Report'
 
     def get_heading(self):
         head_title = {'name': '',

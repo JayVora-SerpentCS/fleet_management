@@ -9,6 +9,7 @@ from odoo import models
 
 class FleetListing(models.AbstractModel):
     _name = 'report.fleet_operations.fleet.summary.xls'
+    _description = "Fleet Listing Report"
 
     def get_heading(self):
         head_title = {'name': '',

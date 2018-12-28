@@ -74,7 +74,7 @@ class AccountAssetAsset(models.Model):
         for prop_rec in self:
             if prop_rec.date:
                 prop_date = datetime.strptime(
-                    prop_rec.date, DEFAULT_SERVER_DATE_FORMAT).date()
+                    str(prop_rec.date), DEFAULT_SERVER_DATE_FORMAT).date()
                 pur_diff = datetime.now().date() - prop_date
                 purchase_diff = pur_diff.days
                 if prop_rec.tenancy_property_ids and \
@@ -207,7 +207,7 @@ class AccountAssetAsset(models.Model):
         string='Simulation Date',
         help='Simulation Date.')
     age_of_property = fields.Date(
-        string='Date',
+        string='Date ',
         default=fields.Date.context_today,
         help='Property Creation Date.')
     city = fields.Char(
@@ -299,7 +299,7 @@ class AccountAssetAsset(models.Model):
         help='Number of Properties Per Floor.')
     income_acc_id = fields.Many2one(
         comodel_name='account.account',
-        string='Income Account',
+        string='Income Account ',
         help='Income Account of Property.')
     expense_account_id = fields.Many2one(
         comodel_name='account.account',
@@ -317,7 +317,7 @@ class AccountAssetAsset(models.Model):
         ondelete='restrict')
     state_id = fields.Many2one(
         comodel_name='res.country.state',
-        string='State',
+        string='State ',
         ondelete='restrict')
     analytic_acc_id = fields.Many2one(
         comodel_name='account.analytic.account',

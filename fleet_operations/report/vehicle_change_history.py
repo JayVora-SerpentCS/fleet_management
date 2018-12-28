@@ -8,6 +8,7 @@ from odoo.exceptions import UserError
 
 class VehicalChangeHistoryReport(models.AbstractModel):
     _name = 'report.fleet_operations.vehicle_change_history_qweb'
+    _description = 'Vehicle Change History Report'
 
     def get_vehicle_history(self, date_range):
         engine_obj = self.env['engine.history']

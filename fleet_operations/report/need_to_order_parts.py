@@ -6,6 +6,7 @@ from odoo import models
 
 class NeedToOrderPartsXlsx(models.AbstractModel):
     _name = 'report.fleet_operations.need.to.order.parts.xls'
+    _description = 'Need to Order Parts Report'
 
     def generate_xlsx_report(self, workbook, data, parts):
         # add the worksheet

@@ -11,6 +11,7 @@ from odoo import models
 
 class WoOver10DaysXlsx(models.AbstractModel):
     _name = 'report.fleet_operations.wo.over.daysxls'
+    _description = 'Work Order Over 10 Days Report'
 
     def get_wo_over_10days(self, work_orders):
         over_orders = []

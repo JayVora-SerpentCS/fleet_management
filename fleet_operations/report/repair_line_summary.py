@@ -9,6 +9,7 @@ from odoo.exceptions import Warning, UserError
 
 class RepairLineSmry(models.AbstractModel):
     _name = 'report.fleet_operations.repair_line_summary_qweb'
+    _description = 'Repair Line Summary Report'
 
     def get_repair_line_detail(self, date_range):
         work_order_obj = self.env['fleet.vehicle.log.services']

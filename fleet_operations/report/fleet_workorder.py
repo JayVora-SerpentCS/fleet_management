@@ -9,6 +9,7 @@ from odoo import models
 
 class FleetWorkOrder(models.AbstractModel):
     _name = 'report.fleet_operations.workorder.summary.xls'
+    _description = 'Fleet WorkOrder Reports'
 
     def get_wo_status(self, status):
         if status == 'done':

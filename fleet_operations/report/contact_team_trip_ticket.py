@@ -7,6 +7,7 @@ from odoo import models
 
 class ContactTeamTrip(models.AbstractModel):
     _name = 'report.fleet_operations.contact.team.trip.ticket.xls'
+    _description = 'Contact Team Trip Ticket Report'
 
     def get_heading(self):
         head_title = {'name': '',

@@ -7,6 +7,7 @@ from odoo.exceptions import Warning
 
 class VehicleChangeHistory(models.TransientModel):
     _name = 'vehicle.change.history'
+    _description = 'Vehicle Change History'
 
     fleet_id = fields.Many2one('fleet.vehicle', string='Vehicle-ID')
     date_from = fields.Date(string='Date From')

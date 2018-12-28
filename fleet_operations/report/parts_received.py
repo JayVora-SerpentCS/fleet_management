@@ -40,6 +40,7 @@ class StockPickingReport(models.TransientModel):
 
 class ReceivedPartsXlsx(models.AbstractModel):
     _name = 'report.fleet_operations.receved.parts.xls'
+    _description = 'Recived Parts Reports'
 
     def get_purchase_id(self, picking):
         query = """

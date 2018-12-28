@@ -302,15 +302,15 @@
 				<field name="assign_to"/>
 				<field name="account_code"/>
 				<group expand="1" string="Group By">
-					<filter string="State" domain="[]"
+					<filter string="State" name="state" domain="[]"
 						context="{'group_by' : 'state'}"/>
-					<filter string="Type" domain="[]"
+					<filter string="Type" name="type" domain="[]"
 						context="{'group_by' : 'type'}" />
-					<filter string="Assign To" domain="[]"
+					<filter string="Assign To" name="assign_to" domain="[]"
 						context="{'group_by' : 'assign_to'}" />
-					<filter string="Account" domain="[]"
+					<filter string="Account" name="account" domain="[]"
 						context="{'group_by' : 'account_code'}" />
-					<filter string="Acction Type" domain="[]"
+					<filter string="Acction Type" name="action_type" domain="[]"
 						context="{'group_by' : 'name'}" />
 				</group>
 			</search>
@@ -400,13 +400,13 @@
 		<field name="model">tenancy.rent.schedule</field>
 		<field name="arch" type="xml">
 			<search string="Search Tenant Rent">
-				<filter string="This Month"
+				<filter string="This Month" name="this_month"
 					domain="[('start_date','&lt;=',(datetime.date.today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),('start_date','&gt;=',(datetime.date.today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"
 					help="Tenant Rent in this month"/>
-				<filter string="Paid"
+				<filter string="Paid" name="paid"
 					domain="[('move_check','=',True)]" help="Paid Tenant Rent"/>
 				<filter string="Pending" domain="[('move_check','=',False)]"
-					help="Unpaid Tenant Rent"/>
+					name="panding" help="Unpaid Tenant Rent"/>
 				<field name="tenancy_id"/>
 				<field name="cheque_detail"/>
 				<field name="rel_tenant_id"/>
@@ -416,11 +416,11 @@
 				<group expand="0" string="Group by..."
 					colspan="4" col="10" groups="base.group_extended">
 					<filter icon="terp-personal" string="Rental Vehicle"
-						context="{'group_by':'tenancy_id'}"/>
+						name="rental_vehicle" context="{'group_by':'tenancy_id'}"/>
 					<filter icon="terp-personal" string="Tenant"
-						context="{'group_by':'rel_tenant_id'}"/>
+						name="tenant" context="{'group_by':'rel_tenant_id'}"/>
 					<filter icon="terp-go-today" string="Date"
-						context="{'group_by':'start_date'}"/>
+						name="date" context="{'group_by':'start_date'}"/>
 				</group>
 			</search>
 		</field>
