@@ -202,7 +202,7 @@ class PropertyMaintenace(models.Model):
         comodel_name='account.account',
         string='Account Code')
     notes = fields.Text(
-        string='Description',
+        string='Descriptions ',
         size=100)
     name = fields.Selection(
         [('Renew', 'Renew'),

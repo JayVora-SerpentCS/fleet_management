@@ -291,8 +291,7 @@
 				<field name="ten_date" />
 				<field name="state" />
 				<newline />
-				<group expand="0" string="Group By..." colspan="4" col="10"
-					groups="base.group_extended">
+				<group expand="0" string="Group By..." colspan="4" col="10">
 					<filter string="Tenant" name="tenant" icon="terp-personal"
 						domain="[]" context="{'group_by':'tenant_id'}" />
 					<filter string="Vehicle" name="property" icon="terp-personal"

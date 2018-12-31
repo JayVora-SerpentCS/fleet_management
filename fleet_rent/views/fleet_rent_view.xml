@@ -414,7 +414,7 @@
 				<field name="amount"/>
 				<newline/>
 				<group expand="0" string="Group by..."
-					colspan="4" col="10" groups="base.group_extended">
+					colspan="4" col="10">
 					<filter icon="terp-personal" string="Rental Vehicle"
 						name="rental_vehicle" context="{'group_by':'tenancy_id'}"/>
 					<filter icon="terp-personal" string="Tenant"

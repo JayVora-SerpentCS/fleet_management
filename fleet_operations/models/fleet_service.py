@@ -700,7 +700,7 @@ class FleetVehicleLogServices(models.Model):
     parts_ids = fields.One2many('task.line', 'fleet_service_id',
                                 string='Parts')
     note = fields.Text(string='Notes')
-    date_child = fields.Date(related='cost_id.date', string='Date', store=True)
+    date_child = fields.Date(related='cost_id.date', string='Date ', store=True)
     inv_ref = fields.Many2one('account.invoice', string='Invoice Reference',
                               readonly=True)
     sub_total = fields.Float(compute="get_total", string='Total Cost',
@@ -714,7 +714,7 @@ class FleetVehicleLogServices(models.Model):
                                   string='Delivery Reference', readonly=True)
     team_id = fields.Many2one('res.partner', string="Teams")
     team_trip_id = fields.Many2one("fleet.team", string="Team Trip")
-    maintenance_team_id = fields.Many2one("stock.location", string="Teams")
+    maintenance_team_id = fields.Many2one("stock.location", string="Team")
     next_service_date = fields.Date(string='Next Service Date')
     next_service_odometer = fields.Float(string='Next Odometer Value',
                                          readonly=True)
@@ -861,7 +861,7 @@ class FleetTeam(models.Model):
     source_location_id = fields.Many2one('stock.location',
                                          default=_default_source_location_id,
                                          string="Source Location")
-    location_id = fields.Char(string="Destination Location", size=128,
+    location_id = fields.Char(string="Destination Location ", size=128,
                               translate=True)
     allocate_part_ids = fields.One2many('team.assign.parts', 'team_id',
                                         string='Assign Parts')
@@ -1250,7 +1250,7 @@ class TripPartsHistoryDetails(models.Model):
                                help='The Quantity that is used in \
                                         in Workorder')
     dummy_encoded_qty = fields.Float(compute="_get_encoded_qty",
-                                     string='Encoded Qty')
+                                     string='Encoded Qty ')
     available_qty = fields.Float(compute="_get_available_qty",
                                  string='Qty for Encoding',
                                  help='The Quantity which is available to use')
@@ -1273,15 +1273,15 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
     _order = 'id desc'
 
-    out_team_id = fields.Many2one('fleet.team', string='Contact Team Trip')
+    out_team_id = fields.Many2one('fleet.team', string='Contact Team Trip ')
     work_order_out_id = fields.Many2one('fleet.vehicle.log.services',
-                                        string="Work Order")
-    in_team_id = fields.Many2one('fleet.team', string='Contact Team Trip')
+                                        string="Work Order ")
+    in_team_id = fields.Many2one('fleet.team', string=' Contact Team Trip')
     in_rem_team_id = fields.Many2one('fleet.team', string='Contact Team Trip')
     work_order_old_id = fields.Many2one('fleet.vehicle.log.services',
                                         string="Work Order")
     work_order_reopen_id = fields.Many2one('fleet.vehicle.log.services',
-                                           string="Work Order")
+                                           string=" Work Order")
     stock_warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse')
     received_by_id = fields.Many2one('res.users', string='Received By')
 
@@ -1508,7 +1508,7 @@ class TeamAssignParts(models.Model):
     trip_history_id = fields.Integer(string='Trip Part History ID',
                                      help="Take this field for data migration")
     wizard_parts_id = fields.Many2one('edit.parts.contact.team.trip',
-                                      string='PartNo')
+                                      string='PartNo ')
     team_id = fields.Many2one('fleet.team', string='Team')
     product_id = fields.Many2one('product.product', string='PartNo',
                                  required=True)

@@ -848,7 +848,7 @@ class FleetWittenOff(models.Model):
     engine_repair = fields.Boolean(string='ENGINE REPAIR')
     electrical_system = fields.Boolean(string='ELECTRICAL SYSTEM')
     exhaust_system = fields.Boolean(string='EXHAUST SYSTEM')
-    location_id = fields.Many2one('vehicle.location', string='Location ')
+    location_id = fields.Many2one('vehicle.location', string=' Location ')
     driver_id = fields.Many2one('res.partner', string='Driver')
     write_off_type = fields.Selection([
                            ('general_accident', 'General Accident'),
@@ -1177,7 +1177,7 @@ class VehicleUniqueSequence(models.Model):
 
     name = fields.Char(string='Name', size=124, translate=True)
     vechical_location_id = fields.Many2one('service.department',
-                                           string='Location')
+                                           string='Location ')
     make_id = fields.Many2one('fleet.vehicle.model.brand', string='Make')
     sequence_id = fields.Many2one('ir.sequence', string='Sequence')
 
