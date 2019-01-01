@@ -230,7 +230,7 @@ class AccountAnalyticAccount(models.Model):
         compute='amount_return_compute',
         help="True if deposit amount returned for current Rental Vehicle.")
     ref = fields.Char(
-        string='Reference ',
+        string='Reference',
         default="/")
     doc_name = fields.Char(
         string='Filename')
@@ -259,7 +259,7 @@ class AccountAnalyticAccount(models.Model):
         help="Name of Vehicle.")
     vehicle_property_id = fields.Many2one(
         comodel_name='account.asset.asset',
-        string='Vehicle ',
+        string='Vehicle Name',
         help="Name of Vehicle.")
     tenant_id = fields.Many2one(
         comodel_name='res.partner',
@@ -331,11 +331,11 @@ class AccountAnalyticAccount(models.Model):
         help='Additional Notes')
     acc_pay_dep_rec_id = fields.Many2one(
         comodel_name='account.voucher',
-        string='Account Manager ',
+        string='Rental Account Manager',
         help="Manager of Rental Vehicle.")
     acc_pay_dep_ret_id = fields.Many2one(
         comodel_name='account.voucher',
-        string=' Account Manager',
+        string='Account Manager',
         help="Manager of Rental Vehicle.")
     rent_type_id = fields.Many2one(
         comodel_name='rent.type',
@@ -363,7 +363,7 @@ class AccountAnalyticAccount(models.Model):
         string='cost')
     invc_id = fields.Many2one(
         comodel_name='account.invoice',
-        string='Invoice ')
+        string='Invoice')
     multi_prop = fields.Boolean(
         string='Multiple Property',
         help="Check this box Multiple property.")

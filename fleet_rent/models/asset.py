@@ -207,7 +207,7 @@ class AccountAssetAsset(models.Model):
         string='Simulation Date',
         help='Simulation Date.')
     age_of_property = fields.Date(
-        string='Date ',
+        string='Property Creation Date',
         default=fields.Date.context_today,
         help='Property Creation Date.')
     city = fields.Char(
@@ -299,7 +299,7 @@ class AccountAssetAsset(models.Model):
         help='Number of Properties Per Floor.')
     income_acc_id = fields.Many2one(
         comodel_name='account.account',
-        string='Income Account ',
+        string='Property Income Account',
         help='Income Account of Property.')
     expense_account_id = fields.Many2one(
         comodel_name='account.account',

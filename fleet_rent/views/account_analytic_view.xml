@@ -45,7 +45,7 @@
 						</h1>
 						<label for="ref" string="Rental Vehicle #" class="oe_edit_only" />
 						<h4>
-							<field name="ref" readonly="1" invisible="1"/>
+							<field name="ref" string="Reference" readonly="1" invisible="1"/>
 							<field name="vehicle_image" widget="image" invisible="1"/>
 						</h4>
 					</div>
@@ -98,7 +98,7 @@
 							<field name="currency_id" />
 							<field name="multi_prop" invisible="1"/>
 							<field name="is_property" invisible="1" />
-							<field name="invc_id" invisible="1" />
+							<field name="invc_id" string="Invoice" invisible="1" />
                             <label for="odometer" />
                             <div>
                                 <field name="odometer" class="oe_inline"/>
@@ -120,8 +120,8 @@
 							<field name="contact_id" />
 							<field name="main_cost" attrs="{'readonly':[('state','!=','draft')]}"/>
 							<field name="deposit_scheme_type" colspan="2" invisible="1"/>
-							<field name="acc_pay_dep_rec_id" invisible="1" />
-							<field name="acc_pay_dep_ret_id" invisible="1" />
+							<field name="acc_pay_dep_rec_id" string="Account Manager" invisible="1" />
+							<field name="acc_pay_dep_ret_id" string="Account Manager" invisible="1" />
 						</group>
 						<group colspan='4' col='4'>
 							<separator string="Contract Information" colspan="4" />

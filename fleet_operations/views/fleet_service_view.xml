@@ -434,7 +434,7 @@
                                     <field name="part_name"/>
                                     <field name="used_qty"/>
                                     <field name="encoded_qty" invisible="1"/>
-                                    <field name="dummy_encoded_qty"/>
+                                    <field name="dummy_encoded_qty" string="Encoded Qty"/>
                                     <field name="available_qty"/>
                                 </tree>
                             </field>

@@ -87,7 +87,7 @@
 								<div class="address_format">
 									<field name="city" placeholder="City" style="width: 35%%"
 										required="1" />
-									<field name="state_id" class="oe_no_button"
+									<field name="state_id" string="State" class="oe_no_button"
 									    placeholder="State"
 										style="width: 40%%" options='{"no_open": True}' />
 									<field name="zip" placeholder="ZIP" style="width: 25%%" />
@@ -98,7 +98,7 @@
 									required="1" />
 							</div>
 							<field name="date" help="Date of asset"/>
-							<field name="age_of_property" />
+							<field name="age_of_property" string="Date"/>
 							<field name="no_of_towers"
 							    attrs="{'invisible':[('parent_id','!=',False)]}" />
 							<field name="floor"
@@ -120,7 +120,7 @@
 							<field name="bedroom" />
 							<field name="bathroom" />
 							<field name="facing" />
-							<field name="income_acc_id" required='1' />
+							<field name="income_acc_id" string="Income Account" required='1' />
 							<field name="expense_account_id" required='1'
 								domain="[('internal_type','=','other')]" />
 							<field name="category_id" required='1'
@@ -233,7 +233,7 @@
 								<tree string="Properties">
 									<field name="name" />
 									<field name="category_id" />
-									<field name="age_of_property" />
+									<field name="age_of_property" string="Date"/>
 									<field name="furnished" />
 									<field name="state" />
 								</tree>
@@ -314,7 +314,7 @@
 										<field name="name" />
 										<field name="renters_fault"
 										    attrs="{'invisible': [('invc_check','!=',False)]}" />
-										<field name="notes" />
+										<field name="notes" string="Descriptions"/>
 										<field name="invc_check" invisible="1" />
 									</group>
 								</form>
@@ -337,7 +337,7 @@
 			<tree string="Properties">
 				<field name="name" />
 				<field name="category_id" />
-				<field name="age_of_property" />
+				<field name="age_of_property" string="Date"/>
 				<!-- <field name="type_id" /> -->
 				<field name="furnished" />
 				<!-- <field name="value" /> -->
@@ -354,7 +354,7 @@
 			<tree string="Properties">
 				<field name="name" />
 				<field name="child_ids" />
-				<field name="state_id" />
+				<field name="state_id" string="State"/>
 				<field name="city" />
 				<field name="township" />
 			</tree>
@@ -384,7 +384,7 @@
 				<field name="parent_id" />
 				<field name="furnished" />
 				<field name="ground_rent" />
-				<field name="age_of_property" />
+				<field name="age_of_property" string="Date"/>
 				<newline />
 				<group expand="0" string="Group By..." colspan="4" col="10">
 					<filter string="Property Type" icon="terp-personal"
@@ -417,7 +417,7 @@
 				<field name="furnished" />
 				<field name="has_image" />
 				<field name="country_id" />
-				<field name="state_id" />
+				<field name="state_id" string="State"/>
 				<field name="city" />
 				<templates>
 					<t t-name="kanban-box">
@@ -502,7 +502,7 @@
 												t-if="record.state_id.raw_value and record.city.raw_value and record.country_id.raw_value">
 												<field name="city" />
 												,
-												<field name="state_id" />
+												<field name="state_id" string="State"/>
 												,
 												<field name="country_id" />
 											</li>
@@ -591,7 +591,7 @@
 				<field name="name" />
 				<field name="category_id" />
 				<!-- <field name="type_id" /> -->
-				<field name="age_of_property" />
+				<field name="age_of_property" string="Date"/>
 				<field name="furnished" />
 				<!-- <field name="value" /> -->
 				<field name="state" />

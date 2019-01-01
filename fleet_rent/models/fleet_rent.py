@@ -202,7 +202,7 @@ class PropertyMaintenace(models.Model):
         comodel_name='account.account',
         string='Account Code')
     notes = fields.Text(
-        string='Descriptions ',
+        string='Notes',
         size=100)
     name = fields.Selection(
         [('Renew', 'Renew'),
@@ -546,7 +546,7 @@ class TenancyRentSchedule(models.Model):
         help="True if this rent is paid by tenant")
     invc_id = fields.Many2one(
         comodel_name='account.invoice',
-        string='Invoice ')
+        string='Invoice')
     inv = fields.Boolean(
         string='Invoice')
     pen_amt = fields.Float(
