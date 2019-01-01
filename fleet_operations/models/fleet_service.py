@@ -860,7 +860,7 @@ class FleetTeam(models.Model):
     source_location_id = fields.Many2one('stock.location',
                                          default=_default_source_location_id,
                                          string="Source Location")
-    location_id = fields.Char(string="Dest. Location", size=128,
+    location_id = fields.Char(string="Destination Location", size=128,
                               translate=True, help="Destination Location")
     allocate_part_ids = fields.One2many('team.assign.parts', 'team_id',
                                         string='Assign Parts')
