@@ -9,6 +9,7 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 
 class PendingRepairConfirm(models.TransientModel):
     _name = 'pending.repair.confirm'
+    _description = 'Pending Repair Confirm'
 
     @api.multi
     def confirm_wo_forcefully(self):

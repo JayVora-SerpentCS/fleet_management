@@ -8,6 +8,7 @@ from odoo.exceptions import UserError
 
 class VehicalChangeHistoryReport(models.AbstractModel):
     _name = 'report.fleet_operations.vehicle_change_history_qweb'
+    _description = 'Vehicle Change History Report'
 
     def get_vehicle_history(self, date_range):
         engine_obj = self.env['engine.history']
@@ -124,7 +125,7 @@ class VehicalChangeHistoryReport(models.AbstractModel):
         return vehicle_change_history
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         if not data.get('form') or \
                 not self.env.context.get('active_model') or \
                 not self.env.context.get('active_id'):

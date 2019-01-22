@@ -8,6 +8,7 @@ from odoo import models, fields, api
 
 class UpdateEngineInfo(models.TransientModel):
     _name = 'update.engine.info'
+    _description = 'Update Engine Info'
 
     workorder_id = fields.Many2one('fleet.vehicle.log.services',
                                    string='Work Order')
@@ -61,6 +62,7 @@ class UpdateEngineInfo(models.TransientModel):
 
 class UpdateColorInfo(models.TransientModel):
     _name = 'update.color.info'
+    _description = 'Update Color Info'
 
     workorder_id = fields.Many2one('fleet.vehicle.log.services',
                                    string='Work Order')
@@ -118,6 +120,7 @@ class UpdateColorInfo(models.TransientModel):
 
 class UpdateVinInfo(models.TransientModel):
     _name = 'update.vin.info'
+    _description = 'Update Vin Info'
 
     workorder_id = fields.Many2one('fleet.vehicle.log.services',
                                    string='Work Order')
@@ -162,6 +165,7 @@ class UpdateVinInfo(models.TransientModel):
 
 class UpdateTireInfo(models.TransientModel):
     _name = 'update.tire.info'
+    _description = 'Update Tire Info'
 
     previous_tire_size = fields.Char(string='Previous Tire Size', size=124)
     new_tire_size = fields.Char(string="New Tire Size", size=124)
@@ -240,6 +244,7 @@ class UpdateTireInfo(models.TransientModel):
 
 class UpdateBatteryInfo(models.TransientModel):
     _name = 'update.battery.info'
+    _description = 'Update Battery Info'
 
     previous_battery_size = fields.Char(string='Previous Battery Size',
                                         size=124)

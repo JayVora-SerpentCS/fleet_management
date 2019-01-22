@@ -259,7 +259,7 @@ class AccountAnalyticAccount(models.Model):
         help="Name of Vehicle.")
     vehicle_property_id = fields.Many2one(
         comodel_name='account.asset.asset',
-        string='Vehicle',
+        string='Vehicle Name',
         help="Name of Vehicle.")
     tenant_id = fields.Many2one(
         comodel_name='res.partner',
@@ -331,7 +331,7 @@ class AccountAnalyticAccount(models.Model):
         help='Additional Notes')
     acc_pay_dep_rec_id = fields.Many2one(
         comodel_name='account.voucher',
-        string='Account Manager',
+        string='Rental Account Manager',
         help="Manager of Rental Vehicle.")
     acc_pay_dep_ret_id = fields.Many2one(
         comodel_name='account.voucher',
@@ -380,7 +380,7 @@ class AccountAnalyticAccount(models.Model):
                                            ('id', 'in',
                                             rec.rent_schedule_ids.ids)])
             if not records:
-                if datetime.now() >= datetime.strptime(rec.date, DT):
+                if datetime.now() >= datetime.strptime(str(rec.date), DT):
                     reason = "This Rent Order is auto completed due to your \
                                 rent limit is over."
                     rec.write({'state': 'close',
@@ -398,9 +398,8 @@ class AccountAnalyticAccount(models.Model):
         """
         for ver in self:
             if ver.date_start and ver.date:
-                dt_from = datetime.strptime(
-                    ver.date_start, DT)
-                dt_to = datetime.strptime(ver.date, DT)
+                dt_from = ver.date_start.strftime(DT)
+                dt_to = ver.date.strftime(DT)
                 if dt_to < dt_from:
                     raise ValidationError(
                         'Expiration Date Should Be Greater Than Start Date!')
@@ -458,8 +457,8 @@ class AccountAnalyticAccount(models.Model):
         if avilable_records:
             for rec in avilable_records:
                 if rec.date_start and rec.date:
-                    cond1 = (st_dt < rec.date_start < en_dt)
-                    cond2 = (st_dt < rec.date < en_dt)
+                    cond1 = (st_dt < str(rec.date_start) < en_dt)
+                    cond2 = (st_dt < str(rec.date) < en_dt)
                     if cond1 or cond2:
                         raise ValidationError('This vehicle rent is \
                             already available. You can not create another \
@@ -495,8 +494,8 @@ class AccountAnalyticAccount(models.Model):
                     rent_rec.vehicle_id.write(
                         {'state': 'complete'})
 
-            st_dt = rent_rec.date_start
-            en_dt = rent_rec.date
+            st_dt = str(rent_rec.date_start)
+            en_dt = str(rent_rec.date)
             veh_id = rent_rec.vehicle_id and rent_rec.vehicle_id.id or False
             anlytic_obj = self.env['account.analytic.account']
             avilable_records = anlytic_obj.search([('state', '!=', 'close'),
@@ -505,8 +504,8 @@ class AccountAnalyticAccount(models.Model):
             if avilable_records:
                 for record in avilable_records:
                     if record.date_start and record.date and record.vehicle_id:
-                        cond1 = (st_dt < record.date_start < en_dt)
-                        cond2 = (st_dt < record.date < en_dt)
+                        cond1 = (st_dt < str(record.date_start) < en_dt)
+                        cond2 = (st_dt < str(record.date) < en_dt)
                         if cond1 or cond2:
                             raise ValidationError('This vehicle rent is \
                                 already available. You can not create another \
@@ -750,7 +749,7 @@ class AccountAnalyticAccount(models.Model):
                 raise Warning(
                     _('In order to Renew a Tenancy, Please make all related \
                     Rent Schedule entries posted.'))
-            date = datetime.strptime(tenancy_brw.date, "%Y-%m-%d %H:%M:%S") + \
+            date = datetime.strptime(str(tenancy_brw.date), "%Y-%m-%d %H:%M:%S") + \
                 timedelta(days=1)
             date1 = datetime.strftime(date, "%Y-%m-%d %H:%M:%S")
             context.update({'edate': date1})
@@ -817,19 +816,19 @@ class AccountAnalyticAccount(models.Model):
             if rec.rent_type_id and rec.date_start:
                 if rec.rent_type_id.renttype == 'Months':
                     rec.date = \
-                        datetime.strptime(rec.date_start, DT) + \
+                        datetime.strptime(str(rec.date_start), DT) + \
                         relativedelta(months=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Years':
-                    rec.date = datetime.strptime(rec.date_start, DT) + \
+                    rec.date = datetime.strptime(str(rec.date_start), DT) + \
                             relativedelta(years=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Weeks':
-                    rec.date = datetime.strptime(rec.date_start, DT) + \
+                    rec.date = datetime.strptime(str(rec.date_start), DT) + \
                             relativedelta(weeks=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Days':
-                    rec.date = datetime.strptime(rec.date_start, DT) + \
+                    rec.date = datetime.strptime(str(rec.date_start), DT) + \
                             relativedelta(days=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Hours':
-                    rec.date = datetime.strptime(rec.date_start, DT) + \
+                    rec.date = datetime.strptime(str(rec.date_start), DT) + \
                             relativedelta(hours=int(rec.rent_type_id.duration))
         return True
 
@@ -849,7 +848,7 @@ class AccountAnalyticAccount(models.Model):
             if tenancy_rec.date_start and tenancy_rec.rent_type_id and \
                     tenancy_rec.rent_type_id.renttype:
                 interval = int(tenancy_rec.rent_type_id.duration)
-                d1 = datetime.strptime(tenancy_rec.date_start, DT)
+                d1 = datetime.strptime(str(tenancy_rec.date_start), DT)
                 if tenancy_rec.rent_type_id.renttype == 'Months':
                     for i in range(0, interval):
                         d1 = d1 + relativedelta(months=int(1))

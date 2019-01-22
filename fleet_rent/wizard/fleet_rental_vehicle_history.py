@@ -1,44 +1,60 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+import io
+import xlwt
+import base64
+from odoo import models, fields, api, _
 
-from odoo import models
 
+class FleetRentalVehicleHistory(models.TransientModel):
+    _name = 'rental.fleet.history'
+    _description = 'Rental Fleet History Report'
+    
+    name = fields.Char(string="File Name")
+    file = fields.Binary(string="File", readonly=True)
+    
+    def rental_vehicle_history(self):
+        docids = self.env.context.get('active_ids')
+        fleet_rental = self.env[self.env.context.get('active_model')].browse(docids) or False
+        file = self.generate_xlsx_report(fleet_rental)
+        self.write({'name': 'Vehicle Rental History.xls',
+                   'file': file})
+        return {
+                  'view_type': 'form',
+                  'view_mode': 'form',
+                  'res_model': 'rental.fleet.history',
+                  'type': 'ir.actions.act_window',
+                  'target': 'new',
+                  'res_id': self.id
+                }
 
-class FleetRentalVehicleHistory(models.AbstractModel):
-    _name = 'report.fleet_rent.fleet.rental.vehicle.history.xls'
-    _inherit = 'report.report_xlsx.abstract'
-
-    def generate_xlsx_report(self, workbook, data, fleet_rental):
-        worksheet = workbook.add_worksheet('fleet_rental')
-        worksheet.set_column(0, 0, 10)
-        worksheet.set_column(1, 1, 15)
-        worksheet.set_column(2, 2, 30)
-        worksheet.set_column(3, 3, 5)
-        worksheet.set_column(4, 4, 20)
-        worksheet.set_column(5, 5, 10)
-        worksheet.set_column(6, 6, 10)
-        worksheet.set_column(7, 7, 15)
-        worksheet.set_column(8, 8, 15)
-        worksheet.set_column(9, 9, 10)
-        worksheet.set_column(10, 10, 15)
-        worksheet.set_column(11, 11, 10)
-        worksheet.set_column(12, 12, 20)
-        worksheet.set_column(13, 13, 20)
-        worksheet.set_column(14, 14, 5)
-
-        tot = workbook.add_format({'border': 2,
-                                   'font_name': 'Arial',
-                                   'font_size': '12'})
-        border = workbook.add_format({'border': 2,
-                                      'font_name': 'Arial',
-                                      'font_size': '10'})
-        merge_format = workbook.add_format({'border': 2, 'align': 'center'})
-        format1 = workbook.add_format({'border': 2,
-                                       'bold': True,
-                                       'font_name': 'Arial',
-                                       'font_size': '10'})
-        format1.set_bg_color('gray')
-        worksheet.merge_range('C3:F3', 'Merged Cells', merge_format)
+    def generate_xlsx_report(self, fleet_rental):
+        workbook = xlwt.Workbook()
+        worksheet = workbook.add_sheet('fleet_rental')
+        worksheet.col(0).width = 7000
+        worksheet.col(1).width = 7500
+        worksheet.col(2).width = 15000
+        worksheet.col(3).width = 2500
+        worksheet.col(4).width = 10000
+        worksheet.col(5).width = 5000
+        worksheet.col(6).width = 5000
+        worksheet.col(7).width = 7500
+        worksheet.col(8).width = 7500
+        worksheet.col(9).width = 5000
+        worksheet.col(10).width = 7500
+        worksheet.col(11).width = 5000
+        worksheet.col(12).width = 10000
+        worksheet.col(13).width = 10000
+        worksheet.col(14).width = 2500
+        
+        font = xlwt.Font()
+        font.bold = True
+        font.name = 'Arial'
+        font.height = 200
+        pattern = xlwt.Pattern()
+        tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 300')
+        border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
 
         row = 0
         row += 1
@@ -103,3 +119,10 @@ class FleetRentalVehicleHistory(models.AbstractModel):
             counter += 1
         worksheet.write(line_row, line_col, '********', border)
         row += 5
+        fp = io.BytesIO()
+        workbook.save(fp)
+        fp.seek(0)
+        data = fp.read()
+        fp.close()
+        res = base64.encodestring(data)
+        return res

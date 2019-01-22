@@ -74,6 +74,7 @@ class AccountInvoice(models.Model):
 
 class RentType(models.Model):
     _name = "rent.type"
+    _description = 'Vehicle Rent Type'
 
     @api.model
     def create(self, vals):
@@ -126,6 +127,7 @@ class RentType(models.Model):
 
 class MaintenanceType(models.Model):
     _name = 'maintenance.type'
+    _description = 'Vehicle Maintenance Type'
 
     name = fields.Char(
         string='Maintenance Type',
@@ -141,6 +143,7 @@ class MaintenanceType(models.Model):
 
 class MaintenanaceCost(models.Model):
     _name = 'maintenance.cost'
+    _description = 'Vehicle Maintenance Cost'
 
     maint_type = fields.Many2one(
         comodel_name='maintenance.type',
@@ -165,6 +168,7 @@ class MaintenanaceCost(models.Model):
 
 class PropertyMaintenace(models.Model):
     _name = "property.maintenance"
+    _description = 'Property Maintenance'
     _inherit = ['mail.thread']
 
     date = fields.Date(
@@ -198,7 +202,7 @@ class PropertyMaintenace(models.Model):
         comodel_name='account.account',
         string='Account Code')
     notes = fields.Text(
-        string='Description',
+        string='Notes',
         size=100)
     name = fields.Selection(
         [('Renew', 'Renew'),
@@ -373,6 +377,7 @@ class PropertyMaintenace(models.Model):
 
 class CostCost(models.Model):
     _name = "cost.cost"
+    _description ="Cost"
     _order = 'date'
 
     @api.one
@@ -485,6 +490,7 @@ class CostCost(models.Model):
 
 class TenancyRentSchedule(models.Model):
     _name = "tenancy.rent.schedule"
+    _description = 'Tenancy Rent Schedule'
     _rec_name = "tenancy_id"
     _order = 'start_date'
 
@@ -739,6 +745,7 @@ class AccountPayment(models.Model):
 
 class SaleCost(models.Model):
     _name = "sale.cost"
+    _description = 'Sale Cost'
     _order = 'date'
 
     @api.one

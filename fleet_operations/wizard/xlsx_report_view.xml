@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Wizard for stock.picking.xls.report -->
+    <record id="recieved_part_wizard_form" model="ir.ui.view">
+        <field name="name">Recived Parts</field>
+        <field name="model">stock.picking.xls.report</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name" invisible="1"/>
+                    <field name="file" filename="name" string="Download"/>
+                </group>
+                <footer>
+                    <button name="print_recived_part_xlsx_report" string="Print" type="object"
+                        class="btn-primary" attrs="{'invisible': [('file', '!=', False)]}"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <act_window 
+            name="Recived Parts xlsx"
+            res_model="stock.picking.xls.report"
+            src_model="stock.picking"
+            view_mode="form"
+            multi="True"
+            target="new"
+            key2="client_print_multi"
+            id="action_print_recived_parts"
+            view_id="recieved_part_wizard_form"
+            />
+</odoo>

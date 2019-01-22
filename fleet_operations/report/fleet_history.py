@@ -1,135 +1,176 @@
-# -*- coding: utf-8 -*-
-# See LICENSE file for full copyright and licensing details.
-
+#  -*- encoding: utf-8 -*-
+import io
+import xlwt
 import base64
-from odoo import models
+#  from cStringIO import StringIO
+from odoo import models, fields, api, _
 
 
-class FleetHistory(models.AbstractModel):
-    _name = 'report.fleet_operations.fleet.history.xls'
-    _inherit = 'report.report_xlsx.abstract'
+class FleetHistorySummary(models.TransientModel):
+    _name = "excel.fleet.report"
+    _description = "Fleet Excel Report"
 
-    def get_heading(self):
-        head_title = {'name': '',
-                      'rev_no': '',
-                      'doc_no': '',
-                      }
-        head_object = self.env['report.heading']
-        head_ids = head_object.search([], order='id')
-        if head_ids:
-            head_rec = head_ids[0]
-            if head_rec:
-                head_title['name'] = head_rec.name or ''
-                head_title['rev_no'] = head_rec.revision_no or ''
-                head_title['doc_no'] = head_rec.document_no or ''
-                head_title['image'] = head_rec.image or ''
-        return head_title
+    file = fields.Binary("Click On Download Link To Download Xls File",
+                         readonly = True)
+    name = fields.Char("Name", default = 'generic summary.xls')
 
-    def generate_xlsx_report(self, workbook, data, fleet_history):
-        worksheet = workbook.add_worksheet('fleet_history')
-        worksheet.set_column(0, 0, 20)
-        worksheet.set_column(1, 1, 25)
-        worksheet.set_column(2, 2, 15)
-        worksheet.set_column(3, 3, 10)
-        worksheet.set_column(4, 4, 10)
-        worksheet.set_column(5, 5, 10)
-        worksheet.set_column(6, 6, 12)
-        worksheet.set_column(7, 7, 10)
-#        result = self.get_heading()
 
-        size = workbook.add_format({'bold': True,
-                                    'font_name': 'Arial',
-                                    'font_size': '12',
-                                    'underline': True})
-        tit = workbook.add_format({'border': 2,
-                                   'font_name': 'Arial',
-                                   'font_size': '12'})
-        tot = workbook.add_format({'border': 2,
-                                   'bold': True,
-                                   'font_name': 'Arial',
-                                   'font_size': '10'})
-        border = workbook.add_format({'border': 2,
-                                      'font_name': 'Arial',
-                                      'font_size': '10'})
-#        merge_format = workbook.add_format({'border': 2, 'align': 'center'})
-        format1 = workbook.add_format({'border': 2,
-                                       'bold': True,
-                                       'font_name': 'Arial',
-                                       'font_size': '10'})
-        format1.set_bg_color('gray')
-#        worksheet.merge_range('C2:D2', 'Merged Cells', merge_format)
-#        worksheet.merge_range('C3:F3', 'Merged Cells', merge_format)
+class PrintFleetHistory(models.TransientModel):
+    _name = "print.fleet.history"
+    _description = "Print fleet History"
 
-#        file_name = result.get('image', False)
-#        if file_name:
-#            file1 = open('/tmp/' + 'logo.png', 'wb')
-#            file_data = base64.decodestring(file_name)
-#            file1.write(file_data)
-#            file1.close()
+    sel_report = fields.Selection([('history', 'Fleet History'),
+                                   ('listing', 'Fleet Listing'),
+                                   ('pending_repairs', 'Fleet Pending Repairs'),
+                                   ('pending_repair_summary', 'Fleet Pending Repair Summary'),
+                                   ('complete_stage', 'Fleet Complete Stage'),
+                                   ('nex_ser_odometer', 'Next Service by Odometer'),
+                                   ('nex_ser_date', 'Next Service by Date')],
+                                  string="Select Report")
+    
+    @api.multi
+    def print_xlsx_report(self):
+        for rep in self:
+            res = False
+            ret_dict = {
+                  'view_type': 'form',
+                  "view_mode": 'form',
+                  'res_model': 'excel.fleet.report',
+                  'type': 'ir.actions.act_window',
+                  'target': 'new',
+                  }
+            docids = self.env.context.get('active_ids')
+            obj = self.env[self.env.context.get('active_model')].browse(docids) or False
+            if rep.sel_report == 'history':
+                res = self.print_fleet_history_xlsx_report(res, obj)
+                vals = {'name': 'Fleet History.xls', 'file' : res}
+                module_rec = self.env['excel.fleet.report'].create(vals)
+                ret_dict.update({'name': _('Fleet History Report'),
+                                 'res_id' : module_rec.id})
+            elif rep.sel_report == 'listing':
+                listing_obj = self.env['report.fleet_operations.fleet.summary.xls']
+                res = listing_obj.generate_listing_xlsx_report(res, obj)
+                vals = {'name': 'Fleet Listing.xls', 'file' : res}
+                module_rec = self.env['excel.fleet.report'].create(vals)
+                ret_dict.update({'name': _('Fleet Listing Report'),
+                                 'res_id' : module_rec.id})
+            elif rep.sel_report == 'pending_repairs':
+                pending_repair_obj = self.env['report.fleet_operations.fleet.pending.repairs.xls']
+                res = pending_repair_obj.generate_pending_repairs_xlsx_report(res, obj)
+                vals = {'name': 'Fleet Pending Repairs.xls', 'file' : res}
+                module_rec = self.env['excel.fleet.report'].create(vals)
+                ret_dict.update({'name': _('Fleet Pending Repairs Report'),
+                                 'res_id' : module_rec.id})
+            elif rep.sel_report == 'pending_repair_summary':
+                pending_repair_summary_obj = self.env['report.fleet_operations.fleet.pending.xls']
+                res = pending_repair_summary_obj.generate_pending_summary_xlsx_report(res, obj)
+                vals = {'name': 'Fleet Pending Repair Summary.xls', 'file' : res}
+                module_rec = self.env['excel.fleet.report'].create(vals)
+                ret_dict.update({'name': _('Fleet Pending Repair Summary Report'),
+                                 'res_id' : module_rec.id})
+            elif rep.sel_report == 'complete_stage':
+                complete_stage_obj = self.env['report.fleet_operations.fleet.wait.collection.xls']
+                res = complete_stage_obj.generate_complete_stage_xlsx_report(res, obj)
+                vals = {'name': 'Fleet Complete Stage.xls', 'file' : res}
+                module_rec = self.env['excel.fleet.report'].create(vals)
+                ret_dict.update({'name': _('Fleet Complete Stage Report'),
+                                 'res_id' : module_rec.id})
+            elif rep.sel_report == 'nex_ser_odometer':
+                ser_odometer_obj = self.env['report.fleet_operations.next.services.by.odometer.xls']
+                res = ser_odometer_obj.generate_service_odometer_xlsx_report(res, obj)
+                vals = {'name': 'Next Service Odometer Repairs.xls', 'file' : res}
+                module_rec = self.env['excel.fleet.report'].create(vals)
+                ret_dict.update({'name': _('Next Service Odometer Repairs Report'),
+                                 'res_id' : module_rec.id})
+            elif rep.sel_report == 'nex_ser_date':
+                ser_date_obj = self.env['report.fleet_operations.next.services.by.date.xls']
+                res = ser_date_obj.generate_service_date_xlsx_report(res, obj)
+                vals = {'name': 'Next Service Date.xls', 'file' : res}
+                module_rec = self.env['excel.fleet.report'].create(vals)
+                ret_dict.update({'name': _('Next Service Date Report'),
+                                 'res_id' : module_rec.id})
+            return ret_dict
+
+    @api.multi
+    def print_fleet_history_xlsx_report(self, res=False, fleet_history=False):
+        workbook = xlwt.Workbook()
+        worksheet = workbook.add_sheet('fleet_history')
+        worksheet.col(0).width = 7000
+        worksheet.col(1).width = 7000
+        worksheet.col(2).width = 7000
+        worksheet.col(3).width = 7000
+        worksheet.col(4).width = 7000
+        worksheet.col(5).width = 7000
+        worksheet.col(6).width = 7000
+        worksheet.col(7).width = 7000
+
+        font = xlwt.Font()
+        font.bold = True
+        font.name = 'Arial'
+        font.height = 200
+        pattern = xlwt.Pattern()
+        size = xlwt.easyxf('font: bold 1; font: name 1; font: height 220')
+        tit = xlwt.easyxf('font: name 1; font: height 220')
+        tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
+
         row = 0
-        row += 1
-#        if file_name:
-#            worksheet.insert_image(row, 0, '/tmp/logo.png')
-#        worksheet.write(row, 2, result.get('name') or '', border)
-#        worksheet.write(row, 4, 'Rev. No. :', tot)
-#        worksheet.write(row, 5, result.get('rev_no') or '', border)
-#        worksheet.write(row, 6, 'Document No. :', tot)
-#        worksheet.write(row, 7, result.get('doc_no') or '', border)
         row += 1
         worksheet.write(row, 1, 'Fleet History Report', tit)
         row = 2
         for obj in fleet_history:
             row += 3
-            worksheet.write(row, 0, 'Identification :', tot)
+            worksheet.write(row, 0, 'Identification :', format1)
             worksheet.write(row, 1, obj.name or '', border)
-            worksheet.write(row, 2, 'Driver Name :', tot)
+            worksheet.write(row, 2, 'Driver Name :', format1)
             worksheet.write(row, 3, obj.driver_id and
                             obj.driver_id.name or '', border)
             row += 1
-            worksheet.write(row, 0, 'Vehicle Type :', tot)
+            worksheet.write(row, 0, 'Vehicle Type :', format1)
             worksheet.write(row, 1, obj.vechical_type_id and
                             obj.vechical_type_id.name or '', border)
-            worksheet.write(row, 2, 'Driver Contact No :', tot)
+            worksheet.write(row, 2, 'Driver Contact No :', format1)
             worksheet.write(row, 3, obj.driver_contact_no or '', border)
             row += 1
-            worksheet.write(row, 0, 'VIN No :', tot)
+            worksheet.write(row, 0, 'VIN No :', format1)
             worksheet.write(row, 1, obj.vin_sn or '', border)
-            worksheet.write(row, 2, 'Engine No :', tot)
+            worksheet.write(row, 2, 'Engine No :', format1)
             worksheet.write(row, 3, obj.engine_no or '', border)
             row += 1
-            worksheet.write(row, 0, 'Vehicle Color :', tot)
+            worksheet.write(row, 0, 'Vehicle Color :', format1)
             worksheet.write(row, 1, obj.vehical_color_id and
                             obj.vehical_color_id.name or '', border)
-            worksheet.write(row, 2, 'Last Meter :', tot)
+            worksheet.write(row, 2, 'Last Meter :', format1)
             worksheet.write(row, 3, obj.odometer or '', border)
             row += 1
-            worksheet.write(row, 0, 'Plate No :', tot)
+            worksheet.write(row, 0, 'Plate No :', format1)
             worksheet.write(row, 1, obj.license_plate or '', border)
-            worksheet.write(row, 2, 'Registration State :', tot)
+            worksheet.write(row, 2, 'Registration State :', format1)
             worksheet.write(row, 3, obj.vechical_location_id and
                             obj.vechical_location_id.name or '', border)
             row += 2
             for order in obj.work_order_ids:
                 row += 1
-                worksheet.write(row, 0, 'WO No :', tot)
+                worksheet.write(row, 0, 'WO No :', format1)
                 worksheet.write(row, 1, order.name or '', border)
-                worksheet.write(row, 2, 'Kilometer :', tot)
+                worksheet.write(row, 2, 'Kilometer :', format1)
                 worksheet.write(row, 3, order.odometer or '', border)
                 row += 1
-                worksheet.write(row, 0, 'Actual Date Issued :', tot)
+                worksheet.write(row, 0, 'Actual Date Issued :', format1)
                 worksheet.write(row, 1, order.date or '', border)
-                worksheet.write(row, 2, 'Location :', tot)
+                worksheet.write(row, 2, 'Location :', format1)
                 worksheet.write(row, 3, order.vechical_location_id and
                                 order.vechical_location_id.name or '', border)
                 row += 1
-                worksheet.write(row, 2, 'Notes :', tot)
+                worksheet.write(row, 2, 'Notes :', format1)
                 worksheet.write(row, 3, order.notes or '', border)
                 row += 2
                 worksheet.write(row, 0, 'REPAIRS PERFORMED', size)
                 row += 2
-                worksheet.write(row, 0, 'No', tot)
-                worksheet.write(row, 1, 'Repair Type', tot)
-                worksheet.write(row, 2, 'Category', tot)
+                worksheet.write(row, 0, 'No', format1)
+                worksheet.write(row, 1, 'Repair Type', format1)
+                worksheet.write(row, 2, 'Category', format1)
                 line_row = row + 1
                 line_col = 0
                 counter = 1
@@ -167,4 +208,10 @@ class FleetHistory(models.AbstractModel):
                 worksheet.write(row, 5, '**************************')
                 worksheet.write(row, 6, '**************************')
                 worksheet.write(row, 7, '**************************')
-                
+        fp = io.BytesIO()
+        workbook.save(fp)
+        fp.seek(0)
+        data = fp.read()
+        fp.close()
+        res = base64.encodestring(data)
+        return res

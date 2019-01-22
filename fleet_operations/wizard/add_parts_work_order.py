@@ -9,6 +9,7 @@ from odoo.exceptions import Warning
 
 class PartsWorkOrder(models.TransientModel):
     _name = 'parts.work.order'
+    _description = 'Parts Work Order'
 
     part_ids = fields.One2many('add.parts.work.order', 'wizard_part_id',
                                string='Used Parts')
@@ -75,6 +76,7 @@ class PartsWorkOrder(models.TransientModel):
 
 class AddPartsWorkOrder(models.TransientModel):
     _name = 'add.parts.work.order'
+    _description = 'Add Parts Work Order'
 
     wizard_part_id = fields.Many2one('parts.work.order', string='PartNo')
     product_id = fields.Many2one('product.product', string='Product No')
@@ -88,18 +90,18 @@ class AddPartsWorkOrder(models.TransientModel):
                                help='Quantity that can be used')
     vehicle_make_id = fields.Many2one('fleet.vehicle.model.brand',
                                       string='Vehicle Make')
-    product_uom = fields.Many2one('product.uom', string='UOM')
+    product_uom = fields.Many2one('uom.uom', string='UOM')
     date_issued = fields.Datetime(string='Date issued')
 
-    dummy_price_unit = fields.Float(string='Unit Cost')
+    dummy_price_unit = fields.Float(string='Dummy Unit Cost')
     dummy_name = fields.Char(string='Part Name', size=124, translate=True)
-    dummy_qty_hand = fields.Float(string='Qty on Hand', help='Qty on Hand')
-    dummy_encoded_qty = fields.Float(string='Qty for Encoding',
+    dummy_qty_hand = fields.Float(string='Dummy Qty on Hand', help='Qty on Hand')
+    dummy_encoded_qty = fields.Float(string='Dummy Qty for Encoding',
                                             help='Quantity that can be used')
     dummy_vehicle_make_id = fields.Many2one('fleet.vehicle.model.brand',
-                                            string='Vehicle Make')
-    dummy_product_uom = fields.Many2one('product.uom', string='UOM')
-    dummy_date_issued = fields.Datetime(string='Date issued')
+                                            string='Dummy Vehicle Make')
+    dummy_product_uom = fields.Many2one('uom.uom', string='Dummy UOM')
+    dummy_date_issued = fields.Datetime(string='Dummy Date issued')
 
     @api.onchange('date_issued')
     def check_onchange_part_issue_date(self):
@@ -217,6 +219,7 @@ class AddPartsWorkOrder(models.TransientModel):
 
 class EditPartsWorkOrder(models.Model):
     _name = 'edit.parts.work.order'
+    _description = 'Edit Parts Work Order'
 
     part_ids = fields.One2many('task.line', 'wizard_parts_id',
                                string='Used Parts')

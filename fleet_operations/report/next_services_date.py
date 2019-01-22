@@ -1,44 +1,46 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
+import io
+import xlwt
+import base64
 import time
 from odoo import models
 
 
 class NextServiceDate(models.AbstractModel):
     _name = 'report.fleet_operations.next.services.by.date.xls'
-    _inherit = 'report.report_xlsx.abstract'
+    _description = 'Next Service by Date'
 
-    def generate_xlsx_report(self, workbook, data, next_service):
-        worksheet = workbook.add_worksheet('next_service_by_date')
-        worksheet.set_column(0, 0, 10)
-        worksheet.set_column(1, 1, 25)
-        worksheet.set_column(2, 2, 8)
-        worksheet.set_column(3, 3, 10)
-        worksheet.set_column(4, 4, 15)
-        worksheet.set_column(5, 5, 15)
-        worksheet.set_column(6, 6, 15)
-        worksheet.set_column(7, 7, 17)
-        worksheet.set_column(8, 8, 10)
-        tot = workbook.add_format({'border': 2,
-                                   'bold': True,
-                                   'font_name': 'Arial',
-                                   'font_size': '10'})
-        border = workbook.add_format({'border': 2,
-                                      'font_name': 'Arial',
-                                      'font_size': '10'})
-        merge_format = workbook.add_format({'border': 2, 'align': 'center'})
-        format1 = workbook.add_format({'border': 2,
-                                       'bold': True,
-                                       'font_name': 'Arial',
-                                       'font_size': '10'})
-        format1.set_bg_color('gray')
-        worksheet.merge_range('C3:E3', 'Merged Cells', merge_format)
+    def generate_service_date_xlsx_report(self, res, next_service):
+        workbook = xlwt.Workbook()
+        worksheet = workbook.add_sheet('next_service_by_date')
+        worksheet.col(0).width = 5000
+        worksheet.col(1).width = 12500
+        worksheet.col(2).width = 4000
+        worksheet.col(3).width = 5000
+        worksheet.col(4).width = 7500
+        worksheet.col(5).width = 7500
+        worksheet.col(6).width = 7500
+        worksheet.col(7).width = 8500
+        worksheet.col(8).width = 5000
+        font = xlwt.Font()
+        font.bold = True
+        font.name = 'Arial'
+        font.height = 200
+        pattern = xlwt.Pattern()
+        tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
+        
+#        merge_format = workbook.add_format({'border': 2, 'align': 'center'})
+#        worksheet.merge_range('C3:E3', 'Merged Cells', merge_format)
 
         row = 0
         row += 1
         row += 1
-        worksheet.write(row, 2, 'Scheduled Maintenance By Date', merge_format)
+#        worksheet.write(row, 2, 'Scheduled Maintenance By Date', merge_format)
+        worksheet.write(row, 2, 'Scheduled Maintenance By Date')
         row += 3
         worksheet.write(row, 6, 'Date :', tot)
         worksheet.write(row, 7, time.strftime('%d-%B-%Y'), tot)
@@ -55,28 +57,35 @@ class NextServiceDate(models.AbstractModel):
         line_col = 0
         counter = 1
         for obj in next_service:
-                worksheet.write(line_row, line_col, counter, border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj.name or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj.vin_sn or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj.f_brand_id and
-                                obj.f_brand_id.name or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj.model_id and
-                                obj.model_id.name or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col,
-                                obj.last_service_date or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col,
-                                obj.next_service_date or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col,
-                                obj.vechical_location_id and
-                                obj.vechical_location_id.name or '', border)
-                line_col = 0
-                line_row += 1
-                counter += 1
-                worksheet.write(line_row, line_col, '********', border)
+            worksheet.write(line_row, line_col, counter, border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj.name or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj.vin_sn or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj.f_brand_id and
+                            obj.f_brand_id.name or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj.model_id and
+                            obj.model_id.name or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col,
+                            obj.last_service_date or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col,
+                            obj.next_service_date or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col,
+                            obj.vechical_location_id and
+                            obj.vechical_location_id.name or '', border)
+            line_col = 0
+            line_row += 1
+            counter += 1
+        worksheet.write(line_row, line_col, '********', border)
+        fp = io.BytesIO()
+        workbook.save(fp)
+        fp.seek(0)
+        data = fp.read()
+        fp.close()
+        res = base64.encodestring(data)
+        return res

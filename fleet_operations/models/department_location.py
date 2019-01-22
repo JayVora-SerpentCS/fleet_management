@@ -6,6 +6,7 @@ from odoo import models, fields
 
 class ServiceDepartment(models.Model):
     _name = 'service.department'
+    _description = 'Service Department'
 
     code = fields.Char(string='Code', size=3,
                        required=True, translate=True)

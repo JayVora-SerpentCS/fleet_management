@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
-
+import io
+import xlwt
 import base64
 from odoo import models
 
 
 class FleetPendinRepair(models.AbstractModel):
     _name = 'report.fleet_operations.fleet.pending.repairs.xls'
-    _inherit = 'report.report_xlsx.abstract'
+    _description = 'Fleet Pending Repair Report'
 
     def get_heading(self):
         head_title = {'name': '',
@@ -25,33 +26,30 @@ class FleetPendinRepair(models.AbstractModel):
                 head_title['image'] = head_rec.image or ''
         return head_title
 
-    def generate_xlsx_report(self, workbook, data, fleet_pending):
-        worksheet = workbook.add_worksheet('fleet_pending')
-        worksheet.set_column(0, 0, 10)
-        worksheet.set_column(1, 1, 15)
-        worksheet.set_column(2, 2, 15)
-        worksheet.set_column(3, 3, 25)
-        worksheet.set_column(4, 4, 5)
-        worksheet.set_column(5, 5, 10)
-        worksheet.set_column(6, 6, 15)
-        worksheet.set_column(7, 7, 10)
-        worksheet.set_column(8, 8, 5)
-
-#        result = self.get_heading()
-        tot = workbook.add_format({'border': 2,
-                                   'bold': True,
-                                   'font_name': 'Arial',
-                                   'font_size': '10'})
-        border = workbook.add_format({'border': 2,
-                                      'font_name': 'Arial',
-                                      'font_size': '10'})
-        merge_format = workbook.add_format({'border': 2, 'align': 'center'})
-        format1 = workbook.add_format({'border': 2,
-                                       'bold': True,
-                                       'font_name': 'Arial',
-                                       'font_size': '10'})
-        format1.set_bg_color('gray')
-        worksheet.merge_range('C3:D3', 'Merged Cells', merge_format)
+    def generate_pending_repairs_xlsx_report(self, res, fleet_pending):
+        workbook = xlwt.Workbook()
+        worksheet = workbook.add_sheet('fleet_pending')
+        worksheet.col(0).width = 5000
+        worksheet.col(1).width = 7500
+        worksheet.col(2).width = 7500
+        worksheet.col(3).width = 12500
+        worksheet.col(4).width = 2500
+        worksheet.col(5).width = 5000
+        worksheet.col(6).width = 7500
+        worksheet.col(7).width = 5000
+        worksheet.col(8).width = 2500
+        
+        font = xlwt.Font()
+        borders = xlwt.Borders()
+        font.bold = True
+        font.name = 'Arial'
+        font.height = 200
+        pattern = xlwt.Pattern()
+        tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        border = xlwt.easyxf('font: name 1; font: height 200')
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;')
+        
+#        worksheet.set_column('C3:D3', 'Merged Cells', merge_format)
 #        worksheet.merge_range('C3:F3', 'Merged Cells', merge_format)
 
 #        file_name = result.get('image', False)
@@ -70,7 +68,8 @@ class FleetPendinRepair(models.AbstractModel):
 #        worksheet.write(row, 7, 'Document No. :', tot)
 #        worksheet.write(row, 8, result.get('doc_no') or '', border)
         row += 1
-        worksheet.write(row, 2, 'Fleet With Pending Repairs', merge_format)
+#        worksheet.write(row, 2, 'Fleet With Pending Repairs', merge_format)
+        worksheet.write(row, 2, 'Fleet With Pending Repairs')
         row += 2
         for obj in fleet_pending:
             if obj.pending_repair_type_ids:
@@ -138,3 +137,10 @@ class FleetPendinRepair(models.AbstractModel):
                 worksheet.write(row, 5, '**************************')
                 worksheet.write(row, 6, '**************************')
                 worksheet.write(row, 7, '**************************')
+        fp = io.BytesIO()
+        workbook.save(fp)
+        fp.seek(0)
+        data = fp.read()
+        fp.close()
+        res = base64.encodestring(data)
+        return res

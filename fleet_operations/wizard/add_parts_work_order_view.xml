@@ -14,18 +14,18 @@
                        <field name="name" invisible="1"/>
                        <field name="dummy_name" readonly="1"/>
                        <field name="vehicle_make_id" invisible="1"/>
-                       <field name="dummy_vehicle_make_id" readonly="1"/>
+                       <field name="dummy_vehicle_make_id" string="Vehicle Make" readonly="1"/>
                        <field name="qty_hand" invisible="1"/>
-                       <field name="dummy_qty_hand" readonly="1"/>
+                       <field name="dummy_qty_hand" string="Qty on Hand" readonly="1"/>
                        <field name="encoded_qty" invisible="1"/>
-                       <field name="dummy_encoded_qty" readonly="1"/>
+                       <field name="dummy_encoded_qty" string="Qty for Encoding" readonly="1"/>
                        <field name='qty'/>
                        <field name='product_uom' invisible="1"/>
-                       <field name='dummy_product_uom' readonly="1"/>
+                       <field name='dummy_product_uom' string="UOM" readonly="1"/>
                        <field name='price_unit' invisible="1"/>
-                       <field name='dummy_price_unit' readonly="1"/>
+                       <field name='dummy_price_unit' string="Unit Cost" readonly="1"/>
                        <field name="date_issued" invisible="1"/>
-                       <field name="dummy_date_issued" readonly="1"/>
+                       <field name="dummy_date_issued" string="Date Issued" readonly="1"/>
                        <field name="old_part_return" />
                    </tree>
                 </field>

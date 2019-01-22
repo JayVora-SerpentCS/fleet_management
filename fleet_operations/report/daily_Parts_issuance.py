@@ -8,7 +8,7 @@ from odoo import models
 
 class DailyPartIssuance(models.AbstractModel):
     _name = 'report.fleet_operations.daily.parts.issuance.xls'
-    _inherit = 'report.report_xlsx.abstract'
+    _description = 'Daily Parts Issuance Report'
 
     def get_heading(self):
         head_title = {'name': '',

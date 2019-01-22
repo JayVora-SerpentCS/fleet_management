@@ -1,5 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+        <record id="excel_sg_leave_summary_report_wiz" model="ir.ui.view">
+        <field name="name">excel.fleet.report.wizard</field>
+        <field name="model">excel.fleet.report</field>
+        <field name="arch" type="xml">
+            <form string="Excel Export">
+                <group>
+                    <field name="name" invisible="1"/>    
+                    <field name="file" filename="name"/>
+                </group>
+                <footer>
+                    <button special="cancel" string="Cancel" colspan="2"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="fleet_print" model="ir.ui.view">
+        <field name="name">Fleet History</field>
+        <field name="model">print.fleet.history</field>
+        <field name="arch" type="xml">
+            <form string="Invoice Sales Order">
+                <p class="oe_grey">
+                    Vehicle xlsx Report.<br/>
+                    Select Option and print xlsx report for that
+                </p>
+                <group>
+                    <field name="sel_report"/>
+                </group>
+                <footer>
+                    <button name="print_xlsx_report" string="Print" type="object"
+                        class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <act_window name="Fleet xlsx Report"
+                res_model="print.fleet.history"
+                src_model="fleet.vehicle"
+                view_mode="form"
+                multi="True"
+                target="new"
+                key2="client_print_multi"
+                id="action_print_fleet_history"
+                view_id="fleet_print"
+                />
+
     <template id="repair_line_summary_qweb">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">

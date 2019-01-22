@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
+import io
+import xlwt
+import base64
 from odoo import models
 from odoo.exceptions import Warning
 
 
 class WorkorderMontltReportXlsx(models.AbstractModel):
     _name = 'report.fleet_operations.workorder.monthly.summary.xls'
-    _inherit = 'report.report_xlsx.abstract'
+    _description = 'Work Order Monthly Summary Report'
 
     def get_wo_mthly_smry(self, workorder_browse):
         wo_summary_data = []
@@ -108,41 +111,39 @@ class WorkorderMontltReportXlsx(models.AbstractModel):
                 No data Available for selected work order.")
         return wo_summary_data
 
-    def generate_xlsx_report(self, workbook, data, workorder):
+    def generate_xlsx_report(self, workorder):
+        workbook = xlwt.Workbook()
+        worksheet = workbook.add_sheet('invoice')
+        worksheet.col(0).width = 5000
+        worksheet.col(1).width = 7500
+        worksheet.col(2).width = 5000
+        worksheet.col(3).width = 5000
+        worksheet.col(4).width = 20000
+        worksheet.col(5).width = 7500
+        worksheet.col(6).width = 7500
+        worksheet.col(7).width = 20000
+        worksheet.col(8).width = 5000
+        worksheet.col(9).width = 5000
+        worksheet.col(10).width = 5000
+        worksheet.col(11).width = 7500
+        worksheet.col(12).width = 7500
+        worksheet.col(13).width = 7500
+        worksheet.col(14).width = 7500
+        worksheet.col(15).width = 7500
+        
+        font = xlwt.Font()
+        font.bold = True
+        font.name = 'Arial'
+        font.height = 200
+        pattern = xlwt.Pattern()
+        border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
 
-        worksheet = workbook.add_worksheet('invoice')
-        worksheet.set_column(0, 0, 10)
-        worksheet.set_column(1, 1, 15)
-        worksheet.set_column(2, 2, 10)
-        worksheet.set_column(3, 3, 10)
-        worksheet.set_column(4, 4, 50)
-        worksheet.set_column(5, 5, 15)
-        worksheet.set_column(6, 6, 15)
-        worksheet.set_column(7, 7, 50)
-        worksheet.set_column(8, 8, 10)
-        worksheet.set_column(9, 9, 10)
-        worksheet.set_column(10, 10, 10)
-        worksheet.set_column(11, 11, 15)
-        worksheet.set_column(12, 12, 15)
-        worksheet.set_column(13, 13, 15)
-        worksheet.set_column(14, 14, 15)
-        worksheet.set_column(15, 15, 15)
-
-        border = workbook.add_format({'border': 2,
-                                      'font_name': 'Arial',
-                                      'font_size': '10'})
-        format1 = workbook.add_format({'border': 2,
-                                       'bold': True,
-                                       'font_name': 'Arial',
-                                       'font_size': '10'})
-        format1.set_bg_color('gray')
-        merge_format = workbook.add_format({'border': 2, 'align': 'center'})
-        worksheet.merge_range('C3:E3', 'Merged Cells', merge_format)
         row = 0
         row += 1
         row += 1
         worksheet.write(row, 2,
-                        'Work Order Monthly Summary Report', merge_format)
+                        'Work Order Monthly Summary Report', border)
         row += 3
 
         worksheet.write(row, 0, 'Item No.', format1)
@@ -157,22 +158,29 @@ class WorkorderMontltReportXlsx(models.AbstractModel):
         counter = 1
         for line in self.get_wo_mthly_smry(workorder):
             if line.get('no') > 0:
-                worksheet.write(row, 0, line.get('no'), border)
-                worksheet.write(row, 1, line.get('location'), border)
-                worksheet.write(row, 2, line.get('type'), border)
-                worksheet.write(row, 3, line.get('wo'), border)
-                worksheet.write(row, 4, line.get('identification'), border)
-                worksheet.write(row, 5, line.get('vin'), border)
-                worksheet.write(row, 6, line.get('plate_no'), border)
-                worksheet.write(row, 7, line.get('work_performed'), border)
+                worksheet.write(row, 0, line.get('no'))
+                worksheet.write(row, 1, line.get('location'))
+                worksheet.write(row, 2, line.get('type'))
+                worksheet.write(row, 3, line.get('wo'))
+                worksheet.write(row, 4, line.get('identification'))
+                worksheet.write(row, 5, line.get('vin'))
+                worksheet.write(row, 6, line.get('plate_no'))
+                worksheet.write(row, 7, line.get('work_performed'))
             if line.get('no') < 0:
-                worksheet.write(row, 0, line.get('no'), border)
-                worksheet.write(row, 1, line.get('location'), border)
-                worksheet.write(row, 2, line.get('type'), border)
-                worksheet.write(row, 3, line.get('wo'), border)
-                worksheet.write(row, 4, line.get('identification'), border)
-                worksheet.write(row, 5, line.get('vin'), border)
-                worksheet.write(row, 6, line.get('plate_no'), border)
-                worksheet.write(row, 7, line.get('work_performed'), border)
+                worksheet.write(row, 0, line.get('no'))
+                worksheet.write(row, 1, line.get('location'))
+                worksheet.write(row, 2, line.get('type'))
+                worksheet.write(row, 3, line.get('wo'))
+                worksheet.write(row, 4, line.get('identification'))
+                worksheet.write(row, 5, line.get('vin'))
+                worksheet.write(row, 6, line.get('plate_no'))
+                worksheet.write(row, 7, line.get('work_performed'))
             row += 1
             counter += 1
+        fp = io.BytesIO()
+        workbook.save(fp)
+        fp.seek(0)
+        data = fp.read()
+        fp.close()
+        res = base64.encodestring(data)
+        return res

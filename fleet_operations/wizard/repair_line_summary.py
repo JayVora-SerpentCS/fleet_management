@@ -7,6 +7,7 @@ from odoo.exceptions import Warning
 
 class RepairLineSummary(models.TransientModel):
     _name = 'repair.line.summary'
+    _description = 'Repair Line Summary'
 
     date_from = fields.Date(string='Date From')
     date_to = fields.Date(string='Date To')

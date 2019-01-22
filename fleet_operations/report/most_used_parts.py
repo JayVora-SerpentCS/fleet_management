@@ -7,7 +7,7 @@ from odoo.exceptions import Warning
 
 class MostUsedPartsXlsx(models.AbstractModel):
     _name = 'report.fleet_operations.most.used.parts.xls'
-    _inherit = 'report.report_xlsx.abstract'
+    _description = 'Most Used Parts Report'
 
     most_part_used_garnd_total = 0.0
 

@@ -11,6 +11,7 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DT
 
 class WizardRenewTenancy(models.TransientModel):
     _name = 'renew.tenancy'
+    _description = 'Vehicle Renew Tenacy'
 
     start_date = fields.Datetime(
         string='Start Date')
@@ -39,7 +40,7 @@ class WizardRenewTenancy(models.TransientModel):
                     rec.end_date = datetime.strptime(rec.start_date, DT) + \
                             relativedelta(weeks=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Days':
-                    rec.end_date = datetime.strptime(rec.start_date, DT) + \
+                    rec.end_date = datetime.strptime(str(rec.start_date), DT) + \
                             relativedelta(days=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Hours':
                     rec.end_date = datetime.strptime(rec.start_date, DT) + \
@@ -55,10 +56,8 @@ class WizardRenewTenancy(models.TransientModel):
         """
         for ver in self:
             if ver.start_date and ver.end_date:
-                dt_from = datetime.strptime(
-                    ver.start_date, DT)
-                dt_to = datetime.strptime(
-                    ver.end_date, DT)
+                dt_from = ver.start_date.strftime(DT)
+                dt_to = ver.end_date.strftime(DT)
                 if dt_to < dt_from:
                     raise ValidationError(
                         'End Date Should Be Greater Than Start Date!')
@@ -79,9 +78,9 @@ class WizardRenewTenancy(models.TransientModel):
         if context.get('active_ids', []):
             for rec in self:
                 start_d = datetime.strptime(
-                    rec.start_date, DT)
+                    str(rec.start_date), DT)
                 end_d = datetime.strptime(
-                    rec.end_date, DT)
+                    str(rec.end_date), DT)
                 if start_d > end_d:
                     raise Warning(
                         _('Please Insert End Date Greater Than Start Date'))

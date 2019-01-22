@@ -29,7 +29,6 @@ class ProductProduct(models.Model):
 
 class FleetOperations(models.Model):
     _inherit = 'fleet.vehicle'
-
     _order = 'id desc'
     _rec_name = 'name'
 
@@ -120,7 +119,6 @@ class FleetOperations(models.Model):
         vehical_unique_id = ""
         for vehicle in self:
             vehical_unique_id = vehicle.name or ""
-            vehical_unique_id += "-"
             vehical_unique_id += "-"
             vehical_unique_id += vehicle.model_id and \
                 vehicle.model_id.name or ""
@@ -273,21 +271,21 @@ class FleetOperations(models.Model):
     description = fields.Text(string='About Vehicle', translate=True)
     engine_size = fields.Char(string='Engine Size', size=16)
     cylinders = fields.Integer(string='No of Cylinders')
-    front_tire_size = fields.Float(string='Size')
+    front_tire_size = fields.Float(string='Front Tire Size')
     front_tire_pressure = fields.Integer(string='Front Tire Pressure')
-    rear_tire_size = fields.Float(string='Size')
+    rear_tire_size = fields.Float(string='Rear Tire Size')
     rear_tire_pressure = fields.Integer(string='Rear Tire Pressure')
     last_service_date = fields.Date(string='Last Service', readonly=True)
     next_service_date = fields.Date(string='Next Service', readonly=True)
     last_odometer = fields.Float(string='Last Service Odometer')
     last_odometer_unit = fields.Selection([('kilometers', 'Kilometers'),
                                            ('miles', 'Miles')],
-                                          string='Odometer Unit',
+                                          string='Last Odometer Unit',
                                           help='Unit of the odometer ')
     due_odometer = fields.Float(string='Next Service Odometer', readonly=True)
     due_odometer_unit = fields.Selection([('kilometers', 'Kilometers'),
                                           ('miles', 'Miles')],
-                                         string='Odometer Unit',
+                                         string='Due Odometer Units',
                                          help='Unit of the odometer ')
     left_wiper_blade = fields.Char(string='Wiper Blade(L)', size=8)
     right_wiper_blade = fields.Char(string='Wiper Blade(R)', size=8)
@@ -314,7 +312,7 @@ class FleetOperations(models.Model):
     end_date_insurance = fields.Date(string='End Date')
     payment_deduction = fields.Float(string='Deduction')
     fleet_attach_ids = fields.One2many('ir.attachment', 'attachment_id',
-                                       string='Attachments')
+                                       string='Fleet Attachments')
     sale_purchase_attach_ids = fields.One2many('ir.attachment',
                                                'attachment_id_2',
                                                string='Attachments')
@@ -322,7 +320,7 @@ class FleetOperations(models.Model):
                             string='Last Odometer',
                             help='Odometer measure of the vehicle at the \
                                 moment of this log')
-    vehical_color_id = fields.Many2one('color.color', string='Color')
+    vehical_color_id = fields.Many2one('color.color', string='Vehicle Color')
     vechical_location_id = fields.Many2one('service.department',
                                            string='Registration State')
     vehical_division_id = fields.Many2one('vehicle.divison', string='Division')
@@ -341,7 +339,7 @@ class FleetOperations(models.Model):
                               ('rent', 'On Rent'), ('complete', 'Completed'),
                               ('released', 'Released'),
                               ('write-off', 'Write-Off')],
-                             string='State', default='inspection')
+                             string='Vehicle State', default='inspection')
     is_id_generated = fields.Boolean(string='Is Id Generated?', default=False)
     increment_odometer = fields.Float(string='Next Increment Odometer')
     last_change_status_date = fields.Date(string='Last Status Changed Date',
@@ -475,10 +473,13 @@ class FleetOperations(models.Model):
             driver = self.driver_id
             self.driver_identification_no = driver.d_id or ''
             self.driver_contact_no = driver.mobile
+        else:
+            self.driver_identification_no = ''
 
 
 class ColorHistory(models.Model):
     _name = 'color.history'
+    _description = 'Color History for Vehicle'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle")
     previous_color_id = fields.Many2one('color.color', string="Previous Color")
@@ -503,6 +504,7 @@ class ColorHistory(models.Model):
 
 class EngineHistory(models.Model):
     _name = 'engine.history'
+    _description = 'Engine History for Vehicle'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle")
     previous_engine_no = fields.Char(string='Previous Engine No')
@@ -527,6 +529,7 @@ class EngineHistory(models.Model):
 
 class VinHistory(models.Model):
     _name = 'vin.history'
+    _description = 'Vin History'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle")
     previous_vin_no = fields.Char(string='Previous Vin No', translate=True)
@@ -551,6 +554,7 @@ class VinHistory(models.Model):
 
 class TireHistory(models.Model):
     _name = 'tire.history'
+    _description = 'Tire History for Vehicle'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle")
     previous_tire_size = fields.Char(string='Previous Tire Size', size=124,
@@ -583,6 +587,7 @@ class TireHistory(models.Model):
 
 class BatteryHistory(models.Model):
     _name = 'battery.history'
+    _description = 'Battery History for Vehicle'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle")
     previous_battery_size = fields.Char(string='Previous Battery Size',
@@ -614,6 +619,7 @@ class BatteryHistory(models.Model):
 
 class PendingRepairType(models.Model):
     _name = 'pending.repair.type'
+    _description = 'Pending Repait Type'
 
     vehicle_rep_type_id = fields.Many2one('fleet.vehicle', string="Vehicle")
     repair_type_id = fields.Many2one('repair.type', string="Repair Type")
@@ -634,6 +640,7 @@ class PendingRepairType(models.Model):
 
 class VehicalDivison(models.Model):
     _name = 'vehicle.divison'
+    _description = 'Vehicle Division'
 
     code = fields.Char(string='Code', size=3, translate=True)
     name = fields.Char(string='Name', required=True, translate=True)
@@ -656,6 +663,7 @@ class VehicalDivison(models.Model):
 
 class VehicleType(models.Model):
     _name = 'vehicle.type'
+    _description = 'Vehicle Type'
 
     @api.constrains('name')
     def _check_unique_insesitive(self):
@@ -681,6 +689,7 @@ class VehicleType(models.Model):
 
 class VehicleLocation(models.Model):
     _name = 'vehicle.location'
+    _description = 'Vehicle Location'
 
     code = fields.Char(string='Code', size=3, translate=True)
     name = fields.Char(string='Name', size=64, required=True,
@@ -701,6 +710,7 @@ class VehicleLocation(models.Model):
 
 class VehicleDepartment(models.Model):
     _name = 'vehicle.department'
+    _description = 'Vehicle Department'
 
     code = fields.Char(string='Code', size=10, translate=True)
     name = fields.Char(string='Name', size=132, required=True, translate=True)
@@ -720,6 +730,7 @@ class VehicleDepartment(models.Model):
 
 class ColorColor(models.Model):
     _name = 'color.color'
+    _description = 'Colors'
 
     code = fields.Char(string='Code', size=12, translate=True)
     name = fields.Char(string='Name', size=32, required=True, translate=True)
@@ -785,6 +796,7 @@ class ResPartnerExtended(models.Model):
 
 class FleetWittenOff(models.Model):
     _name = 'fleet.wittenoff'
+    _description = 'Wittenoff Vehicles'
     _order = 'id desc'
     _rec_name = 'vehicle_fmp_id'
 
@@ -1018,6 +1030,7 @@ class FleetVehicleModelBrand(models.Model):
 
 class FleetVehicleAdvanceSearch(models.TransientModel):
     _name = 'fleet.vehicle.advance.search'
+    _description = 'Vehicle Advance Search'
     _rec_name = 'fmp_id'
 
     fmp_id = fields.Many2one('fleet.vehicle', string="Vehicle ID")
@@ -1160,10 +1173,11 @@ class FleetVehicleAdvanceSearch(models.TransientModel):
 
 class VehicleUniqueSequence(models.Model):
     _name = 'vehicle.unique.sequence'
+    _description = 'Vehicle Unique Sequence'
 
     name = fields.Char(string='Name', size=124, translate=True)
     vechical_location_id = fields.Many2one('service.department',
-                                           string='Location')
+                                           string='Location ')
     make_id = fields.Many2one('fleet.vehicle.model.brand', string='Make')
     sequence_id = fields.Many2one('ir.sequence', string='Sequence')
 
@@ -1189,6 +1203,7 @@ class VehicleUniqueSequence(models.Model):
 
 class NextIncrementNumber(models.Model):
     _name = 'next.increment.number'
+    _description = 'Next Increment Number'
 
     name = fields.Char(string='Name', size=64, translate=True)
     vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle Id')
@@ -1204,6 +1219,7 @@ class NextIncrementNumber(models.Model):
 
 class NextServiceDays(models.Model):
     _name = 'next.service.days'
+    _description = 'Next Service days'
 
     name = fields.Char(string='Name', translate=True)
     vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle Id')
@@ -1376,6 +1392,7 @@ class FleetVehicleOdometer(models.Model):
 
 class ReportHeading(models.Model):
     _name = 'report.heading'
+    _description = 'Report Heading'
 
     @api.multi
     @api.depends('image')
@@ -1427,5 +1444,6 @@ class ResCompany(models.Model):
 
 class InsuranceType(models.Model):
     _name = 'insurance.type'
+    _description = 'Vehicle Insurence Type'
 
     name = fields.Char(string='Name')

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
+import io
+import xlwt
+import base64
 from datetime import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 from odoo import models
@@ -8,21 +11,21 @@ from odoo import models
 
 class WoOver10DaysXlsx(models.AbstractModel):
     _name = 'report.fleet_operations.wo.over.daysxls'
-    _inherit = 'report.report_xlsx.abstract'
+    _description = 'Work Order Over 10 Days Report'
 
     def get_wo_over_10days(self, work_orders):
         over_orders = []
         for wk_order in work_orders:
             if wk_order.state == 'done':
-                diff = (datetime.strptime(wk_order.date_close,
+                diff = (datetime.strptime(str(wk_order.date_close),
                                           DEFAULT_SERVER_DATE_FORMAT) -
-                        datetime.strptime(wk_order.date_open,
+                        datetime.strptime(str(wk_order.date_open),
                                           DEFAULT_SERVER_DATE_FORMAT)).days
                 if diff > 10:
                     over_orders.append(wk_order)
             elif wk_order.state == 'confirm':
                 diff = (datetime.today() - datetime.strptime(
-                    wk_order.date_open, DEFAULT_SERVER_DATE_FORMAT)).days
+                    str(wk_order.date_open), DEFAULT_SERVER_DATE_FORMAT)).days
                 if diff > 10:
                     over_orders.append(wk_order)
         return over_orders
@@ -71,30 +74,32 @@ class WoOver10DaysXlsx(models.AbstractModel):
                 repair_type += repair_line.repair_type_id.name + ","
         return repair_type[:-1]
 
-    def generate_xlsx_report(self, workbook, data, services):
-        worksheet = workbook.add_worksheet('wo_over_10days')
-        worksheet.set_column(0, 0, 10)
-        worksheet.set_column(1, 1, 15)
-        worksheet.set_column(2, 2, 45)
-        worksheet.set_column(3, 3, 10)
-        worksheet.set_column(4, 4, 10)
-        worksheet.set_column(5, 5, 40)
-        worksheet.set_column(6, 6, 15)
-        worksheet.set_column(7, 7, 15)
-        tot = workbook.add_format({'border': 2,
-                                   'font_name': 'Arial',
-                                   'font_size': '12'})
-        border = workbook.add_format({'border': 2,
-                                      'font_name': 'Arial',
-                                      'font_size': '10'})
-        format1 = workbook.add_format({'border': 2,
-                                       'font_name': 'Arial',
-                                       'font_size': '12'})
-        format1.set_bg_color('gray')
+#    def generate_xlsx_report(self, workbook, data, services):
+    def generate_xlsx_report(self, services):
+        workbook = xlwt.Workbook()
+        worksheet = workbook.add_sheet('wo_over_10days')
+        worksheet.col(0).width = 5000
+        worksheet.col(1).width = 7500
+        worksheet.col(2).width = 25000
+        worksheet.col(3).width = 5000
+        worksheet.col(4).width = 5000
+        worksheet.col(5).width = 22000
+        worksheet.col(6).width = 7500
+        worksheet.col(7).width = 7500
+
+        font = xlwt.Font()
+        font.bold = True
+        font.name = 'Arial'
+        font.height = 200
+        pattern = xlwt.Pattern()
+        tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
+        
         row = 0
         row += 1
         row += 1
-        worksheet.write(row, 2, 'Work Order Over 10 Days', tot)
+        worksheet.write(row, 2, 'Work Order Over 10 Days', border)
         row += 3
         res1 = self.get_wo_over_10days(services)
 
@@ -108,18 +113,23 @@ class WoOver10DaysXlsx(models.AbstractModel):
         row += 1
         counter = 1
         for line in res1:
-            worksheet.write(row, 0, counter, border)
-            worksheet.write(row, 1, line.name or '', border)
-            worksheet.write(row, 2, self.get_identification(line.vehicle_id),
-                            border)
-            worksheet.write(row, 3, line.state, border)
-            worksheet.write(row, 3, self.get_wo_status(line.state), border)
-            worksheet.write(row, 4, line.odometer or 0, border)
+            worksheet.write(row, 0, counter)
+            worksheet.write(row, 1, line.name or '')
+            worksheet.write(row, 2, self.get_identification(line.vehicle_id))
+            worksheet.write(row, 3, line.state)
+            worksheet.write(row, 3, self.get_wo_status(line.state))
+            worksheet.write(row, 4, line.odometer or 0)
             worksheet.write(row, 5,
-                            self.get_over_wo_repair_perform(line, line.state),
-                            border)
+                            self.get_over_wo_repair_perform(line, line.state))
             worksheet.write(row, 6,
-                            line.etic and line.date_complete or '', border)
+                            line.etic and line.date_complete or '')
             row += 1
             counter += 1
         row += 5
+        fp = io.BytesIO()
+        workbook.save(fp)
+        fp.seek(0)
+        data = fp.read()
+        fp.close()
+        res = base64.encodestring(data)
+        return res

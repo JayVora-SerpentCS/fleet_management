@@ -9,6 +9,7 @@ from odoo.exceptions import Warning, UserError
 
 class RepairLineSmry(models.AbstractModel):
     _name = 'report.fleet_operations.repair_line_summary_qweb'
+    _description = 'Repair Line Summary Report'
 
     def get_repair_line_detail(self, date_range):
         work_order_obj = self.env['fleet.vehicle.log.services']
@@ -47,7 +48,7 @@ class RepairLineSmry(models.AbstractModel):
 
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         if not data.get('form') or \
                 not self.env.context.get('active_model') or \
                 not self.env.context.get('active_id'):
