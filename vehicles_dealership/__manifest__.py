@@ -11,7 +11,7 @@
     'description': """
         Vehicles Dealership Management System
      """,
-    'depends': ['fleet','sale', 'purchase'],
+    'depends': ['fleet','sale_management', 'purchase'],
     'data': [
         "views/product_views.xml",
         "views/res_company_views.xml",
