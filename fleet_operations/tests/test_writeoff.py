@@ -3,7 +3,7 @@
 
 from odoo.tests.common import TransactionCase
 from datetime import datetime
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT,DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class TestWriteOff(TransactionCase):
@@ -19,16 +19,16 @@ class TestWriteOff(TransactionCase):
         cr_dt = datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
         self.vehicle = self.vehicle_obj.create({
-                                'f_brand_id': fleet_brand.id,
-                                'model_id': fleet_model.id,
-                                'license_plate': 'MH-04-7777',
-                                'odometer': 3000,
-                                'odometer_unit': 'kilometers',
-                                'fuel_type': 'diesel'
-                                    })
+            'f_brand_id': fleet_brand.id,
+            'model_id': fleet_model.id,
+            'license_plate': 'MH-04-7777',
+            'odometer': 3000,
+            'odometer_unit': 'kilometers',
+            'fuel_type': 'diesel'
+        })
         self.writeoff = self.writeoff_obj.create({
-                                'vehicle_id': self.vehicle.id,
-                                'cost_esitmation': 2000,
-                                'write_off_type': 'general_accident',
-                                'report_date': cr_dt,
-                                    })
+            'vehicle_id': self.vehicle.id,
+            'cost_esitmation': 2000,
+            'write_off_type': 'general_accident',
+            'report_date': cr_dt,
+        })

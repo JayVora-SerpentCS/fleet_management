@@ -10,32 +10,25 @@ from odoo.tools.float_utils import float_compare
 from odoo.exceptions import Warning, ValidationError
 
 
-class service_category(models.Model):
+class ServiceCategory(models.Model):
     _name = 'service.category'
 
     name = fields.Char(string="Service Category", size=2, translate=True)
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
         raise Warning(_('You can\'t duplicate record!'))
-        return super(service_category, self).copy(default=default)
 
     @api.multi
     def unlink(self):
         raise Warning(_('You can\'t delete record !'))
-        return super(service_category, self).unlink()
 
 
-class fleet_vehicle_log_services(models.Model):
+class FleetVehicleLogServices(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
         raise Warning(_('You can\'t duplicate record!'))
-        return super(fleet_vehicle_log_services, self).copy(default=default)
 
     @api.multi
     def unlink(self):
@@ -43,7 +36,7 @@ class fleet_vehicle_log_services(models.Model):
             if rec.state != 'draft':
                 raise Warning(_('You can\'t delete Work Order which \
                                   in Confirmed or Done state!'))
-        return super(fleet_vehicle_log_services, self).unlink()
+        return super(FleetVehicleLogServices, self).unlink()
 
     @api.onchange('vehicle_id')
     def get_vehicle_info(self):
@@ -82,15 +75,15 @@ class fleet_vehicle_log_services(models.Model):
                     raise Warning(_("Confirm work order can only \
                         when vehicle status is in Inspection or Released!"))
                 work_order.vehicle_id.write({
-                         'state': 'in_progress',
-                         'last_change_status_date': date.today(),
-                         'work_order_close': False})
+                    'state': 'in_progress',
+                    'last_change_status_date': date.today(),
+                    'work_order_close': False})
             work_order.write({'state': 'confirm', 'name': sequence,
                               'date_open':
                               time.strftime(DEFAULT_SERVER_DATE_FORMAT)})
             model_data_ids = mod_obj.search([
-                         ('model', '=', 'ir.ui.view'),
-                         ('name', '=', 'continue_pending_repair_form_view')])
+                ('model', '=', 'ir.ui.view'),
+                ('name', '=', 'continue_pending_repair_form_view')])
             resource_id = model_data_ids.read(['res_id'])[0]['res_id']
             context.update({'work_order_id': work_order.id,
                             'vehicle_id': work_order.vehicle_id and
@@ -98,7 +91,7 @@ class fleet_vehicle_log_services(models.Model):
             self.env.args = cr, uid, misc.frozendict(context)
             if work_order.vehicle_id:
                 for pending_repair in \
-                            work_order.vehicle_id.pending_repair_type_ids:
+                        work_order.vehicle_id.pending_repair_type_ids:
                     if pending_repair.state == 'in-complete':
                         return {
                             'name': _('Previous Repair Types'),
@@ -127,8 +120,8 @@ class fleet_vehicle_log_services(models.Model):
                     continue
                 elif repair_line.complete is False:
                     model_data_ids = mod_obj.search([
-                         ('model', '=', 'ir.ui.view'),
-                         ('name', '=', 'pending_repair_confirm_form_view')])
+                        ('model', '=', 'ir.ui.view'),
+                        ('name', '=', 'pending_repair_confirm_form_view')])
                     resource_id = model_data_ids.read(['res_id'])[0]['res_id']
                     context.update({'work_order_id': work_order.id})
                     self.env.args = cr, uid, misc.frozendict(context)
@@ -143,7 +136,7 @@ class fleet_vehicle_log_services(models.Model):
                         'target': 'new',
                     }
         increment_ids = increment_obj.search([
-                        ('vehicle_id', '=', work_order.vehicle_id.id)])
+            ('vehicle_id', '=', work_order.vehicle_id.id)])
         if not increment_ids:
             raise Warning(_("Next Increment \
                     Odometer is not set for %s please set it from \
@@ -151,7 +144,7 @@ class fleet_vehicle_log_services(models.Model):
         if increment_ids:
             odometer_increment = increment_ids[0].number
         next_service_day_ids = next_service_day_obj.search([
-                                ('vehicle_id', '=', work_order.vehicle_id.id)])
+            ('vehicle_id', '=', work_order.vehicle_id.id)])
         if not next_service_day_ids:
             raise Warning(_("Next service days is \
                      not configured for %s please set it from \
@@ -173,24 +166,24 @@ class fleet_vehicle_log_services(models.Model):
                 str(date.today()), DEFAULT_SERVER_DATE_FORMAT) + \
                 timedelta(days=next_service_day_ids[0].days)
             work_order_vals.update({
-                    'state': 'done',
-                    'next_service_odometer': odometer_increment,
-                    'already_closed': True,
-                    'closed_by': uid,
-                    'date_close': date.today(),
-                    'next_service_date': next_service_date})
+                'state': 'done',
+                'next_service_odometer': odometer_increment,
+                'already_closed': True,
+                'closed_by': uid,
+                'date_close': date.today(),
+                'next_service_date': next_service_date})
             work_order.write(work_order_vals)
             if work_order.vehicle_id:
                 work_order.vehicle_id.write({
-                     'state': 'complete',
-                     'last_service_by_id': work_order.team_id and
-                     work_order.team_id.id or False,
-                     'last_service_date': date.today(),
-                     'next_service_date': next_service_date,
-                     'due_odometer': odometer_increment,
-                     'due_odometer_unit': work_order.odometer_unit,
-                     'last_change_status_date': date.today(),
-                     'work_order_close': True})
+                    'state': 'complete',
+                    'last_service_by_id': work_order.team_id and
+                    work_order.team_id.id or False,
+                    'last_service_date': date.today(),
+                    'next_service_date': next_service_date,
+                    'due_odometer': odometer_increment,
+                    'due_odometer_unit': work_order.odometer_unit,
+                    'last_change_status_date': date.today(),
+                    'work_order_close': True})
                 if work_order.already_closed:
                     for repair_line in work_order.repair_line_ids:
                         for pending_repair_line in \
@@ -205,19 +198,17 @@ class fleet_vehicle_log_services(models.Model):
 
     @api.multi
     def close_reopened_wo(self):
-        """
-        This method is used to update the existing shipment moves
-        if WO parts are updated in terms of quantities or complete parts.
-        """
+        """Method is used to update the existing shipment moves if WO parts \
+        are updated in terms of quantities or complete parts."""
         picking_obj = self.env['stock.picking']
         stock_move_obj = self.env['stock.move']
         location_obj = self.env['stock.location']
         stock_wh = self.env['stock.warehouse']
         delivery_dict = {}
         out_pick_type = self.env['stock.picking.type'].search([
-                                           ('code', '=', 'outgoing')], limit=1)
+            ('code', '=', 'outgoing')], limit=1)
         in_pick_type = self.env['stock.picking.type'].search([
-                                           ('code', '=', 'incoming')], limit=1)
+            ('code', '=', 'incoming')], limit=1)
         for work_order in self:
             ret = False
             mov = False
@@ -230,7 +221,7 @@ class fleet_vehicle_log_services(models.Model):
             if ship_id:
                 # If existing parts Updated
                 move_ids = stock_move_obj.search([
-                                      ('picking_id', '=', ship_id.id)])
+                    ('picking_id', '=', ship_id.id)])
                 if move_ids:
                     self._cr.execute("delete from stock_move \
                                 where id IN %s", (tuple(move_ids.ids),))
@@ -260,17 +251,17 @@ class fleet_vehicle_log_services(models.Model):
                         if dest_loc:
                             dest_loc = dest_loc.id
                     delivery_dict.update({
-                          'origin': work_order.name or '',
-                          'picking_type_id': out_pick_type and
-                          out_pick_type.ids[0] or False,
-                          'location_id': src_loc or False,
-                          'location_dest_id': dest_loc or False
-                      })
+                        'origin': work_order.name or '',
+                        'picking_type_id': out_pick_type and
+                        out_pick_type.ids[0] or False,
+                        'location_id': src_loc or False,
+                        'location_dest_id': dest_loc or False
+                    })
                     ship_id = picking_obj.create(delivery_dict)
             if scrap_pick_id:
                 # If a product is already returned we'll update it.
                 move_ids = stock_move_obj.search([
-                                  ('picking_id', '=', scrap_pick_id.id)])
+                    ('picking_id', '=', scrap_pick_id.id)])
                 if move_ids:
                     self._cr.execute("delete from stock_move where \
                                 id IN %s", (tuple(move_ids.ids),))
@@ -323,16 +314,16 @@ class fleet_vehicle_log_services(models.Model):
                             if dest_loc:
                                 dest_loc = dest_loc.id
                         delivery_dict.update({
-                              'origin': work_order.name or '',
-                              'picking_type_id': out_pick_type and
-                              out_pick_type.ids[0] or False,
-                              'location_id': src_loc or False,
-                              'location_dest_id': dest_loc or False
-                          })
+                            'origin': work_order.name or '',
+                            'picking_type_id': out_pick_type and
+                            out_pick_type.ids[0] or False,
+                            'location_id': src_loc or False,
+                            'location_dest_id': dest_loc or False
+                        })
                         scrap_pick_id = picking_obj.create(delivery_dict)
                     ret = True
                     scrap_dest_loc_ids = location_obj.search(
-                                             [("name", "=", "Scrapped")])
+                        [("name", "=", "Scrapped")])
                     scrap_source_loc_id = False
                     if not scrap_dest_loc_ids:
                         raise Warning(_("There is no \
@@ -340,7 +331,7 @@ class fleet_vehicle_log_services(models.Model):
                                 define location with Scrapped!"))
                     if work_order.team_id:
                         scrap_source_loc_id = work_order.team_id and \
-                                        work_order.team_id.id or False
+                            work_order.team_id.id or False
                     else:
                         raise Warning(_("There is no team \
                                 selected as source location, as old parts are \
@@ -377,7 +368,7 @@ class fleet_vehicle_log_services(models.Model):
                     # IF none of the parts are being
                     # returned remove the incoming shipment
                     work_order.write(
-                         {'old_parts_incoming_ship_ids': [(6, 0, [])]})
+                        {'old_parts_incoming_ship_ids': [(6, 0, [])]})
             if not flag and mov:
                 # IF it's a new shipment make it done
                 ship_id.signal_workflow('button_confirm')
@@ -390,7 +381,7 @@ class fleet_vehicle_log_services(models.Model):
                 scrap_pick_id.force_assign()
                 scrap_pick_id.action_done()
                 work_order.write(
-                     {'old_parts_incoming_ship_ids': [(4, scrap_pick_id.id)]})
+                    {'old_parts_incoming_ship_ids': [(4, scrap_pick_id.id)]})
         return True
 
     @api.multi
@@ -427,25 +418,23 @@ class fleet_vehicle_log_services(models.Model):
 
     @api.multi
     def encode_history(self):
-        """
-        This method is used to create the Encode Qty
-        History for Team Trip from WO
-        ------------------------------------------------------
-        """
+        """Method is used to create the Encode Qty
+        History for Team Trip from WO."""
+
         wo_part_his_obj = self.env['workorder.parts.history.details']
         if self._context.get('team_trip', False):
             team_trip = self._context.get('team_trip', False)
             work_order = self._context.get('workorder', False)
             # If existing parts Updated
             wo_part_his_ids = wo_part_his_obj.search([
-                      ('team_id', '=', team_trip and team_trip.id or False),
-                      ('wo_id', '=', work_order and work_order.id or False)])
+                ('team_id', '=', team_trip and team_trip.id or False),
+                ('wo_id', '=', work_order and work_order.id or False)])
             if wo_part_his_ids:
                 wo_part_his_ids.unlink()
             wo_part_dict = {}
             for part in work_order.parts_ids:
                 wo_part_dict[part.product_id.id] = \
-                            {'wo_en_qty': part.encoded_qty, 'qty': part.qty}
+                    {'wo_en_qty': part.encoded_qty, 'qty': part.qty}
             for t_part in team_trip.allocate_part_ids:
                 if t_part.product_id.id in wo_part_dict.keys():
                     new_wo_encode_qty = \
@@ -470,19 +459,8 @@ class fleet_vehicle_log_services(models.Model):
 
     @api.multi
     def action_reopen(self):
-#        current_date = datetime.strptime(
-#            datetime.strftime(date.today(), DEFAULT_SERVER_DATE_FORMAT),
-#            DEFAULT_SERVER_DATE_FORMAT)
-#        order_reopen_obj = self.env['work.order.reopen.days']
         for order in self:
             if order.vehicle_id:
-#                reopen_ids = order_reopen_obj.search([
-#                    ('vehicle_id', '=', order.vehicle_id.id)])
-#                if not reopen_ids:
-#                    raise Warning(_('Work Order Re-open \
-#                    Days is not configured for %s please configure it \
-#                    from configuration menu.') % (order.vehicle_id.name))
-#                open_days = reopen_ids[0]
                 if order.vehicle_id.state == 'write-off':
                     raise Warning(_("You can\'t Re-open this \
                             work order which vehicle is in write-off state!"))
@@ -497,15 +475,7 @@ class fleet_vehicle_log_services(models.Model):
                                     is in Inspection or Released!"))
                 order.vehicle_id.write({'work_order_close': False,
                                         'state': 'in_progress'})
-#            close_date = datetime.strptime(order.date_close,
-#                                           DEFAULT_SERVER_DATE_FORMAT)
             self.write({'state': 'confirm'})
-#            if abs((current_date - close_date).days) <= open_days.days:
-#                self.write({'state': 'confirm'})
-#            else:
-#                raise Warning(_("This Work order is closed \
-#                        more than %s days I can\'t be \
-#                        re-open again!" % (open_days.days)))
         return True
 
     @api.multi
@@ -518,38 +488,34 @@ class fleet_vehicle_log_services(models.Model):
 
     @api.multi
     def write(self, vals):
-        if not self._context:
-            self._context = {}
         for work_order in self:
             if work_order.vehicle_id:
-                vals.update(
-                    {
-                        'fmp_id': work_order.vehicle_id and
-                        work_order.vehicle_id.name or "",
-                        'vechical_type_id': work_order.vehicle_id and
-                        work_order.vehicle_id.vechical_type_id and
-                        work_order.vehicle_id.vechical_type_id.id or False,
-                        'purchaser_id': work_order.vehicle_id and
-                        work_order.vehicle_id.driver_id and
-                        work_order.vehicle_id.driver_id.id or False,
-                        'main_type': work_order.vehicle_id.main_type,
-                        'f_brand_id': work_order.vehicle_id and
-                        work_order.vehicle_id.f_brand_id and
-                        work_order.vehicle_id.f_brand_id.id or False,
-                        'vehical_division_id': work_order.vehicle_id and
-                        work_order.vehicle_id.vehical_division_id and
-                        work_order.vehicle_id.vehical_division_id.id or False,
-                        'vechical_location_id': work_order.vehicle_id and
-                        work_order.vehicle_id.vechical_location_id and
-                        work_order.vehicle_id.vechical_location_id.id or False,
-                        })
-        res = super(fleet_vehicle_log_services, self).write(vals)
-        return res
+                vals.update({
+                    'fmp_id': work_order.vehicle_id and
+                    work_order.vehicle_id.name or "",
+                    'vechical_type_id': work_order.vehicle_id and
+                    work_order.vehicle_id.vechical_type_id and
+                    work_order.vehicle_id.vechical_type_id.id or False,
+                    'purchaser_id': work_order.vehicle_id and
+                    work_order.vehicle_id.driver_id and
+                    work_order.vehicle_id.driver_id.id or False,
+                    'main_type': work_order.vehicle_id.main_type,
+                    'f_brand_id': work_order.vehicle_id and
+                    work_order.vehicle_id.f_brand_id and
+                    work_order.vehicle_id.f_brand_id.id or False,
+                    'vehical_division_id': work_order.vehicle_id and
+                    work_order.vehicle_id.vehical_division_id and
+                    work_order.vehicle_id.vehical_division_id.id or False,
+                    'vechical_location_id': work_order.vehicle_id and
+                    work_order.vehicle_id.vechical_location_id and
+                    work_order.vehicle_id.vechical_location_id.id or False,
+                })
+        return super(FleetVehicleLogServices, self).write(vals)
 
     @api.model
     def _get_location(self):
         location_id = self.env['stock.location'].search([
-                                     ('name', '=', 'Vehicle')])
+            ('name', '=', 'Vehicle')])
         if location_id:
             return location_id.ids[0]
         return False
@@ -565,7 +531,6 @@ class fleet_vehicle_log_services(models.Model):
                                                     'ir_mail_server_service')
         self._cr.execute("SELECT id FROM fleet_vehicle WHERE \
                             next_service_date = DATE(NOW()) + 1")
-#        due_odometer <= odometer OR
         vehicle_ids = [i[0] for i in self._cr.fetchall() if i]
         email_from_brw = server_obj.browse(record_obj[1])
         if res:
@@ -599,7 +564,7 @@ class fleet_vehicle_log_services(models.Model):
                     raise Warning(_("New work order can only be \
                             generated either vehicle status is in \
                             Inspection or Released!"))
-        res = super(fleet_vehicle_log_services, self).default_get(fields)
+        res = super(FleetVehicleLogServices, self).default_get(fields)
         repair_type_ids = repair_type_obj.search([])
         if not repair_type_ids:
             raise Warning(_("There is no data for \
@@ -666,12 +631,11 @@ class fleet_vehicle_log_services(models.Model):
                     Greater Than Issue Date.')
 
     _inherit = 'fleet.vehicle.log.services'
-
     _order = 'id desc'
 
     wono_id = fields.Integer(string='WONo',
                              help="Take this field for data migration")
-    id = fields.Integer(string='ID')
+    # id = fields.Integer(string='ID')
     purchaser_id = fields.Many2one('res.partner', string='Purchaser')
     name = fields.Char(string='Work Order', size=32, readonly=True,
                        translate=True)
@@ -744,7 +708,9 @@ class fleet_vehicle_log_services(models.Model):
                                  string='Main Type')
     f_brand_id = fields.Many2one('fleet.vehicle.model.brand', string='Make')
     vehical_division_id = fields.Many2one('vehicle.divison', string='Division')
-    vechical_location_id = fields.Many2one('service.department',
+    # vechical_location_id = fields.Many2one('service.department',
+    #                                        string='Registration State')
+    vechical_location_id = fields.Many2one('res.country.state',
                                            string='Registration State')
     odometer = fields.Float(compute='_get_odometer', inverse='_set_odometer',
                             string='Last Odometer',
@@ -752,20 +718,20 @@ class fleet_vehicle_log_services(models.Model):
                                 moment of this log')
 
     def _get_odometer(self):
-        FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
+        fleet_odometer_obj = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = FleetVehicalOdometer.search([
+            vehicle_odometer = fleet_odometer_obj.search([
                 ('vehicle_id', '=', record.vehicle_id.id)], limit=1,
-                                                           order='value desc')
+                order='value desc')
             if vehicle_odometer:
                 record.odometer = vehicle_odometer.value
             else:
                 record.odometer = 0
 
     def _set_odometer(self):
-        FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
+        fleet_odometer_obj = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = FleetVehicalOdometer.search(
+            vehicle_odometer = fleet_odometer_obj.search(
                 [('vehicle_id', '=', record.vehicle_id.id)],
                 limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
@@ -775,14 +741,14 @@ class fleet_vehicle_log_services(models.Model):
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
                         'vehicle_id': record.vehicle_id.id}
-                FleetVehicalOdometer.create(data)
+                fleet_odometer_obj.create(data)
 
     @api.onchange('team_id')
     def get_team_trip(self):
         if self.team_id:
             trip_ids = self.env['fleet.team'].search([
-                         ("destination_location_id", "=", self.team_id.id),
-                         ("state", "=", "close")])
+                ("destination_location_id", "=", self.team_id.id),
+                ("state", "=", "close")])
             if trip_ids:
                 for t_trip in trip_ids:
                     if not t_trip.is_work_order_done:
@@ -790,28 +756,23 @@ class fleet_vehicle_log_services(models.Model):
                         break
 
 
-class fleet_team(models.Model):
+class FleetTeam(models.Model):
     _name = 'fleet.team'
-
     _order = 'id desc'
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
         raise Warning(_('You can\'t duplicate record!'))
-        return super(fleet_team, self).copy(default=default)
 
     @api.multi
     def unlink(self):
         raise Warning(_('You can\'t delete record !'))
-        return super(fleet_team, self).unlink()
 
     @api.multi
     def _get_wo_done(self):
         """
-        This method will indicate that the encoded qty for
-        this contract team trip is issued.
+        Method will indicate that the encoded qty for this contract team trip
+        is issued.
         ------------------------------------------------------------------
         @param self : object pointer
         """
@@ -844,7 +805,7 @@ class fleet_team(models.Model):
     @api.model
     def _default_source_location_id(self):
         stock_location_ids = self.env['stock.location'].search([
-                                            ('name', '=', 'Stock')])
+            ('name', '=', 'Stock')])
         if stock_location_ids:
             stock_location_ids = stock_location_ids.ids[0]
         else:
@@ -855,7 +816,7 @@ class fleet_team(models.Model):
                              help="Take this field for data migration")
     destination_location_id = fields.Many2one('stock.location',
                                               string="Team (Location)")
-    name = fields.Char(string='Name',  size=64, translate=True)
+    name = fields.Char(string='Name', size=64, translate=True)
     trip_date = fields.Date(string='Trip Date')
     return_date = fields.Date(string='Return Date')
     close_date = fields.Date(string='Close Date')
@@ -892,13 +853,11 @@ class fleet_team(models.Model):
     total_parts_line = fields.Integer(compute="_get_total_parts_line",
                                       string='Total Parts')
 
-    _order = 'id desc'
-
     @api.multi
     def update_incoming_shipment_from_migration_script(self):
         for order in self:
             order.name = order.destination_location_id and \
-                        order.destination_location_id.name or ''
+                order.destination_location_id.name or ''
             for outgoing_shipment in order.outgoing_ship_ids:
                 outgoing_shipment.write({'date': order.trip_date,
                                          'min_date': order.trip_date})
@@ -910,9 +869,9 @@ class fleet_team(models.Model):
                     for move_line_out in outgoing_shipment.move_lines:
                         if move_line_out.product_id.id == parts.product_id.id:
                             move_line_out.write({
-                                 'date': parts.issue_date or False,
-                                 'create_date': parts.issue_date or False,
-                                 'date_expected': parts.issue_date or False})
+                                'date': parts.issue_date or False,
+                                'create_date': parts.issue_date or False,
+                                'date_expected': parts.issue_date or False})
                 for incoming_shipment in order.incoming_ship_ids:
                     for move_line_in in incoming_shipment.move_lines:
                         if move_line_in.product_id.id == parts.product_id.id:
@@ -950,7 +909,7 @@ class fleet_team(models.Model):
         inc_dict = {}
         flag = False
         in_pick_type = self.env['stock.picking.type'].search([
-                                          ('code', '=', 'incoming')])
+            ('code', '=', 'incoming')])
         for team in self:
             if team.state != 'sent':
                 raise Warning(_("Please send your trip \
@@ -964,7 +923,7 @@ class fleet_team(models.Model):
                 team_in_pick_id = team.incoming_ship_ids[0].id
                 if team.incoming_ship_ids[0].move_lines:
                     team.incoming_ship_ids[0].move_lines.write(
-                                           {'state': 'draft'})
+                        {'state': 'draft'})
                     team.incoming_ship_ids[0].move_lines.unlink()
                 flag = True
             for line in team.allocate_part_ids:
@@ -973,25 +932,25 @@ class fleet_team(models.Model):
                             'state': 'returned', 'is_delete_line': True})
                 if used_qty > 0:
                     move_lines_list.append((0, 0, {
-                      'product_id': line.product_id and
-                      line.product_id.id or False,
-                      'name': line.name or '',
-                      'product_uom_qty': used_qty,
-                      'product_uom': line.product_id and
-                      line.product_id.uom_id and
-                      line.product_id.uom_id.id or False,
-                      'location_id': team.destination_location_id and
-                      team.destination_location_id.id or False,
-                      'location_dest_id':
-                      line.product_id.property_stock_inventory.id,
-                      'create_date': line.issue_date
-                      }))
+                        'product_id': line.product_id and
+                        line.product_id.id or False,
+                        'name': line.name or '',
+                        'product_uom_qty': used_qty,
+                        'product_uom': line.product_id and
+                        line.product_id.uom_id and
+                        line.product_id.uom_id.id or False,
+                        'location_id': team.destination_location_id and
+                        team.destination_location_id.id or False,
+                        'location_dest_id':
+                        line.product_id.property_stock_inventory.id,
+                        'create_date': line.issue_date
+                    }))
             if move_lines_list:
                 if not flag:
                     inc_dict.update({
-                         'move_lines': move_lines_list,
-                         'origin': "Used by - " + team.name or '',
-                         'picking_type_id': in_pick_type and
+                        'move_lines': move_lines_list,
+                        'origin': "Used by - " + team.name or '',
+                        'picking_type_id': in_pick_type and
                                     in_pick_type.ids[0] or False})
                     inc_ship_id = pick_obj.create(inc_dict)
                     team.write({'incoming_ship_ids': [(4, inc_ship_id.id)]})
@@ -1014,8 +973,7 @@ class fleet_team(models.Model):
 
     @api.multi
     def open_trip(self):
-        for rec in self:
-            rec.state = 'open'
+        self.write({'state': 'open'})
 
     @api.multi
     def close_trip(self):
@@ -1026,7 +984,7 @@ class fleet_team(models.Model):
         flag = False
         move_lines_list = []
         in_pick_type = self.env['stock.picking.type'].search([
-                                         ('code', '=', 'incoming')])
+            ('code', '=', 'incoming')])
         for team in self:
             if not team.is_return:
                 raise Warning(_("Please Fill the Used Part \
@@ -1035,49 +993,49 @@ class fleet_team(models.Model):
                 team.allocate_part_ids.write({'state': 'close'})
             for part_rec in team.allocate_part_ids:
                 trip_encoded_ids = trip_encoded_obj.search([
-                                ('team_id', '=', team.id),
-                                ('product_id', '=', part_rec.product_id.id)])
+                    ('team_id', '=', team.id),
+                    ('product_id', '=', part_rec.product_id.id)])
                 if trip_encoded_ids:
                     trip_encoded_ids.write({'used_qty': part_rec.qty_used})
                 else:
                     vals = {
-                            'team_id': team.id,
-                            'product_id': part_rec.product_id.id,
-                            'used_qty': part_rec.qty_used,
-                            'part_name': part_rec.name
-                            }
+                        'team_id': team.id,
+                        'product_id': part_rec.product_id.id,
+                        'used_qty': part_rec.qty_used,
+                        'part_name': part_rec.name
+                    }
                     trip_encoded_obj.create(vals)
 
             if team.incoming_rem_ship_ids:
                 team_in_rem_pick_id = team.incoming_rem_ship_ids[0].id
                 if team.incoming_rem_ship_ids[0].move_lines:
                     team.incoming_rem_ship_ids[0].move_lines.write(
-                                               {'state': 'draft'})
+                        {'state': 'draft'})
                     team.incoming_rem_ship_ids[0].move_lines.unlink()
                 flag = True
             for line in team.allocate_part_ids:
                 if line.qty_remaining > 0:
                     move_lines_list.append((0, 0, {
-                      'product_id': line.product_id and
-                      line.product_id.id or False,
-                      'name': line.name or '',
-                      'product_uom_qty': line.qty_remaining,
-                      'product_uom': line.product_id and
-                      line.product_id.uom_id and
-                      line.product_id.uom_id.id or False,
-                      'location_id': team.destination_location_id and
-                      team.destination_location_id.id or False,
-                      'location_dest_id': team.source_location_id.id,
-                      'create_date': line.issue_date
-                      }))
+                        'product_id': line.product_id and
+                        line.product_id.id or False,
+                        'name': line.name or '',
+                        'product_uom_qty': line.qty_remaining,
+                        'product_uom': line.product_id and
+                        line.product_id.uom_id and
+                        line.product_id.uom_id.id or False,
+                        'location_id': team.destination_location_id and
+                        team.destination_location_id.id or False,
+                        'location_dest_id': team.source_location_id.id,
+                        'create_date': line.issue_date
+                    }))
             if move_lines_list:
                 if not flag:
                     inc_dict.update({
-                         'move_lines': move_lines_list,
-                         'picking_type_id': in_pick_type and
-                         in_pick_type.ids[0] or False,
-                         'origin': "Remaining Qty return by - " +
-                         team.name or ''})
+                        'move_lines': move_lines_list,
+                        'picking_type_id': in_pick_type and
+                        in_pick_type.ids[0] or False,
+                        'origin': "Remaining Qty return by - " +
+                        team.name or ''})
                     inc_ship_id = inc_obj.create(inc_dict)
                     team.write({'incoming_rem_ship_ids':
                                 [(4, inc_ship_id.id)]})
@@ -1101,30 +1059,10 @@ class fleet_team(models.Model):
 
     @api.multi
     def reopen_trip(self):
-#        order_reopen_obj = self.env['work.order.reopen.days']
-#        current_date = datetime.strptime(
-#            datetime.strftime(date.today(), DEFAULT_SERVER_DATE_FORMAT),
-#            DEFAULT_SERVER_DATE_FORMAT)
         for trip in self:
-#            reopen_ids = order_reopen_obj.search([
-#                ('vehicle_id', '=', trip.vehicle_id.id)])
-#            if not reopen_ids:
-#                raise Warning(_('Work Order Re-open \
-#                    Days is not configured for %s please configure it \
-#                    from configuration menu.') % (trip.vehicle_id.name))
-#            open_days = reopen_ids and reopen_ids[0] or False
-#            close_date = datetime.strptime(trip.close_date,
-#                                           DEFAULT_SERVER_DATE_FORMAT)
             trip.state = 'open'
-#            if abs((current_date - close_date).days) <= open_days.days:
-#                trip.state = 'open'
-#            else:
-#                raise Warning(_("This Work order is closed \
-#                         more than %s days I can\'t be \
-#                         re-open again!" % (open_days.days)))
             if trip.allocate_part_ids:
                 trip.allocate_part_ids.write({'state': 'open'})
-        return True
 
     @api.onchange('destination_location_id')
     def onchange_get_name(self):
@@ -1146,15 +1084,15 @@ class fleet_team(models.Model):
                     assign_part_obj.onchange_product_id()
                     part_assign_vals = {}
                     if prod.in_active_part:
-                        part_assign_vals = \
-                            {'product_id': False,
-                             'name': False, 'vehicle_make_id': False,
-                             'qty_on_hand': False, 'qty_on_truck': False,
-                             'qty_used': 0.0, 'qty_missing': 0.0,
-                             'qty_damage': 0.0, 'qty_remaining': False,
-                             'remark': False, 'price_unit': False,
-                             'date_issued': False, 'old_part_return': False,
-                             }
+                        part_assign_vals = {
+                            'product_id': False,
+                            'name': False, 'vehicle_make_id': False,
+                            'qty_on_hand': False, 'qty_on_truck': False,
+                            'qty_used': 0.0, 'qty_missing': 0.0,
+                            'qty_damage': 0.0, 'qty_remaining': False,
+                            'remark': False, 'price_unit': False,
+                            'date_issued': False, 'old_part_return': False,
+                        }
                         raise Warning(_("You can\'t select \
                                 part which is In-Active!"))
                     elif prod.qty_available <= 0:
@@ -1168,8 +1106,8 @@ class fleet_team(models.Model):
                             'name': prod.name or '',
                             'vehicle_make_id': prod.vehicle_make_id and
                             prod.vehicle_make_id.id or False,
-                            'qty_on_hand': prod.qty_available or 0.0}
-
+                            'qty_on_hand': prod.qty_available or 0.0
+                        }
                     part_assign_vals.update({
                         'product_id': prod.id,
                         'qty_with_team': prod.qty_available,
@@ -1181,8 +1119,9 @@ class fleet_team(models.Model):
             self.allocate_part_ids = part_assign_list
 
 
-class workorder_parts_history_details(models.Model):
+class WorkorderPartsHistoryDetails(models.Model):
     _name = 'workorder.parts.history.details'
+    _order = 'used_date desc'
 
     team_id = fields.Many2one('fleet.team', string='Contract Trip')
     product_id = fields.Many2one('product.product', string='Part No',
@@ -1205,10 +1144,8 @@ class workorder_parts_history_details(models.Model):
     issued_by = fields.Many2one('res.users', string='Issued by',
                                 help='The user who would issue the parts')
 
-    _order = 'used_date desc'
 
-
-class trip_parts_history_details(models.Model):
+class TripPartsHistoryDetails(models.Model):
     _name = 'trip.encoded.history'
 
     @api.multi
@@ -1221,7 +1158,7 @@ class trip_parts_history_details(models.Model):
                 query = "select sum(used_qty) from \
                             workorder_parts_history_details where \
                             product_id=" + str(parts_load.product_id.id) + \
-                            " and team_id=" + str(parts_load.team_id.id)
+                    " and team_id=" + str(parts_load.team_id.id)
                 self._cr.execute(query)
                 result = self._cr.fetchone()
                 total__encode_qty = result and result[0] or 0.0
@@ -1256,7 +1193,7 @@ class trip_parts_history_details(models.Model):
                                  help='The Quantity which is available to use')
 
 
-class trip_parts_history_details_temp(models.Model):
+class TripPartsHistoryDetailsTemp(models.Model):
     _name = 'trip.encoded.history.temp'
 
     team_id = fields.Many2one('fleet.team', string='Contract Trip')
@@ -1268,9 +1205,8 @@ class trip_parts_history_details_temp(models.Model):
                                     string="Work Order")
 
 
-class stock_picking(models.Model):
+class StockPicking(models.Model):
     _inherit = 'stock.picking'
-
     _order = 'id desc'
 
     out_team_id = fields.Many2one('fleet.team', string='Contact Team Trip')
@@ -1291,7 +1227,7 @@ class stock_picking(models.Model):
             vals.update({'origin': vals['origin'][1:]})
         if vals.get('origin', False) and vals['origin'][-1] == ':':
             vals.update({'origin': vals['origin'][:-1]})
-        return super(stock_picking, self).create(vals)
+        return super(StockPicking, self).create(vals)
 
     @api.multi
     def write(self, vals):
@@ -1299,12 +1235,11 @@ class stock_picking(models.Model):
             vals.update({'origin': vals['origin'][1:]})
         if vals.get('origin', False) and vals['origin'][-1] == ':':
             vals.update({'origin': vals['origin'][:-1]})
-        return super(stock_picking, self).write(vals)
+        return super(StockPicking, self).write(vals)
 
     @api.multi
     def unlink(self):
         raise Warning(_('You can\'t delete record !'))
-        return super(stock_picking, self).unlink()
 
     @api.multi
     def do_partial_from_migration_script(self):
@@ -1377,21 +1312,21 @@ class stock_picking(models.Model):
             else:
                 seq_obj_name = 'stock.picking.' + picking_type
                 move_id = stock_move.create({
-                        'name': self.env['ir.sequence'].next_by_code(
-                                                             seq_obj_name),
-                        'product_id': wizard_line.product_id and
-                        wizard_line.product_id.id or False,
-                        'product_qty': wizard_line.product_qty,
-                        'product_uom': wizard_line.product_uom and
-                        wizard_line.product_uom.id or False,
-                        'prodlot_id': wizard_line.prodlot_id and
-                        wizard_line.prodlot_id.id or False,
-                        'location_id': wizard_line.location_id and
-                        wizard_line.location_id.id or False,
-                        'location_dest_id': wizard_line.location_dest_id and
-                        wizard_line.location_dest_id.id or False,
-                        'picking_id': partial and partial.id or False
-                        })
+                    'name': self.env['ir.sequence'].next_by_code(
+                        seq_obj_name),
+                    'product_id': wizard_line.product_id and
+                    wizard_line.product_id.id or False,
+                    'product_qty': wizard_line.product_qty,
+                    'product_uom': wizard_line.product_uom and
+                    wizard_line.product_uom.id or False,
+                    'prodlot_id': wizard_line.prodlot_id and
+                    wizard_line.prodlot_id.id or False,
+                    'location_id': wizard_line.location_id and
+                    wizard_line.location_id.id or False,
+                    'location_dest_id': wizard_line.location_dest_id and
+                    wizard_line.location_dest_id.id or False,
+                    'picking_id': partial and partial.id or False
+                })
                 move_id.action_confirm()
             partial_data['move%s' % (move_id.id)] = {
                 'product_id': wizard_line.product_id and
@@ -1411,18 +1346,17 @@ class stock_picking(models.Model):
             if (picking_type == 'in') and \
                     (wizard_line.product_id.cost_method == 'average'):
                 partial_data['move%s' % (wizard_line.id)].update(
-                         product_price=wizard_line.product_id.standard_price,
-                         product_currency=product_currency_id or
-                         picking_currency_id or False)
+                    product_price=wizard_line.product_id.standard_price,
+                    product_currency=product_currency_id or
+                    picking_currency_id or False)
         partial.do_partial(partial_data)
         if partial.purchase_id:
             partial.purchase_id.write({'state': 'done'})
         return True
 
 
-class stock_move(models.Model):
+class StockMove(models.Model):
     _inherit = 'stock.move'
-
     _order = 'id desc'
 
     type = fields.Many2one(related='picking_id.picking_type_id',
@@ -1432,9 +1366,7 @@ class stock_move(models.Model):
 
     @api.onchange('picking_type_id', 'location_id', 'location_dest_id')
     def onchange_move_type(self):
-        """
-        On change of move type gives sorce and destination location.
-        """
+        """On change of move type gives sorce and destination location."""
         if not self.location_id and not self.location_dest_id:
             mod_obj = self.env['ir.model.data']
             location_source_id = 'stock_location_stock'
@@ -1456,36 +1388,36 @@ class stock_move(models.Model):
 
     @api.model
     def _default_location_source(self):
-        location_id = super(stock_move, self)._default_location_source()
+        location_id = super(StockMove, self)._default_location_source()
         if self._context.get('stock_warehouse_id', False):
             warehouse_pool = self.env['stock.warehouse']
             for rec in warehouse_pool.browse(
-                                 [self._context['stock_warehouse_id']]):
+                    [self._context['stock_warehouse_id']]):
                 if rec.lot_stock_id:
                     location_id = rec.lot_stock_id.id
         return location_id
 
     @api.model
     def _default_location_destination(self):
-        location_dest_id = super(stock_move, self)._default_location_source()
+        location_dest_id = super(StockMove, self)._default_location_source()
         if self._context.get('stock_warehouse_id', False):
             warehouse_pool = self.env['stock.warehouse']
             for rec in warehouse_pool.browse(
-                                 [self._context['stock_warehouse_id']]):
+                    [self._context['stock_warehouse_id']]):
                 if rec.wh_output_id_stock_loc_id:
                     location_dest_id = rec.wh_output_id_stock_loc_id and \
-                                rec.wh_output_id_stock_loc_id.id or False
+                        rec.wh_output_id_stock_loc_id.id or False
         return location_dest_id
 
 
-class team_assign_parts(models.Model):
+class TeamAssignParts(models.Model):
     _name = 'team.assign.parts'
 
     @api.multi
     def _get_remaining_parts(self):
         for parts_load in self:
             used = parts_load.qty_used + \
-                    parts_load.qty_missing + parts_load.qty_damage
+                parts_load.qty_missing + parts_load.qty_damage
             total = parts_load.qty_with_team + parts_load.qty_on_truck
             parts_load.qty_remaining = total - used
 
@@ -1552,14 +1484,14 @@ class team_assign_parts(models.Model):
             elif product.is_delete_line:
                 raise Warning('Warning!', 'You can delete parts when contact \
                                             team trip is already return!')
-        return super(team_assign_parts, self).unlink()
+        return super(TeamAssignParts, self).unlink()
 
     @api.model
     def create(self, vals):
         product_obj = self.env['product.product']
         if not vals.get('issue_date', False):
             vals.update({'issue_date':
-                        time.strftime(DEFAULT_SERVER_DATE_FORMAT)})
+                         time.strftime(DEFAULT_SERVER_DATE_FORMAT)})
         if vals.get('product_id', False):
             prod = product_obj.browse(vals['product_id'])
             vals.update({
@@ -1570,22 +1502,22 @@ class team_assign_parts(models.Model):
             })
         if vals.get('team_id', False) and vals.get('product_id', False):
             team_line_ids = self.search([
-                     ('team_id', '=', vals['team_id']),
-                     ('product_id', '=', vals['product_id'])])
+                ('team_id', '=', vals['team_id']),
+                ('product_id', '=', vals['product_id'])])
             if team_line_ids:
                 product_rec = product_obj.browse(vals['product_id'])
                 raise Warning(_('You can not have duplicate \
                                 parts assigned !!! \n Part No :- ' +
                                 str(product_rec.default_code)))
-        return super(team_assign_parts, self).create(vals)
+        return super(TeamAssignParts, self).create(vals)
 
     @api.multi
     def write(self, vals):
         if vals.get('product_id', False) or vals.get('qty_on_truck', False):
             vals.update({
-                     'issued_by': self._uid,
-                     'issue_date': time.strftime(DEFAULT_SERVER_DATE_FORMAT)})
-        return super(team_assign_parts, self).write(vals)
+                'issued_by': self._uid,
+                'issue_date': time.strftime(DEFAULT_SERVER_DATE_FORMAT)})
+        return super(TeamAssignParts, self).write(vals)
 
     @api.onchange('qty_with_team', 'qty_on_truck', 'qty_used',
                   'qty_missing', 'qty_damage')
@@ -1608,10 +1540,7 @@ class team_assign_parts(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
         raise Warning(_('You can\'t duplicate record!'))
-        return super(team_assign_parts, self).copy(default=default)
 
     @api.onchange('product_id')
     def onchange_product_id(self):
@@ -1685,7 +1614,7 @@ class team_assign_parts(models.Model):
         self.issue_date = issue_date_o
 
 
-class stock_location(models.Model):
+class StockLocation(models.Model):
     _inherit = 'stock.location'
 
     @api.multi
@@ -1694,8 +1623,8 @@ class stock_location(models.Model):
         for location in self:
             flag = False
             trip_ids = fleet_team_obj.search([
-                              ('destination_location_id', '=', location.id),
-                              ('state', '=', 'close')])
+                ('destination_location_id', '=', location.id),
+                ('state', '=', 'close')])
             if trip_ids:
                 for trip in trip_ids:
                     if trip.is_work_order_done is False:
@@ -1723,7 +1652,7 @@ class stock_location(models.Model):
             args = []
         ids = self.search(args).ids or []
         team_trip_ids = team_trip_obj.search([
-                              ('destination_location_id', 'in', ids)])
+            ('destination_location_id', 'in', ids)])
         team_ids = ids
         wo_team_ids = []
         if self._context.get('t_trip', False):
@@ -1734,23 +1663,22 @@ class stock_location(models.Model):
                         team_ids.remove(team_trip.destination_location_id.id)
                 else:
                     if not team_trip.is_work_order_done and \
-                                        team_trip.destination_location_id.id \
-                                        not in wo_team_ids:
-                            wo_team_ids.append(
-                                   team_trip.destination_location_id.id)
+                            team_trip.destination_location_id.id \
+                            not in wo_team_ids:
+                        wo_team_ids.append(
+                            team_trip.destination_location_id.id)
             if not self._context.get('t_trip', False):
                 team_ids = wo_team_ids
             if team_trip_ids:
                 args = [('id', 'in', team_ids)]
-        return super(stock_location, self).name_search(name=name,
-                                                       args=args,
-                                                       operator=operator,
-                                                       limit=limit)
+        return super(StockLocation, self).name_search(name=name,
+                                                      args=args,
+                                                      operator=operator,
+                                                      limit=limit)
 
 
-class fleet_work_order_search(models.TransientModel):
+class FleetWorkOrderSearch(models.TransientModel):
     _name = 'fleet.work.order.search'
-
     _rec_name = 'state'
 
     priority = fields.Selection([('normal', 'NORMAL'), ('high', 'HIGH'),
@@ -1812,22 +1740,22 @@ class fleet_work_order_search(models.TransientModel):
         for order in self:
             if order.make_id:
                 vehicle_ids = vehicle_obj.search([
-                                  ('f_brand_id', '=', order.make_id.id)])
+                    ('f_brand_id', '=', order.make_id.id)])
                 if vehicle_ids:
                     order_ids = work_order_obj.search([
-                                   ('vehicle_id', 'in', vehicle_ids.ids)]).ids
+                        ('vehicle_id', 'in', vehicle_ids.ids)]).ids
                 order_ids = sorted(set(order_ids))
             if order.model_id:
                 vehicle_ids = vehicle_obj.search([
-                                  ('model_id', '=', order.model_id.id)])
+                    ('model_id', '=', order.model_id.id)])
                 if vehicle_ids:
                     order_ids = work_order_obj.search([
-                                   ('vehicle_id', 'in', vehicle_ids.ids)]).ids
+                        ('vehicle_id', 'in', vehicle_ids.ids)]).ids
                 order_ids = sorted(set(order_ids))
             part_id = order.part_id and order.part_id.id or False
             if part_id:
                 parts_line_ids = part_line_obj.search([
-                                       ('product_id', '=', part_id)])
+                    ('product_id', '=', part_id)])
                 if parts_line_ids:
                     for part_line in parts_line_ids:
                         order_ids.append(part_line.fleet_service_id.id)
@@ -1837,7 +1765,7 @@ class fleet_work_order_search(models.TransientModel):
                 order.repair_type_id.id or False
             if repair_type_id:
                 repair_line_ids = repair_line_obj.search([
-                                      ('repair_type_id', '=', repair_type_id)])
+                    ('repair_type_id', '=', repair_type_id)])
                 if repair_line_ids:
                     for repair_line in repair_line_ids:
                         if repair_line.service_id:
@@ -1860,7 +1788,7 @@ class fleet_work_order_search(models.TransientModel):
 
             if fmp_id:
                 work_order_ids = work_order_obj.search([
-                                        ('vehicle_id', '=', fmp_id)])
+                    ('vehicle_id', '=', fmp_id)])
                 if work_order_ids:
                     for work_line in work_order_ids:
                         order_ids.append(work_line.id)
@@ -1870,9 +1798,9 @@ class fleet_work_order_search(models.TransientModel):
                 order.vehical_division_id.id or False
             if division_id:
                 vehicle_ids = vehicle_obj.search([
-                                ('vehical_division_id', '=', division_id)])
+                    ('vehical_division_id', '=', division_id)])
                 work_order_ids = work_order_obj.search([
-                                ('vehicle_id', 'in', vehicle_ids.ids)])
+                    ('vehicle_id', 'in', vehicle_ids.ids)])
                 if work_order_ids:
                     for work_line in work_order_ids:
                         order_ids.append(work_line.id)
@@ -1910,35 +1838,34 @@ class fleet_work_order_search(models.TransientModel):
                 domain += [('id', 'in', order_ids)]
 
             return {
-                  'name': _('Work Order'),
-                  'view_type': 'form',
-                  "view_mode": 'tree,form',
-                  'res_model': 'fleet.vehicle.log.services',
-                  'type': 'ir.actions.act_window',
-                  'nodestroy': True,
-                  'domain': domain,
-                  'context': self._context,
-                  'target': 'current',
-                  }
+                'name': _('Work Order'),
+                'view_type': 'form',
+                "view_mode": 'tree,form',
+                'res_model': 'fleet.vehicle.log.services',
+                'type': 'ir.actions.act_window',
+                'nodestroy': True,
+                'domain': domain,
+                'context': self._context,
+                'target': 'current',
+            }
         return True
 
 
-class res_users(models.Model):
+class ResUsers(models.Model):
     _inherit = 'res.users'
 
     usersql_id = fields.Char(string='User ID',
                              help="Take this field for data migration")
 
 
-class ir_attachment(models.Model):
+class IrAttachment(models.Model):
     _inherit = 'ir.attachment'
 
     wo_attachment_id = fields.Many2one('fleet.vehicle.log.services')
 
 
-class service_task(models.Model):
+class ServiceTask(models.Model):
     _name = 'service.task'
-
     _description = 'Maintenance of the Task '
 
     main_id = fields.Many2one('fleet.vehicle.log.services',
@@ -1949,15 +1876,14 @@ class service_task(models.Model):
     maintenance_info = fields.Text(string='Information', translate=True)
 
 
-class task_line(models.Model):
+class TaskLine(models.Model):
+    _name = 'task.line'
 
     @api.multi
     def _amount_line(self):
         for line in self:
             price = line.price_unit * line.qty
             line.total = price
-
-    _name = 'task.line'
 
     partshist_id = fields.Integer(string='Parts History ID',
                                   help="Take this field for data migration")
@@ -1979,7 +1905,7 @@ class task_line(models.Model):
     qty = fields.Float(string='Used')
     product_uom = fields.Many2one('product.uom', string='UOM', required=True)
     price_unit = fields.Float(string='Unit Cost')
-    total = fields.Float(compute="_amount_line",  string='Total Cost')
+    total = fields.Float(compute="_amount_line", string='Total Cost')
     vehicle_make_id = fields.Many2one('fleet.vehicle.model.brand',
                                       string='Vehicle Make')
     date_issued = fields.Datetime(string='Date issued')
@@ -2013,20 +1939,19 @@ class task_line(models.Model):
         if vals.get('fleet_service_id', False) and \
                 vals.get('product_id', False):
             task_line_ids = self.search([
-                     ('fleet_service_id', '=', vals['fleet_service_id']),
-                     ('product_id', '=', vals['product_id'])])
+                ('fleet_service_id', '=', vals['fleet_service_id']),
+                ('product_id', '=', vals['product_id'])])
             if task_line_ids:
                 product_rec = product_obj.browse(vals['product_id'])
                 warrnig = 'You can not have duplicate \
                             parts assigned !!! \n Part No :- ' + \
                     product_rec.default_code
                 raise Warning(_('User Error!'), _(warrnig))
-        return super(task_line, self).create(vals)
+        return super(TaskLine, self).create(vals)
 
     @api.multi
     def write(self, vals):
-        """
-        Overridden write method to add the issuer of the part
+        """Overridden write method to add the issuer of the part
         and the time when it was issued.
         ---------------------------------------------------------------
         @param self : object pointer
@@ -2036,10 +1961,11 @@ class task_line(models.Model):
             or vals.get('product_uom', False)\
             or vals.get('price_unit', False)\
                 or vals.get('old_part_return') in (True, False):
-                vals.update({'issued_by': self._uid,
-                             'date_issued':
-                             time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)})
-        return super(task_line, self).write(vals)
+            vals.update({
+                'issued_by': self._uid,
+                'date_issued': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+            })
+        return super(TaskLine, self).write(vals)
 
     @api.multi
     def unlink(self):
@@ -2058,16 +1984,17 @@ class task_line(models.Model):
                                                 trip_encoded_rec.encoded_qty -
                                                 task_line_rec.qty})
                 assign_part_ids = assign_part_obj.search([
-                      ('team_id', '=', task_line_rec.fleet_service_id and
-                       task_line_rec.fleet_service_id.team_trip_id.id),
-                      ('product_id', '=', task_line_rec.product_id and
-                       task_line_rec.product_id.id)])
+                    ('team_id', '=', task_line_rec.fleet_service_id and
+                     task_line_rec.fleet_service_id.team_trip_id.id),
+                    ('product_id', '=', task_line_rec.product_id and
+                     task_line_rec.product_id.id)])
                 if assign_part_ids:
                     for assign_part_rec in assign_part_ids:
-                        assign_part_rec.write(
-                          {'encode_qty': assign_part_rec.encode_qty +
-                           task_line_rec.qty})
-        return super(task_line, self).unlink()
+                        assign_part_rec.write({
+                            'encode_qty': assign_part_rec.encode_qty +
+                            task_line_rec.qty
+                        })
+        return super(TaskLine, self).unlink()
 
     @api.onchange('date_issued')
     def check_onchange_part_issue_date(self):
@@ -2104,8 +2031,8 @@ class task_line(models.Model):
             # Get Encoded Quantities from Team Trip
             if self._context.get('team_id', False):
                 team_trip_ids = team_trip_obj.search([
-                  ('destination_location_id', '=', self._context['team_id']),
-                  ("state", "=", "close")])
+                    ('destination_location_id', '=', self._context['team_id']),
+                    ("state", "=", "close")])
                 if team_trip_ids:
                     for t_trip in team_trip_ids:
                         if not t_trip.is_work_order_done:
@@ -2153,18 +2080,18 @@ class task_line(models.Model):
             for rec in [self.product_id]:
                 if self._context.get('team_id', False):
                     team_trip_ids = team_trip_obj.search([
-                              ('destination_location_id', '=',
-                               self._context['team_id']),
-                              ("state", "=", "close")])
+                        ('destination_location_id', '=',
+                         self._context['team_id']),
+                        ("state", "=", "close")])
                     if team_trip_ids:
                         flag = False
                         if self._context.get('team_trip_id', False) and \
                                 self.product_id:
                             remainig_encoded_qty = 0.0
                             trip_encoded_ids = trip_encoded_obj.search([
-                                    ('team_id', '=',
-                                        self._context.get('team_trip_id')),
-                                    ('product_id', '=', self.product_id.id)])
+                                ('team_id', '=',
+                                 self._context.get('team_trip_id')),
+                                ('product_id', '=', self.product_id.id)])
                             if trip_encoded_ids:
                                 remainig_encoded_qty = trip_encoded_ids and \
                                     trip_encoded_ids[0].available_qty or 0.0
@@ -2199,7 +2126,7 @@ class task_line(models.Model):
                                    greater than product quantity on hand !'))
 
 
-class repair_type(models.Model):
+class RepairType(models.Model):
     _name = 'repair.type'
 
     name = fields.Char(string='Repair Type', size=264,
@@ -2207,18 +2134,14 @@ class repair_type(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
         raise Warning(_('You can\'t duplicate record!'))
-        return super(repair_type, self).copy(default=default)
 
     @api.multi
     def unlink(self):
         raise Warning(_('You can\'t delete record !'))
-        return super(repair_type, self).unlink()
 
 
-class service_repair_line(models.Model):
+class ServiceRepairLine(models.Model):
     _name = 'service.repair.line'
 
     @api.constrains('date', 'target_date')
@@ -2248,7 +2171,7 @@ class service_repair_line(models.Model):
     complete = fields.Boolean(string='Completed')
 
 
-class fleet_service_type(models.Model):
+class FleetServiceType(models.Model):
     _inherit = 'fleet.service.type'
 
     category = fields.Selection([('contract', 'Contract'),
@@ -2263,7 +2186,7 @@ class fleet_service_type(models.Model):
                                        string='Repair Type')
 
 
-#class work_order_reopen_days(models.Model):
+# class work_order_reopen_days(models.Model):
 #    _name = 'work.order.reopen.days'
 #
 #    _rec_name = 'days'
@@ -2280,7 +2203,7 @@ class fleet_service_type(models.Model):
 #        return True
 
 
-class contact_team_trip_search(models.TransientModel):
+class ContactTeamTripSearch(models.TransientModel):
     _name = 'contact.team.trip.search'
 
     destination_location_id = fields.Many2one('stock.location',
@@ -2318,14 +2241,14 @@ class contact_team_trip_search(models.TransientModel):
             elif order.return_date_from:
                 domain += [('return_date', '=', order.return_date_from)]
             return {
-                  'name': _('Contact Team Trip'),
-                  'view_type': 'form',
-                  "view_mode": 'tree,form',
-                  'res_model': 'fleet.team',
-                  'type': 'ir.actions.act_window',
-                  'nodestroy': True,
-                  'domain': domain,
-                  'context': self._context,
-                  'target': 'current',
-                  }
+                'name': _('Contact Team Trip'),
+                'view_type': 'form',
+                "view_mode": 'tree,form',
+                'res_model': 'fleet.team',
+                'type': 'ir.actions.act_window',
+                'nodestroy': True,
+                'domain': domain,
+                'context': self._context,
+                'target': 'current',
+            }
         return True

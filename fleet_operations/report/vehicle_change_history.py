@@ -5,6 +5,7 @@ try:
     from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
 except ImportError:
     class ReportXlsx(object):
+
         def __init__(self, *args, **kwargs):
             pass
 
@@ -57,7 +58,7 @@ class VehicleChangeHistory(ReportXlsx):
                     engine_rec.workorder_id.date_close or False,
                     'remarks': engine_rec.note or '',
                     'seq': seq + 'a'
-                    }
+                }
                 vehicle_change_history.append(values)
         if color_ids:
             for color_rec in color_ids:
@@ -90,7 +91,7 @@ class VehicleChangeHistory(ReportXlsx):
                     color_rec.workorder_id.date_close or False,
                     'remarks': color_rec.note or '',
                     'seq': seq + 'b'
-                    }
+                }
                 vehicle_change_history.append(cvalues)
         if vin_ids:
             for vin_rec in vin_ids:
@@ -121,7 +122,7 @@ class VehicleChangeHistory(ReportXlsx):
                     vin_rec.workorder_id.date_close or False,
                     'remarks': vin_rec.note or '',
                     'seq': seq + 'c'
-                    }
+                }
                 vehicle_change_history.append(vvalues)
         if vehicle_change_history:
             vehicle_change_history = sorted(vehicle_change_history,
@@ -189,50 +190,50 @@ class VehicleChangeHistory(ReportXlsx):
         counter = 1
         row += 1
         for obj in result:
-                worksheet.write(line_row, line_col, counter, border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['description'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['vehicle_type'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['color_id'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['vin'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['plate'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['old_engine'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['new_engine'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['old_color'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['new_color'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['change_date'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['work_order'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['wo_close_date'] or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj['remarks'] or '',
-                                border)
-                line_col = 0
-                line_row += 1
-                counter += 1
-                worksheet.write(line_row, line_col, '********', border)
+            worksheet.write(line_row, line_col, counter, border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj['description'] or '',
+                            border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj['vehicle_type'] or '',
+                            border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj['color_id'] or '',
+                            border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj['vin'] or '',
+                            border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj['plate'] or '',
+                            border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj['old_engine'] or '',
+                            border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj['new_engine'] or '',
+                            border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj['old_color'] or '',
+                            border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj['new_color'] or '',
+                            border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj['change_date'] or '',
+                            border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj['work_order'] or '',
+                            border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj['wo_close_date'] or '',
+                            border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj['remarks'] or '',
+                            border)
+            line_col = 0
+            line_row += 1
+            counter += 1
+            worksheet.write(line_row, line_col, '********', border)
 
 
 VehicleChangeHistory('report.vehicle.change.history.xls',

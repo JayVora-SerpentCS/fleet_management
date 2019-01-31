@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-import base64
-
 try:
     from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
 except ImportError:
     class ReportXlsx(object):
+
         def __init__(self, *args, **kwargs):
             pass
 
@@ -30,15 +29,11 @@ class FleetWorkOrder(ReportXlsx):
         return head_title
 
     def get_wo_status(self, status):
-
-        wo_status = ""
-
+        wo_status = "New"
         if status == 'done':
             wo_status = "Closed"
         elif status == 'confirm':
             wo_status = "Open"
-        else:
-            wo_status = "New"
         return wo_status
 
     def get_wo_smry(self, workorder_browse):
@@ -95,12 +90,11 @@ class FleetWorkOrder(ReportXlsx):
                                 repair_line_data[:-2] or '',
                             }
 
-                        wo_smry_dict[work_rec.team_id.id] = \
-                            {
-                                'team_id': work_rec.team_id and
-                                work_rec.team_id.name or '',
-                                'value': [wo_data]
-                                }
+                        wo_smry_dict[work_rec.team_id.id] = {
+                            'team_id': work_rec.team_id and
+                            work_rec.team_id.name or '',
+                            'value': [wo_data]
+                        }
         for team_id, workorder_data in wo_smry_dict.items():
             wo_summary_data.append(workorder_data)
         return wo_summary_data

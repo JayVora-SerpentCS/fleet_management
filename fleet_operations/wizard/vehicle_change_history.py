@@ -5,7 +5,7 @@ from odoo import models, fields, api, _
 from odoo.exceptions import Warning
 
 
-class vehicle_change_history(models.TransientModel):
+class VehicleChangeHistory(models.TransientModel):
     _name = 'vehicle.change.history'
 
     fleet_id = fields.Many2one('fleet.vehicle', string='Vehicle-ID')
@@ -22,9 +22,9 @@ class vehicle_change_history(models.TransientModel):
                 raise Warning(_("User Error!\n Date To' must \
                             be greater than 'Date From'!"))
             date_range = {
-                 'date_from': rec.date_from,
-                 'date_to': rec.date_to,
-                 'fleet_id': rec.fleet_id and rec.fleet_id.id or False
+                'date_from': rec.date_from,
+                'date_to': rec.date_to,
+                'fleet_id': rec.fleet_id and rec.fleet_id.id or False
             }
             datas = {
                 'form': date_range,

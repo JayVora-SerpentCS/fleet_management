@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-import base64
 import time
 try:
     from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx

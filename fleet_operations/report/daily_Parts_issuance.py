@@ -2,12 +2,11 @@
 # See LICENSE file for full copyright and licensing details.
 
 import time
-import base64
-
 try:
     from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
 except ImportError:
     class ReportXlsx(object):
+
         def __init__(self, *args, **kwargs):
             pass
 
@@ -15,10 +14,7 @@ except ImportError:
 class DailyPartIssuance(ReportXlsx):
 
     def get_heading(self):
-        head_title = {'name': '',
-                      'rev_no': '',
-                      'doc_no': '',
-                      }
+        head_title = {'name': '', 'rev_no': '', 'doc_no': ''}
         head_object = self.env['report.heading']
         head_ids = head_object.search([], order='id')
         if head_ids:
@@ -152,7 +148,6 @@ class DailyPartIssuance(ReportXlsx):
                 line_row += 1
                 counter += 1
                 worksheet.write(line_row, line_col, '********', border)
-
 
 DailyPartIssuance('report.daily.parts.issuance.xls',
                   'fleet.vehicle.log.services')

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-import base64
 from odoo.osv import osv
 
 try:
@@ -154,10 +153,10 @@ class WorkorderMontltReportXlsx(ReportXlsx):
         worksheet.set_column(14, 14, 15)
         worksheet.set_column(15, 15, 15)
 
-        tot = workbook.add_format({'border': 2,
-                                   'bold': True,
-                                   'font_name': 'Arial',
-                                   'font_size': '10'})
+        # tot = workbook.add_format({'border': 2,
+        #                            'bold': True,
+        #                            'font_name': 'Arial',
+        #                            'font_size': '10'})
         border = workbook.add_format({'border': 2,
                                       'font_name': 'Arial',
                                       'font_size': '10'})

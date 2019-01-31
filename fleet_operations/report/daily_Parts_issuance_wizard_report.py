@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-import base64
 from datetime import datetime, timedelta
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 

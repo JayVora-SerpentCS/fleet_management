@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""This is the Fleet Extended model file."""
 
 from datetime import date, datetime
 from odoo import models, fields, api, _
@@ -7,45 +8,41 @@ from odoo.exceptions import Warning, ValidationError
 from odoo import tools
 from odoo.tools import misc
 
-import logging
-_logger = logging.getLogger(__name__)
 
+class MultiImages(models.Model):
+    """This is the multi images model."""
 
-class multi_images(models.Model):
     _inherit = "multi.images"
 
-    vehicle_template_id = fields.Many2one('fleet.vehicle',
-                                          'Vehicle Images')
+    vehicle_template_id = fields.Many2one('fleet.vehicle', 'Vehicle Images')
     writeoff_template_id = fields.Many2one('fleet.wittenoff',
                                            'WriteOff Images')
 
 
-class fleet_operations(models.Model):
-    _inherit = 'fleet.vehicle'
+class FleetOperations(models.Model):
+    """This is the Fleet vehicle model."""
 
+    _inherit = 'fleet.vehicle'
     _order = 'id desc'
     _rec_name = 'name'
 
     @api.multi
     def copy(self, default=None):
-        if not default:
+        """Copy method is override to add the validation based on state."""
+        if default is None:
             default = {}
-        if self:
-            if self.state == 'write-off':
-                raise Warning(_('You can\'t duplicate this record \
-                      because it is already write-off'))
-        return super(fleet_operations, self).copy(default=default)
+        if self.state == 'write-off':
+            raise Warning(_("You can\'t duplicate this record \
+                      because it is already write-off !!"))
+        return super(FleetOperations, self).copy(default=default)
 
     @api.multi
     def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(fleet_operations, self).unlink()
+        raise Warning(_("You can\'t delete record !"))
 
     @api.multi
     def update_history(self):
-        """ This method use update color,\
-        engine,battery and tire history."""
-        mod_obj = self.env['ir.model.data']
+        """Method use update color,engine,battery and tire history."""
         wizard_view = ""
         res_model = ""
         view_name = ""
@@ -73,21 +70,21 @@ class fleet_operations(models.Model):
                 res_model = "update.battery.info"
                 view_name = "Update Battery Info"
 
-        model_data_ids = mod_obj.search([('model', '=', 'ir.ui.view'),
-                                         ('name', '=', wizard_view)])
+        model_data_ids = self.env['ir.model.data'].search([
+            ('model', '=', 'ir.ui.view'), ('name', '=', wizard_view)])
         resource_id = model_data_ids.read(['res_id'])[0]['res_id']
         context.update({'vehicle_ids': self._ids})
         self.env.args = cr, uid, misc.frozendict(context)
         return {
-                    'name': view_name,
-                    'context': self._context,
-                    'view_type': 'form',
-                    'view_mode': 'form',
-                    'res_model': res_model,
-                    'views': [(resource_id, 'form')],
-                    'type': 'ir.actions.act_window',
+            'name': view_name,
+            'context': self._context,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': res_model,
+            'views': [(resource_id, 'form')],
+            'type': 'ir.actions.act_window',
                     'target': 'new',
-               }
+        }
 
     @api.multi
     def set_released_state(self):
@@ -104,8 +101,15 @@ class fleet_operations(models.Model):
     @api.multi
     def name_get(self):
         """
-        This method will be called when you view an M2O field in a form\
-        and return name whatever we want to search
+        Method will be called when you view an M2O field
+        in a form and return name whatever we want to search.
+
+        Decorators:
+            api.multi
+
+        Returns:
+            List of Tupple -- [Returns the List of vehicle with
+            Unique Name/Vehicle-ID]
         """
         if not len(self._ids):
             return []
@@ -123,8 +127,7 @@ class fleet_operations(models.Model):
 
     @api.multi
     def return_action_too_open(self):
-        """ This opens the xml view specified in xml_id
-            for the current vehicle """
+        """Open the xml view specified in xml_id for the current vehicle."""
         self.ensure_one()
         xml_id = self.env.context.get('xml_id')
         if xml_id:
@@ -197,9 +200,9 @@ class fleet_operations(models.Model):
                     Greater Than Registration Date.')
 
     def _get_odometer(self):
-        FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
+        fleet_odometer_obj = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = FleetVehicalOdometer.search([
+            vehicle_odometer = fleet_odometer_obj.search([
                 ('vehicle_id', '=', record.id)], limit=1, order='value desc')
             if vehicle_odometer:
                 record.odometer = vehicle_odometer.value
@@ -207,9 +210,9 @@ class fleet_operations(models.Model):
                 record.odometer = 0
 
     def _set_odometer(self):
-        FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
+        fleet_odometer_obj = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = FleetVehicalOdometer.search([
+            vehicle_odometer = fleet_odometer_obj.search([
                 ('vehicle_id', '=', record.id)], limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
                 raise Warning(_('You can\'t enter odometer less than previous \
@@ -218,7 +221,7 @@ class fleet_operations(models.Model):
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
                         'vehicle_id': record.id}
-                FleetVehicalOdometer.create(data)
+                fleet_odometer_obj.create(data)
 
     @api.onchange('f_brand_id')
     def _onchange_brand(self):
@@ -238,7 +241,8 @@ class fleet_operations(models.Model):
                     record.model_id.brand_id.name + '/' + \
                     record.model_id.name + '/' + lic_plate
 
-    name = fields.Char(compute="_compute_vehicle_name", store=True)
+    name = fields.Char(compute="_compute_vehicle_name", store=True,
+                       string='Vehicle ID', size=64, translate=True)
     odometer_check = fields.Boolean('Odometer Change', default=True)
     fuel_qty = fields.Char(string='Fuel Quality')
     fuel_type = fields.Selection([('gasoline', 'Gasoline'),
@@ -251,7 +255,7 @@ class fleet_operations(models.Model):
     oil_capacity = fields.Char(string='Oil Capacity')
     fleet_id = fields.Integer(string='Fleet ID',
                               help="Take this field for data migration")
-    name = fields.Char(string='Vehicle ID', size=64, translate=True)
+    # name = fields.Char(string='Vehicle ID', size=64, translate=True)
     f_brand_id = fields.Many2one('fleet.vehicle.model.brand', string='Make')
     model_no = fields.Char(string='Model No', translate=True)
     license_plate = fields.Char(string='License Plate',
@@ -314,7 +318,11 @@ class fleet_operations(models.Model):
                             help='Odometer measure of the vehicle at the \
                                 moment of this log')
     vehical_color_id = fields.Many2one('color.color', string='Color')
-    vechical_location_id = fields.Many2one('service.department',
+    # vechical_location_id = fields.Many2one('service.department',
+    #                                        string='Registration State')
+    vehical_country_id = fields.Many2one('res.country',
+                                         string='Registration Country')
+    vechical_location_id = fields.Many2one('res.country.state',
                                            string='Registration State')
     vehical_division_id = fields.Many2one('vehicle.divison', string='Division')
     driver_identification_no = fields.Char(string='Driver ID', size=64)
@@ -386,7 +394,7 @@ class fleet_operations(models.Model):
 
     @api.model
     def default_get(self, fields):
-        res = super(fleet_operations, self).default_get(fields)
+        res = super(FleetOperations, self).default_get(fields)
         res['acquisition_date'] = date.today().strftime('%Y-%m-%d')
         return res
 
@@ -427,18 +435,14 @@ class fleet_operations(models.Model):
             vals.update({'is_battery_srno_set': True})
         if vals.get('battery_issuance_date', False):
             vals.update({'is_battery_issue_set': True})
-
-        res = super(fleet_operations, self).create(vals)
-        return res
+        return super(FleetOperations, self).create(vals)
 
     @api.multi
     def write(self, vals):
-        """
-        This function write an entry in the openchatter whenever
-        we change important information
-        on the vehicle like the model, the drive, the state of the vehicle
-        or its license plate
-        """
+        """Function write an entry in the openchatter whenever
+        we change important information on the vehicle like the model,
+        the drive, the state of the vehicle or its license plate."""
+
         vals.update({'fmp_id_editable': True})
         if self._uid:
             vals.update({'updated_by': self._uid})
@@ -458,7 +462,7 @@ class fleet_operations(models.Model):
         if vals.get('battery_issuance_date', False):
             vals.update({'is_battery_issue_set': True})
 
-        res = super(fleet_operations, self).write(vals)
+        res = super(FleetOperations, self).write(vals)
         return res
 
     @api.onchange('driver_id')
@@ -469,7 +473,7 @@ class fleet_operations(models.Model):
             self.driver_contact_no = driver.mobile
 
 
-class color_history(models.Model):
+class ColorHistory(models.Model):
     _name = 'color.history'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle")
@@ -482,18 +486,14 @@ class color_history(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(color_history, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !!"))
 
     @api.multi
     def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(color_history, self).unlink()
+        raise Warning(_("You can\'t delete record !!"))
 
 
-class engine_history(models.Model):
+class EngineHistory(models.Model):
     _name = 'engine.history'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle")
@@ -506,18 +506,14 @@ class engine_history(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(engine_history, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !!"))
 
     @api.multi
     def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(engine_history, self).unlink()
+        raise Warning(_("You can\'t delete record !!"))
 
 
-class vin_history(models.Model):
+class VinHistory(models.Model):
     _name = 'vin.history'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle")
@@ -530,30 +526,26 @@ class vin_history(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(vin_history, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record!"))
 
     @api.multi
     def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(vin_history, self).unlink()
+        raise Warning(_("You can\'t delete record !!"))
 
 
-class tire_history(models.Model):
+class TireHistory(models.Model):
     _name = 'tire.history'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle")
-    previous_tire_size = fields.Char(string='Previous Tire Size', size=124,
-                                            translate=True)
+    previous_tire_size = fields.Char(string='Previous Tire Size',
+                                     size=124, translate=True)
     new_tire_size = fields.Char(string="New Tire Size", size=124,
                                 translate=True)
     previous_tire_sn = fields.Char(string='Previous Tire Serial', size=124,
                                    translate=True)
     new_tire_sn = fields.Char(string="New Tire Serial", size=124)
     previous_tire_issue_date = fields.Date(
-                                    string='Previous Tire Issuance Date')
+        string='Previous Tire Issuance Date')
     new_tire_issue_date = fields.Date(string='New Tire Issuance Date')
     changed_date = fields.Date(string='Change Date')
     note = fields.Text(string='Notes', translate=True)
@@ -562,18 +554,14 @@ class tire_history(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(tire_history, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !!"))
 
     @api.multi
     def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(tire_history, self).unlink()
+        raise Warning(_("You can\'t delete record !!"))
 
 
-class battery_history(models.Model):
+class BatteryHistory(models.Model):
     _name = 'battery.history'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle")
@@ -584,7 +572,7 @@ class battery_history(models.Model):
                                       size=124)
     new_battery_sn = fields.Char(string="New Battery Serial", size=124)
     previous_battery_issue_date = fields.Date(
-                              string='Previous Battery Issuance Date')
+        string='Previous Battery Issuance Date')
     new_battery_issue_date = fields.Date(string='New Battery Issuance Date')
     changed_date = fields.Date(string='Change Date')
     note = fields.Text(string='Notes', translate=True)
@@ -593,18 +581,14 @@ class battery_history(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(battery_history, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !!"))
 
     @api.multi
     def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(battery_history, self).unlink()
+        raise Warning(_("You can\'t delete record !!"))
 
 
-class pending_repair_type(models.Model):
+class PendingRepairType(models.Model):
     _name = 'pending.repair.type'
 
     vehicle_rep_type_id = fields.Many2one('fleet.vehicle', string="Vehicle")
@@ -618,35 +602,28 @@ class pending_repair_type(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(pending_repair_type, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !"))
 
 
-class vehical_divison(models.Model):
+class VehicalDivison(models.Model):
     _name = 'vehicle.divison'
 
     code = fields.Char(string='Code', size=3, translate=True)
     name = fields.Char(string='Name', required=True, translate=True)
 
     _sql_constraints = [('vehicle.divison_uniq', 'unique(name)',
-                        'This divison is already exist!')]
+                         'This divison is already exist!')]
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(vehical_divison, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !!"))
 
     @api.multi
     def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(vehical_divison, self).unlink()
+        raise Warning(_("You can\'t delete record !!"))
 
 
-class vehicle_type(models.Model):
+class VehicleType(models.Model):
     _name = 'vehicle.type'
 
     @api.constrains('name')
@@ -665,13 +642,10 @@ class vehicle_type(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(vehicle_type, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !!"))
 
 
-class vehicle_location(models.Model):
+class VehicleLocation(models.Model):
     _name = 'vehicle.location'
 
     code = fields.Char(string='Code', size=3, translate=True)
@@ -680,18 +654,14 @@ class vehicle_location(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(vehicle_location, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !!"))
 
     @api.multi
     def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(vehicle_location, self).unlink()
+        raise Warning(_("You can\'t delete record !!"))
 
 
-class vehicle_department(models.Model):
+class VehicleDepartment(models.Model):
     _name = 'vehicle.department'
 
     code = fields.Char(string='Code', size=10, translate=True)
@@ -699,18 +669,14 @@ class vehicle_department(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(vehicle_department, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !!"))
 
     @api.multi
     def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(vehicle_department, self).unlink()
+        raise Warning(_("You can\'t delete record !!"))
 
 
-class color_color(models.Model):
+class ColorColor(models.Model):
     _name = 'color.color'
 
     code = fields.Char(string='Code', size=12, translate=True)
@@ -721,13 +687,10 @@ class color_color(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(color_color, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !!"))
 
 
-class ir_attachment(models.Model):
+class IrAttachment(models.Model):
     _inherit = 'ir.attachment'
 
     attachment_id = fields.Many2one('fleet.vehicle')
@@ -735,13 +698,10 @@ class ir_attachment(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(ir_attachment, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !!"))
 
 
-class res_partner_extended(models.Model):
+class ResPartnerExtended(models.Model):
     _inherit = 'res.partner'
 
     d_id = fields.Char(string='ID-Card', size=64)
@@ -757,25 +717,22 @@ class res_partner_extended(models.Model):
 #    property_account_receivable = \
 #        fields.Many2one('account.account', company_dependent=True,
 #                        string="Account Receivable",
-#                        domain="[('type', '=', 'receivable')]", required=False,
+#                        domain="[('type', '=', 'receivable')]",
+#                         required=False,
 #                        help="This account will be used instead of the \
 #                                default one as the receivable account for\
 #                                 the current partner")
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
         raise Warning(_('You can\'t duplicate record!'))
-        return super(res_partner_extended, self).copy(default=default)
 
     @api.multi
     def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(res_partner_extended, self).unlink()
+        raise Warning(_("You can\'t delete record !"))
 
 
-class fleet_witten_off(models.Model):
+class FleetWittenOff(models.Model):
     _name = 'fleet.wittenoff'
     _order = 'id desc'
     _rec_name = 'vehicle_fmp_id'
@@ -802,9 +759,9 @@ class fleet_witten_off(models.Model):
     interior = fields.Boolean(string='INTERIOR')
     left_hand_rear = fields.Boolean(string='LEFT HAND REAR')
     left_hand_front_suspension = fields.Boolean(
-                                    string='LEFT HAND FRONT SUSPENSION')
+        string='LEFT HAND FRONT SUSPENSION')
     left_hand_rear_suspesnsion = fields.Boolean(
-                                    string='LEFT HAND REAR SUSPENSION')
+        string='LEFT HAND REAR SUSPENSION')
     transmission = fields.Boolean(string='TRANSMISSION')
     chassis = fields.Boolean(string='CHASSIS')
     right_hand_front = fields.Boolean(string='RIGHT HAND FRONT')
@@ -812,9 +769,9 @@ class fleet_witten_off(models.Model):
     roof_panel = fields.Boolean(string='ROOF PANEL')
     right_hand_rear = fields.Boolean(string='RIGHT HAND REAR')
     right_hand_front_suspension = fields.Boolean(
-                                     string='RIGHT HAND FRONT SUSPENSION')
+        string='RIGHT HAND FRONT SUSPENSION')
     right_hand_rear_suspension = fields.Boolean(
-                                    string='RIGHT HAND REAR SUSPENSION')
+        string='RIGHT HAND REAR SUSPENSION')
     under_bonnet = fields.Boolean(string='UNDER BONNET')
     road_wheel_and_tire = fields.Boolean(string='ROAD WHEEL AND TIRE')
     steering_system = fields.Boolean(string='STEERING SYSTEM')
@@ -831,16 +788,17 @@ class fleet_witten_off(models.Model):
     location_id = fields.Many2one('vehicle.location', string='Location')
     driver_id = fields.Many2one('res.partner', string='Driver')
     write_off_type = fields.Selection([
-                           ('general_accident', 'General Accident'),
-                           ('insurgent_attack', 'Insurgent Attack')],
-                       string='Write-off Type', default='general_accident')
+        ('general_accident', 'General Accident'),
+        ('insurgent_attack', 'Insurgent Attack')],
+        string='Write-off Type', default='general_accident')
     contact_no = fields.Char(string='Driver Contact Number', size=24,
                              translate=True)
     odometer_unit = fields.Selection([('kilometers', 'Kilometers'),
                                       ('miles', 'Miles')],
                                      string='Odometer Unit',
                                      help='Unit of the odometer ')
-    province_id = fields.Many2one('service.department', 'Registration State')
+    # province_id = fields.Many2one('service.department', 'Registration State')
+    province_id = fields.Many2one('res.country.state', 'Registration State')
     division_id = fields.Many2one('vehicle.divison', 'Division')
     state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirmed'),
                               ('cancel', 'Cancelled')],
@@ -879,20 +837,16 @@ class fleet_witten_off(models.Model):
                      'odometer_unit': fleet_witten.vehicle_id and
                      fleet_witten.vehicle_id.odometer_unit or False,
                      })
-        res = super(fleet_witten_off, self).write(vals)
+        res = super(FleetWittenOff, self).write(vals)
         return res
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(fleet_witten_off, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !!"))
 
     @api.multi
     def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(fleet_witten_off, self).unlink()
+        raise Warning(_("You can\'t delete record !!"))
 
     @api.model
     def default_get(self, fields):
@@ -912,8 +866,7 @@ class fleet_witten_off(models.Model):
                 elif vehicle.state == 'rent':
                     raise Warning(_("You can\'t write-off this \
                                 vehicle which is On Rent."))
-        res = super(fleet_witten_off, self).default_get(fields)
-        return res
+        return super(FleetWittenOff, self).default_get(fields)
 
     @api.onchange('vehicle_id')
     def get_vehicle_info(self):
@@ -940,14 +893,14 @@ class fleet_witten_off(models.Model):
     @api.multi
     def cancel_writeoff(self):
         return {
-                'name': ('Write Off Cancel Form'),
-                'res_model': 'writeoff.cancel.reason',
-                'type': 'ir.actions.act_window',
-                'view_id': False,
-                'view_mode': 'form',
-                'view_type': 'form',
-                'target': 'new'
-                }
+            'name': ('Write Off Cancel Form'),
+            'res_model': 'writeoff.cancel.reason',
+            'type': 'ir.actions.act_window',
+            'view_id': False,
+            'view_mode': 'form',
+            'view_type': 'form',
+            'target': 'new'
+        }
 
     @api.multi
     def confirm_writeoff(self):
@@ -968,7 +921,7 @@ class fleet_witten_off(models.Model):
         return usd
 
 
-class fleet_vehicle_model(models.Model):
+class FleetVehicleModel(models.Model):
     _inherit = 'fleet.vehicle.model'
 
     _rec_name = 'name'
@@ -983,7 +936,7 @@ class fleet_vehicle_model(models.Model):
                          already exist!')]
 
 
-class fleet_vehicle_model_brand(models.Model):
+class FleetVehicleModelBrand(models.Model):
     _inherit = 'fleet.vehicle.model.brand'
 
     name = fields.Char(string='Make', size=64, required=True,
@@ -999,25 +952,23 @@ class fleet_vehicle_model_brand(models.Model):
     def create(self, vals):
         if vals.get('name', False):
             vals['name'] = vals['name'].upper()
-#        if vals.get('code', False):
-#            vals['code'] = vals['code'].upper()
-        return super(fleet_vehicle_model_brand, self).create(vals)
+        return super(FleetVehicleModelBrand, self).create(vals)
 
     @api.multi
     def write(self, vals):
         if vals.get('name', False):
             vals['name'] = vals['name'].upper()
-#        if vals.get('code', False):
-#            vals['code'] = vals['code'].upper()
-        return super(fleet_vehicle_model_brand, self).write(vals)
+        return super(FleetVehicleModelBrand, self).write(vals)
 
 
-class fleet_vehicle_advance_search(models.TransientModel):
+class FleetVehicleAdvanceSearch(models.TransientModel):
     _name = 'fleet.vehicle.advance.search'
     _rec_name = 'fmp_id'
 
     fmp_id = fields.Many2one('fleet.vehicle', string="Vehicle ID")
-    vechical_location_id = fields.Many2one('service.department',
+    # vechical_location_id = fields.Many2one('service.department',
+    #                                        string='Province')
+    vechical_location_id = fields.Many2one('res.country.state',
                                            string='Province')
     state = fields.Selection([('inspection', 'Inspection'),
                               ('in_progress', 'In Progress'),
@@ -1081,10 +1032,10 @@ class fleet_vehicle_advance_search(models.TransientModel):
         for vehicle in self:
             if vehicle.make_id:
                 vehicle_ids = vehicle_obj.search([
-                          ('f_brand_id', '=', vehicle.make_id.id)])
+                    ('f_brand_id', '=', vehicle.make_id.id)])
             if vehicle.model_id:
                 vehicle_ids = vehicle_obj.search([
-                      ('model_id', '=', vehicle.model_id.id)])
+                    ('model_id', '=', vehicle.model_id.id)])
 
             if vehicle.state:
                 domain += ('state', '=', vehicle.state),
@@ -1141,24 +1092,26 @@ class fleet_vehicle_advance_search(models.TransientModel):
                 vehicle_ids = sorted(set(vehicle_ids.ids))
                 domain += [('id', 'in', vehicle_ids)]
             return {
-                  'name': _('Vehicle Registration'),
-                  'view_type': 'form',
-                  "view_mode": 'tree,form',
-                  'res_model': 'fleet.vehicle',
-                  'type': 'ir.actions.act_window',
-                  'nodestroy': True,
-                  'domain': domain,
-                  'context': self._context,
-                  'target': 'current',
-                  }
+                'name': _('Vehicle Registration'),
+                'view_type': 'form',
+                "view_mode": 'tree,form',
+                'res_model': 'fleet.vehicle',
+                'type': 'ir.actions.act_window',
+                'nodestroy': True,
+                'domain': domain,
+                'context': self._context,
+                'target': 'current',
+            }
         return True
 
 
-class vehicle_unique_sequence(models.Model):
+class VehicleUniqueSequence(models.Model):
     _name = 'vehicle.unique.sequence'
 
     name = fields.Char(string='Name', size=124, translate=True)
-    vechical_location_id = fields.Many2one('service.department',
+    # vechical_location_id = fields.Many2one('service.department',
+    #                                        string='Location')
+    vechical_location_id = fields.Many2one('res.country.state',
                                            string='Location')
     make_id = fields.Many2one('fleet.vehicle.model.brand', string='Make')
     sequence_id = fields.Many2one('ir.sequence', string='Sequence')
@@ -1172,18 +1125,14 @@ class vehicle_unique_sequence(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(vehicle_unique_sequence, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !"))
 
     @api.multi
     def unlink(self):
         raise Warning(_('You can\'t delete record !'))
-        return super(vehicle_unique_sequence, self).unlink()
 
 
-class next_increment_number(models.Model):
+class NextIncrementNumber(models.Model):
     _name = 'next.increment.number'
 
     name = fields.Char(string='Name', size=64, translate=True)
@@ -1192,13 +1141,10 @@ class next_increment_number(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(next_increment_number, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !"))
 
 
-class next_service_days(models.Model):
+class NextServiceDays(models.Model):
     _name = 'next.service.days'
 
     name = fields.Char(string='Name', translate=True)
@@ -1207,32 +1153,28 @@ class next_service_days(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(next_service_days, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !!"))
 
 
-class vehicle_fuel_log(models.Model):
+class VehicleFuelLog(models.Model):
     _inherit = 'fleet.vehicle.log.fuel'
-
     _order = 'id desc'
 
     def _get_odometer(self):
-        FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
+        fleet_odometer_obj = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = FleetVehicalOdometer.search([
+            vehicle_odometer = fleet_odometer_obj.search([
                 ('vehicle_id', '=', record.vehicle_id.id)], limit=1,
-                                                           order='value desc')
+                order='value desc')
             if vehicle_odometer:
                 record.odometer = vehicle_odometer.value
             else:
                 record.odometer = 0
 
     def _set_odometer(self):
-        FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
+        fleet_odometer_obj = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = FleetVehicalOdometer.search(
+            vehicle_odometer = fleet_odometer_obj.search(
                 [('vehicle_id', '=', record.vehicle_id.id)],
                 limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
@@ -1242,7 +1184,7 @@ class vehicle_fuel_log(models.Model):
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
                         'vehicle_id': record.vehicle_id.id}
-                FleetVehicalOdometer.create(data)
+                fleet_odometer_obj.create(data)
 
     @api.onchange('vehicle_id')
     def _onchange_vehicle(self):
@@ -1272,7 +1214,7 @@ class vehicle_fuel_log(models.Model):
 
     @api.model
     def default_get(self, fields):
-        res = super(vehicle_fuel_log, self).default_get(fields)
+        res = super(VehicleFuelLog, self).default_get(fields)
         cr, uid, context = self.env.args
         context = dict(context)
         fleet_obj = self.env['fleet.vehicle']
@@ -1281,36 +1223,32 @@ class vehicle_fuel_log(models.Model):
             if 'active_model' in ctx_keys:
                 if 'active_id' in ctx_keys:
                     vehicle_id = self.env[context['active_model']].browse(
-                                                      context['active_id'])
+                        context['active_id'])
                     if vehicle_id.state != 'write-off':
                         res.update({'vehicle_id': context['active_id']})
                     else:
                         res['vehicle_id'] = False
             if 'vehicle_id' in ctx_keys:
-                    vehicle_id = fleet_obj.browse(context['vehicle_id'])
-                    if vehicle_id.state != 'write-off':
-                        res.update({'vehicle_id': context['vehicle_id']})
+                vehicle_id = fleet_obj.browse(context['vehicle_id'])
+                if vehicle_id.state != 'write-off':
+                    res.update({'vehicle_id': context['vehicle_id']})
         return res
 
     @api.multi
     def copy(self, default=None):
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(vehicle_fuel_log, self).copy(default=default)
+        raise Warning(_("You can\'t duplicate record !!"))
 
     @api.multi
     def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(next_service_days, self).unlink()
+        raise Warning(_("You can\'t delete record !!"))
 
 
-class fleet_vehicle_cost(models.Model):
+class FleetVehicleCost(models.Model):
     _inherit = 'fleet.vehicle.cost'
 
     @api.model
     def default_get(self, fields):
-        res = super(fleet_vehicle_cost, self).default_get(fields)
+        res = super(FleetVehicleCost, self).default_get(fields)
         cr, uid, context = self.env.args
         context = dict(context)
         fleet_obj = self.env['fleet.vehicle']
@@ -1321,7 +1259,8 @@ class fleet_vehicle_cost(models.Model):
         return res
 
 
-class fleet_vehicle_odometer(models.Model):
+class FleetVehicleOdometer(models.Model):
+    """Odometer log for a vehicle."""
     _name = 'fleet.vehicle.odometer'
     _description = 'Odometer log for a vehicle'
     _order = 'date desc'
@@ -1359,7 +1298,7 @@ class fleet_vehicle_odometer(models.Model):
 
     @api.model
     def default_get(self, fields):
-        res = super(fleet_vehicle_odometer, self).default_get(fields)
+        res = super(FleetVehicleOdometer, self).default_get(fields)
         cr, uid, context = self.env.args
         context = dict(context)
         fleet_obj = self.env['fleet.vehicle']
@@ -1370,7 +1309,7 @@ class fleet_vehicle_odometer(models.Model):
         return res
 
 
-class report_heading(models.Model):
+class ReportHeading(models.Model):
     _name = 'report.heading'
 
     @api.multi
@@ -1383,12 +1322,12 @@ class report_heading(models.Model):
     def _set_image(self):
         if self.image_small:
             self.image = \
-                   tools.image_resize_image_small(self.image_small,
-                                                  size=(102, 50))
+                tools.image_resize_image_small(self.image_small,
+                                               size=(102, 50))
         elif self.image_medium:
             self.image = \
-                   tools.image_resize_image_small(self.image_medium,
-                                                  size=(102, 50))
+                tools.image_resize_image_small(self.image_medium,
+                                               size=(102, 50))
 
     name = fields.Char(string='Title', size=128, translate=True)
     revision_no = fields.Char(string='Rev. No.', size=64, translate=True)
@@ -1414,14 +1353,14 @@ class report_heading(models.Model):
                                 image is required.")
 
 
-class res_company(models.Model):
+class ResCompany(models.Model):
     _inherit = 'res.company'
 
     name = fields.Char(related='partner_id.name', string='Company Name',
                        size=128, required=True, store=True, translate=True)
 
 
-class insurance_type(models.Model):
+class InsuranceType(models.Model):
     _name = 'insurance.type'
 
     name = fields.Char(string='Name')
