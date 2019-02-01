@@ -5,7 +5,7 @@ from odoo import models, fields, api, _
 from odoo.exceptions import Warning
 
 
-class repair_line_summary(models.TransientModel):
+class RepairLineSummary(models.TransientModel):
     _name = 'repair.line.summary'
 
     date_from = fields.Date(string='Date From')

@@ -28,7 +28,7 @@
             'wizard/renew_tenancy_view.xml',
             'wizard/rent_close_reason_view.xml',
             'report/report_xlsx.xml'
-             ],
+    ],
     'auto_install': False,
     'installable': True,
     'application': True,

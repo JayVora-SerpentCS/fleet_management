@@ -9,7 +9,7 @@ from odoo import models, fields, api, _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DT
 
 
-class wizard_renew_tenancy(models.TransientModel):
+class WizardRenewTenancy(models.TransientModel):
     _name = 'renew.tenancy'
 
     start_date = fields.Datetime(
@@ -34,16 +34,16 @@ class wizard_renew_tenancy(models.TransientModel):
                         relativedelta(months=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Years':
                     rec.end_date = datetime.strptime(rec.start_date, DT) + \
-                            relativedelta(years=int(rec.rent_type_id.duration))
+                        relativedelta(years=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Weeks':
                     rec.end_date = datetime.strptime(rec.start_date, DT) + \
-                            relativedelta(weeks=int(rec.rent_type_id.duration))
+                        relativedelta(weeks=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Days':
                     rec.end_date = datetime.strptime(rec.start_date, DT) + \
-                            relativedelta(days=int(rec.rent_type_id.duration))
+                        relativedelta(days=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Hours':
                     rec.end_date = datetime.strptime(rec.start_date, DT) + \
-                            relativedelta(hours=int(rec.rent_type_id.duration))
+                        relativedelta(hours=int(rec.rent_type_id.duration))
         return True
 
     @api.constrains('start_date', 'end_date')

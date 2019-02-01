@@ -4,7 +4,7 @@
 from openerp import models, api
 
 
-class report_qweb_write_off(models.AbstractModel):
+class ReportQwebWriteOff(models.AbstractModel):
 
     _name = 'report.fleet_operations.write_off_qweb'
 
@@ -41,9 +41,9 @@ class report_qweb_write_off(models.AbstractModel):
 
     @api.model
     def render_html(self, docids, data=None):
-        Report = self.env['report']
+        report_obj = self.env['report']
         witten_report = \
-            Report._get_report_from_name('fleet_operations.write_off_qweb')
+            report_obj._get_report_from_name('fleet_operations.write_off_qweb')
         if data is None:
             data = {}
         if not docids:
@@ -53,7 +53,6 @@ class report_qweb_write_off(models.AbstractModel):
             'doc_ids': docids,
             'doc_model': witten_report.model,
             'docs': fleet_obj,
-#            'get_heading': self._get_heading,
             'get_last_work_order': self._get_last_work_order,
         }
-        return Report.render('fleet_operations.write_off_qweb', docargs)
+        return report_obj.render('fleet_operations.write_off_qweb', docargs)

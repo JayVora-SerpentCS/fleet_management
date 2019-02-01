@@ -6,7 +6,7 @@ from odoo import models, fields, api, _
 from odoo.exceptions import Warning
 
 
-class parts_contact_trip(models.TransientModel):
+class PartsContactTrip(models.TransientModel):
     _name = 'parts.contact.trip'
 
     part_ids = fields.One2many('add.parts.contact.trip', 'wizard_part_id',
@@ -22,9 +22,9 @@ class parts_contact_trip(models.TransientModel):
         delivery_dict = {}
         team_part_line_ids = []
         out_picking_type = self.env['stock.picking.type'].search([
-                                          ('code', '=', 'outgoing')])
+            ('code', '=', 'outgoing')])
         in_picking_type = self.env['stock.picking.type'].search([
-                                          ('code', '=', 'incoming')])
+            ('code', '=', 'incoming')])
         for rec_main in self:
             for rec in rec_main.part_ids:
                 if rec.qty_on_truck <= 0:
@@ -34,14 +34,14 @@ class parts_contact_trip(models.TransientModel):
                 vals = {}
                 if self._context.get('active_id'):
                     vals.update({'team_id':
-                                self._context.get('active_id', False)})
+                                 self._context.get('active_id', False)})
                     if rec.product_id:
                         vals.update({'product_id': rec.product_id.id})
                     if rec.name:
                         vals.update({'name': rec.name})
                     if rec.vehicle_make_id:
                         vals.update({'vehicle_make_id':
-                                    rec.vehicle_make_id.id})
+                                     rec.vehicle_make_id.id})
                     if rec.qty_on_hand:
                         vals.update({'qty_on_hand': rec.qty_on_hand})
                     if rec.qty_on_truck:
@@ -71,7 +71,7 @@ class parts_contact_trip(models.TransientModel):
                     team_out_pick_id = team.outgoing_ship_ids[0].id
                     if team.outgoing_ship_ids[0].move_lines:
                         team.outgoing_ship_ids[0].move_lines.write(
-                                                   {'state': 'draft'})
+                            {'state': 'draft'})
                         team.outgoing_ship_ids[0].move_lines.unlink()
                     flag = True
                 for line in team.allocate_part_ids:
@@ -80,29 +80,29 @@ class parts_contact_trip(models.TransientModel):
                                       _("Loaded part must be greater \
                                       than zero!"))
                     move_lines_list.append((0, 0, {
-                                  'product_id': line.product_id and
-                                  line.product_id.id or False,
-                                  'name': line.name or '',
-                                  'product_uom_qty': line.qty_on_truck or 0.0,
-                                  'product_uom': line.product_id and
-                                  line.product_id.uom_id and
-                                  line.product_id.uom_id.id or False,
-                                  'location_id': team.source_location_id and
-                                  team.source_location_id.id or False,
-                                  'location_dest_id':
-                                  team.destination_location_id and
-                                  team.destination_location_id.id or False,
-                                  'create_date': line.issue_date
-                                  }))
+                        'product_id': line.product_id and
+                        line.product_id.id or False,
+                        'name': line.name or '',
+                        'product_uom_qty': line.qty_on_truck or 0.0,
+                        'product_uom': line.product_id and
+                        line.product_id.uom_id and
+                        line.product_id.uom_id.id or False,
+                        'location_id': team.source_location_id and
+                        team.source_location_id.id or False,
+                        'location_dest_id':
+                        team.destination_location_id and
+                        team.destination_location_id.id or False,
+                        'create_date': line.issue_date
+                    }))
                 if move_lines_list:
                     if not flag:
                         delivery_dict.update({
-                          'move_lines': move_lines_list,
-                          'origin': "Send to - " +
-                          team.destination_location_id.name or '',
-                          'picking_type_id': out_picking_type and
-                                    out_picking_type.ids[0] or False
-                          })
+                            'move_lines': move_lines_list,
+                            'origin': "Send to - " +
+                            team.destination_location_id.name or '',
+                            'picking_type_id': out_picking_type and
+                            out_picking_type.ids[0] or False
+                        })
                         del_order_id = del_obj.create(delivery_dict)
                         team.write({'outgoing_ship_ids':
                                     [(4, del_order_id.id)]})
@@ -127,37 +127,37 @@ class parts_contact_trip(models.TransientModel):
                         team_in_pick_id = team.incoming_ship_ids[0].id
                         if team.incoming_ship_ids[0].move_lines:
                             team.incoming_ship_ids[0].move_lines.write(
-                                                       {'state': 'draft'})
+                                {'state': 'draft'})
                             team.incoming_ship_ids[0].move_lines.unlink()
                         flag = True
                     for line in team.allocate_part_ids:
                         used_qty = line.qty_used + \
-                                    line.qty_damage + line.qty_missing
+                            line.qty_damage + line.qty_missing
                         line.write({'encode_qty': line.qty_used,
                                     'state': 'returned'})
                         if used_qty > 0:
                             move_lines_list.append((0, 0, {
-                              'product_id': line.product_id and
-                              line.product_id.id or False,
-                              'name': line.name or '',
-                              'product_uom_qty': used_qty,
-                              'product_uom': line.product_id and
-                              line.product_id.uom_id and
-                              line.product_id.uom_id.id or False,
-                              'location_id': team.destination_location_id and
-                              team.destination_location_id.id or False,
-                              'location_dest_id':
-                              line.product_id.property_stock_inventory.id,
-                              'create_date': line.issue_date
+                                'product_id': line.product_id and
+                                line.product_id.id or False,
+                                'name': line.name or '',
+                                'product_uom_qty': used_qty,
+                                'product_uom': line.product_id and
+                                line.product_id.uom_id and
+                                line.product_id.uom_id.id or False,
+                                'location_id': team.destination_location_id and
+                                team.destination_location_id.id or False,
+                                'location_dest_id':
+                                line.product_id.property_stock_inventory.id,
+                                'create_date': line.issue_date
                             }))
                     if move_lines_list:
                         if not flag:
                             inc_dict.update({
-                                 'move_lines': move_lines_list,
-                                 'origin': "Used by - " + team.name or '',
-                                 'picking_type_id': in_picking_type and
-                                 in_picking_type.ids[0] or False
-                                 })
+                                'move_lines': move_lines_list,
+                                'origin': "Used by - " + team.name or '',
+                                'picking_type_id': in_picking_type and
+                                in_picking_type.ids[0] or False
+                            })
                             inc_ship_id = pick_obj.create(inc_dict)
                             team.write({'incoming_ship_ids':
                                         [(4, inc_ship_id.id)]})
@@ -174,7 +174,7 @@ class parts_contact_trip(models.TransientModel):
         return True
 
 
-class add_parts_contact_trip(models.TransientModel):
+class AddPartsContactTrip(models.TransientModel):
     _name = 'add.parts.contact.trip'
 
     wizard_part_id = fields.Many2one('parts.contact.trip', string='PartNo')
@@ -263,10 +263,10 @@ class add_parts_contact_trip(models.TransientModel):
                                           '%Y-%m-%d').date()
         if self._context.get('return_date'):
             return_date = datetime.strptime(
-                        self._context.get('return_date'), '%Y-%m-%d').date()
+                self._context.get('return_date'), '%Y-%m-%d').date()
         if self.issue_date:
             issue_date = datetime.strptime(
-                               self.issue_date[:10], '%Y-%m-%d').date()
+                self.issue_date[:10], '%Y-%m-%d').date()
             if trip_date and return_date:
                 if trip_date > issue_date or issue_date > return_date:
                     self.issue_date = False
@@ -292,7 +292,7 @@ class add_parts_contact_trip(models.TransientModel):
         self.issue_date = issue_date_o
 
 
-class edit_parts_contact_team_trip(models.Model):
+class EditPartsContactTeamTrip(models.Model):
     _name = 'edit.parts.contact.team.trip'
 
     part_ids = fields.One2many('team.assign.parts', 'wizard_parts_id',
@@ -302,7 +302,7 @@ class edit_parts_contact_team_trip(models.Model):
     def default_get(self, fields):
         if self._context is None:
             self._context = {}
-        res = super(edit_parts_contact_team_trip, self).default_get(fields)
+        res = super(EditPartsContactTeamTrip, self).default_get(fields)
         team_assign_obj = self.env['fleet.team']
         team_line_ids = []
         if self._context.get('active_id', False):
@@ -320,7 +320,7 @@ class edit_parts_contact_team_trip(models.Model):
         move_lines_list = []
         delivery_dict = {}
         out_pick_type = self.env['stock.picking.type'].search([
-                                       ('code', '=', 'outgoing')])
+            ('code', '=', 'outgoing')])
         for rec_main in self:
             for rec in rec_main.part_ids:
                 if rec.qty_on_truck <= 0:
@@ -333,7 +333,7 @@ class edit_parts_contact_team_trip(models.Model):
                     team_out_pick_id = team.outgoing_ship_ids[0].id
                     if team.outgoing_ship_ids[0].move_lines:
                         team.outgoing_ship_ids[0].move_lines.write(
-                                                       {'state': 'draft'})
+                            {'state': 'draft'})
                         team.outgoing_ship_ids[0].move_lines.unlink()
                     flag = True
                 for line in team.allocate_part_ids:
@@ -342,27 +342,27 @@ class edit_parts_contact_team_trip(models.Model):
                                       _("Loaded part must be greater \
                                       than zero!"))
                     move_lines_list.append((0, 0, {
-                          'product_id': line.product_id and
-                          line.product_id.id or False,
-                          'name': line.name or '',
-                          'product_uom_qty': line.qty_on_truck or 0.0,
-                          'product_uom': line.product_id and
-                          line.product_id.uom_id and
-                          line.product_id.uom_id.id or False,
-                          'location_id': team.source_location_id and
-                          team.source_location_id.id or False,
-                          'location_dest_id': team.destination_location_id and
-                          team.destination_location_id.id or False,
-                          'create_date': line.issue_date
-                      }))
+                        'product_id': line.product_id and
+                        line.product_id.id or False,
+                        'name': line.name or '',
+                        'product_uom_qty': line.qty_on_truck or 0.0,
+                        'product_uom': line.product_id and
+                        line.product_id.uom_id and
+                        line.product_id.uom_id.id or False,
+                        'location_id': team.source_location_id and
+                        team.source_location_id.id or False,
+                        'location_dest_id': team.destination_location_id and
+                        team.destination_location_id.id or False,
+                        'create_date': line.issue_date
+                    }))
                 if move_lines_list:
                     if not flag:
                         delivery_dict.update({
-                              'move_lines': move_lines_list,
-                              'origin': "Send to - " +
-                              team.destination_location_id.name or '',
-                              'picking_type_id': out_pick_type and
-                              out_pick_type.ids[0] or False})
+                            'move_lines': move_lines_list,
+                            'origin': "Send to - " +
+                            team.destination_location_id.name or '',
+                            'picking_type_id': out_pick_type and
+                            out_pick_type.ids[0] or False})
                         del_order_id = del_obj.create(delivery_dict)
                         team.write({'outgoing_ship_ids':
                                     [(4, del_order_id.id)]})
@@ -385,41 +385,41 @@ class edit_parts_contact_team_trip(models.Model):
                     flag = False
                     move_lines_list = []
                     in_picking_type = self.env['stock.picking.type'].search([
-                                               ('code', '=', 'incoming')])
+                        ('code', '=', 'incoming')])
                     if team.incoming_ship_ids:
                         team_in_pick_id = team.incoming_ship_ids[0].id
                         if team.incoming_ship_ids[0].move_lines:
                             team.incoming_ship_ids[0].move_lines.write(
-                                                       {'state': 'draft'})
+                                {'state': 'draft'})
                             team.incoming_ship_ids[0].move_lines.unlink()
                         flag = True
                     for line in team.allocate_part_ids:
                         used_qty = line.qty_used + \
-                                    line.qty_damage + line.qty_missing
+                            line.qty_damage + line.qty_missing
                         line.write({'encode_qty': line.qty_used,
                                     'state': 'returned'})
                         if used_qty > 0:
                             move_lines_list.append((0, 0, {
-                              'product_id': line.product_id and
-                              line.product_id.id or False,
-                              'name': line.name or '',
-                              'product_uom_qty': used_qty,
-                              'product_uom': line.product_id and
-                              line.product_id.uom_id and
-                              line.product_id.uom_id.id or False,
-                              'location_id': team.destination_location_id and
-                              team.destination_location_id.id or False,
-                              'location_dest_id':
-                              line.product_id.property_stock_inventory.id,
-                              'create_date': line.issue_date
-                              }))
+                                'product_id': line.product_id and
+                                line.product_id.id or False,
+                                'name': line.name or '',
+                                'product_uom_qty': used_qty,
+                                'product_uom': line.product_id and
+                                line.product_id.uom_id and
+                                line.product_id.uom_id.id or False,
+                                'location_id': team.destination_location_id and
+                                team.destination_location_id.id or False,
+                                'location_dest_id':
+                                line.product_id.property_stock_inventory.id,
+                                'create_date': line.issue_date
+                            }))
                     if move_lines_list:
                         if not flag:
                             inc_dict.update({
-                                 'move_lines': move_lines_list,
-                                 'origin': "Used by - " + team.name or '',
-                                 'picking_type_id': in_picking_type and
-                                 in_picking_type.ids[0] or False})
+                                'move_lines': move_lines_list,
+                                'origin': "Used by - " + team.name or '',
+                                'picking_type_id': in_picking_type and
+                                in_picking_type.ids[0] or False})
                             inc_ship_id = pick_obj.create(inc_dict)
                             team.write({'incoming_ship_ids':
                                         [(4, inc_ship_id.id)]})

@@ -5,7 +5,7 @@ from datetime import date
 from odoo import models, fields, api
 
 
-class wizard_writoff_cancel_reason(models.TransientModel):
+class WizardWritoffCancelReason(models.TransientModel):
     _name = 'writeoff.cancel.reason'
 
     reason = fields.Char(string='Reason', required=True)
@@ -13,15 +13,16 @@ class wizard_writoff_cancel_reason(models.TransientModel):
     @api.multi
     def cancel_writoff(self):
         if self._context.get('active_id', False) and \
-                    self._context.get('active_model', False):
+                self._context.get('active_model', False):
             for reason in self.env[self._context['active_model']].browse(
-                                self._context.get('active_id', False)):
+                    self._context.get('active_id', False)):
                 if reason.vehicle_id:
                     reason.vehicle_id.write({'state': 'inspection',
                                              'last_change_status_date':
                                              date.today()})
-                reason.write({'cancel_note': self.reason,
-                              'state': 'cancel', 'date_cancel': date.today(),
-                              'cancel_by_id': self._uid
-                              })
+                reason.write({
+                    'cancel_note': self.reason,
+                    'state': 'cancel', 'date_cancel': date.today(),
+                    'cancel_by_id': self._uid
+                })
         return True

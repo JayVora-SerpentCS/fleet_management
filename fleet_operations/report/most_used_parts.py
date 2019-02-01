@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-import base64
 from odoo.osv import osv
-
 try:
     from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
 except ImportError:
     class ReportXlsx(object):
+
         def __init__(self, *args, **kwargs):
             pass
 
 
 class MostUsedPartsXlsx(ReportXlsx):
+
     def get_heading(self):
         head_title = {
             'name': '',
@@ -73,7 +73,7 @@ class MostUsedPartsXlsx(ReportXlsx):
                                 p_line.product_id.standard_price or 0.0,
                                 'total_cost':
                                 p_line.qty * p_line.product_id.standard_price,
-                            }
+                        }
 
         for part_data in used_dict.itervalues():
             part_list_data.append(part_data)

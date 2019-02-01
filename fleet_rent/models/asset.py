@@ -5,8 +5,8 @@ import odoo.addons.decimal_precision as dp
 from datetime import datetime
 from odoo import models, fields, api, _
 from dateutil.relativedelta import relativedelta
-from odoo.tools import misc, DEFAULT_SERVER_DATE_FORMAT
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.tools import misc, DEFAULT_SERVER_DATE_FORMAT as DF
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
 from odoo.exceptions import ValidationError, except_orm
 
 
@@ -74,7 +74,7 @@ class AccountAssetAsset(models.Model):
         for prop_rec in self:
             if prop_rec.date:
                 prop_date = datetime.strptime(
-                    prop_rec.date, DEFAULT_SERVER_DATE_FORMAT).date()
+                    prop_rec.date, DF).date()
                 pur_diff = datetime.now().date() - prop_date
                 purchase_diff = pur_diff.days
                 if prop_rec.tenancy_property_ids and \
@@ -82,12 +82,8 @@ class AccountAssetAsset(models.Model):
                     for tency_rec in prop_rec.tenancy_property_ids:
                         if tency_rec.date and tency_rec.date_start:
                             date_diff = \
-                                datetime.strptime(
-                                    tency_rec.date,
-                                    DEFAULT_SERVER_DATETIME_FORMAT) - \
-                                datetime.strptime(
-                                    tency_rec.date_start,
-                                    DEFAULT_SERVER_DATETIME_FORMAT)
+                                datetime.strptime(tency_rec.date, DTF) - \
+                                datetime.strptime(tency_rec.date_start, DTF)
                             diffrnc += date_diff.days
                 if purchase_diff != 0 and diffrnc != 0:
                     occ_rate = (purchase_diff * 100) / diffrnc
@@ -582,8 +578,7 @@ class AccountAssetAsset(models.Model):
             'partner_id': data.customer_id.id or False,
             'payment_term_id': data.payment_term.id,
             'invoice_line_ids': [(0, 0, inv_line_values)],
-            'date_invoice': datetime.now().strftime(
-                DEFAULT_SERVER_DATE_FORMAT) or False,
+            'date_invoice': datetime.now().strftime(DF) or False,
             'number': data.code or '',
         }
         self.env['account.invoice'].create(inv_values)
@@ -620,18 +615,14 @@ class AccountAssetAsset(models.Model):
         if period == 'monthly':
             while starting_date < end_date:
                 date_list.append(starting_date)
-                res = ((datetime.strptime(
-                        starting_date, DEFAULT_SERVER_DATE_FORMAT) +
-                        relativedelta(months=1)).strftime(
-                            DEFAULT_SERVER_DATE_FORMAT))
+                res = ((datetime.strptime(starting_date, DF) +
+                        relativedelta(months=1)).strftime(DF))
                 starting_date = res
             return date_list
         else:
             while starting_date < end_date:
                 date_list.append(starting_date)
-                res = ((datetime.strptime(starting_date,
-                                          DEFAULT_SERVER_DATE_FORMAT) +
-                        relativedelta(years=1)).strftime(
-                            DEFAULT_SERVER_DATE_FORMAT))
+                res = ((datetime.strptime(starting_date, DF) +
+                        relativedelta(years=1)).strftime(DF))
                 starting_date = res
             return date_list

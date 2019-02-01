@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-import base64
-
 try:
     from odoo.addons.report_xlsx.report.report_xlsx import ReportXlsx
 except ImportError:
@@ -14,10 +12,7 @@ except ImportError:
 class FleetWaitingColletion(ReportXlsx):
 
     def get_heading(self):
-        head_title = {'name': '',
-                      'rev_no': '',
-                      'doc_no': '',
-                      }
+        head_title = {'name': '', 'rev_no': '', 'doc_no': ''}
         head_object = self.env['report.heading']
         head_ids = head_object.search([], order='id')
         if head_ids:
@@ -48,11 +43,11 @@ class FleetWaitingColletion(ReportXlsx):
         worksheet.set_column(14, 14, 5)
         worksheet.set_column(15, 15, 5)
 
-#        result = self.get_heading()
-        tot = workbook.add_format({'border': 2,
-                                   'bold': True,
-                                   'font_name': 'Arial',
-                                   'font_size': '10'})
+        # result = self.get_heading()
+        # tot = workbook.add_format({'border': 2,
+        #                            'bold': True,
+        #                            'font_name': 'Arial',
+        #                            'font_size': '10'})
         border = workbook.add_format({'border': 2,
                                       'font_name': 'Arial',
                                       'font_size': '10'})

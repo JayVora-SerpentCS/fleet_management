@@ -3,14 +3,13 @@
 
 import re
 import threading
-
 from datetime import datetime
 from odoo.exceptions import Warning, except_orm, ValidationError
 from odoo import models, fields, api, sql_db, _
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, ustr
 
 
-class res_partner(models.Model):
+class ResPartner(models.Model):
     _inherit = "res.partner"
 
     tenant = fields.Boolean(string="Is Tenant?")
@@ -30,9 +29,9 @@ class res_partner(models.Model):
 
     @api.constrains('mobile')
     def _check_value_tp(self):
-        for val in self:
-            if val.mobile:
-                if re.match("^\+|[1-9]{1}[0-9]{3,14}$", val.mobile) \
+        for rec in self:
+            if rec.mobile:
+                if re.match("^\+|[1-9]{1}[0-9]{3,14}$", rec.mobile) \
                         is not None:
                     pass
                 else:
@@ -41,9 +40,9 @@ class res_partner(models.Model):
     @api.constrains('email')
     def _check_values_tp(self):
         expr = "^[a-zA-Z0-9._+-]+@[a-zA-Z0-9]+\.[a-zA-Z0-9.]*\.*[a-zA-Z]{2,4}$"
-        for val in self:
-            if val.email:
-                if re.match(expr, val.email) is not None:
+        for rec in self:
+            if rec.email:
+                if re.match(expr, rec.email) is not None:
                     pass
                 else:
                     raise ValidationError('Please Enter Valid Email Id')
@@ -65,11 +64,11 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).action_move_create()
         for inv_rec in self:
             if inv_rec.move_id and inv_rec.move_id.id:
-                inv_rec.move_id.write({'asset_id':
-                                       inv_rec.vehicle_id.id or False,
-                                       'ref': 'Maintenance Invoice',
-                                       'source':
-                                       inv_rec.vehicle_id.name or False})
+                inv_rec.move_id.write({
+                    'asset_id': inv_rec.vehicle_id.id or False,
+                    'ref': 'Maintenance Invoice',
+                    'source': inv_rec.vehicle_id.name or False
+                })
         return res
 
 
@@ -99,7 +98,7 @@ class RentType(models.Model):
     @api.model
     def name_search(self, name='', args=[], operator='ilike', limit=100):
         args += ['|', ('duration', operator, name),
-                      ('renttype', operator, name)]
+                 ('renttype', operator, name)]
         cuur_ids = self.search(args, limit=limit)
         return cuur_ids.name_get()
 
@@ -330,7 +329,7 @@ class PropertyMaintenace(models.Model):
                         'invoice_line_ids': [(0, 0, inv_line_values)],
                         'amount_total': data.cost or 0.0,
                         'date_invoice': datetime.now().strftime(
-                                    DEFAULT_SERVER_DATE_FORMAT) or False,
+                            DEFAULT_SERVER_DATE_FORMAT) or False,
                         'number': tenancy_data.name or '',
                     }
                 if data.renters_fault:
@@ -494,60 +493,33 @@ class TenancyRentSchedule(models.Model):
     def _get_move_check(self):
         self.move_check = bool(self.move_id)
 
-    state = fields.Selection(
-        related='tenancy_id.state',
-        string='Status')
-    note = fields.Text(
-        string='Notes',
-        help='Additional Notes.')
-    currency_id = fields.Many2one(
-        comodel_name='res.currency',
-        string='Currency')
-    amount = fields.Float(
-        string='Amount',
-        default=0.0,
-        currency_field='currency_id',
-        help="Rent Amount.")
-    start_date = fields.Datetime(
-        string='Date',
-        help='Start Date.')
-    end_date = fields.Date(
-        string='End Date',
-        help='End Date.')
-    cheque_detail = fields.Char(
-        string='Cheque Detail',
-        size=30)
-    move_check = fields.Boolean(
-        compute='_get_move_check',
-        method=True,
-        string='Posted',
-        store=True)
-    rel_tenant_id = fields.Many2one(
-        comodel_name='res.partner',
-        string="Tenant")
-    move_id = fields.Many2one(
-        comodel_name='account.move',
-        string='Depreciation Entry')
-    vehicle_id = fields.Many2one(
-        comodel_name='fleet.vehicle',
-        string='Vehicle',
-        help='Vehicle Name.')
-    tenancy_id = fields.Many2one(
-        comodel_name='account.analytic.account',
-        string='Rental Vehicle',
-        help='Rental Vehicle Name.')
-    paid = fields.Boolean(
-        string='Paid',
-        help="True if this rent is paid by tenant")
-    invc_id = fields.Many2one(
-        comodel_name='account.invoice',
-        string='Invoice')
-    inv = fields.Boolean(
-        string='Invoice')
-    pen_amt = fields.Float(
-        string='Pending Amount',
-        help='Pending Amount.',
-        store=True)
+    state = fields.Selection(related='tenancy_id.state', string='Status')
+    note = fields.Text(string='Notes', help='Additional Notes.')
+    currency_id = fields.Many2one(comodel_name='res.currency',
+                                  string='Currency')
+    amount = fields.Float(string='Amount', default=0.0,
+                          currency_field='currency_id', help="Rent Amount.")
+    start_date = fields.Datetime(string='Date', help='Start Date.')
+    end_date = fields.Date(string='End Date', help='End Date.')
+    cheque_detail = fields.Char(string='Cheque Detail', size=30)
+    move_check = fields.Boolean(compute='_get_move_check', method=True,
+                                string='Posted', store=True)
+    rel_tenant_id = fields.Many2one(comodel_name='res.partner',
+                                    string="Tenant")
+    move_id = fields.Many2one(comodel_name='account.move',
+                              string='Depreciation Entry')
+    vehicle_id = fields.Many2one(comodel_name='fleet.vehicle',
+                                 string='Vehicle',
+                                 help='Vehicle Name.')
+    tenancy_id = fields.Many2one(comodel_name='account.analytic.account',
+                                 string='Rental Vehicle',
+                                 help='Rental Vehicle Name.')
+    paid = fields.Boolean(string='Paid',
+                          help="True if this rent is paid by tenant")
+    invc_id = fields.Many2one(comodel_name='account.invoice', string='Invoice')
+    inv = fields.Boolean(string='Invoice')
+    pen_amt = fields.Float(string='Pending Amount', help='Pending Amount.',
+                           store=True)
 
     @api.multi
     def create_invoice(self):
@@ -730,7 +702,7 @@ class account_payment(models.Model):
                     self._context.get('active_model', False) and \
                     self._context['active_model'] == 'account.invoice':
                 for invoice in self.env[self._context['active_model']].browse(
-                            self._context.get('active_id', False)):
+                        self._context.get('active_id', False)):
                     if invoice.new_tenancy_id:
                         invoice.new_tenancy_id.write({
                             'deposit_return': True,
@@ -747,39 +719,23 @@ class SaleCost(models.Model):
     def _get_move_check(self):
         self.move_check = bool(self.move_id)
 
-    date = fields.Date(
-        string='Date')
-    amount = fields.Float(
-        string='Amount')
-    name = fields.Char(
-        string='Description',
-        size=100)
-    payment_details = fields.Char(
-        string='Payment Details',
-        size=100)
-    currency_id = fields.Many2one(
-        comodel_name='res.currency',
-        string='Currency')
-    move_id = fields.Many2one(
-        comodel_name='account.move',
-        string='Purchase Entry')
-    sale_property_id = fields.Many2one(
-        comodel_name='account.asset.asset',
-        string='Property')
-    remaining_amount = fields.Float(
-        string='Remaining Amount',
-        help='Shows remaining amount in currency')
-    move_check = fields.Boolean(
-        string='Posted',
-        compute='_get_move_check',
-        method=True,
-        store=True)
-    rmn_amnt_per = fields.Float(
-        string='Remaining Amount In %',
-        help='Shows remaining amount in Percentage')
-    invc_id = fields.Many2one(
-        comodel_name='account.invoice',
-        string='Invoice')
+    date = fields.Date(string='Date')
+    amount = fields.Float(string='Amount')
+    name = fields.Char(string='Description', size=100)
+    payment_details = fields.Char(string='Payment Details', size=100)
+    currency_id = fields.Many2one(comodel_name='res.currency',
+                                  string='Currency')
+    move_id = fields.Many2one(comodel_name='account.move',
+                              string='Purchase Entry')
+    sale_property_id = fields.Many2one(comodel_name='account.asset.asset',
+                                       string='Property')
+    remaining_amount = fields.Float(string='Remaining Amount',
+                                    help='Shows remaining amount in currency')
+    move_check = fields.Boolean(string='Posted', compute='_get_move_check',
+                                method=True, store=True)
+    rmn_amnt_per = fields.Float(string='Remaining Amount In %',
+                                help='Shows remaining amount in Percentage')
+    invc_id = fields.Many2one(comodel_name='account.invoice', string='Invoice')
 
     @api.multi
     def create_invoice(self):
@@ -796,7 +752,7 @@ class SaleCost(models.Model):
 
         inv_line_values = {
             'origin': 'Sale.Cost',
-            'name': 'Purchase Cost For'+''+self.sale_property_id.name,
+            'name': 'Purchase Cost For' + '' + self.sale_property_id.name,
             'price_unit': self.amount or 0.00,
             'quantity': 1,
             'account_id': self.sale_property_id.income_acc_id.id,
