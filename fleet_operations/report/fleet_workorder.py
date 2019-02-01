@@ -76,7 +76,7 @@ class FleetWorkOrder(models.AbstractModel):
                                 'team_id': work_rec.team_id and
                                 work_rec.team_id.name or '',
                                 'value': [wo_data]
-                                }
+                        }
         for team_id, workorder_data in wo_smry_dict.items():
             wo_summary_data.append(workorder_data)
         return wo_summary_data

@@ -1,1 +1,2 @@
 reporting-engine
+web_widget_multi_image

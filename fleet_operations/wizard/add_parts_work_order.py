@@ -45,7 +45,7 @@ class PartsWorkOrder(models.TransientModel):
                     parts_used_obj.create(vals)
         if self._context.get('active_id', False):
             for work_order in work_order_obj.browse(
-                                    [self._context.get('active_id')]):
+                    [self._context.get('active_id')]):
                 if work_order.parts_ids:
                     work_order.write({'is_parts': True})
                 if not work_order.parts_ids:
@@ -62,14 +62,14 @@ class PartsWorkOrder(models.TransientModel):
                     for part_rec in work_order.parts_ids:
                         trip_encoded_ids = \
                             self.env['trip.encoded.history'].search(
-                               [('team_id', '=', work_order.team_trip_id.id),
-                                ('product_id', '=', part_rec.product_id and
-                                 part_rec.product_id.id or False)])
+                                [('team_id', '=', work_order.team_trip_id.id),
+                                 ('product_id', '=', part_rec.product_id and
+                                  part_rec.product_id.id or False)])
                         if trip_encoded_ids:
                             encoded_qty = \
                                 trip_encoded_ids[0].encoded_qty + part_rec.qty
                             trip_encoded_ids[0].write(
-                                          {'encoded_qty': encoded_qty})
+                                {'encoded_qty': encoded_qty})
         return True
 
 
@@ -140,8 +140,8 @@ class AddPartsWorkOrder(models.TransientModel):
             # Get Encoded Quantities from Team Trip
             if self._context.get('team_id', False):
                 team_trip_ids = team_trip_obj.search([
-                  ('destination_location_id', '=', self._context['team_id']),
-                  ("state", "=", "close")])
+                    ('destination_location_id', '=', self._context['team_id']),
+                    ("state", "=", "close")])
                 if team_trip_ids:
                     for t_trip in team_trip_ids:
                         if not t_trip.is_work_order_done:
@@ -194,8 +194,8 @@ class AddPartsWorkOrder(models.TransientModel):
             rec = self.product_id
             if self._context.get('team_id', False):
                 team_trip_ids = team_trip_obj.search([
-                  ('destination_location_id', '=', self._context['team_id']),
-                  ("state", "=", "close")])
+                    ('destination_location_id', '=', self._context['team_id']),
+                    ("state", "=", "close")])
                 if team_trip_ids and self.encoded_qty < self.qty:
                     self.qty = 0.0
                     raise Warning(_("You can\'t enter \
@@ -235,9 +235,9 @@ class EditPartsWorkOrder(models.Model):
                 work_order_line_ids.append(work_order_line.id)
                 if work_order_rec.team_trip_id:
                     trip_encoded_temp_ids = trip_encoded_temp__obj.search([
-                           ('team_id', '=', work_order_rec.team_trip_id.id),
-                           ('product_id', '=', work_order_line.product_id.id),
-                           ('work_order_id', '=', work_order_rec.id)])
+                        ('team_id', '=', work_order_rec.team_trip_id.id),
+                        ('product_id', '=', work_order_line.product_id.id),
+                        ('work_order_id', '=', work_order_rec.id)])
                     if trip_encoded_temp_ids:
                         trip_encoded_temp_ids.unlink()
                     vals = {
@@ -257,7 +257,7 @@ class EditPartsWorkOrder(models.Model):
         context = dict(context)
         if context.get('active_id', False):
             for work_order in work_order_obj.browse(
-                                [context['active_id']]):
+                    [context['active_id']]):
                 if not work_order.parts_ids:
                     work_order.write({'is_parts': False})
                 if work_order.parts_ids:
@@ -274,13 +274,13 @@ class EditPartsWorkOrder(models.Model):
                     self.env.args = cr, uid, misc.frozendict(context)
                     for part_rec in work_order.parts_ids:
                         trip_encoded_ids = trip_encoded_obj.search([
-                                ('team_id', '=', work_order.team_trip_id.id),
-                                ('product_id', '=', part_rec.product_id.id)])
+                            ('team_id', '=', work_order.team_trip_id.id),
+                            ('product_id', '=', part_rec.product_id.id)])
                         trip_encoded_temp_ids = \
                             trip_encoded_temp_obj.search([
-                                  ('team_id', '=', work_order.team_trip_id.id),
-                                  ('product_id', '=', part_rec.product_id.id),
-                                  ('work_order_id', '=', work_order.id)])
+                                ('team_id', '=', work_order.team_trip_id.id),
+                                ('product_id', '=', part_rec.product_id.id),
+                                ('work_order_id', '=', work_order.id)])
                         part_used_qty = 0.0
                         if trip_encoded_temp_ids:
                             part_used_qty = trip_encoded_temp_ids[0].used_qty
@@ -289,5 +289,5 @@ class EditPartsWorkOrder(models.Model):
                                 trip_encoded_ids[0].encoded_qty - \
                                 part_used_qty + part_rec.qty
                             trip_encoded_ids[0].write(
-                                              {'encoded_qty': encoded_qty})
+                                {'encoded_qty': encoded_qty})
         return True

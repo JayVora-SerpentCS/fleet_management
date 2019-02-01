@@ -54,7 +54,7 @@ class VehicalChangeHistoryReport(models.AbstractModel):
                     engine_rec.workorder_id.date_close or False,
                     'remarks': engine_rec.note or '',
                     'seq': seq + 'a'
-                    }
+                }
                 vehicle_change_history.append(values)
         if color_ids:
             for color_rec in color_ids:
@@ -86,7 +86,7 @@ class VehicalChangeHistoryReport(models.AbstractModel):
                     color_rec.workorder_id.date_close or False,
                     'remarks': color_rec.note or '',
                     'seq': seq + 'b'
-                    }
+                }
                 vehicle_change_history.append(cvalues)
         if vin_ids:
             for vin_rec in vin_ids:
@@ -116,7 +116,7 @@ class VehicalChangeHistoryReport(models.AbstractModel):
                     vin_rec.workorder_id.date_close or False,
                     'remarks': vin_rec.note or '',
                     'seq': seq + 'c'
-                    }
+                }
                 vehicle_change_history.append(vvalues)
         if vehicle_change_history:
             vehicle_change_history = sorted(vehicle_change_history,

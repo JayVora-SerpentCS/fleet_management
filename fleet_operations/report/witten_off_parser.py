@@ -4,7 +4,7 @@
 from odoo import models, api
 
 
-class report_qweb_write_off(models.AbstractModel):
+class ReportQwebWriteOff(models.AbstractModel):
     _name = 'report.fleet_operations.write_off_qweb'
 
     def _get_last_work_order(self, vehicle_id):
@@ -26,7 +26,7 @@ class report_qweb_write_off(models.AbstractModel):
         if not docids:
             docids = data.get('docids', [])
         docs = self.env['fleet.wittenoff'].browse(docids)
-        return  {
+        return {
             'doc_ids': docids,
             'doc_model': 'fleet.wittenoff',
             'docs': docs,

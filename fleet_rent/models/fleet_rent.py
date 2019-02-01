@@ -98,7 +98,7 @@ class RentType(models.Model):
     @api.model
     def name_search(self, name='', args=[], operator='ilike', limit=100):
         args += ['|', ('duration', operator, name),
-                      ('renttype', operator, name)]
+                 ('renttype', operator, name)]
         cuur_ids = self.search(args, limit=limit)
         return cuur_ids.name_get()
 
@@ -155,9 +155,8 @@ class MaintenanaceCost(models.Model):
     @api.onchange('maint_type')
     def onchange_property_id(self):
         """
-        This Method is used to set maintenance type related fields value,
+        Method is used to set maintenance type related fields value,
         on change of property.
-        @param self: The object pointer
         """
         if self.maint_type:
             self.cost = self.maint_type.cost or 0.00
@@ -329,7 +328,7 @@ class PropertyMaintenace(models.Model):
                         'invoice_line_ids': [(0, 0, inv_line_values)],
                         'amount_total': data.cost or 0.0,
                         'date_invoice': datetime.now().strftime(
-                                    DEFAULT_SERVER_DATE_FORMAT) or False,
+                            DEFAULT_SERVER_DATE_FORMAT) or False,
                         'number': tenancy_data.name or '',
                     }
                 if data.renters_fault:
@@ -729,7 +728,7 @@ class AccountPayment(models.Model):
                     self._context.get('active_model', False) and \
                     self._context['active_model'] == 'account.invoice':
                 for invoice in self.env[self._context['active_model']].browse(
-                            self._context.get('active_id', False)):
+                        self._context.get('active_id', False)):
                     if invoice.new_tenancy_id:
                         invoice.new_tenancy_id.write({
                             'deposit_return': True,
@@ -795,7 +794,7 @@ class SaleCost(models.Model):
 
         inv_line_values = {
             'origin': 'Sale.Cost',
-            'name': 'Purchase Cost For'+''+self.sale_property_id.name,
+            'name': 'Purchase Cost For' + '' + self.sale_property_id.name,
             'price_unit': self.amount or 0.00,
             'quantity': 1,
             'account_id': self.sale_property_id.income_acc_id.id,

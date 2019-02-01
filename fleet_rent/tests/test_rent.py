@@ -3,7 +3,7 @@
 
 from odoo.tests.common import TransactionCase
 from datetime import datetime
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT,DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class TestRent(TransactionCase):
@@ -21,21 +21,21 @@ class TestRent(TransactionCase):
         cr_dt = datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
         self.vehicle = self.vehicle_obj.create({
-                                'f_brand_id': fleet_brand.id,
-                                'model_id': fleet_model.id,
-                                'license_plate': 'MH-04-7777',
-                                'odometer': 3000,
-                                'odometer_unit': 'kilometers',
-                                'fuel_type': 'diesel'
-                                    })
+            'f_brand_id': fleet_brand.id,
+            'model_id': fleet_model.id,
+            'license_plate': 'MH-04-7777',
+            'odometer': 3000,
+            'odometer_unit': 'kilometers',
+            'fuel_type': 'diesel'
+        })
         self.rent_type_id = self.rent_type_obj.create({
-                                'duration': 1,
-                                'renttype': 'Months'
-                                    })
+            'duration': 1,
+            'renttype': 'Months'
+        })
         self.rent = self.rent_obj.create({
-                                'name': 'Test Rent',
-                                'vehicle_id': self.vehicle.id,
-                                'tenant_id': tenant_id.id,
-                                'ten_date': cr_dt,
-                                'rent_type_id': self.rent_type_id.id
-                                    })
+            'name': 'Test Rent',
+            'vehicle_id': self.vehicle.id,
+            'tenant_id': tenant_id.id,
+            'ten_date': cr_dt,
+            'rent_type_id': self.rent_type_id.id
+        })

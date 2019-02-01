@@ -43,7 +43,7 @@
               'views/template.xml',
               'wizard/vehicle_change_history_view.xml',
               'wizard/repair_line_summary_view.xml',
-              ],
+    ],
     'demo': ['data/fleet_extended_demo.xml'],
     'installable': True,
     'application': True,

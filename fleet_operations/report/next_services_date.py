@@ -55,28 +55,28 @@ class NextServiceDate(models.AbstractModel):
         line_col = 0
         counter = 1
         for obj in next_service:
-                worksheet.write(line_row, line_col, counter, border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj.name or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj.vin_sn or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj.f_brand_id and
-                                obj.f_brand_id.name or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj.model_id and
-                                obj.model_id.name or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col,
-                                obj.last_service_date or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col,
-                                obj.next_service_date or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col,
-                                obj.vechical_location_id and
-                                obj.vechical_location_id.name or '', border)
-                line_col = 0
-                line_row += 1
-                counter += 1
-                worksheet.write(line_row, line_col, '********', border)
+            worksheet.write(line_row, line_col, counter, border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj.name or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj.vin_sn or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj.f_brand_id and
+                            obj.f_brand_id.name or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj.model_id and
+                            obj.model_id.name or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col,
+                            obj.last_service_date or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col,
+                            obj.next_service_date or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col,
+                            obj.vechical_location_id and
+                            obj.vechical_location_id.name or '', border)
+            line_col = 0
+            line_row += 1
+            counter += 1
+            worksheet.write(line_row, line_col, '********', border)

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-import base64
 from odoo import models
 
 
@@ -167,4 +166,3 @@ class FleetHistory(models.AbstractModel):
                 worksheet.write(row, 5, '**************************')
                 worksheet.write(row, 6, '**************************')
                 worksheet.write(row, 7, '**************************')
-                

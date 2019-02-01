@@ -23,9 +23,9 @@ class VehicleChangeHistory(models.TransientModel):
                             be greater than 'Date From'!"))
             data = {
                 'form': {
-                     'date_from': rec.date_from or False,
-                     'date_to': rec.date_to or False,
-                     'fleet_id': rec.fleet_id and rec.fleet_id.id or False
+                    'date_from': rec.date_from or False,
+                    'date_to': rec.date_to or False,
+                    'fleet_id': rec.fleet_id and rec.fleet_id.id or False
                 },
             }
             return self.env.ref(
