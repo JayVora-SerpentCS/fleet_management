@@ -28,8 +28,7 @@ class PendingRepairConfirm(models.TransientModel):
             if increment_ids:
                 odometer_increment = increment_ids[0].number
             next_service_day_ids = next_service_day_obj.search([
-                                ('vehicle_id', '=', work_order.vehicle_id.id)],
-                                                               limit=1)
+                ('vehicle_id', '=', work_order.vehicle_id.id)], limit=1)
             if not next_service_day_ids:
                 raise Warning(_("Next service days is \
                      not configured for %s please set it from \
@@ -65,9 +64,9 @@ class PendingRepairConfirm(models.TransientModel):
                                     repair_line.categ_id.id or False,
                                     "issue_date": work_order.date})
                                 work_order.vehicle_id.write({
-                                     'pending_repair_type_ids':
-                                     [(4, incomplete_rep_id.id)],
-                                     'state': 'complete'})
+                                    'pending_repair_type_ids':
+                                    [(4, incomplete_rep_id.id)],
+                                    'state': 'complete'})
                 for repair_line in work_order.repair_line_ids:
                     for pending_repair_line in \
                             work_order.vehicle_id.pending_repair_type_ids:
@@ -80,7 +79,7 @@ class PendingRepairConfirm(models.TransientModel):
                 for repair_line in work_order.repair_line_ids:
                     if repair_line.complete is False:
                         incomplete_rep_id = pending_rep_obj.create(
-                               {'repair_type_id':
+                            {'repair_type_id':
                                 repair_line.repair_type_id and
                                 repair_line.repair_type_id.id or False,
                                 'name': work_order.name or '',
@@ -89,9 +88,9 @@ class PendingRepairConfirm(models.TransientModel):
                                 repair_line.categ_id.id or False,
                                 "issue_date": work_order.date})
                         work_order.vehicle_id.write({
-                         'pending_repair_type_ids':
-                         [(4, incomplete_rep_id.id)],
-                         'state': 'complete'})
+                            'pending_repair_type_ids':
+                            [(4, incomplete_rep_id.id)],
+                            'state': 'complete'})
                         work_order_vals.update({"already_closed": True})
             work_order_vals.update({'state': 'done', 'already_closed': True,
                                     'next_service_odometer':

@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 
 
 class FleetVehicle(models.Model):
@@ -6,12 +6,14 @@ class FleetVehicle(models.Model):
     _inherits = {'product.product': 'product_id'}
 
     product_id = fields.Many2one('product.product', 'Product',
-                            ondelete="cascade", delegate=True, required=True)
+                                 ondelete="cascade", delegate=True,
+                                 required=True)
 
     @api.model
     def create(self, vals):
         ctx = dict(self.env.context)
-        new_vehicle = super(FleetVehicle, self.with_context(create_fleet_vehicle=True)).create(vals)
+        new_vehicle = super(FleetVehicle, self.with_context(
+            create_fleet_vehicle=True)).create(vals)
         ctx.update({"from_vehicle_create": True})
         if new_vehicle.product_id:
             new_vehicle.product_id.with_context(ctx).write({
@@ -30,7 +32,7 @@ class FleetVehicle(models.Model):
                     update_prod_vals.update({
                         'image_medium': vehicle.image_medium})
                 if vals.get('model_id', False) or \
-                    vals.get('license_plate', False):
+                        vals.get('license_plate', False):
                     update_prod_vals.update({'name': vehicle.name})
                 if update_prod_vals:
                     vehicle.product_id.write(update_prod_vals)
@@ -50,9 +52,8 @@ class ProductProduct(models.Model):
 
     @api.model
     def create(self, vals):
-        ctx = dict(self.env.context)
         if not vals.get('name', False) and \
-            self._context.get('create_fleet_vehicle', False):
+                self._context.get('create_fleet_vehicle', False):
             vals.update({'name': 'NEW VEHICLE',
                          'type': 'product',
                          'is_vehicle': True})
@@ -65,7 +66,7 @@ class ProductProduct(models.Model):
         for product in self:
             if ctx and not ctx.get("from_vehicle_create", False):
                 vehicles = self.env['fleet.vehicle'].search([
-                                ('product_id', '=', product.id)])
+                    ('product_id', '=', product.id)])
                 update_vehicle_vals = {}
                 if vals.get('image_medium', False):
                     update_vehicle_vals.update({

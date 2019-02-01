@@ -51,30 +51,29 @@ class StockAdjustment(models.AbstractModel):
         line_col = 0
         counter = 1
         for obj in stock:
-                worksheet.write(line_row, line_col, counter, border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj.date or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj.product_id and
-                                obj.product_id.default_code or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj.product_id and
-                                obj.product_id.name or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj.product_id and
-                                obj.product_id.vehicle_make_id and
-                                obj.product_id.vehicle_make_id.name or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj.qty_adjust or '',
-                                border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj.user_id and
-                                obj.user_id.name or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col, obj.reason or '', border)
-                line_col = 0
-                line_row += 1
-                counter += 1
-                worksheet.write(line_row, line_col, '********', border)
-                
+            worksheet.write(line_row, line_col, counter, border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj.date or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj.product_id and
+                            obj.product_id.default_code or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj.product_id and
+                            obj.product_id.name or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj.product_id and
+                            obj.product_id.vehicle_make_id and
+                            obj.product_id.vehicle_make_id.name or '',
+                            border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj.qty_adjust or '',
+                            border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj.user_id and
+                            obj.user_id.name or '', border)
+            line_col += 1
+            worksheet.write(line_row, line_col, obj.reason or '', border)
+            line_col = 0
+            line_row += 1
+            counter += 1
+            worksheet.write(line_row, line_col, '********', border)

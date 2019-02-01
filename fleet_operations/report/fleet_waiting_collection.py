@@ -26,7 +26,6 @@ class FleetWaitingColletion(models.AbstractModel):
         worksheet.set_column(13, 13, 5)
         worksheet.set_column(14, 14, 5)
         worksheet.set_column(15, 15, 5)
-        
         border = workbook.add_format({'border': 2,
                                       'font_name': 'Arial',
                                       'font_size': '10'})
@@ -88,4 +87,3 @@ class FleetWaitingColletion(models.AbstractModel):
                 line_row += 1
                 counter += 1
                 worksheet.write(line_row, line_col, '********', border)
-                

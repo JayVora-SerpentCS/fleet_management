@@ -45,7 +45,6 @@ class RepairLineSmry(models.AbstractModel):
                 sorted(repair_line_data, key=lambda k: k['repair_type'])
         return repair_line_data
 
-
     @api.model
     def get_report_values(self, docids, data=None):
         if not data.get('form') or \

@@ -8,7 +8,6 @@ class ReceivedPartsXlsx(models.AbstractModel):
     _name = 'report.fleet_operations.receved.parts.xls'
     _inherit = 'report.report_xlsx.abstract'
 
-
     def get_purchase_id(self, picking):
         query = """
             SELECT po.id as purchase_id FROM stock_picking p, stock_move m,\
@@ -102,4 +101,3 @@ class ReceivedPartsXlsx(models.AbstractModel):
                     row += 2
                     counter += 1
         row += 5
-        

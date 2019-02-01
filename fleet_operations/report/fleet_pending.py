@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
-import base64
 from odoo import models
 
 
@@ -48,10 +47,10 @@ class FleetPending(models.AbstractModel):
         tit = workbook.add_format({'border': 2,
                                    'font_name': 'Arial',
                                    'font_size': '12'})
-        tot = workbook.add_format({'border': 2,
-                                   'bold': True,
-                                   'font_name': 'Arial',
-                                   'font_size': '10'})
+        # tot = workbook.add_format({'border': 2,
+        #                            'bold': True,
+        #                            'font_name': 'Arial',
+        #                            'font_size': '10'})
         border = workbook.add_format({'border': 2,
                                       'font_name': 'Arial',
                                       'font_size': '10'})
@@ -126,4 +125,3 @@ class FleetPending(models.AbstractModel):
                 line_row += 1
                 counter += 1
                 worksheet.write(line_row, line_col, '********', border)
-                

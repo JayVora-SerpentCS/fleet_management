@@ -52,7 +52,7 @@ class MostUsedPartsXlsx(models.AbstractModel):
                                 p_line.product_id.standard_price or 0.0,
                                 'total_cost':
                                 p_line.qty * p_line.product_id.standard_price,
-                            }
+                        }
 
         for part_data in used_dict.itervalues():
             part_list_data.append(part_data)

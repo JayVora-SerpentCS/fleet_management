@@ -34,24 +34,23 @@ class WizardRenewTenancy(models.TransientModel):
                         relativedelta(months=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Years':
                     rec.end_date = datetime.strptime(rec.start_date, DT) + \
-                            relativedelta(years=int(rec.rent_type_id.duration))
+                        relativedelta(years=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Weeks':
                     rec.end_date = datetime.strptime(rec.start_date, DT) + \
-                            relativedelta(weeks=int(rec.rent_type_id.duration))
+                        relativedelta(weeks=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Days':
                     rec.end_date = datetime.strptime(rec.start_date, DT) + \
-                            relativedelta(days=int(rec.rent_type_id.duration))
+                        relativedelta(days=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Hours':
                     rec.end_date = datetime.strptime(rec.start_date, DT) + \
-                            relativedelta(hours=int(rec.rent_type_id.duration))
+                        relativedelta(hours=int(rec.rent_type_id.duration))
         return True
 
     @api.constrains('start_date', 'end_date')
     def check_date_overlap(self):
         """
-        This is a constraint method used to check the from date smaller than
+        Constraint method used to check the from date smaller than
         the Exiration date.
-        @param self : object pointer
         """
         for ver in self:
             if ver.start_date and ver.end_date:
@@ -66,9 +65,7 @@ class WizardRenewTenancy(models.TransientModel):
     @api.multi
     def renew_contract(self):
         """
-                This Button Method is used to Renew Tenancy.
-        @param self: The object pointer
-        @return: Dictionary of values.
+        Button Method is used to Renew Tenancy,return dict to open rent view.
         """
         cr, uid, context = self.env.args
         context = dict(context)

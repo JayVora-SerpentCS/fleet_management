@@ -140,7 +140,11 @@
                 <field name="vehical_color_id"
                     attrs="{'readonly':[('is_color_set','=',True)]}"
                     options="{'no_open': True, 'create': false, 'create_edit': false}" />
+                <field name="vehical_country_id" string="Registration Country"
+                    attrs="{'readonly':[('state','in',('write-off'))]}"
+                    options="{'no_open': True, 'create': false, 'create_edit': false}"/>
                 <field name="vechical_location_id" string="Registration State"
+                    domain="[('country_id', '=', vehical_country_id)]"
                     attrs="{'readonly':[('state','in',('write-off'))]}"
                     options="{'no_open': True, 'create': false, 'create_edit': false}"/>
                 <field name="vehical_division_id" invisible="1"
