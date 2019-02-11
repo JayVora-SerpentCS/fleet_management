@@ -240,9 +240,11 @@ class FleetOperations(models.Model):
                 record.name = \
                     record.model_id.brand_id.name + '/' + \
                     record.model_id.name + '/' + lic_plate
+            else:
+                record.name = ''
 
     name = fields.Char(compute="_compute_vehicle_name", store=True,
-                       string='Vehicle ID', size=64, translate=True)
+                       string='Vehicle ID')
     odometer_check = fields.Boolean('Odometer Change', default=True)
     fuel_qty = fields.Char(string='Fuel Quality')
     fuel_type = fields.Selection([('gasoline', 'Gasoline'),
