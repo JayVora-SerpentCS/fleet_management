@@ -5,7 +5,7 @@ import time
 from datetime import datetime, date, timedelta
 from odoo import models, fields, _, api
 from odoo.tools import misc, DEFAULT_SERVER_DATE_FORMAT
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
 from odoo.tools.float_utils import float_compare
 from odoo.exceptions import Warning, ValidationError
 
@@ -113,6 +113,8 @@ class FleetVehicleLogServices(models.Model):
         increment_obj = self.env['next.increment.number']
         next_service_day_obj = self.env['next.service.days']
         mod_obj = self.env['ir.model.data']
+        task_obj = self.env['task.line']
+        move_obj = self.env['stock.move']
 
         for work_order in self:
             for repair_line in work_order.repair_line_ids:
@@ -194,6 +196,29 @@ class FleetVehicleLogServices(models.Model):
                                     pending_repair_line.name:
                                 if repair_line.complete is True:
                                     pending_repair_line.unlink()
+            if work_order.parts_ids:
+                parts = task_obj.search([
+                    ('fleet_service_id', '=', work_order.id),
+                    ('is_deliver', '=', False)])
+                if parts:
+                    for part in parts:
+                        part.write({'is_deliver': True})
+                        source_location = self.env.ref(
+                            'stock.picking_type_out').default_location_src_id
+                        dest_location, loc = self.env[
+                            'stock.warehouse']._get_partner_locations()
+                        move = move_obj.create({
+                            'name': 'Use on Work Order',
+                            'product_id': part.product_id.id or False,
+                            'location_id': source_location.id,
+                            'location_dest_id': dest_location.id,
+                            'product_uom': part.product_uom.id or False,
+                            'product_uom_qty': part.qty or 0.0
+                        })
+                        move._action_confirm()
+                        move._action_assign()
+                        move.move_line_ids.write({'qty_done': part.qty})
+                        move._action_done()
         return True
 
     @api.multi
@@ -373,15 +398,17 @@ class FleetVehicleLogServices(models.Model):
                         {'old_parts_incoming_ship_ids': [(6, 0, [])]})
             if not flag and mov:
                 # IF it's a new shipment make it done
-                ship_id.signal_workflow('button_confirm')
-                ship_id.force_assign()
-                ship_id.action_done()
+                ship_id.button_validate()
+                # ship_id.signal_workflow('button_confirm')
+                # ship_id.force_assign()
+                # ship_id.action_done()
                 work_order.write({'out_going_ids': [(4, ship_id.id)]})
             if not return_flag and ret:
                 # IF it's a new shipment make it done
-                scrap_pick_id.signal_workflow('button_confirm')
-                scrap_pick_id.force_assign()
-                scrap_pick_id.action_done()
+                ship_id.button_validate()
+                # scrap_pick_id.signal_workflow('button_confirm')
+                # scrap_pick_id.force_assign()
+                # scrap_pick_id.action_done()
                 work_order.write(
                     {'old_parts_incoming_ship_ids': [(4, scrap_pick_id.id)]})
         return True
@@ -504,13 +531,12 @@ class FleetVehicleLogServices(models.Model):
 #                        re-open again!" % (open_days.days)))
         return True
 
-    @api.multi
-    def get_total(self):
-        for rec in self:
-            total = 0.0
-            for line in rec.parts_ids:
-                total += line.total
-            rec.sub_total = total
+    @api.depends('parts_ids')
+    def _compute_get_total(self):
+        total = 0.0
+        for line in self.parts_ids:
+            total += line.total
+        self.sub_total = total
 
     @api.multi
     def write(self, vals):
@@ -692,7 +718,7 @@ class FleetVehicleLogServices(models.Model):
     date_child = fields.Date(related='cost_id.date', string='Date', store=True)
     inv_ref = fields.Many2one('account.invoice', string='Invoice Reference',
                               readonly=True)
-    sub_total = fields.Float(compute="get_total", string='Total Cost',
+    sub_total = fields.Float(compute="_compute_get_total", string='Total Cost',
                              default=0.0, store=True)
     state = fields.Selection([('draft', 'New'),
                               ('confirm', 'Open'), ('done', 'Close'),
@@ -1924,40 +1950,23 @@ class ServiceTask(models.Model):
 class TaskLine(models.Model):
     _name = 'task.line'
 
-    @api.multi
-    def _amount_line(self):
-        for line in self:
-            price = line.price_unit * line.qty
-            line.total = price
-
-    partshist_id = fields.Integer(string='Parts History ID',
-                                  help="Take this field for data migration")
-    wizard_parts_id = fields.Many2one('edit.parts.work.order',
-                                      string='Parts Used')
-    task_id = fields.Many2one('service.task',
-                              string='task reference')
     fleet_service_id = fields.Many2one('fleet.vehicle.log.services',
                                        string='Vehicle Work Order')
-    product_id = fields.Many2one('product.product', string='Product No',
+    product_id = fields.Many2one('product.product', string='Part',
                                  required=True)
-    name = fields.Char(string='Part Name', size=124, translate=True)
-    encoded_qty = fields.Float(string='Qty for Encoding',
-                               help='Quantity that can be used')
     qty_hand = fields.Float(string='Qty on Hand',
-                            help='Quantity on Hand')
-    dummy_encoded_qty = fields.Float(string='Encoded Qty',
-                                     help='Quantity that can be used')
-    qty = fields.Float(string='Used')
+                            help='Quantity on Hand',
+                            store=True)
+    qty = fields.Float(string='Qty')
     product_uom = fields.Many2one('product.uom', string='UOM', required=True)
     price_unit = fields.Float(string='Unit Cost')
-    total = fields.Float(compute="_amount_line", string='Total Cost')
-    vehicle_make_id = fields.Many2one('fleet.vehicle.model.brand',
-                                      string='Vehicle Make')
+    total = fields.Float(string='Total Cost')
     date_issued = fields.Datetime(string='Date issued')
-    old_part_return = fields.Boolean(string='Old Part Returned?')
     issued_by = fields.Many2one('res.users', string='Issued By',
                                 default=lambda self: self._uid)
     is_deliver = fields.Boolean(string="Is Deliver?")
+    task_id = fields.Many2one('service.task', 'Task')
+    wizard_parts_id = fields.Many2one('edit.parts.work.order', 'Wiz Part')
 
     @api.constrains('qty')
     def _check_used_qty(self):
@@ -1965,19 +1974,47 @@ class TaskLine(models.Model):
             if rec.qty <= 0:
                 raise Warning(_('You can\'t \
                             enter used quanity as Zero!'))
+            if rec.qty_hand < rec.qty:
+                raise Warning(_("you can't used qty more then available!!"))
+            if rec.product_id.qty_available <= 0.0:
+                raise Warning(_("You can't used QTY which is on hand 0!"))
+
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if self.product_id:
+            prod = self.product_id
+            if prod.in_active_part == True:
+                self.product_id = False
+                self.qty = 0.0
+                self.product_uom = False
+                self.price_unit = False
+                self.total = 0.0
+                raise Warning(_('You can\'t select \
+                         part which is In-Active!'))
+            self.qty_hand = prod.qty_available
+            self.qty = 1.0
+            self.product_uom = prod.uom_id
+            self.price_unit = prod.list_price
+            self.total = self.qty * prod.list_price
+
+
+    @api.onchange('qty')
+    def _onchange_qty(self):
+        if self.product_id:
+            self.total = self.qty * self.product_id.list_price
 
     @api.model
     def create(self, vals):
         """
         Overridden create method to add the issuer of the part and the
-        time when it was issued.
+        time when it was issued.uper(TaskLine, self).create(vals)
         """
-        product_obj = self.env['product.product']
         if not vals.get('issued_by', False):
             vals.update({'issued_by': self._uid})
         if not vals.get('date_issued', False):
             vals.update({'date_issued':
-                         time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)})
+                         time.strftime(DTF)})
 
         if vals.get('fleet_service_id', False) and \
                 vals.get('product_id', False):
@@ -1985,11 +2022,7 @@ class TaskLine(models.Model):
                 ('fleet_service_id', '=', vals['fleet_service_id']),
                 ('product_id', '=', vals['product_id'])])
             if task_line_ids:
-                product_rec = product_obj.browse(vals['product_id'])
-                warrnig = 'You can not have duplicate \
-                            parts assigned !!! \n Part No :- ' + \
-                    product_rec.default_code
-                raise Warning(_('User Error!'), _(warrnig))
+                raise Warning(_('You can not have duplicate parts assigned!'))
         return super(TaskLine, self).create(vals)
 
     @api.multi
@@ -2001,41 +2034,19 @@ class TaskLine(models.Model):
         @param self : object pointer
         """
         if vals.get('product_id', False)\
-            or vals.get('qty', False)\
-            or vals.get('product_uom', False)\
-            or vals.get('price_unit', False)\
-                or vals.get('old_part_return') in (True, False):
+                or vals.get('qty', False)\
+                or vals.get('product_uom', False)\
+                or vals.get('price_unit', False):
             vals.update({'issued_by': self._uid,
                          'date_issued':
-                         time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)})
+                         time.strftime(DTF)})
         return super(TaskLine, self).write(vals)
 
     @api.multi
     def unlink(self):
-        trip_encoded_obj = self.env['trip.encoded.history']
-        assign_part_obj = self.env['team.assign.parts']
-        for task_line_rec in self:
-            if task_line_rec.fleet_service_id and \
-                    task_line_rec.fleet_service_id.team_trip_id:
-                trip_encoded_ids = trip_encoded_obj.search([
-                    ('team_id', '=', task_line_rec.fleet_service_id and
-                     task_line_rec.fleet_service_id.team_trip_id.id),
-                    ('product_id', '=', task_line_rec.product_id.id)])
-                if trip_encoded_ids:
-                    for trip_encoded_rec in trip_encoded_ids:
-                        trip_encoded_rec.write({'encoded_qty':
-                                                trip_encoded_rec.encoded_qty -
-                                                task_line_rec.qty})
-                assign_part_ids = assign_part_obj.search([
-                    ('team_id', '=', task_line_rec.fleet_service_id and
-                     task_line_rec.fleet_service_id.team_trip_id.id),
-                    ('product_id', '=', task_line_rec.product_id and
-                     task_line_rec.product_id.id)])
-                if assign_part_ids:
-                    for assign_part_rec in assign_part_ids:
-                        assign_part_rec.write(
-                            {'encode_qty': assign_part_rec.encode_qty +
-                             task_line_rec.qty})
+        for part in self:
+            if part.fleet_service_id == 'close':
+                raise Warning(_("You can't delete part those allreadey used."))
         return super(TaskLine, self).unlink()
 
     @api.onchange('date_issued')
@@ -2050,122 +2061,6 @@ class TaskLine(models.Model):
                 raise Warning(_('You can\t enter \
                         parts issue either open work order date or in \
                            between open work order date and current date!'))
-
-    @api.onchange('product_id')
-    def onchange_product_id(self):
-        team_trip_obj = self.env['fleet.team']
-        if self.product_id:
-            rec = self.product_id
-            if rec.in_active_part:
-                self.product_id = False
-                self.name = False
-                self.vehicle_make_id = False
-                self.qty = 1.0
-                self.product_uom = False
-                self.price_unit = False
-                self.date_issued = False
-                self.old_part_return = False
-                raise Warning(_('You can\'t select \
-                        part which is In-Active!'))
-            unit_price = rec.standard_price
-            product_uom_data = rec.uom_id.id
-            part_name = rec.name or ''
-            # Get Encoded Quantities from Team Trip
-            if self._context.get('team_id', False):
-                team_trip_ids = team_trip_obj.search([
-                    ('destination_location_id', '=', self._context['team_id']),
-                    ("state", "=", "close")])
-                if team_trip_ids:
-                    for t_trip in team_trip_ids:
-                        if not t_trip.is_work_order_done:
-                            for part in t_trip.allocate_part_ids:
-                                if part.product_id.id == self.product_id.id:
-                                    self.encoded_qty = part.encode_qty
-                                    self.dummy_encoded_qty = part.encode_qty
-                else:
-                    if not rec.qty_available:
-                        self.product_id = False
-                        self.name = False
-                        self.vehicle_make_id = False
-                        self.qty = 1.0
-                        self.product_uom = False
-                        self.price_unit = False
-                        self.date_issued = False
-                        self.old_part_return = False
-                        raise Warning(_('You can\'t select part \
-                                           which has zero quantity!'))
-            else:
-                if not rec.qty_available:
-                    self.product_id = False
-                    self.name = False
-                    self.vehicle_make_id = False
-                    self.qty = 1.0
-                    self.product_uom = False
-                    self.price_unit = False
-                    self.date_issued = False
-                    self.old_part_return = False
-                    raise Warning(_('You can\'t select part \
-                                       which has zero quantity!'))
-            self.price_unit = unit_price
-            self.qty = 0
-            self.product_uom = product_uom_data
-            self.name = part_name
-            self.vehicle_make_id = rec.vehicle_make_id and \
-                rec.vehicle_make_id.id or False
-
-    @api.onchange('product_id', 'qty', 'encoded_qty')
-    def onchange_used_qty(self):
-        rec_task = self[0]
-        team_trip_obj = self.env['fleet.team']
-        trip_encoded_obj = self.env['trip.encoded.history']
-        if self.product_id:
-            for rec in [self.product_id]:
-                if self._context.get('team_id', False):
-                    team_trip_ids = team_trip_obj.search([
-                        ('destination_location_id', '=',
-                         self._context['team_id']),
-                        ("state", "=", "close")])
-                    if team_trip_ids:
-                        flag = False
-                        if self._context.get('team_trip_id', False) and \
-                                self.product_id:
-                            remainig_encoded_qty = 0.0
-                            trip_encoded_ids = trip_encoded_obj.search([
-                                ('team_id', '=',
-                                 self._context.get('team_trip_id')),
-                                ('product_id', '=', self.product_id.id)])
-                            if trip_encoded_ids:
-                                remainig_encoded_qty = trip_encoded_ids and \
-                                    trip_encoded_ids[0].available_qty or 0.0
-                                if self._ids:
-                                    used_qty_temp = self[0].qty or 0.0
-                                    total_remainig_encoded_qty = \
-                                        remainig_encoded_qty + used_qty_temp
-                                    if total_remainig_encoded_qty < \
-                                            self.qty:
-                                        self.qty = 0.0
-                                        raise Warning(_('You can\'t enter used\
-                                               quantity greater than product \
-                                               encoded quantity of trip!'))
-                                    flag = True
-                        if not flag and self.encode_qty < self.qty:
-                            self.qty = 0.0
-                            raise Warning(_('You can\'t enter used quantity \
-                                           greater than product \
-                                           encoded quantity of trip!'))
-
-                    if not team_trip_ids:
-                        qty_available = rec_task.qty + rec.qty_available
-                        if qty_available < self.qty:
-                            self.qty = 0.0
-                            raise Warning(_('You can\'t enter used quantity \
-                                   greater than product quantity on hand !'))
-                else:
-                    qty_available = rec_task.qty + rec.qty_available
-                    if qty_available < self.qty:
-                        self.qty = 0.0
-                        raise Warning(_('You can\'t enter used quantity \
-                                   greater than product quantity on hand !'))
 
 
 class RepairType(models.Model):
