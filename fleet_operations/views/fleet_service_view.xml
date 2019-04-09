@@ -138,8 +138,8 @@
                          </tree>
                      </field>
                  </page>
-                 <page string="Parts Used" invisible="1" >
-                    <button name="%(action_add_work_order)d" string="Add"
+                 <page string="Parts Used" >
+                    <!-- <button name="%(action_add_work_order)d" string="Add"
                         type="action" class="oe_stat_button"
                         context="{'date_open':date_open,'team_id':team_id,'state':state,'already_closed':already_closed}"
                         attrs="{'invisible':['|',('state','!=','confirm'),('team_id','=',False)]}"/>
@@ -148,28 +148,24 @@
                         type="action" class="oe_stat_button"
                         context="{'date_open':date_open,'team_id':team_id,'state':state,'already_closed':already_closed}"
                         attrs="{'invisible':['|',('state','!=','confirm'),('team_id','=',False)]}"/>
-                      <newline/>
+                      <newline/> -->
                       <group>
                           <field name="total_parts_line"/>
                       </group>
                       <newline/>
                       <group colspan="4">
-                         <field name="parts_ids" readonly='1' nolabel="1"
+                         <field name="parts_ids" nolabel="1"
                              context="{'date_open':date_open}" create='false' delete='false'>
                              <tree string="Maintenance" editable="top">
                                  <field name='product_id' string="Part No"
                                      attrs="{'readonly':[('is_deliver','=',True)]}"
                                      options="{'no_open': True, 'create': false, 'create_edit': false}"/>
-                                 <field name="name" attrs="{'readonly':[('is_deliver','=',True)]}"/>
-                                 <field name="vehicle_make_id" attrs="{'readonly':[('is_deliver','=',True)]}"/>
-                                 <field name="qty_hand" />
-                                 <field name="encoded_qty" />
+                                 <field name="qty_hand" readonly="1" force_save="1"/>
                                  <field name='qty' attrs="{'readonly':[('is_deliver','=',True)]}"/>
                                  <field name='product_uom' attrs="{'readonly':[('is_deliver','=',True)]}"/>
                                  <field name='price_unit' attrs="{'readonly':[('is_deliver','=',True)]}"/>
-                                 <field name='total' />
+                                 <field name='total' readonly="1" force_save="1"/>
                                  <field name="date_issued"/>
-                                 <field name="old_part_return" />
                                  <field name="issued_by" readonly="1"
                                      options="{'no_open': True, 'create': false, 'create_edit': false}" />
                                  <field name="is_deliver" invisible="1"/>

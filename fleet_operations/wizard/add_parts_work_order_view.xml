@@ -61,15 +61,10 @@
                <field name="part_ids" context="{'date_open':context.get('date_open'),'team_id':context.get('team_id'),'team_trip_id':context.get('team_trip_id'),'state':context.get('state'),'already_closed':context.get('already_closed')}">
                      <tree string="Maintenance" editable="bottom" create='false'>
                          <field name='product_id' readonly="1" attrs="{'readonly':[('is_deliver','=',True)]}" string="Part No" options="{'no_open': True, 'create': false, 'create_edit': false}" context="{'team_id':context.get('team_id')}"/>
-                         <field name="name" readonly="1" attrs="{'readonly':[('is_deliver','=',True)]}"/>
-                         <field name="vehicle_make_id" readonly="1" options="{'no_open': True, 'create': false, 'create_edit': false}" attrs="{'readonly':[('is_deliver','=',True)]}"/>
                          <field name="qty_hand" readonly="1"/>
                          <field name='qty'/>
                          <field name='product_uom' readonly="1" options="{'no_open': True, 'create': false, 'create_edit': false}"/>
-                         <!-- <field name='price_unit' readonly="1"/>
-                         <field name='total'/> -->
                          <field name="date_issued" readonly="1"/>
-                         <field name="old_part_return" />
                          <field name="is_deliver" invisible="1"/>
                      </tree>
                </field>
