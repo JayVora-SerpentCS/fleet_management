@@ -222,230 +222,6 @@ class FleetVehicleLogServices(models.Model):
         return True
 
     @api.multi
-    def close_reopened_wo(self):
-        """
-        Method is used to update the existing shipment moves if WO parts are
-        updated in terms of quantities or complete parts.
-        """
-        picking_obj = self.env['stock.picking']
-        stock_move_obj = self.env['stock.move']
-        location_obj = self.env['stock.location']
-        stock_wh = self.env['stock.warehouse']
-        delivery_dict = {}
-        out_pick_type = self.env['stock.picking.type'].search([
-            ('code', '=', 'outgoing')], limit=1)
-        in_pick_type = self.env['stock.picking.type'].search([
-            ('code', '=', 'incoming')], limit=1)
-        for work_order in self:
-            ret = False
-            mov = False
-            ship_id = work_order.out_going_ids and \
-                work_order.out_going_ids[0] or False
-            scrap_pick_id = work_order.old_parts_incoming_ship_ids and \
-                work_order.old_parts_incoming_ship_ids[0] or False
-            flag = False
-            return_flag = False
-            if ship_id:
-                # If existing parts Updated
-                move_ids = stock_move_obj.search([
-                    ('picking_id', '=', ship_id.id)])
-                if move_ids:
-                    self._cr.execute("delete from stock_move \
-                                where id IN %s", (tuple(move_ids.ids),))
-                flag = True
-            else:
-                if work_order.parts_ids:
-                    # If no parts were there and we add parts.
-                    src_loc = False
-                    dest_loc = False
-                    if out_pick_type and \
-                            out_pick_type[0].default_location_src_id:
-                        src_loc = out_pick_type[0].default_location_src_id.id
-                    else:
-                        src_loc = False
-                        customerloc, src_loc = \
-                            stock_wh._get_partner_locations()
-                        if src_loc:
-                            src_loc = src_loc.id
-
-                    if out_pick_type and \
-                            out_pick_type[0].default_location_dest_id:
-                        dest_loc = out_pick_type[0].default_location_dest_id.id
-                    else:
-                        dest_loc = False
-                        dest_loc, supplierloc = \
-                            stock_wh._get_partner_locations()
-                        if dest_loc:
-                            dest_loc = dest_loc.id
-                    delivery_dict.update({
-                        'origin': work_order.name or '',
-                        'picking_type_id': out_pick_type and
-                        out_pick_type.ids[0] or False,
-                        'location_id': src_loc or False,
-                        'location_dest_id': dest_loc or False
-                    })
-                    ship_id = picking_obj.create(delivery_dict)
-            if scrap_pick_id:
-                # If a product is already returned we'll update it.
-                move_ids = stock_move_obj.search([
-                    ('picking_id', '=', scrap_pick_id.id)])
-                if move_ids:
-                    self._cr.execute("delete from stock_move where \
-                                id IN %s", (tuple(move_ids.ids),))
-                return_flag = True
-            for product in work_order.parts_ids:
-                return_move_vals = {}
-                mov = True
-                move_vals = {
-                    'product_id': product.product_id and
-                    product.product_id.id or False,
-                    'name': product.product_id and
-                    product.product_id.name or '',
-                    'product_uom_qty': product.qty or 0.0,
-                    'product_uom': product.product_uom and
-                    product.product_uom.id or False,
-                    'location_id': out_pick_type.warehouse_id and
-                    out_pick_type.warehouse_id.lot_stock_id and
-                    out_pick_type.warehouse_id.lot_stock_id.id or False,
-                    'location_dest_id': work_order.team_id and
-                    work_order.team_id.id or False,
-                    'price_unit': product.price_unit,
-                    'picking_id': ship_id and ship_id.id,
-                    'picking_type_id': out_pick_type and
-                    out_pick_type.ids[0] or False
-                }
-                if product.old_part_return:
-                    if not scrap_pick_id:
-                        # If not parts were returned before
-                        src_loc = False
-                        dest_loc = False
-                        if out_pick_type and \
-                                out_pick_type[0].default_location_src_id:
-                            src_loc = \
-                                out_pick_type[0].default_location_src_id.id
-                        else:
-                            src_loc = False
-                            customerloc, src_loc = \
-                                stock_wh._get_partner_locations()
-                            if src_loc:
-                                src_loc = src_loc.id
-
-                        if out_pick_type and \
-                                out_pick_type[0].default_location_dest_id:
-                            dest_loc = \
-                                out_pick_type[0].default_location_dest_id.id
-                        else:
-                            dest_loc = False
-                            dest_loc, supplierloc = \
-                                stock_wh._get_partner_locations()
-                            if dest_loc:
-                                dest_loc = dest_loc.id
-                        delivery_dict.update({
-                            'origin': work_order.name or '',
-                            'picking_type_id': out_pick_type and
-                            out_pick_type.ids[0] or False,
-                            'location_id': src_loc or False,
-                            'location_dest_id': dest_loc or False
-                        })
-                        scrap_pick_id = picking_obj.create(delivery_dict)
-                    ret = True
-                    scrap_dest_loc_ids = location_obj.search(
-                        [("name", "=", "Scrapped")])
-                    scrap_source_loc_id = False
-                    if not scrap_dest_loc_ids:
-                        raise Warning(_("There is no \
-                                location defined for scrapped parts please \
-                                define location with Scrapped!"))
-                    if work_order.team_id:
-                        scrap_source_loc_id = work_order.team_id and \
-                            work_order.team_id.id or False
-                    else:
-                        raise Warning(_("There is no team \
-                                selected as source location, as old parts are \
-                                returned so you need to select any for \
-                                getting return parts.!"))
-                    return_move_vals = {
-                        'product_id': product.product_id and
-                        product.product_id.id or False,
-                        'name': product.product_id and
-                        product.product_id.name or '',
-                        'product_uom_qty': product.qty or 0.0,
-                        'product_uom': product.product_uom and
-                        product.product_uom.id or False,
-                        'location_id': scrap_source_loc_id,
-                        'location_dest_id': scrap_dest_loc_ids and
-                        scrap_dest_loc_ids[0].id or False,
-                        'price_unit': product.price_unit,
-                        'picking_id': scrap_pick_id and
-                        scrap_pick_id.id or False,
-                        'picking_type_id': in_pick_type and
-                        in_pick_type.ids[0] or False
-                    }
-                if mov:
-                    if move_vals:
-                        stock_move_obj.create(move_vals)
-                else:
-                    # If all parts removed from WO remove
-                    # the complete delivery order.
-                    work_order.write({'out_going_ids': [(6, 0, [])]})
-                if ret:
-                    if return_move_vals:
-                        stock_move_obj.create(return_move_vals)
-                else:
-                    # IF none of the parts are being
-                    # returned remove the incoming shipment
-                    work_order.write(
-                        {'old_parts_incoming_ship_ids': [(6, 0, [])]})
-            if not flag and mov:
-                # IF it's a new shipment make it done
-                ship_id.button_validate()
-                # ship_id.signal_workflow('button_confirm')
-                # ship_id.force_assign()
-                # ship_id.action_done()
-                work_order.write({'out_going_ids': [(4, ship_id.id)]})
-            if not return_flag and ret:
-                # IF it's a new shipment make it done
-                ship_id.button_validate()
-                # scrap_pick_id.signal_workflow('button_confirm')
-                # scrap_pick_id.force_assign()
-                # scrap_pick_id.action_done()
-                work_order.write(
-                    {'old_parts_incoming_ship_ids': [(4, scrap_pick_id.id)]})
-        return True
-
-    @api.multi
-    def update_incoming_shipment_from_migration_script(self):
-        for order in self:
-            for outgoing_shipment in order.out_going_ids:
-                outgoing_shipment.write({'date': order.date_open,
-                                         'min_date': order.date_open})
-            for incoming_shipment in order.old_parts_incoming_ship_ids:
-                incoming_shipment.write({'date': order.date_open,
-                                         'min_date': order.date_open})
-            for parts in order.parts_ids:
-                order.is_parts = True
-                for outgoing_shipment in order.out_going_ids:
-                    for move_line_out in outgoing_shipment.move_lines:
-                        if move_line_out.product_id.id == parts.product_id.id:
-                            move_line_out.write({
-                                'date': parts.date_issued or False,
-                                'create_date': parts.date_issued or False,
-                                'date_expected': parts.date_issued or False,
-                                'issued_received_by_id': parts.issued_by and
-                                parts.issued_by.id or False,
-                            })
-                for incoming_shipment in order.old_parts_incoming_ship_ids:
-                    for move_line_in in incoming_shipment.move_lines:
-                        if move_line_in.product_id.id == parts.product_id.id:
-                            move_line_in.write({
-                                'date': parts.date_issued or False,
-                                'create_date': parts.date_issued or False,
-                                'date_expected': parts.date_issued or False,
-                                'issued_received_by_id': parts.issued_by and
-                                parts.issued_by.id or False})
-        return True
-
-    @api.multi
     def encode_history(self):
         """
         Method is used to create the Encode Qty History
@@ -490,22 +266,8 @@ class FleetVehicleLogServices(models.Model):
 
     @api.multi
     def action_reopen(self):
-        #        current_date = datetime.strptime(
-        #            datetime.strftime(date.today(),
-        #            DEFAULT_SERVER_DATE_FORMAT),
-        #            DEFAULT_SERVER_DATE_FORMAT)
-        #        order_reopen_obj = self.env['work.order.reopen.days']
         for order in self:
             if order.vehicle_id:
-                #                reopen_ids = order_reopen_obj.search([
-                #                    ('vehicle_id', '=', order.vehicle_id.id)])
-                #                if not reopen_ids:
-                #                    raise Warning(_('Work Order Re-open \
-                #                    Days is not configured for %s \
-                #                    please configure it \
-                #                    from configuration menu.') % (
-                #                    order.vehicle_id.name))
-                #                open_days = reopen_ids[0]
                 if order.vehicle_id.state == 'write-off':
                     raise Warning(_("You can\'t Re-open this \
                             work order which vehicle is in write-off state!"))
@@ -520,23 +282,16 @@ class FleetVehicleLogServices(models.Model):
                                     is in Inspection or Released!"))
                 order.vehicle_id.write({'work_order_close': False,
                                         'state': 'in_progress'})
-#            close_date = datetime.strptime(order.date_close,
-#                                           DEFAULT_SERVER_DATE_FORMAT)
             order.write({'state': 'confirm'})
-#            if abs((current_date - close_date).days) <= open_days.days:
-#                self.write({'state': 'confirm'})
-#            else:
-#                raise Warning(_("This Work order is closed \
-#                        more than %s days I can\'t be \
-#                        re-open again!" % (open_days.days)))
         return True
 
     @api.depends('parts_ids')
     def _compute_get_total(self):
-        total = 0.0
-        for line in self.parts_ids:
-            total += line.total
-        self.sub_total = total
+        for rec in self:
+            total = 0.0
+            for line in rec.parts_ids:
+                total += line.total
+            rec.sub_total = total
 
     @api.multi
     def write(self, vals):
@@ -684,14 +439,10 @@ class FleetVehicleLogServices(models.Model):
 
     wono_id = fields.Integer(string='WONo',
                              help="Take this field for data migration")
-    # id = fields.Integer(string='ID')
     purchaser_id = fields.Many2one('res.partner', string='Purchaser')
     name = fields.Char(string='Work Order', size=32, readonly=True,
                        translate=True)
     fmp_id = fields.Char(string="Vehicle ID", size=64)
-#    wo_invoice_reference = fields.Many2one('account.invoice',
-#                                           string='Invoice Ref#',
-#                                           readonly=True)
     wo_tax_amount = fields.Float(string='Tax', readonly=True)
     priority = fields.Selection([('normal', 'NORMAL'), ('high', 'HIGH'),
                                  ('low', 'LOW')], default='normal',
@@ -757,8 +508,6 @@ class FleetVehicleLogServices(models.Model):
                                  string='Main Type')
     f_brand_id = fields.Many2one('fleet.vehicle.model.brand', string='Make')
     vehical_division_id = fields.Many2one('vehicle.divison', string='Division')
-    # vechical_location_id = fields.Many2one('service.department',
-    #                                        string='Registration State')
     vechical_location_id = fields.Many2one('res.country.state',
                                            string='Registration State')
     odometer = fields.Float(compute='_get_odometer', inverse='_set_odometer',
@@ -792,410 +541,12 @@ class FleetVehicleLogServices(models.Model):
                         'vehicle_id': record.vehicle_id.id}
                 fleet_odometer_obj.create(data)
 
-    @api.onchange('team_id')
-    def get_team_trip(self):
-        if self.team_id:
-            trip_ids = self.env['fleet.team'].search([
-                ("destination_location_id", "=", self.team_id.id),
-                ("state", "=", "close")])
-            if trip_ids:
-                for t_trip in trip_ids:
-                    if not t_trip.is_work_order_done:
-                        self.team_trip_id = t_trip.id
-                        break
-
-
-class FleetTeam(models.Model):
-    _name = 'fleet.team'
-    _order = 'id desc'
-
-    @api.multi
-    def copy(self, default=None):
-        raise Warning(_('You can\'t duplicate record!'))
-
-    @api.multi
-    def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-
-    @api.multi
-    def _get_wo_done(self):
-        """
-        Method will indicate that the encoded qty for this contract team trip
-        is issued.
-        """
-        for trip in self:
-            flag = True
-            if trip.from_migration:
-                for part in trip.allocate_part_ids:
-                    if part.encode_qty > 0.0:
-                        flag = False
-                        break
-                if not trip.allocate_part_ids:
-                    flag = False
-            else:
-                for part in trip.trip_parts_ids:
-                    if part.available_qty > 0.0:
-                        flag = False
-                        break
-                if not trip.trip_parts_ids:
-                    flag = False
-            trip.is_work_order_done = flag
-
-    @api.multi
-    def _get_total_parts_line(self):
-        for rec in self:
-            total_parts = [allocate_part.id
-                           for allocate_part in rec.allocate_part_ids
-                           if allocate_part]
-            rec.total_parts_line = len(total_parts)
-
-    @api.model
-    def _default_source_location_id(self):
-        stock_location_ids = self.env['stock.location'].search([
-            ('name', '=', 'Stock')])
-        if stock_location_ids:
-            stock_location_ids = stock_location_ids.ids[0]
-        else:
-            stock_location_ids = False
-        return stock_location_ids
-
-    trip_id = fields.Integer('Trip ID',
-                             help="Take this field for data migration")
-    destination_location_id = fields.Many2one('stock.location',
-                                              string="Team (Location)")
-    name = fields.Char(string='Name', size=64, translate=True)
-    trip_date = fields.Date(string='Trip Date')
-    return_date = fields.Date(string='Return Date')
-    close_date = fields.Date(string='Close Date')
-    source_location_id = fields.Many2one('stock.location',
-                                         default=_default_source_location_id,
-                                         string="Source Location")
-    location_id = fields.Char(string="Destination Location", size=128,
-                              translate=True)
-    allocate_part_ids = fields.One2many('team.assign.parts', 'team_id',
-                                        string='Assign Parts')
-    note = fields.Text(string='Note', translate=True)
-    state = fields.Selection([('draft', 'New'), ('open', 'Open'),
-                              ('sent', 'Sent'), ('returned', 'Returned'),
-                              ('close', 'Close')], default="draft",
-                             string='Status')
-    is_work_order_done = fields.Boolean(compute="_get_wo_done",
-                                        string='Is Work Order Done?')
-    incoming_ship_ids = fields.One2many('stock.picking', 'in_team_id',
-                                        string='Incoming Shipment',
-                                        readonly=True)
-    outgoing_ship_ids = fields.One2many('stock.picking', 'out_team_id',
-                                        string='Outgoing Shipment',
-                                        readonly=True)
-    incoming_rem_ship_ids = fields.One2many('stock.picking',
-                                            'in_rem_team_id',
-                                            'Incoming Remaining Shipment',
-                                            readonly=True)
-    is_return = fields.Boolean(string='Is Return?')
-    from_migration = fields.Boolean(string='From Migration')
-    wo_parts_ids = fields.One2many('workorder.parts.history.details',
-                                   'team_id', string='Workorder Usage History')
-    trip_parts_ids = fields.One2many('trip.encoded.history', 'team_id',
-                                     string='Trip Usage History')
-    total_parts_line = fields.Integer(compute="_get_total_parts_line",
-                                      string='Total Parts')
-
-    @api.multi
-    def update_incoming_shipment_from_migration_script(self):
-        for order in self:
-            order.name = order.destination_location_id and \
-                order.destination_location_id.name or ''
-            for outgoing_shipment in order.outgoing_ship_ids:
-                outgoing_shipment.write({'date': order.trip_date,
-                                         'min_date': order.trip_date})
-            for incoming_shipment in order.incoming_ship_ids:
-                incoming_shipment.write({'date': order.trip_date,
-                                         'min_date': order.trip_date})
-            for parts in order.allocate_part_ids:
-                for outgoing_shipment in order.outgoing_ship_ids:
-                    for move_line_out in outgoing_shipment.move_lines:
-                        if move_line_out.product_id.id == parts.product_id.id:
-                            move_line_out.write({
-                                'date': parts.issue_date or False,
-                                'create_date': parts.issue_date or False,
-                                'date_expected': parts.issue_date or False})
-                for incoming_shipment in order.incoming_ship_ids:
-                    for move_line_in in incoming_shipment.move_lines:
-                        if move_line_in.product_id.id == parts.product_id.id:
-                            move_line_in.write({
-                                'date': parts.issue_date or False,
-                                'create_date': parts.issue_date or False,
-                                'date_expected': parts.issue_date or False})
-        return True
-
-    @api.multi
-    def send_parts_to_trip(self):
-        for team in self:
-            if team.state == 'close':
-                raise Warning(_("Loaded parts already Deliver to trip!"))
-            if team.state == 'sent':
-                raise Warning(_("Team is already sent!"))
-            if team.state != 'open':
-                raise Warning(_("Please Open your trip before deliver it!"))
-            if not team.allocate_part_ids:
-                raise Warning(_("Please load the parts before deliver it!"))
-            trip_vals = {'state': 'sent'}
-            if not team.trip_date:
-                trip_vals.update({'trip_date':
-                                  time.strftime(DEFAULT_SERVER_DATE_FORMAT)})
-            team.write(trip_vals)
-            if team.allocate_part_ids:
-                team.allocate_part_ids.write({"state": "sent"})
-        return True
-
-    @api.multi
-    def get_return_from_trip(self):
-        pick_obj = self.env['stock.picking']
-        stock_move_obj = self.env['stock.move']
-        move_lines_list = []
-        inc_dict = {}
-        flag = False
-        in_pick_type = self.env['stock.picking.type'].search([
-            ('code', '=', 'incoming')])
-        for team in self:
-            if team.state != 'sent':
-                raise Warning(_("Please send your trip \
-                                             before getting return it!"))
-            if not team.allocate_part_ids:
-                raise Warning(_("parts are not loaded!"))
-            if not team.outgoing_ship_ids:
-                raise Warning(_("parts are not Delivered \
-                                            yet you can\'t get return it!"))
-            if team.incoming_ship_ids:
-                team_in_pick_id = team.incoming_ship_ids[0].id
-                if team.incoming_ship_ids[0].move_lines:
-                    team.incoming_ship_ids[0].move_lines.write(
-                        {'state': 'draft'})
-                    team.incoming_ship_ids[0].move_lines.unlink()
-                flag = True
-            for line in team.allocate_part_ids:
-                used_qty = line.qty_used + line.qty_damage + line.qty_missing
-                line.write({'encode_qty': line.qty_used,
-                            'state': 'returned', 'is_delete_line': True})
-                if used_qty > 0:
-                    move_lines_list.append((0, 0, {
-                        'product_id': line.product_id and
-                        line.product_id.id or False,
-                        'name': line.name or '',
-                        'product_uom_qty': used_qty,
-                        'product_uom': line.product_id and
-                        line.product_id.uom_id and
-                        line.product_id.uom_id.id or False,
-                        'location_id': team.destination_location_id and
-                        team.destination_location_id.id or False,
-                        'location_dest_id':
-                        line.product_id.property_stock_inventory.id,
-                        'create_date': line.issue_date
-                    }))
-            if move_lines_list:
-                if not flag:
-                    inc_dict.update({
-                        'move_lines': move_lines_list,
-                        'origin': "Used by - " + team.name or '',
-                        'picking_type_id': in_pick_type and
-                                    in_pick_type.ids[0] or False})
-                    inc_ship_id = pick_obj.create(inc_dict)
-                    team.write({'incoming_ship_ids': [(4, inc_ship_id.id)]})
-                    inc_ship_id.signal_workflow('button_confirm')
-                    inc_ship_id.force_assign()
-                    inc_ship_id.signal_workflow('button_done')
-                else:
-                    for move in move_lines_list:
-                        move_vals = move[2]
-                        move_vals.update({'picking_id': team_in_pick_id,
-                                          'state': 'done'})
-                        stock_move_obj.create(move_vals)
-            trip_vals = {'state': 'sent'}
-            if not team.return_date:
-                trip_vals.update({'return_date':
-                                  time.strftime(DEFAULT_SERVER_DATE_FORMAT)})
-            team.write({"state": "returned",
-                        'is_return': True})
-        return True
-
-    @api.multi
-    def open_trip(self):
-        self.write({'state': 'open'})
-
-    @api.multi
-    def close_trip(self):
-        inc_obj = self.env['stock.picking']
-        stock_move_obj = self.env['stock.move']
-        trip_encoded_obj = self.env['trip.encoded.history']
-        inc_dict = {}
-        flag = False
-        move_lines_list = []
-        in_pick_type = self.env['stock.picking.type'].search([
-            ('code', '=', 'incoming')])
-        for team in self:
-            if not team.is_return:
-                raise Warning(_("Please Fill the Used Part \
-                                Info and than close the team Trip!"))
-            if team.allocate_part_ids:
-                team.allocate_part_ids.write({'state': 'close'})
-            for part_rec in team.allocate_part_ids:
-                trip_encoded_ids = trip_encoded_obj.search([
-                    ('team_id', '=', team.id),
-                    ('product_id', '=', part_rec.product_id.id)])
-                if trip_encoded_ids:
-                    trip_encoded_ids.write({'used_qty': part_rec.qty_used})
-                else:
-                    vals = {
-                        'team_id': team.id,
-                        'product_id': part_rec.product_id.id,
-                        'used_qty': part_rec.qty_used,
-                        'part_name': part_rec.name
-                    }
-                    trip_encoded_obj.create(vals)
-
-            if team.incoming_rem_ship_ids:
-                team_in_rem_pick_id = team.incoming_rem_ship_ids[0].id
-                if team.incoming_rem_ship_ids[0].move_lines:
-                    team.incoming_rem_ship_ids[0].move_lines.write(
-                        {'state': 'draft'})
-                    team.incoming_rem_ship_ids[0].move_lines.unlink()
-                flag = True
-            for line in team.allocate_part_ids:
-                if line.qty_remaining > 0:
-                    move_lines_list.append((0, 0, {
-                        'product_id': line.product_id and
-                        line.product_id.id or False,
-                        'name': line.name or '',
-                        'product_uom_qty': line.qty_remaining,
-                        'product_uom': line.product_id and
-                        line.product_id.uom_id and
-                        line.product_id.uom_id.id or False,
-                        'location_id': team.destination_location_id and
-                        team.destination_location_id.id or False,
-                        'location_dest_id': team.source_location_id.id,
-                        'create_date': line.issue_date
-                    }))
-            if move_lines_list:
-                if not flag:
-                    inc_dict.update({
-                        'move_lines': move_lines_list,
-                        'picking_type_id': in_pick_type and
-                        in_pick_type.ids[0] or False,
-                        'origin': "Remaining Qty return by - " +
-                        team.name or ''})
-                    inc_ship_id = inc_obj.create(inc_dict)
-                    team.write({'incoming_rem_ship_ids':
-                                [(4, inc_ship_id.id)]})
-                    inc_ship_id.signal_workflow('button_confirm')
-                    inc_ship_id.force_assign()
-                    inc_ship_id.force_assign()
-                    inc_ship_id.action_done()
-                else:
-                    for move in move_lines_list:
-                        move_vals = move[2]
-                        move_vals.update({'picking_id':
-                                          team_in_rem_pick_id or False})
-                        new_inc_ship_id = stock_move_obj.create(move_vals)
-                        new_inc_ship_id.signal_workflow('button_confirm')
-                        new_inc_ship_id.force_assign()
-                        new_inc_ship_id.action_done()
-            team.write({
-                'close_date': time.strftime(DEFAULT_SERVER_DATE_FORMAT),
-                'state': 'close'
-            })
-        return True
-
-    @api.multi
-    def reopen_trip(self):
-        #        order_reopen_obj = self.env['work.order.reopen.days']
-        #        current_date = datetime.strptime(
-        #            datetime.strftime(date.today(),
-        #            DEFAULT_SERVER_DATE_FORMAT),
-        #            DEFAULT_SERVER_DATE_FORMAT)
-        for trip in self:
-            #            reopen_ids = order_reopen_obj.search([
-            #                ('vehicle_id', '=', trip.vehicle_id.id)])
-            #            if not reopen_ids:
-            #                raise Warning(_('Work Order Re-open \
-            #                    Days is not configured for %s \
-            #                    please configure it \
-            #                    from configuration menu.') % (
-            #                    trip.vehicle_id.name))
-            #            open_days = reopen_ids and reopen_ids[0] or False
-            #            close_date = \
-            #                datetime.strptime(trip.close_date,
-            #                                  DEFAULT_SERVER_DATE_FORMAT)
-            trip.state = 'open'
-#            if abs((current_date - close_date).days) <= open_days.days:
-#                trip.state = 'open'
-#            else:
-#                raise Warning(_("This Work order is closed \
-#                         more than %s days I can\'t be \
-#                         re-open again!" % (open_days.days)))
-            if trip.allocate_part_ids:
-                trip.allocate_part_ids.write({'state': 'open'})
-        return True
-
-    @api.onchange('destination_location_id')
-    def onchange_get_name(self):
-        prod_obj = self.env['product.product']
-        assign_part_obj = self.env['team.assign.parts']
-        cr, uid, context = self.env.args
-        context = dict(context)
-        if context is None:
-            context = {}
-        if self.destination_location_id:
-            # Get the products on location
-            team_rec = self.destination_location_id
-            context.update({'location': team_rec.id})
-            self.env.args = cr, uid, misc.frozendict(context)
-            prod_ids = prod_obj.search([])
-            part_assign_list = []
-            for prod in prod_ids:
-                if prod.qty_available > 0.0:
-                    assign_part_obj.onchange_product_id()
-                    part_assign_vals = {}
-                    if prod.in_active_part:
-                        part_assign_vals = {
-                            'product_id': False,
-                            'name': False, 'vehicle_make_id': False,
-                            'qty_on_hand': False, 'qty_on_truck': False,
-                            'qty_used': 0.0, 'qty_missing': 0.0,
-                            'qty_damage': 0.0, 'qty_remaining': False,
-                            'remark': False, 'price_unit': False,
-                            'date_issued': False, 'old_part_return': False,
-                        }
-                        raise Warning(_("You can\'t select \
-                                part which is In-Active!"))
-                    elif prod.qty_available <= 0:
-                        part_assign_vals = {'product_id': False, 'name': False,
-                                            'vehicle_make_id': False,
-                                            'qty': 0.0}
-                        raise Warning(_("You can\'t select \
-                                part which has zero quantity!"))
-                    else:
-                        part_assign_vals = {
-                            'name': prod.name or '',
-                            'vehicle_make_id': prod.vehicle_make_id and
-                            prod.vehicle_make_id.id or False,
-                            'qty_on_hand': prod.qty_available or 0.0}
-
-                    part_assign_vals.update({
-                        'product_id': prod.id,
-                        'qty_with_team': prod.qty_available,
-                        'to_return': True,
-                    })
-                    part_assign_list.append((0, 0, part_assign_vals))
-
-            self.name = team_rec.name or ''
-            self.allocate_part_ids = part_assign_list
-
 
 class WorkorderPartsHistoryDetails(models.Model):
     _name = 'workorder.parts.history.details'
     _order = 'used_date desc'
 
-    team_id = fields.Many2one('fleet.team', string='Contract Trip')
+    # team_id = fields.Many2one('fleet.team', string='Contract Trip')
     product_id = fields.Many2one('product.product', string='Part No',
                                  help='The Part Number')
     name = fields.Char(string='Part Name', help='The Part Name',
@@ -1248,7 +599,6 @@ class TripPartsHistoryDetails(models.Model):
                                     must be greater than zero!'))
             rec.available_qty = available_qty
 
-    team_id = fields.Many2one('fleet.team', string='Contract Trip')
     product_id = fields.Many2one('product.product', string='Part No',
                                  help='The Part Number')
     part_name = fields.Char(string='Part Name', size=128, translate=True)
@@ -1268,7 +618,6 @@ class TripPartsHistoryDetails(models.Model):
 class TripPartsHistoryDetailsTemp(models.Model):
     _name = 'trip.encoded.history.temp'
 
-    team_id = fields.Many2one('fleet.team', string='Contract Trip')
     product_id = fields.Many2one('product.product', string='Part No',
                                  help='The Part Number')
     used_qty = fields.Float(string='Used Qty',
@@ -1281,11 +630,8 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
     _order = 'id desc'
 
-    out_team_id = fields.Many2one('fleet.team', string='Contact Team Trip')
     work_order_out_id = fields.Many2one('fleet.vehicle.log.services',
                                         string="Work Order")
-    in_team_id = fields.Many2one('fleet.team', string='Contact Team Trip')
-    in_rem_team_id = fields.Many2one('fleet.team', string='Contact Team Trip')
     work_order_old_id = fields.Many2one('fleet.vehicle.log.services',
                                         string="Work Order")
     work_order_reopen_id = fields.Many2one('fleet.vehicle.log.services',
@@ -1513,7 +859,6 @@ class TeamAssignParts(models.Model):
                                      help="Take this field for data migration")
     wizard_parts_id = fields.Many2one('edit.parts.contact.team.trip',
                                       string='PartNo')
-    team_id = fields.Many2one('fleet.team', string='Team')
     product_id = fields.Many2one('product.product', string='PartNo',
                                  required=True)
     name = fields.Char(string='Part Name', size=124, translate=True)
@@ -1686,68 +1031,6 @@ class TeamAssignParts(models.Model):
         self.issue_date = issue_date_o
 
 
-class StockLocation(models.Model):
-    _inherit = 'stock.location'
-
-    @api.multi
-    def _get_teamp_trip_status(self):
-        fleet_team_obj = self.env["fleet.team"]
-        for location in self:
-            flag = False
-            trip_ids = fleet_team_obj.search([
-                ('destination_location_id', '=', location.id),
-                ('state', '=', 'close')])
-            if trip_ids:
-                for trip in trip_ids:
-                    if trip.is_work_order_done is False:
-                        flag = True
-                        break
-            location.is_team_trip = flag
-
-    is_team = fields.Boolean(string='Is Team?')
-    workshop = fields.Char(string='Work Shop Name')
-    trip = fields.Boolean(string="Trip?")
-    is_team_trip = fields.Boolean(compute="_get_teamp_trip_status",
-                                  string="Is Team Trip", store=True)
-
-#    @api.multi
-#    def name_get(self):
-#        res = {}
-#        for m in self:
-#            res[m.id] = m.name
-#        return res.items()
-
-    @api.model
-    def name_search(self, name='', args=None, operator='ilike', limit=100):
-        team_trip_obj = self.env['fleet.team']
-        if args is None:
-            args = []
-        ids = self.search(args).ids or []
-        team_trip_ids = team_trip_obj.search([
-            ('destination_location_id', 'in', ids)])
-        team_ids = ids
-        wo_team_ids = []
-        if self._context.get('t_trip', False):
-            for team_trip in team_trip_ids:
-                if self._context.get('t_trip', False):
-                    if not team_trip.is_work_order_done and \
-                            team_trip.destination_location_id.id in team_ids:
-                        team_ids.remove(team_trip.destination_location_id.id)
-                else:
-                    if not team_trip.is_work_order_done and \
-                            team_trip.destination_location_id.id \
-                            not in wo_team_ids:
-                        wo_team_ids.append(
-                            team_trip.destination_location_id.id)
-            if not self._context.get('t_trip', False):
-                team_ids = wo_team_ids
-            if team_trip_ids:
-                args = [('id', 'in', team_ids)]
-        return super(StockLocation, self).name_search(name=name, args=args,
-                                                      operator=operator,
-                                                      limit=limit)
-
-
 class FleetWorkOrderSearch(models.TransientModel):
     _name = 'fleet.work.order.search'
     _rec_name = 'state'
@@ -1765,7 +1048,6 @@ class FleetWorkOrderSearch(models.TransientModel):
     close_date_to = fields.Date(string='Close To')
     vehical_division_id = fields.Many2one('vehicle.divison',
                                           string="Division")
-    team_id = fields.Many2one('fleet.team', string='Contact Team')
     work_order_id = fields.Many2one('fleet.vehicle.log.services',
                                     string='Work Order No')
     fmp_id = fields.Many2one('fleet.vehicle', string='Vehicle ID')
@@ -1881,8 +1163,6 @@ class FleetWorkOrderSearch(models.TransientModel):
                 domain.append(('state', '=', order.state))
             if order.priority:
                 domain += [('priority', '=', order.priority)]
-            if order.team_id:
-                domain += [('team_id', '=', order.team_id.id)]
             if order.work_order_id:
                 order_ids.append(order.work_order_id.id)
             if order.cost_subtype_id:
@@ -1952,13 +1232,12 @@ class TaskLine(models.Model):
 
     fleet_service_id = fields.Many2one('fleet.vehicle.log.services',
                                        string='Vehicle Work Order')
-    product_id = fields.Many2one('product.product', string='Part',
-                                 required=True)
+    product_id = fields.Many2one('product.product', string='Part')
     qty_hand = fields.Float(string='Qty on Hand',
                             help='Quantity on Hand',
                             store=True)
     qty = fields.Float(string='Qty')
-    product_uom = fields.Many2one('product.uom', string='UOM', required=True)
+    product_uom = fields.Many2one('product.uom', string='UOM')
     price_unit = fields.Float(string='Unit Cost')
     total = fields.Float(string='Total Cost')
     date_issued = fields.Datetime(string='Date issued')
@@ -1979,29 +1258,23 @@ class TaskLine(models.Model):
             if rec.product_id.qty_available <= 0.0:
                 raise Warning(_("You can't used QTY which is on hand 0!"))
 
-
     @api.onchange('product_id')
     def _onchange_product_id(self):
         if self.product_id:
             prod = self.product_id
             if prod.in_active_part == True:
                 self.product_id = False
-                self.qty = 0.0
-                self.product_uom = False
-                self.price_unit = False
-                self.total = 0.0
                 raise Warning(_('You can\'t select \
                          part which is In-Active!'))
-            self.qty_hand = prod.qty_available
-            self.qty = 1.0
-            self.product_uom = prod.uom_id
-            self.price_unit = prod.list_price
+            self.qty_hand = prod.qty_available or 0.0
+            self.qty = 0.0
+            self.product_uom = prod.uom_id or False
+            self.price_unit = prod.list_price or 0.0
             self.total = self.qty * prod.list_price
-
 
     @api.onchange('qty')
     def _onchange_qty(self):
-        if self.product_id:
+        if self.product_id and self.qty:
             self.total = self.qty * self.product_id.list_price
 
     @api.model
@@ -2046,6 +1319,8 @@ class TaskLine(models.Model):
     def unlink(self):
         for part in self:
             if part.fleet_service_id == 'close':
+                raise Warning(_("You can't delete part those allreadey used."))
+            if part.is_deliver == True:
                 raise Warning(_("You can't delete part those allreadey used."))
         return super(TaskLine, self).unlink()
 
@@ -2103,7 +1378,8 @@ class ServiceRepairLine(models.Model):
     issue_date = fields.Date(string='Issued Date ')
     date_complete = fields.Date(related='service_id.date_complete',
                                 string="Complete Date")
-    target_date = fields.Date(string='Target Completion')
+    target_date = fields.Date(
+        string='Target Completion')
     complete = fields.Boolean(string='Completed')
 
 
@@ -2120,71 +1396,3 @@ class FleetServiceType(models.Model):
                                        'fleet_service_repair_type_rel',
                                        'service_type_id', 'reapir_type_id',
                                        string='Repair Type')
-
-
-# class work_order_reopen_days(models.Model):
-#    _name = 'work.order.reopen.days'
-#
-#    _rec_name = 'days'
-#
-#    vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle Id')
-#    days = fields.Integer(string='Days')
-#
-#    @api.constrains('days')
-#    def _constraint_positive_days(self):
-#        for rec in self:
-#            if rec.days <= 0:
-#                raise Warning(_('Re-Open Days \
-#                            Must be Greater than Zero!'))
-#        return True
-
-
-class ContactTeamTripSearch(models.TransientModel):
-    _name = 'contact.team.trip.search'
-
-    destination_location_id = fields.Many2one('stock.location',
-                                              string="Team (Location)")
-    trip_date_from = fields.Date(string='Trip Date From')
-    trip_date_to = fields.Date(string='Trip Date To')
-    return_date_from = fields.Date(string='Return Date From')
-    return_date_to = fields.Date(string='Return Date To')
-    source_location_id = fields.Many2one('stock.location',
-                                         string="Source Location")
-    location_id = fields.Char(string="Destination Location", size=128)
-
-    @api.multi
-    def get_contact_team_trip_by_advance_search(self):
-        domain = []
-        for order in self:
-            if order.destination_location_id:
-                domain += [('destination_location_id', '=',
-                            order.destination_location_id.id)]
-            if order.source_location_id:
-                domain += [('source_location_id', '=',
-                            order.source_location_id.id)]
-            if order.location_id:
-                domain += [('location_id', 'ilike', order.location_id)]
-
-            if order.trip_date_from and order.trip_date_to:
-                domain += [('trip_date', '>=', order.trip_date_from)]
-                domain += [('trip_date', '<=', order.trip_date_to)]
-            elif order.trip_date_from:
-                domain += [('trip_date', '=', order.trip_date_from)]
-
-            if order.return_date_from and order.return_date_to:
-                domain += [('return_date', '>=', order.return_date_from)]
-                domain += [('return_date', '<=', order.return_date_to)]
-            elif order.return_date_from:
-                domain += [('return_date', '=', order.return_date_from)]
-            return {
-                'name': _('Contact Team Trip'),
-                'view_type': 'form',
-                "view_mode": 'tree,form',
-                'res_model': 'fleet.team',
-                'type': 'ir.actions.act_window',
-                'nodestroy': True,
-                'domain': domain,
-                'context': self._context,
-                'target': 'current',
-            }
-        return True

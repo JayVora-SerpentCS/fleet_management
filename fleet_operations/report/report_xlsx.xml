@@ -80,16 +80,6 @@
          file="fleet_operations.workorder.monthly.summary.xls"
          attachment_use="False"/>
 
-     <!-- Export XLS Report For Daily Parts Inssuance Report -->
-    <!-- <report
-         id="daily_Parts_insuance_report_xlsx"
-         model="fleet.vehicle.log.services"
-         string="Daily Parts Issuance"
-         report_type="xlsx"
-         name="daily.parts.issuance.xls"
-         file="daily.parts.issuance.xls"
-         attachment_use="False"/> -->
-
     <!-- WO over 10 days report -->
      <report
          id="wo_over_10_days_xlsx"
@@ -202,16 +192,6 @@
          file="fleet_operations.received.part.xls"
          attachment_use="False"/>
 
-    <!-- Export XLS Report For Contact Team Trip Ticket-->
-    <report
-         id="contact_team_trip_ticket_xlsx"
-         model="fleet.team"
-         string="Contact Team Trip Ticket"
-         report_type="xlsx"
-         name="fleet_operations.contact.team.trip.ticket.xls"
-         file="fleet_operations.contact.team.trip.ticket.xls"
-         attachment_use="False"/>
-
     <!-- General Part Listing Report -->
     <report
          id="general_parts_listing_xlsx"
@@ -251,16 +231,6 @@
          report_type="xlsx"
          name="fleet_operations.daily.parts.issuance.wizard.xls"
          file="fleet_operations.daily.parts.issuance.wizard.xls"
-         attachment_use="False"/>
-
-    <!-- Export XLS Report For Old Part Return Wizard Report -->
-    <report
-         id="old_part_return_wizard_report_xlsx"
-         model="part.summary"
-         string="Old Parts Return wizard"
-         report_type="xlsx"
-         name="fleet_operations.old.part.return.wizard.xls"
-         file="fleet_operations.old.part.return.wizard.xls"
          attachment_use="False"/>
 
     <!-- Export XLS Report For Stock Adjustment Report -->

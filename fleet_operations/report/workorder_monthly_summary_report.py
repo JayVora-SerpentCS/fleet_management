@@ -47,10 +47,6 @@ class WorkorderMontltReportXlsx(models.AbstractModel):
                                     'work_performed': '',
                                     'part': parts_line.product_id and
                                     parts_line.product_id.default_code or '',
-                                    'part_name': parts_line.name or '',
-                                    'vehicle_make':
-                                    parts_line.vehicle_make_id and
-                                    parts_line.vehicle_make_id.name or '',
                                     'qty': parts_line.qty or 0.0,
                                     'uom': parts_line.product_uom and
                                     parts_line.product_uom.name or ''
@@ -73,10 +69,6 @@ class WorkorderMontltReportXlsx(models.AbstractModel):
                                     repair_line_data[:-2] or '',
                                     'part': parts_line.product_id and
                                     parts_line.product_id.default_code or '',
-                                    'part_name': parts_line.name or '',
-                                    'vehicle_make':
-                                    parts_line.vehicle_make_id and
-                                    parts_line.vehicle_make_id.name or '',
                                     'qty': parts_line.qty or 0.0,
                                     'uom': parts_line.product_uom and
                                     parts_line.product_uom.name or ''
@@ -97,8 +89,6 @@ class WorkorderMontltReportXlsx(models.AbstractModel):
                             'work_performed': repair_line_data and
                             repair_line_data[:-2] or '',
                             'part': '',
-                            'part_name': '',
-                            'vehicle_make': '',
                             'qty': '',
                             'uom': ''
                         }
