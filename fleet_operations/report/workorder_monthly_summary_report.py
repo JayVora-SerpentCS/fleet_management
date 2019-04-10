@@ -15,7 +15,6 @@ class WorkorderMontltReportXlsx(ReportXlsx):
 
     def get_heading(self):
         head_title = {
-            'name': '',
             'rev_no': '',
             'doc_no': '',
             'image': ''
@@ -25,7 +24,6 @@ class WorkorderMontltReportXlsx(ReportXlsx):
         if head_ids:
             head_rec = head_ids[0]
             if head_rec:
-                head_title['name'] = head_rec.name or ''
                 head_title['rev_no'] = head_rec.revision_no or ''
                 head_title['doc_no'] = head_rec.document_no or ''
                 head_title['image'] = head_rec.image or ''
@@ -71,10 +69,6 @@ class WorkorderMontltReportXlsx(ReportXlsx):
                                     'work_performed': '',
                                     'part': parts_line.product_id and
                                     parts_line.product_id.default_code or '',
-                                    'part_name': parts_line.name or '',
-                                    'vehicle_make':
-                                    parts_line.vehicle_make_id and
-                                    parts_line.vehicle_make_id.name or '',
                                     'qty': parts_line.qty or 0.0,
                                     'uom': parts_line.product_uom and
                                     parts_line.product_uom.name or ''
@@ -97,10 +91,6 @@ class WorkorderMontltReportXlsx(ReportXlsx):
                                     repair_line_data[:-2] or '',
                                     'part': parts_line.product_id and
                                     parts_line.product_id.default_code or '',
-                                    'part_name': parts_line.name or '',
-                                    'vehicle_make':
-                                    parts_line.vehicle_make_id and
-                                    parts_line.vehicle_make_id.name or '',
                                     'qty': parts_line.qty or 0.0,
                                     'uom': parts_line.product_uom and
                                     parts_line.product_uom.name or ''
@@ -122,8 +112,6 @@ class WorkorderMontltReportXlsx(ReportXlsx):
                             'work_performed': repair_line_data and
                             repair_line_data[:-2] or '',
                             'part': '',
-                            'part_name': '',
-                            'vehicle_make': '',
                             'qty': '',
                             'uom': ''
                         }

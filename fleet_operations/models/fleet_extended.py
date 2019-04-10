@@ -19,6 +19,12 @@ class MultiImages(models.Model):
                                            'WriteOff Images')
 
 
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+
+    inactive_part = fields.Boolean('In-Active Part?')
+
+
 class FleetOperations(models.Model):
     """This is the Fleet vehicle model."""
 
@@ -257,7 +263,6 @@ class FleetOperations(models.Model):
     oil_capacity = fields.Char(string='Oil Capacity')
     fleet_id = fields.Integer(string='Fleet ID',
                               help="Take this field for data migration")
-    # name = fields.Char(string='Vehicle ID', size=64, translate=True)
     f_brand_id = fields.Many2one('fleet.vehicle.model.brand', string='Make')
     model_no = fields.Char(string='Model No', translate=True)
     license_plate = fields.Char(string='License Plate',
@@ -320,8 +325,6 @@ class FleetOperations(models.Model):
                             help='Odometer measure of the vehicle at the \
                                 moment of this log')
     vehical_color_id = fields.Many2one('color.color', string='Color')
-    # vechical_location_id = fields.Many2one('service.department',
-    #                                        string='Registration State')
     vehical_country_id = fields.Many2one('res.country',
                                          string='Registration Country')
     vechical_location_id = fields.Many2one('res.country.state',
@@ -709,21 +712,6 @@ class ResPartnerExtended(models.Model):
     d_id = fields.Char(string='ID-Card', size=64)
     is_driver = fields.Boolean(string='Is Driver')
     insurance = fields.Boolean(string='Insurance')
-#    property_account_payable = \
-#        fields.Many2one('account.account', company_dependent=True,
-#                        string="Account Payable",
-#                        domain="[('type', '=', 'payable')]",
-#                        help="This account will be used instead of the \
-#                           default one as the payable account for \
-#                           the current partner", required=False)
-#    property_account_receivable = \
-#        fields.Many2one('account.account', company_dependent=True,
-#                        string="Account Receivable",
-#                        domain="[('type', '=', 'receivable')]",
-#                         required=False,
-#                        help="This account will be used instead of the \
-#                                default one as the receivable account for\
-#                                 the current partner")
 
     @api.multi
     def copy(self, default=None):
@@ -799,7 +787,6 @@ class FleetWittenOff(models.Model):
                                       ('miles', 'Miles')],
                                      string='Odometer Unit',
                                      help='Unit of the odometer ')
-    # province_id = fields.Many2one('service.department', 'Registration State')
     province_id = fields.Many2one('res.country.state', 'Registration State')
     division_id = fields.Many2one('vehicle.divison', 'Division')
     state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirmed'),
@@ -943,8 +930,6 @@ class FleetVehicleModelBrand(models.Model):
 
     name = fields.Char(string='Make', size=64, required=True,
                        translate=True)
-#    code = fields.Char(string='Code for Vehicle ID', size=3,
-#                       translate=True)
 
     _sql_constraints = [('brandname_uniq', 'unique(name)',
                          'This brand Name is already exist you \
@@ -968,8 +953,6 @@ class FleetVehicleAdvanceSearch(models.TransientModel):
     _rec_name = 'fmp_id'
 
     fmp_id = fields.Many2one('fleet.vehicle', string="Vehicle ID")
-    # vechical_location_id = fields.Many2one('service.department',
-    #                                        string='Province')
     vechical_location_id = fields.Many2one('res.country.state',
                                            string='Province')
     state = fields.Selection([('inspection', 'Inspection'),
@@ -1111,8 +1094,6 @@ class VehicleUniqueSequence(models.Model):
     _name = 'vehicle.unique.sequence'
 
     name = fields.Char(string='Name', size=124, translate=True)
-    # vechical_location_id = fields.Many2one('service.department',
-    #                                        string='Location')
     vechical_location_id = fields.Many2one('res.country.state',
                                            string='Location')
     make_id = fields.Many2one('fleet.vehicle.model.brand', string='Make')

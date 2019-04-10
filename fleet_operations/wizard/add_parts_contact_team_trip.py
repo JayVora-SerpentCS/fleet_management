@@ -202,7 +202,7 @@ class AddPartsContactTrip(models.TransientModel):
     def onchange_product_id(self):
         if self.product_id:
             rec = self.product_id
-            if rec.in_active_part:
+            if rec.inactive_part:
                 self.product_id = False
                 self.name = False
                 self.vehicle_make_id = False

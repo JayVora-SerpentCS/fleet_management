@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <odoo>
     <data>
-    
         <!-- Form View for Update Pending History. -->
         <record model="ir.ui.view" id="update_pending_reapir_history_form_view">
             <field name="name">update.pending.reapir.history.form</field>

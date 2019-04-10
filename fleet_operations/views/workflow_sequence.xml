@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
    <data>
-
        <!-- Sequence for Work Order. -->
        <record id="seq_seq_work_order" model="ir.sequence">
            <field name="name">Work Order Sequence</field>
@@ -26,6 +25,5 @@
            <field name="prefix">CON</field>
            <field name="padding">6</field>
        </record>
-       
    </data>
 </odoo>
