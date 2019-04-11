@@ -2,7 +2,6 @@
 import io
 import xlwt
 import base64
-#  from cStringIO import StringIO
 from odoo import models, fields, api, _
 
 

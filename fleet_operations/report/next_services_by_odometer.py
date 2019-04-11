@@ -32,15 +32,12 @@ class NextServiceByOdometer(models.AbstractModel):
         tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
-#        worksheet.merge_range('C3:F3', 'Merged Cells', merge_format)
 
         row = 0
         row += 1
         row += 1
         worksheet.write(row, 2,
                         'Scheduled Maintenance By Mileage')
-#        worksheet.write(row, 2,
-#                        'Scheduled Maintenance By Mileage', merge_format)
         row += 3
         worksheet.write(row, 7, 'Date :', tot)
         worksheet.write(row, 8, time.strftime('%d-%B-%Y'), tot)

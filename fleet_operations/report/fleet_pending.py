@@ -58,13 +58,6 @@ class FleetPending(models.AbstractModel):
         
         row = 0
         row += 1
-#        if file_name:
-#            worksheet.insert_image(row, 0, '/tmp/logo.png')
-#        worksheet.write(row, 2, result.get('name') or '', border)
-#        worksheet.write(row, 5, 'Rev. No. :', tot)
-#        worksheet.write(row, 6, result.get('rev_no') or '', border)
-#        worksheet.write(row, 7, 'Document No. :', tot)
-#        worksheet.write(row, 8, result.get('doc_no') or '', border)
         row += 1
         worksheet.write(row, 2, 'Fleet Repairs Pending', tit)
         row += 2

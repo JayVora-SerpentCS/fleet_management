@@ -180,8 +180,7 @@ class AddPartsContactTrip(models.TransientModel):
     _description = 'Add Parts Contract Trip'
 
     wizard_part_id = fields.Many2one('parts.contact.trip', string='Part No')
-    product_id = fields.Many2one('product.product', string='PartNo',
-                                 required=True)
+    product_id = fields.Many2one('product.product', string='PartNo')
     name = fields.Char(string='Part Name', size=124, translate=True)
     vehicle_make_id = fields.Many2one('fleet.vehicle.model.brand',
                                       string='Vehicle Make')

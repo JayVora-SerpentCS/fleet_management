@@ -48,27 +48,10 @@ class FleetPendinRepair(models.AbstractModel):
         tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         border = xlwt.easyxf('font: name 1; font: height 200')
         format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;')
-        
-#        worksheet.set_column('C3:D3', 'Merged Cells', merge_format)
-#        worksheet.merge_range('C3:F3', 'Merged Cells', merge_format)
 
-#        file_name = result.get('image', False)
-#        if file_name:
-#            file1 = open('/tmp/' + 'logo.png', 'wb')
-#            file_data = base64.decodestring(file_name)
-#            file1.write(file_data)
-#            file1.close()
         row = 0
         row += 1
-#        if file_name:
-#            worksheet.insert_image(row, 0, '/tmp/logo.png')
-#        worksheet.write(row, 2, result.get('name') or '', border)
-#        worksheet.write(row, 5, 'Rev. No. :', tot)
-#        worksheet.write(row, 6, result.get('rev_no') or '', border)
-#        worksheet.write(row, 7, 'Document No. :', tot)
-#        worksheet.write(row, 8, result.get('doc_no') or '', border)
         row += 1
-#        worksheet.write(row, 2, 'Fleet With Pending Repairs', merge_format)
         worksheet.write(row, 2, 'Fleet With Pending Repairs')
         row += 2
         for obj in fleet_pending:

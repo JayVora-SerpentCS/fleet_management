@@ -54,9 +54,7 @@
                                     <li>
                                         <t t-if="record.location.raw_value"><field name="location"/></t>
                                     </li>
-
                                 </ul>
-
                                 <field name="tag_ids"/>
                             </div>
                         </div>

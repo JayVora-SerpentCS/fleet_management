@@ -5,25 +5,6 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page">
-                            <!-- <table class="table table-bordered"  width="100%">
-                                <tr>
-                                    <td width="25%" t-if="get_heading().get('image')">
-                                        <img t-if="get_heading().get('image')" t-att-src="'data:image/png;base64,%s' % get_heading().get('image')"
-                                        style="height:60px;width:60px;border-radius:20%;" />
-                                    </td>
-                                    <td width="25%" t-if="get_heading().get('name')" style='font-size:12px;font-weight: bold;'>
-                                        <span t-esc="get_heading().get('name')"/>
-                                    </td>
-                                    <td width="25%" t-if="get_heading().get('rev_no')" style='font-size:12px;font-weight: bold;'>
-                                        <span>Rev. No. :</span>
-                                        <span t-esc="get_heading().get('rev_no')"/>
-                                    </td>
-                                    <td width="25%" t-if="get_heading().get('doc_no')" style='font-size:12px;font-weight: bold;'>
-                                        <span>Document No. :</span>
-                                        <span t-esc="get_heading().get('doc_no')"/>
-                                    </td>
-                                </tr>
-                            </table> -->
                             <table class="table table-bordered"  width="100%">
                                 <tr>
                                      <td width="6.5%" style='font-size:12px;font-weight: bold;'>

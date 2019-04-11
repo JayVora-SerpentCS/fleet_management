@@ -38,14 +38,10 @@ class FleetWaitingColletion(models.AbstractModel):
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
         
-#        merge_format = workbook.add_format({'border': 2, 'align': 'center'})
-#        format1.set_bg_color('gray')
-#        worksheet.merge_range('C3:E3', 'Merged Cells', merge_format)
         row = 0
         row += 1
 
         row += 1
-#        worksheet.write(row, 2, 'Fleet In Complete Stage', merge_format)
         worksheet.write(row, 2, 'Fleet In Complete Stage')
         row += 4
         worksheet.write(row, 0, 'No', format1)

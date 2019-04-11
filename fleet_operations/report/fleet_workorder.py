@@ -84,7 +84,6 @@ class FleetWorkOrder(models.AbstractModel):
             wo_summary_data.append(workorder_data)
         return wo_summary_data
 
-#    def generate_xlsx_report(self, workbook, data, product):
     def generate_xlsx_report(self, product):
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('workorder_summary')

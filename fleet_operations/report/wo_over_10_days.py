@@ -74,7 +74,6 @@ class WoOver10DaysXlsx(models.AbstractModel):
                 repair_type += repair_line.repair_type_id.name + ","
         return repair_type[:-1]
 
-#    def generate_xlsx_report(self, workbook, data, services):
     def generate_xlsx_report(self, services):
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('wo_over_10days')

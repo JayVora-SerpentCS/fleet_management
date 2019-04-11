@@ -18,14 +18,6 @@
                         <field name="active" widget="boolean_button"
                             options='{"terminology": "archive"}'/>
                    </button>
-                   <!-- <button name="return_action_to_open"
-                        type="object"
-                        class="oe_stat_button"
-                        icon="fa-book"
-                        context="{'xml_id':'fleet_vehicle_log_contract_action'}"
-                        help="show the contract for this vehicle">
-                        <field name="contract_count" widget="statinfo" string="Contracts"/>
-                    </button> -->
                     <button name="act_show_log_cost"
                         type="object"
                         class="oe_stat_button"
@@ -68,7 +60,6 @@
                </div>
             </xpath>
             <xpath expr="//sheet/div[hasclass('oe_title')]" position="replace" />
-            <!--<xpath expr="//sheet/div[@class='oe_title']" position="replace" />-->
             <xpath expr="//field[@name='acquisition_date']" position="attributes">
                 <attribute name="string">Registration Date</attribute>
                 <attribute name="readonly">1</attribute>
@@ -278,7 +269,6 @@
                                 <field name="date_open" />
                                 <field name="date_close" />
                                 <field name="open_days" />
-                                <!-- <field name="department_categ_id" /> -->
                                 <field name="state" />
                             </tree>
                         </field>
@@ -610,7 +600,6 @@
                 <field name="state"/>
             </xpath>
             <xpath expr="//div[hasclass('o_kanban_tags_section')]/field[@name='tag_ids']" position="replace">
-                <!-- <h5 style="color: #800000"> Status : <field name="state"/> </h5> -->
                 <field name="state" widget="kanban_label_selection"
                     options="{'classes': {'draft': 'default', 'complete': 'success', 'released': 'success', 'write-off': 'danger', 'rent': 'warning', 'in_progress': 'warning'}}"/>
             </xpath>
@@ -654,7 +643,6 @@
         <field name="arch" type="xml">
            <tree string="Model Brand">
                 <field name="name" />
-                <!-- <field name="code" required="1"/> -->
             </tree>
         </field>
     </record>
@@ -671,7 +659,6 @@
                             <field name="image_medium" widget="image" class="oe_left oe_avatar"/>
                             <h1>
                                 <group>
-                                   <!--  <field name="code" class="oe_inline" required="1"/> -->
                                     <field name="name" class="oe_inline" />
                                 </group>
                             </h1>
@@ -810,6 +797,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='vehicle_id']" position="attributes">
                 <attribute name="domain">[('state','!=','write-off')]</attribute>
+                <attribute name="required">1</attribute>
             </xpath>
         </field>
       </record>
@@ -852,7 +840,6 @@
                     filter_domain="[('vehicle_fmp_id','ilike',self)]" />
                 <field name="vehicle_plate" string="License Plate"
                     filter_domain="[('vehicle_plate','ilike',self)]" />
-                <!-- <field name="vin_no" string="Vin No" filter_domain="[('vin_no','ilike',self)]" /> -->
            </search>
         </field>
     </record>
@@ -1026,7 +1013,6 @@
         <field name="arch" type="xml">
             <tree string="Vehicle Witten-off"  create="false">
                 <field name="vehicle_id" />
-                <!-- <field name="vin_no" /> -->
                 <field name="vehicle_plate" />
                 <field name="report_date" />
                 <field name="write_off_type" />
@@ -1152,16 +1138,9 @@
                         <field name="model_id"
                             domain="[('brand_id','=',make_id)]"
                             options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <!-- <field name="plate_type_id"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <field name="vechical_location_id"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/> -->
-                        <!-- <field name="vechical_department_id"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/> -->
                         <field name="state" />
                         <field name="vehical_color_id"
                             options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <!-- <field name="year_id" options="{'no_open': True, 'create': false, 'create_edit': false}"/> -->
                         <field name="vechical_type_id"
                             options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
                         <field name="division_id" invisible="1"
@@ -1311,8 +1290,6 @@
     <menuitem name="Configuration" parent="fleet.menu_root"
         id="fleet.fleet_configuration" sequence="4"
         groups="-fleet.fleet_group_manager" />
-
-    <!-- Form and tree view for newly added object of driver -->
 
     <!--  Change the sequence number of main menu Fleet to 3-->
     <menuitem name="Fleet" id="fleet.menu_root" sequence="1"
