@@ -27,7 +27,6 @@
               'data/vechical_sequence.xml',
               'wizard/pending_repair_confirm_view.xml',
               'wizard/continue_pending_repair_view.xml',
-              'wizard/add_parts_contact_team_trip_view.xml',
               'wizard/update_history_view.xml',
               'wizard/writoff_cancel_reason_view.xml',
               'report/report_xlsx.xml',

@@ -154,11 +154,6 @@ class FleetVehicleLogServices(models.Model):
 
         work_order_vals = {}
         for work_order in self:
-            if not work_order.team_trip_id:
-                context.update({'wo': work_order})
-            if work_order.team_trip_id:
-                context.update({'team_trip': work_order.team_trip_id,
-                                'workorder': work_order})
             self.env.args = cr, uid, misc.frozendict(context)
             if work_order.odometer == 0:
                 raise Warning(_("Please set the current \
@@ -479,7 +474,6 @@ class FleetVehicleLogServices(models.Model):
     delivery_id = fields.Many2one('stock.picking',
                                   string='Delivery Reference', readonly=True)
     team_id = fields.Many2one('res.partner', string="Teams")
-    team_trip_id = fields.Many2one("fleet.team", string="Team Trip")
     maintenance_team_id = fields.Many2one("stock.location", string="Teams")
     next_service_date = fields.Date(string='Next Service Date')
     next_service_odometer = fields.Float(string='Next Odometer Value',
@@ -857,8 +851,6 @@ class TeamAssignParts(models.Model):
 
     trip_history_id = fields.Integer(string='Trip Part History ID',
                                      help="Take this field for data migration")
-    wizard_parts_id = fields.Many2one('edit.parts.contact.team.trip',
-                                      string='PartNo')
     product_id = fields.Many2one('product.product', string='PartNo',
                                  required=True)
     name = fields.Char(string='Part Name', size=124, translate=True)
@@ -1245,7 +1237,6 @@ class TaskLine(models.Model):
                                 default=lambda self: self._uid)
     is_deliver = fields.Boolean(string="Is Deliver?")
     task_id = fields.Many2one('service.task', 'Task')
-    wizard_parts_id = fields.Many2one('edit.parts.work.order', 'Wiz Part')
 
     @api.constrains('qty')
     def _check_used_qty(self):
