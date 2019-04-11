@@ -39,7 +39,6 @@ class FleetPendinRepair(ReportXlsx):
         worksheet.set_column(7, 7, 10)
         worksheet.set_column(8, 8, 5)
 
-#        result = self.get_heading()
         tot = workbook.add_format({'border': 2,
                                    'bold': True,
                                    'font_name': 'Arial',
@@ -54,23 +53,8 @@ class FleetPendinRepair(ReportXlsx):
                                        'font_size': '10'})
         format1.set_bg_color('gray')
         worksheet.merge_range('C3:D3', 'Merged Cells', merge_format)
-#        worksheet.merge_range('C3:F3', 'Merged Cells', merge_format)
-
-#        file_name = result.get('image', False)
-#        if file_name:
-#            file1 = open('/tmp/' + 'logo.png', 'wb')
-#            file_data = base64.decodestring(file_name)
-#            file1.write(file_data)
-#            file1.close()
         row = 0
         row += 1
-#        if file_name:
-#            worksheet.insert_image(row, 0, '/tmp/logo.png')
-#        worksheet.write(row, 2, result.get('name') or '', border)
-#        worksheet.write(row, 5, 'Rev. No. :', tot)
-#        worksheet.write(row, 6, result.get('rev_no') or '', border)
-#        worksheet.write(row, 7, 'Document No. :', tot)
-#        worksheet.write(row, 8, result.get('doc_no') or '', border)
         row += 1
         worksheet.write(row, 2, 'Fleet With Pending Repairs', merge_format)
         row += 2
@@ -140,6 +124,5 @@ class FleetPendinRepair(ReportXlsx):
                 worksheet.write(row, 5, '**************************')
                 worksheet.write(row, 6, '**************************')
                 worksheet.write(row, 7, '**************************')
-
 
 FleetPendinRepair('report.fleet.pending.repairs.xls', 'fleet.vehicle')

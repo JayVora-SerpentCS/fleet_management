@@ -69,23 +69,9 @@ class ReceivedPartsXlsx(ReportXlsx):
                                    'font_name': 'Arial',
                                    'font_size': '10'})
         tot.set_bg_color('gray')
-#        res = self.get_heading()
-#        file_name = res.get('image', False)
-#        if file_name:
-#            file1 = open('/tmp/' + 'logo.png', 'wb')
-#            file_data = base64.decodestring(file_name)
-#            file1.write(file_data)
-#            file1.close()
         row = 0
         for picking in stock_picking_ids:
             row += 1
-#            if file_name:
-#                worksheet.insert_image(row, 0, '/tmp/logo.png')
-#            worksheet.write(row, 3, res['name'])
-#            worksheet.write(row, 4, 'Rev No.')
-#            worksheet.write(row, 5, res['rev_no'])
-#            worksheet.write(row, 6, 'Document No. :')
-#            worksheet.write(row, 7, res['doc_no'])
             row += 1
             worksheet.write(row, 3, 'Parts Received ', bold)
             row += 3
@@ -135,6 +121,5 @@ class ReceivedPartsXlsx(ReportXlsx):
                     row += 2
                     counter += 1
         row += 5
-
 
 ReceivedPartsXlsx('report.receved.parts.xls', 'stock.picking')

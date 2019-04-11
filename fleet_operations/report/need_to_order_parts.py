@@ -55,23 +55,9 @@ class NeedToOrderPartsXlsx(ReportXlsx):
                                    'font_name': 'Arial',
                                    'font_size': '10'})
         tot.set_bg_color('gray')
-#        res = self.get_heading()
-#        file_name = res.get('image', False)
-#        if file_name:
-#            file1 = open('/tmp/' + 'logo.png', 'wb')
-#            file_data = base64.decodestring(file_name)
-#            file1.write(file_data)
-#            file1.close()
         row = 0
         for pr in parts:
             row += 1
-#            if file_name:
-#                worksheet.insert_image(row, 0, '/tmp/logo.png')
-#            worksheet.write(row, 3, res['name'], bold)
-#            worksheet.write(row, 5, 'Rev No.', bold)
-#            worksheet.write(row, 6, res['rev_no'])
-#            worksheet.write(row, 7, 'Document No. :', bold)
-#            worksheet.write(row, 8, res['doc_no'])
             row += 1
             worksheet.write(row, 3, ' General Parts Listing ', bold)
             row += 3
@@ -105,6 +91,5 @@ class NeedToOrderPartsXlsx(ReportXlsx):
                 worksheet.write(row, 11, line.re_order_qty or 0.0)
                 counter += 1
         row += 8
-
 
 NeedToOrderPartsXlsx('report.need.to.order.parts.xls', 'product.product')

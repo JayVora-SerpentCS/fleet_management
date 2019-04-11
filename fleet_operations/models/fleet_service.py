@@ -49,7 +49,6 @@ class FleetVehicleLogServices(models.Model):
             self.purchaser_id = vehicle.driver_id and \
                 vehicle.driver_id.id or False,
             self.fmp_id = vehicle.name or "",
-#            self.main_type = vehicle.main_type or False,
             self.f_brand_id = vehicle.f_brand_id and \
                 vehicle.f_brand_id.id or False,
             self.vehical_division_id = vehicle.vehical_division_id and \
@@ -154,11 +153,6 @@ class FleetVehicleLogServices(models.Model):
 
         work_order_vals = {}
         for work_order in self:
-            if not work_order.team_trip_id:
-                context.update({'wo': work_order})
-            if work_order.team_trip_id:
-                context.update({'team_trip': work_order.team_trip_id,
-                                'workorder': work_order})
             self.env.args = cr, uid, misc.frozendict(context)
             if work_order.odometer == 0:
                 raise Warning(_("Please set the current \
@@ -436,14 +430,10 @@ class FleetVehicleLogServices(models.Model):
 
     wono_id = fields.Integer(string='WONo',
                              help="Take this field for data migration")
-    # id = fields.Integer(string='ID')
     purchaser_id = fields.Many2one('res.partner', string='Purchaser')
     name = fields.Char(string='Work Order', size=32, readonly=True,
                        translate=True)
     fmp_id = fields.Char(string="Vehicle ID", size=64)
-#    wo_invoice_reference = fields.Many2one('account.invoice',
-#                                           string='Invoice Ref#',
-#                                           readonly=True)
     wo_tax_amount = fields.Float(string='Tax', readonly=True)
     priority = fields.Selection([('normal', 'NORMAL'), ('high', 'HIGH'),
                                  ('low', 'LOW')], default='normal',
@@ -480,7 +470,6 @@ class FleetVehicleLogServices(models.Model):
     delivery_id = fields.Many2one('stock.picking',
                                   string='Delivery Reference', readonly=True)
     team_id = fields.Many2one('res.partner', string="Teams")
-    team_trip_id = fields.Many2one("fleet.team", string="Team Trip")
     maintenance_team_id = fields.Many2one("stock.location", string="Teams")
     next_service_date = fields.Date(string='Next Service Date')
     next_service_odometer = fields.Float(string='Next Odometer Value',
@@ -857,8 +846,6 @@ class TeamAssignParts(models.Model):
 
     trip_history_id = fields.Integer(string='Trip Part History ID',
                                      help="Take this field for data migration")
-    wizard_parts_id = fields.Many2one('edit.parts.contact.team.trip',
-                                      string='PartNo')
     product_id = fields.Many2one('product.product', string='PartNo',
                                  required=True)
     name = fields.Char(string='Part Name', size=124, translate=True)
@@ -1037,8 +1024,7 @@ class StockLocation(models.Model):
     is_team = fields.Boolean(string='Is Team?')
     workshop = fields.Char(string='Work Shop Name')
     trip = fields.Boolean(string="Trip?")
-    is_team_trip = fields.Boolean(compute="_get_teamp_trip_status",
-                                  string="Is Team Trip", store=True)
+    is_team_trip = fields.Boolean(tring="Is Team Trip", store=True)
 
     @api.multi
     def name_get(self):
@@ -1420,20 +1406,3 @@ class FleetServiceType(models.Model):
                                        'fleet_service_repair_type_rel',
                                        'service_type_id', 'reapir_type_id',
                                        string='Repair Type')
-
-
-# class work_order_reopen_days(models.Model):
-#    _name = 'work.order.reopen.days'
-#
-#    _rec_name = 'days'
-#
-#    vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle Id')
-#    days = fields.Integer(string='Days')
-#
-#    @api.constrains('days')
-#    def _constraint_positive_days(self):
-#        for rec in self:
-#            if rec.days <= 0:
-#                raise Warning(_('Re-Open Days \
-#                            Must be Greater than Zero!'))
-#        return True
