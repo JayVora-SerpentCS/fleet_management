@@ -102,6 +102,7 @@
 	            </xpath>
 	            <xpath expr="//field[@name='amount']" invisible="True" position="attributes">
 	               <attribute name="required">1</attribute>
+	               <attribute name="attrs">{'readonly':[('state','in',('draft','done'))]}</attribute>
 	            </xpath>
 	            <xpath expr="//sheet/group[2]" position="inside">
 	                <group string="Work Order Details" col="2">
@@ -146,7 +147,7 @@
                           </group>
                           <newline/>
                           <group colspan="4">
-	                         <field name="parts_ids" nolabel="1"
+	                         <field name="parts_ids" nolabel="1" attrs="{'readonly':[('state','in',('draft','done'))]}"
 	                             context="{'date_open':date_open}" create='false' delete='false'>
 	                             <tree string="Maintenance" editable="top">
 	                                 <field name='product_id' string="Part No"
