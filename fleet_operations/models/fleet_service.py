@@ -293,6 +293,14 @@ class FleetVehicleLogServices(models.Model):
                 total += line.total
             rec.sub_total = total
 
+    @api.constrains('sub_total', 'amount')
+    def _check_amount(self):
+        if self.amount:
+            if self.amount < self.sub_total:
+                raise Warning(
+                    _("Total Price should be greater or equals to\
+                     total amount of parts!!"))
+
     @api.multi
     def write(self, vals):
         if not self._context:
@@ -1058,11 +1066,11 @@ class TaskLine(models.Model):
             if rec.qty <= 0:
                 raise Warning(_('You can\'t \
                             enter used quanity as Zero!'))
-            if rec.qty > rec.product_id.qty_available:
-                raise Warning(_("You can't add used QTY more then avilable!!"))
-            if rec.qty_hand <= 0.0:
-                raise Warning(
-                    _("You can't used product which on hand not available!!"))
+            # if rec.qty > rec.product_id.qty_available:
+            #     raise Warning(_("You can't add used QTY more then avilable!!"))
+            # if rec.qty_hand <= 0.0:
+            #     raise Warning(
+            # _("You can't used product which on hand not available!!"))
 
     @api.onchange('product_id', 'qty')
     def _onchage_product(self):
@@ -1070,7 +1078,7 @@ class TaskLine(models.Model):
             prod = self.product_id
             self.qty_hand = prod.qty_available or 0.0
             self.product_uom = prod.uom_id or False
-            self.price_unit = prod.standard_price or 0.0
+            self.price_unit = prod.list_price or 0.0
         if self.qty and self.price_unit:
             self.total = self.qty * self.price_unit
 
