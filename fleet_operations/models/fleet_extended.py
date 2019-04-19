@@ -24,7 +24,8 @@ class ProductProduct(models.Model):
     _inherit = 'product.product'
 
     in_active_part = fields.Boolean('In-Active Part?')
-    vehicle_make_id = fields.Many2one('fleet.vehicle.model.brand', string='Vehicle Make')
+    vehicle_make_id = fields.Many2one(
+        'fleet.vehicle.model.brand', string='Vehicle Make')
 
 
 class FleetOperations(models.Model):
@@ -45,7 +46,6 @@ class FleetOperations(models.Model):
     @api.multi
     def unlink(self):
         raise Warning(_('You can\'t delete record !'))
-        return super(FleetOperations, self).unlink()
 
     @api.multi
     def update_history(self):
@@ -85,15 +85,15 @@ class FleetOperations(models.Model):
         context.update({'vehicle_ids': self._ids})
         self.env.args = cr, uid, misc.frozendict(context)
         return {
-                    'name': view_name,
-                    'context': self._context,
-                    'view_type': 'form',
-                    'view_mode': 'form',
-                    'res_model': res_model,
-                    'views': [(resource_id, 'form')],
-                    'type': 'ir.actions.act_window',
+            'name': view_name,
+            'context': self._context,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': res_model,
+            'views': [(resource_id, 'form')],
+            'type': 'ir.actions.act_window',
                     'target': 'new',
-               }
+        }
 
     @api.multi
     def set_released_state(self):
@@ -125,6 +125,12 @@ class FleetOperations(models.Model):
             vv_id = "%s" % (vehical_unique_id)
             res.append((vehicle['id'], vv_id))
         return res
+
+    @api.model
+    def name_search(self, name='', args=[], operator='ilike', limit=100):
+        # Overwritten this method for the bypass base domain.
+        vehicle_ids = self.search(args, limit=limit)
+        return vehicle_ids.name_get()
 
     @api.multi
     def return_action_too_open(self):
@@ -258,7 +264,6 @@ class FleetOperations(models.Model):
     oil_capacity = fields.Char(string='Oil Capacity')
     fleet_id = fields.Integer(string='Fleet ID',
                               help="Take this field for data migration")
-    # name = fields.Char(string='Vehicle ID', size=64, translate=True)
     f_brand_id = fields.Many2one('fleet.vehicle.model.brand', string='Make')
     model_no = fields.Char(string='Model No', translate=True)
     license_plate = fields.Char(string='License Plate',
@@ -565,7 +570,7 @@ class TireHistory(models.Model):
                                    translate=True)
     new_tire_sn = fields.Char(string="New Tire Serial", size=124)
     previous_tire_issue_date = fields.Date(
-                                    string='Previous Tire Issuance Date')
+        string='Previous Tire Issuance Date')
     new_tire_issue_date = fields.Date(string='New Tire Issuance Date')
     changed_date = fields.Date(string='Change Date')
     note = fields.Text(string='Notes', translate=True)
@@ -597,7 +602,7 @@ class BatteryHistory(models.Model):
                                       size=124)
     new_battery_sn = fields.Char(string="New Battery Serial", size=124)
     previous_battery_issue_date = fields.Date(
-                              string='Previous Battery Issuance Date')
+        string='Previous Battery Issuance Date')
     new_battery_issue_date = fields.Date(string='New Battery Issuance Date')
     changed_date = fields.Date(string='Change Date')
     note = fields.Text(string='Notes', translate=True)
@@ -646,7 +651,7 @@ class VehicalDivison(models.Model):
     name = fields.Char(string='Name', required=True, translate=True)
 
     _sql_constraints = [('vehicle.divison_uniq', 'unique(name)',
-                        'This divison is already exist!')]
+                         'This divison is already exist!')]
 
     @api.multi
     def copy(self, default=None):
@@ -766,20 +771,6 @@ class ResPartnerExtended(models.Model):
     d_id = fields.Char(string='ID-Card', size=64)
     is_driver = fields.Boolean(string='Is Driver')
     insurance = fields.Boolean(string='Insurance')
-#    property_account_payable = \
-#        fields.Many2one('account.account', company_dependent=True,
-#                        string="Account Payable",
-#                        domain="[('type', '=', 'payable')]",
-#                        help="This account will be used instead of the \
-#                           default one as the payable account for \
-#                           the current partner", required=False)
-#    property_account_receivable = \
-#        fields.Many2one('account.account', company_dependent=True,
-#                        string="Account Receivable",
-#                        domain="[('type', '=', 'receivable')]", required=False,
-#                        help="This account will be used instead of the \
-#                                default one as the receivable account for\
-#                                 the current partner")
 
     @api.multi
     def copy(self, default=None):
@@ -822,9 +813,9 @@ class FleetWittenOff(models.Model):
     interior = fields.Boolean(string='INTERIOR')
     left_hand_rear = fields.Boolean(string='LEFT HAND REAR')
     left_hand_front_suspension = fields.Boolean(
-                                    string='LEFT HAND FRONT SUSPENSION')
+        string='LEFT HAND FRONT SUSPENSION')
     left_hand_rear_suspesnsion = fields.Boolean(
-                                    string='LEFT HAND REAR SUSPENSION')
+        string='LEFT HAND REAR SUSPENSION')
     transmission = fields.Boolean(string='TRANSMISSION')
     chassis = fields.Boolean(string='CHASSIS')
     right_hand_front = fields.Boolean(string='RIGHT HAND FRONT')
@@ -832,9 +823,9 @@ class FleetWittenOff(models.Model):
     roof_panel = fields.Boolean(string='ROOF PANEL')
     right_hand_rear = fields.Boolean(string='RIGHT HAND REAR')
     right_hand_front_suspension = fields.Boolean(
-                                     string='RIGHT HAND FRONT SUSPENSION')
+        string='RIGHT HAND FRONT SUSPENSION')
     right_hand_rear_suspension = fields.Boolean(
-                                    string='RIGHT HAND REAR SUSPENSION')
+        string='RIGHT HAND REAR SUSPENSION')
     under_bonnet = fields.Boolean(string='UNDER BONNET')
     road_wheel_and_tire = fields.Boolean(string='ROAD WHEEL AND TIRE')
     steering_system = fields.Boolean(string='STEERING SYSTEM')
@@ -851,9 +842,9 @@ class FleetWittenOff(models.Model):
     location_id = fields.Many2one('vehicle.location', string='Location')
     driver_id = fields.Many2one('res.partner', string='Driver')
     write_off_type = fields.Selection([
-                           ('general_accident', 'General Accident'),
-                           ('insurgent_attack', 'Insurgent Attack')],
-                       string='Write-off Type', default='general_accident')
+        ('general_accident', 'General Accident'),
+        ('insurgent_attack', 'Insurgent Attack')],
+        string='Write-off Type', default='general_accident')
     contact_no = fields.Char(string='Driver Contact Number', size=24,
                              translate=True)
     odometer_unit = fields.Selection([('kilometers', 'Kilometers'),
@@ -956,14 +947,14 @@ class FleetWittenOff(models.Model):
     @api.multi
     def cancel_writeoff(self):
         return {
-                'name': ('Write Off Cancel Form'),
-                'res_model': 'writeoff.cancel.reason',
-                'type': 'ir.actions.act_window',
-                'view_id': False,
-                'view_mode': 'form',
-                'view_type': 'form',
-                'target': 'new'
-                }
+            'name': ('Write Off Cancel Form'),
+            'res_model': 'writeoff.cancel.reason',
+            'type': 'ir.actions.act_window',
+            'view_id': False,
+            'view_mode': 'form',
+            'view_type': 'form',
+            'target': 'new'
+        }
 
     @api.multi
     def confirm_writeoff(self):
@@ -1004,8 +995,6 @@ class FleetVehicleModelBrand(models.Model):
 
     name = fields.Char(string='Make', size=64, required=True,
                        translate=True)
-#    code = fields.Char(string='Code for Vehicle ID', size=3,
-#                       translate=True)
 
     _sql_constraints = [('brandname_uniq', 'unique(name)',
                          'This brand Name is already exist you \
@@ -1015,16 +1004,12 @@ class FleetVehicleModelBrand(models.Model):
     def create(self, vals):
         if vals.get('name', False):
             vals['name'] = vals['name'].upper()
-#        if vals.get('code', False):
-#            vals['code'] = vals['code'].upper()
         return super(FleetVehicleModelBrand, self).create(vals)
 
     @api.multi
     def write(self, vals):
         if vals.get('name', False):
             vals['name'] = vals['name'].upper()
-#        if vals.get('code', False):
-#            vals['code'] = vals['code'].upper()
         return super(FleetVehicleModelBrand, self).write(vals)
 
 
@@ -1098,10 +1083,10 @@ class FleetVehicleAdvanceSearch(models.TransientModel):
         for vehicle in self:
             if vehicle.make_id:
                 vehicle_ids = vehicle_obj.search([
-                          ('f_brand_id', '=', vehicle.make_id.id)])
+                    ('f_brand_id', '=', vehicle.make_id.id)])
             if vehicle.model_id:
                 vehicle_ids = vehicle_obj.search([
-                      ('model_id', '=', vehicle.model_id.id)])
+                    ('model_id', '=', vehicle.model_id.id)])
 
             if vehicle.state:
                 domain += ('state', '=', vehicle.state),
@@ -1158,16 +1143,16 @@ class FleetVehicleAdvanceSearch(models.TransientModel):
                 vehicle_ids = sorted(set(vehicle_ids.ids))
                 domain += [('id', 'in', vehicle_ids)]
             return {
-                  'name': _('Vehicle Registration'),
-                  'view_type': 'form',
-                  "view_mode": 'tree,form',
-                  'res_model': 'fleet.vehicle',
-                  'type': 'ir.actions.act_window',
-                  'nodestroy': True,
-                  'domain': domain,
-                  'context': self._context,
-                  'target': 'current',
-                  }
+                'name': _('Vehicle Registration'),
+                'view_type': 'form',
+                "view_mode": 'tree,form',
+                'res_model': 'fleet.vehicle',
+                'type': 'ir.actions.act_window',
+                'nodestroy': True,
+                'domain': domain,
+                'context': self._context,
+                'target': 'current',
+            }
         return True
 
 
@@ -1193,12 +1178,10 @@ class VehicleUniqueSequence(models.Model):
         if not default:
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
-        return super(VehicleUniqueSequence, self).copy(default=default)
 
     @api.multi
     def unlink(self):
         raise Warning(_('You can\'t delete record !'))
-        return super(VehicleUniqueSequence, self).unlink()
 
 
 class NextIncrementNumber(models.Model):
@@ -1214,7 +1197,6 @@ class NextIncrementNumber(models.Model):
         if not default:
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
-        return super(NextIncrementNumber, self).copy(default=default)
 
 
 class NextServiceDays(models.Model):
@@ -1230,7 +1212,6 @@ class NextServiceDays(models.Model):
         if not default:
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
-        return super(NextServiceDays, self).copy(default=default)
 
 
 class VehicleFuelLog(models.Model):
@@ -1243,7 +1224,7 @@ class VehicleFuelLog(models.Model):
         for record in self:
             vehicle_odometer = FleetVehicalOdometer.search([
                 ('vehicle_id', '=', record.vehicle_id.id)], limit=1,
-                                                           order='value desc')
+                order='value desc')
             if vehicle_odometer:
                 record.odometer = vehicle_odometer.value
             else:
@@ -1301,15 +1282,15 @@ class VehicleFuelLog(models.Model):
             if 'active_model' in ctx_keys:
                 if 'active_id' in ctx_keys:
                     vehicle_id = self.env[context['active_model']].browse(
-                                                      context['active_id'])
+                        context['active_id'])
                     if vehicle_id.state != 'write-off':
                         res.update({'vehicle_id': context['active_id']})
                     else:
                         res['vehicle_id'] = False
             if 'vehicle_id' in ctx_keys:
-                    vehicle_id = fleet_obj.browse(context['vehicle_id'])
-                    if vehicle_id.state != 'write-off':
-                        res.update({'vehicle_id': context['vehicle_id']})
+                vehicle_id = fleet_obj.browse(context['vehicle_id'])
+                if vehicle_id.state != 'write-off':
+                    res.update({'vehicle_id': context['vehicle_id']})
         return res
 
     @api.multi
@@ -1317,12 +1298,10 @@ class VehicleFuelLog(models.Model):
         if not default:
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
-        return super(VehicleFuelLog, self).copy(default=default)
 
     @api.multi
     def unlink(self):
         raise Warning(_('You can\'t delete record !'))
-        return super(VehicleFuelLog, self).unlink()
 
 
 class FleetVehicleCost(models.Model):
@@ -1404,12 +1383,12 @@ class ReportHeading(models.Model):
     def _set_image(self):
         if self.image_small:
             self.image = \
-                   tools.image_resize_image_small(self.image_small,
-                                                  size=(102, 50))
+                tools.image_resize_image_small(self.image_small,
+                                               size=(102, 50))
         elif self.image_medium:
             self.image = \
-                   tools.image_resize_image_small(self.image_medium,
-                                                  size=(102, 50))
+                tools.image_resize_image_small(self.image_medium,
+                                               size=(102, 50))
 
     name = fields.Char(string='Title', size=128, translate=True)
     revision_no = fields.Char(string='Rev. No.', size=64, translate=True)
