@@ -177,7 +177,6 @@ class AccountAnalyticAccount(models.Model):
                 order='value desc')
             if rec.vehicle_id:
                 rec.odometer = vehicle_odometer.value
-#                 rec.odometer_unit = vehicle_odometer.unit
 
     @api.multi
     def change_color(self):

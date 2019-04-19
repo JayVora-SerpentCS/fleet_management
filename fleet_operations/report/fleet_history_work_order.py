@@ -60,7 +60,6 @@ class FleetHistoryWorkOrder(ReportXlsx):
         worksheet.set_column(5, 5, 15)
         worksheet.set_column(6, 6, 20)
         worksheet.set_column(7, 7, 10)
-#        result = self.get_heading()
 
         size = workbook.add_format({'bold': True,
                                     'font_name': 'Arial',
@@ -81,23 +80,8 @@ class FleetHistoryWorkOrder(ReportXlsx):
                                        'font_name': 'Arial',
                                        'font_size': '10'})
         format1.set_bg_color('gray')
-#        worksheet.merge_range('C2:D2', 'Merged Cells', merge_format)
-
-#        file_name = result.get('image', False)
-#        if file_name:
-#            file1 = open('/tmp/' + 'logo.png', 'wb')
-#            file_data = base64.decodestring(file_name)
-#            file1.write(file_data)
-#            file1.close()
         row = 0
         row += 1
-#        if file_name:
-#            worksheet.insert_image(row, 0, '/tmp/logo.png')
-#        worksheet.write(row, 2, result.get('name') or '', border)
-#        worksheet.write(row, 4, 'Rev. No. :', tot)
-#        worksheet.write(row, 5, result.get('rev_no') or '', border)
-#        worksheet.write(row, 6, 'Document No. :', tot)
-#        worksheet.write(row, 7, result.get('doc_no') or '', border)
         row += 1
         worksheet.write(row, 1, 'Work Order', tit)
         row = 2

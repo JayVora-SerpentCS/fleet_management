@@ -115,24 +115,8 @@ class WoOver10DaysXlsx(ReportXlsx):
                                        'font_name': 'Arial',
                                        'font_size': '12'})
         format1.set_bg_color('gray')
-#        res = self.get_heading()
-#        worksheet.merge_range('C2:D2', 'Merged Cells', merge_format)
-
-#        file_name = res.get('image', False)
-#        if file_name:
-#            file1 = open('/tmp/' + 'logo.png', 'wb')
-#            file_data = base64.decodestring(file_name)
-#            file1.write(file_data)
-#            file1.close()
         row = 0
         row += 1
-#        if file_name:
-#            worksheet.insert_image(row, 0, '/tmp/logo.png')
-#        worksheet.write(row, 2, res['name'] or '', border)
-#        worksheet.write(row, 4, 'Rev. No. :', tot)
-#        worksheet.write(row, 5, res['rev_no'] or '', border)
-#        worksheet.write(row, 6, 'Document No. :', tot)
-#        worksheet.write(row, 7, res['doc_no'] or '', border)
         row += 1
         worksheet.write(row, 2, 'Work Order Over 10 Days', tot)
         row += 3
@@ -163,6 +147,5 @@ class WoOver10DaysXlsx(ReportXlsx):
             row += 1
             counter += 1
         row += 5
-
 
 WoOver10DaysXlsx('report.wo.over.daysxls', 'fleet.vehicle.log.services')
