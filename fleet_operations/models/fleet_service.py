@@ -1338,9 +1338,9 @@ class TaskLine(models.Model):
     def unlink(self):
         for part in self:
             if part.fleet_service_id.state == 'done':
-                raise Warning(_("You can't delete part those allreadey used."))
+                raise Warning(_("You can't delete part those already used."))
             if part.is_deliver == True:
-                raise Warning(_("You can't delete part those allreadey used."))
+                raise Warning(_("You can't delete part those already used."))
         return super(TaskLine, self).unlink()
 
     @api.onchange('date_issued')
