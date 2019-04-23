@@ -959,7 +959,7 @@ class TeamAssignParts(models.Model):
     def onchange_product_id(self):
         if self.product_id:
             rec = self.product_id
-            if rec.inactive_part:
+            if rec.in_active_part:
                 self.product_id = False
                 self.name = False
                 self.vehicle_make_id = False
@@ -1264,7 +1264,7 @@ class TaskLine(models.Model):
     def _onchange_product_id(self):
         if self.product_id:
             prod = self.product_id
-            if prod.inactive_part == True:
+            if prod.in_active_part:
                 self.product_id = False
                 raise Warning(_('You can\'t select \
                          part which is In-Active!'))

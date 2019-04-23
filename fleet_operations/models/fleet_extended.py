@@ -22,7 +22,7 @@ class MultiImages(models.Model):
 class ProductProduct(models.Model):
     _inherit = 'product.product'
 
-    inactive_part = fields.Boolean('In-Active Part?')
+    in_active_part = fields.Boolean('In-Active Part?')
 
 
 class FleetOperations(models.Model):
