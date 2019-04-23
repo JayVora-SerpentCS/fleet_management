@@ -1076,7 +1076,7 @@ class TaskLine(models.Model):
     def _onchage_product(self):
         if self.product_id:
             prod = self.product_id
-            if prod.in_active_part == True:
+            if prod.in_active_part:
                 self.product_id = False
                 raise Warning(_('You can\'t select \
                          part which is In-Active!'))
