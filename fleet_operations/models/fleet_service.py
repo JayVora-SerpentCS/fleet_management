@@ -295,11 +295,12 @@ class FleetVehicleLogServices(models.Model):
 
     @api.constrains('sub_total', 'amount')
     def _check_amount(self):
-        if self.amount:
-            if self.amount < self.sub_total:
-                raise Warning(
-                    _("Total Price should be greater or equals to\
-                     total amount of parts!!"))
+        for rec in self:
+            if rec.amount:
+                if rec.amount < rec.sub_total:
+                    raise Warning(
+                        _("Total Price should be greater or equals to\
+                         total amount of parts!!"))
 
     @api.multi
     def write(self, vals):
