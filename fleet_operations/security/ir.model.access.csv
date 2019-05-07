@@ -84,3 +84,5 @@ access_multi_images_manager,multi_images_manager,model_multi_images,fleet.fleet_
 access_multi_images_user,multi_images_user,model_multi_images,fleet.fleet_group_user,1,0,0,0
 access_insurance_type_manager,insurance_type_manager,model_insurance_type,fleet.fleet_group_manager,1,1,1,1
 access_insurance_type_user,insurance_type_user,model_insurance_type,fleet.fleet_group_user,1,0,0,0
+access_pending_repair_type_manager,access_pending_repair_type_manager,model_pending_repair_type,fleet.fleet_group_manager,1,1,1,1
+access_pending_repair_type_user,access_pending_repair_type_user,model_pending_repair_type,fleet.fleet_group_user,1,0,0,0
