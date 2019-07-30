@@ -457,8 +457,8 @@ class AccountAnalyticAccount(models.Model):
         if avilable_records:
             for rec in avilable_records:
                 if rec.date_start and rec.date:
-                    cond1 = (st_dt < str(rec.date_start) < en_dt)
-                    cond2 = (st_dt < str(rec.date) < en_dt)
+                    cond1 = (st_dt < rec.date_start < en_dt)
+                    cond2 = (st_dt < rec.date < en_dt)
                     if cond1 or cond2:
                         raise ValidationError('This vehicle rent is \
                             already available. You can not create another \
