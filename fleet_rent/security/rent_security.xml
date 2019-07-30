@@ -33,5 +33,15 @@
             <field name="perm_unlink" eval="False"/>
             <field name="domain_force">[('tenant_id','=',user.partner_id.id)]</field>
         </record>
+        <record id="fleet_rule_rent_visibility_manager" model="ir.rule">
+            <field name="name">Manager can see all the rents</field>
+            <field name="model_id" ref="model_account_analytic_account"/>
+            <field name="groups" eval="[(4, ref('group_vehicle_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+        </record>
     </data>
 </odoo>
