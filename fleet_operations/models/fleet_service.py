@@ -1133,10 +1133,14 @@ class TaskLine(models.Model):
 
     @api.onchange('date_issued')
     def check_onchange_part_issue_date(self):
+        """Onchange method to check the validation for part issues date."""
         context_keys = self._context.keys()
         if 'date_open' in context_keys and self.date_issued:
             date_open = self._context.get('date_open', False)
-            current_date = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+            date_open = datetime.strptime(date_open,
+                                          DEFAULT_SERVER_DATE_FORMAT)
+            current_date = datetime.now().date()
+            #
             if not self.date_issued >= date_open and \
                     not self.date_issued <= current_date:
                 self.date_issued = False
@@ -1146,10 +1150,11 @@ class TaskLine(models.Model):
 
     @api.multi
     def unlink(self):
+        """Overridden method to add validation before delete the history."""
         for part in self:
             if part.fleet_service_id.state == 'done':
                 raise Warning(_("You can't delete part those already used."))
-            if part.is_deliver == True:
+            if part.is_deliver:
                 raise Warning(_("You can't delete part those already used."))
         return super(TaskLine, self).unlink()
 
