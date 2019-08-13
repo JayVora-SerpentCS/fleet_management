@@ -157,10 +157,12 @@
 									    groups="fleet_rent.group_vehicle_manager"
 										class="oe_highlight" string="Create Invoice"
 										type="object" context="{'asset':1}" />
-									<button name="open_invoice" icon="fa-arrow-circle-o-right fa-lg"
+									<button name="open_invoice"
+										icon="fa-arrow-circle-o-right fa-lg"
 									    attrs="{'invisible':[('inv','=',False)]}"
 									    groups="fleet_rent.group_vehicle_manager"
-										class="oe_highlight" string="Open Invoice"
+										class="oe_highlight btn_visible_in_tree"
+										string="Open Invoice"
 										type="object" context="{'openinvoice':1}" />
 								</tree>
 							</field>
