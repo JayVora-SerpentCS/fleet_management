@@ -739,7 +739,7 @@ class AccountPayment(models.Model):
         res = super(AccountPayment, self).post()
         inv_obj = self.env['account.invoice']
         tenancy_rent_obj = self.env['tenancy.rent.schedule']
-        if self._context('active_ids', False):
+        if self._context.get('active_ids', False):
             tenancy_invoice_rec = inv_obj.browse(self._context['active_ids'])
             for invoice in tenancy_invoice_rec:
                 rent_sched_ids = tenancy_rent_obj.search(
