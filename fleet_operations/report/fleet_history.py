@@ -1,93 +1,114 @@
-#  -*- encoding: utf-8 -*-
-import io
-import xlwt
+"""Fleet History Report."""
+
 import base64
-from odoo import models, fields, api, _
+import io
+
+from odoo import _, api, fields, models
+
+import xlwt
 
 
 class FleetHistorySummary(models.TransientModel):
+    """Fleet History Summary."""
+
     _name = "excel.fleet.report"
     _description = "Fleet Excel Report"
 
     file = fields.Binary("Click On Download Link To Download Xls File",
-                         readonly = True)
-    name = fields.Char("Name", default = 'generic summary.xls')
+                         readonly=True)
+    name = fields.Char("Name", default='generic summary.xls')
 
 
 class PrintFleetHistory(models.TransientModel):
+    """Print Fleet History."""
+
     _name = "print.fleet.history"
     _description = "Print fleet History"
 
-    sel_report = fields.Selection([('history', 'Fleet History'),
-                                   ('listing', 'Fleet Listing'),
-                                   ('pending_repairs', 'Fleet Pending Repairs'),
-                                   ('pending_repair_summary', 'Fleet Pending Repair Summary'),
-                                   ('complete_stage', 'Fleet Complete Stage'),
-                                   ('nex_ser_odometer', 'Next Service by Odometer'),
-                                   ('nex_ser_date', 'Next Service by Date')],
-                                  string="Select Report")
-    
+    sel_report = fields.Selection([
+        ('history', 'Fleet History'),
+        ('listing', 'Fleet Listing'),
+        ('pending_repairs', 'Fleet Pending Repairs'),
+        ('pending_repair_summary', 'Fleet Pending Repair Summary'),
+        ('complete_stage', 'Fleet Complete Stage'),
+        ('nex_ser_odometer', 'Next Service by Odometer'),
+        ('nex_ser_date', 'Next Service by Date')],
+        string="Select Report")
+
     @api.multi
     def print_xlsx_report(self):
         for rep in self:
             res = False
-            ret_dict = {
-                  'view_type': 'form',
-                  "view_mode": 'form',
-                  'res_model': 'excel.fleet.report',
-                  'type': 'ir.actions.act_window',
-                  'target': 'new',
-                  }
+            ret_dict = {'view_type': 'form',
+                        "view_mode": 'form',
+                        'res_model': 'excel.fleet.report',
+                        'type': 'ir.actions.act_window',
+                        'target': 'new',
+                        }
             docids = self.env.context.get('active_ids')
-            obj = self.env[self.env.context.get('active_model')].browse(docids) or False
+            obj = self.env[self.env.context.get(
+                'active_model')].browse(docids) or False
             if rep.sel_report == 'history':
                 res = self.print_fleet_history_xlsx_report(res, obj)
-                vals = {'name': 'Fleet History.xls', 'file' : res}
+                vals = {'name': 'Fleet History.xls', 'file': res}
                 module_rec = self.env['excel.fleet.report'].create(vals)
                 ret_dict.update({'name': _('Fleet History Report'),
-                                 'res_id' : module_rec.id})
+                                 'res_id': module_rec.id})
             elif rep.sel_report == 'listing':
-                listing_obj = self.env['report.fleet_operations.fleet.summary.xls']
+                listing_obj = \
+                    self.env['report.fleet_operations.fleet.summary.xls']
                 res = listing_obj.generate_listing_xlsx_report(res, obj)
-                vals = {'name': 'Fleet Listing.xls', 'file' : res}
+                vals = {'name': 'Fleet Listing.xls', 'file': res}
                 module_rec = self.env['excel.fleet.report'].create(vals)
                 ret_dict.update({'name': _('Fleet Listing Report'),
-                                 'res_id' : module_rec.id})
+                                 'res_id': module_rec.id})
             elif rep.sel_report == 'pending_repairs':
-                pending_repair_obj = self.env['report.fleet_operations.fleet.pending.repairs.xls']
-                res = pending_repair_obj.generate_pending_repairs_xlsx_report(res, obj)
-                vals = {'name': 'Fleet Pending Repairs.xls', 'file' : res}
+                pending_repair_obj =\
+                    self.env['report.fleet_operations.fleet.pending.repairs.xls']
+                res = pending_repair_obj.generate_pending_repairs_xlsx_report(
+                    res, obj)
+                vals = {'name': 'Fleet Pending Repairs.xls', 'file': res}
                 module_rec = self.env['excel.fleet.report'].create(vals)
                 ret_dict.update({'name': _('Fleet Pending Repairs Report'),
-                                 'res_id' : module_rec.id})
+                                 'res_id': module_rec.id})
             elif rep.sel_report == 'pending_repair_summary':
-                pending_repair_summary_obj = self.env['report.fleet_operations.fleet.pending.xls']
-                res = pending_repair_summary_obj.generate_pending_summary_xlsx_report(res, obj)
-                vals = {'name': 'Fleet Pending Repair Summary.xls', 'file' : res}
+                pending_repair_summary_obj =\
+                    self.env['report.fleet_operations.fleet.pending.xls']
+                res =\
+                    pending_repair_summary_obj.generate_pending_summary_xlsx_report(
+                        res, obj)
+                vals =\
+                    {'name': 'Fleet Pending Repair Summary.xls', 'file': res}
                 module_rec = self.env['excel.fleet.report'].create(vals)
                 ret_dict.update({'name': _('Fleet Pending Repair Summary Report'),
-                                 'res_id' : module_rec.id})
+                                 'res_id': module_rec.id})
             elif rep.sel_report == 'complete_stage':
-                complete_stage_obj = self.env['report.fleet_operations.fleet.wait.collection.xls']
-                res = complete_stage_obj.generate_complete_stage_xlsx_report(res, obj)
-                vals = {'name': 'Fleet Complete Stage.xls', 'file' : res}
+                complete_stage_obj =\
+                    self.env['report.fleet_operations.fleet.wait.collection.xls']
+                res = complete_stage_obj.generate_complete_stage_xlsx_report(
+                    res, obj)
+                vals = {'name': 'Fleet Complete Stage.xls', 'file': res}
                 module_rec = self.env['excel.fleet.report'].create(vals)
                 ret_dict.update({'name': _('Fleet Complete Stage Report'),
-                                 'res_id' : module_rec.id})
+                                 'res_id': module_rec.id})
             elif rep.sel_report == 'nex_ser_odometer':
-                ser_odometer_obj = self.env['report.fleet_operations.next.services.by.odometer.xls']
-                res = ser_odometer_obj.generate_service_odometer_xlsx_report(res, obj)
-                vals = {'name': 'Next Service Odometer Repairs.xls', 'file' : res}
+                ser_odometer_obj =\
+                    self.env['report.fleet_operations.next.services.by.odometer.xls']
+                res = ser_odometer_obj.generate_service_odometer_xlsx_report(
+                    res, obj)
+                vals =\
+                    {'name': 'Next Service Odometer Repairs.xls', 'file': res}
                 module_rec = self.env['excel.fleet.report'].create(vals)
                 ret_dict.update({'name': _('Next Service Odometer Repairs Report'),
-                                 'res_id' : module_rec.id})
+                                 'res_id': module_rec.id})
             elif rep.sel_report == 'nex_ser_date':
-                ser_date_obj = self.env['report.fleet_operations.next.services.by.date.xls']
+                ser_date_obj =\
+                    self.env['report.fleet_operations.next.services.by.date.xls']
                 res = ser_date_obj.generate_service_date_xlsx_report(res, obj)
-                vals = {'name': 'Next Service Date.xls', 'file' : res}
+                vals = {'name': 'Next Service Date.xls', 'file': res}
                 module_rec = self.env['excel.fleet.report'].create(vals)
                 ret_dict.update({'name': _('Next Service Date Report'),
-                                 'res_id' : module_rec.id})
+                                 'res_id': module_rec.id})
             return ret_dict
 
     @api.multi
@@ -107,12 +128,13 @@ class PrintFleetHistory(models.TransientModel):
         font.bold = True
         font.name = 'Arial'
         font.height = 200
-        pattern = xlwt.Pattern()
+        # pattern = xlwt.Pattern()
         size = xlwt.easyxf('font: bold 1; font: name 1; font: height 220')
         tit = xlwt.easyxf('font: name 1; font: height 220')
-        tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        # tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
-        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
+            pattern: pattern solid')
 
         row = 0
         row += 1

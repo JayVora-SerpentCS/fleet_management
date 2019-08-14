@@ -1,15 +1,19 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Fleet Rent Model."""
 
 import re
 import threading
 from datetime import datetime
-from odoo.exceptions import Warning, except_orm, ValidationError
-from odoo import models, fields, api, sql_db, _
+
+from odoo import _, api, fields, models, sql_db
+from odoo.exceptions import ValidationError, Warning, except_orm
+
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, ustr
 
 
 class ResPartner(models.Model):
+    """Res Partner Model."""
+
     _inherit = "res.partner"
 
     tenant = fields.Boolean(string="Is Tenant?")
@@ -49,6 +53,8 @@ class ResPartner(models.Model):
 
 
 class AccountInvoice(models.Model):
+    """Account Invoice Model."""
+
     _inherit = "account.invoice"
 
     vehicle_id = fields.Many2one(
@@ -61,6 +67,7 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def action_move_create(self):
+        """Method Action Move Create."""
         res = super(AccountInvoice, self).action_move_create()
         for inv_rec in self:
             if inv_rec.move_id and inv_rec.move_id.id:
@@ -73,11 +80,14 @@ class AccountInvoice(models.Model):
 
 
 class RentType(models.Model):
+    """Rent Type Model."""
+
     _name = "rent.type"
     _description = 'Vehicle Rent Type'
 
     @api.model
     def create(self, vals):
+        """Overridden Method."""
         if vals.get('duration') < 1:
             raise ValidationError("You Can't Enter Duration Less \
                                     Than One(1).")
@@ -86,6 +96,7 @@ class RentType(models.Model):
     @api.multi
     @api.depends('duration', 'renttype')
     def name_get(self):
+        """Name get Method."""
         res = []
         for rec in self:
             rec_str = ''
@@ -98,13 +109,15 @@ class RentType(models.Model):
 
     @api.model
     def name_search(self, name='', args=[], operator='ilike', limit=100):
+        """Name Search Method."""
         args += ['|', ('duration', operator, name),
-                      ('renttype', operator, name)]
+                 ('renttype', operator, name)]
         cuur_ids = self.search(args, limit=limit)
         return cuur_ids.name_get()
 
     @api.onchange('duration', 'renttype')
     def onchange_renttype_name(self):
+        """Onchange Rent Type Name."""
         full_name = ''
         for rec in self:
             if rec.duration:
@@ -126,6 +139,8 @@ class RentType(models.Model):
 
 
 class MaintenanceType(models.Model):
+    """Maintenace Type Model."""
+
     _name = 'maintenance.type'
     _description = 'Vehicle Maintenance Type'
 
@@ -142,6 +157,8 @@ class MaintenanceType(models.Model):
 
 
 class MaintenanaceCost(models.Model):
+    """Maintenace Cost Model."""
+
     _name = 'maintenance.cost'
     _description = 'Vehicle Maintenance Cost'
 
@@ -157,16 +174,17 @@ class MaintenanaceCost(models.Model):
 
     @api.onchange('maint_type')
     def onchange_property_id(self):
-        """
-        This Method is used to set maintenance type related fields value,
-        on change of property.
-        @param self: The object pointer
+        """Method is used to set maintenance type related.
+
+        Fields value on change of property.
         """
         if self.maint_type:
             self.cost = self.maint_type.cost or 0.00
 
 
 class PropertyMaintenace(models.Model):
+    """Property Maintenace Model."""
+
     _name = "property.maintenance"
     _description = 'Property Maintenance'
     _inherit = ['mail.thread']
@@ -227,10 +245,7 @@ class PropertyMaintenace(models.Model):
 
     @api.multi
     def send_maint_mail(self):
-        """
-        This Method is used to send an email to assigned person.
-        @param self: The object pointer
-        """
+        """Method is used to send an email to assigned person."""
         try:
             new_cr = sql_db.db_connect(self.env.cr.dbname).cursor()
             uid, context = self.env.uid, self.env.context
@@ -265,26 +280,21 @@ class PropertyMaintenace(models.Model):
 
     @api.multi
     def start_maint(self):
-        """
-        This Method is used to change maintenance state to progress.
-        @param self: The object pointer
-        """
+        """Method is used to change maintenance state to progress."""
         self.write({'state': 'progress'})
         thrd_cal = threading.Thread(target=self.send_maint_mail)
         thrd_cal.start()
 
     @api.multi
     def cancel_maint(self):
-        """
-        This Method is used to change maintenance state to incomplete.
-        @param self: The object pointer
-        """
+        """Method is used to change maintenance state to incomplete."""
         self.write({'state': 'incomplete'})
         thrd_cal = threading.Thread(target=self.send_maint_mail)
         thrd_cal.start()
 
     @api.onchange('renters_fault')
     def onchange_renters_fault(self):
+        """Method Onchange."""
         for data in self:
             if data.renters_fault:
                 data.tenant_id = \
@@ -294,15 +304,13 @@ class PropertyMaintenace(models.Model):
 
     @api.onchange('assign_to')
     def onchanchange_assign(self):
+        """Method Onchange."""
         for data in self:
             data.account_code = data.assign_to.property_account_payable_id
 
     @api.multi
     def create_invoice(self):
-        """
-        This Method is used to create invoice from maintenance record.
-        @param self: The object pointer
-        """
+        """Method is used to create invoice from maintenance record."""
         for data in self:
             if not data.account_code:
                 raise Warning(_("Please Select Account Code"))
@@ -333,7 +341,7 @@ class PropertyMaintenace(models.Model):
                         'invoice_line_ids': [(0, 0, inv_line_values)],
                         'amount_total': data.cost or 0.0,
                         'date_invoice': datetime.now().strftime(
-                                    DEFAULT_SERVER_DATE_FORMAT) or False,
+                            DEFAULT_SERVER_DATE_FORMAT) or False,
                         'number': tenancy_data.name or '',
                     }
                 if data.renters_fault:
@@ -357,7 +365,8 @@ class PropertyMaintenace(models.Model):
     @api.multi
     def open_invoice(self):
         """
-        This Method is used to Open invoice from maintenance record.
+        Method is used to Open invoice from maintenance record.
+
         @param self: The object pointer
         """
         context = dict(self._context or {})
@@ -376,8 +385,10 @@ class PropertyMaintenace(models.Model):
 
 
 class CostCost(models.Model):
+    """Cost Cost Model."""
+
     _name = "cost.cost"
-    _description ="Cost"
+    _description = "Cost"
     _order = 'date'
 
     @api.one
@@ -422,7 +433,8 @@ class CostCost(models.Model):
     @api.multi
     def create_invoice(self):
         """
-        This button Method is used to create account invoice.
+        Button Method is used to create account invoice.
+
         @param self: The object pointer
         """
         if not self.purchase_property_id.partner_id:
@@ -470,8 +482,9 @@ class CostCost(models.Model):
     @api.multi
     def open_invoice(self):
         """
-        This Method is used to Open invoice
-        @param self: The object pointer
+        Method is used to Open invoice.
+
+        @param self: The object pointer.
         """
         context = dict(self._context or {})
         wiz_form_id = self.env['ir.model.data'].get_object_reference(
@@ -489,6 +502,8 @@ class CostCost(models.Model):
 
 
 class TenancyRentSchedule(models.Model):
+    """Tenancy Rent Schedule."""
+
     _name = "tenancy.rent.schedule"
     _description = 'Tenancy Rent Schedule'
     _rec_name = "tenancy_id"
@@ -556,9 +571,7 @@ class TenancyRentSchedule(models.Model):
 
     @api.multi
     def create_invoice(self):
-        """
-        Create invoice for Rent Schedule.
-        """
+        """Create invoice for Rent Schedule."""
         journal_ids = self.env['account.journal'].search(
             [('type', '=', 'sale')])
         if not self.tenancy_id.vehicle_id.income_acc_id.id:
@@ -597,8 +610,9 @@ class TenancyRentSchedule(models.Model):
                 DEFAULT_SERVER_DATE_FORMAT) or False,
             'journal_id': journal_ids and journal_ids[0].id or False,
             'account_id': self.tenancy_id and
-            self.tenancy_id.tenant_id.property_account_receivable_id.id
-            or False
+            self.tenancy_id.tenant_id and
+            self.tenancy_id.tenant_id.property_account_receivable_id.id or
+            False
         }
         if self.tenancy_id.main_cost:
             inv_values.update({'invoice_line_ids': [(0, 0, inv_line_values),
@@ -625,6 +639,7 @@ class TenancyRentSchedule(models.Model):
 
     @api.multi
     def open_invoice(self):
+        """Method Open Invoice."""
         context = dict(self._context or {})
         wiz_form_id = self.env['ir.model.data'].get_object_reference(
             'account', 'invoice_form')[1]
@@ -642,8 +657,9 @@ class TenancyRentSchedule(models.Model):
     @api.multi
     def create_move(self):
         """
-        This button Method is used to create account move.
-        @param self: The object pointer
+        Button Method is used to create account move.
+
+        @param self: The object pointer.
         """
         move_line_obj = self.env['account.move.line']
         created_move_ids = []
@@ -708,6 +724,8 @@ class TenancyRentSchedule(models.Model):
 
 
 class AccountPayment(models.Model):
+    """Account Payment Model."""
+
     _inherit = 'account.payment'
 
     tenancy_id = fields.Many2one(
@@ -717,33 +735,37 @@ class AccountPayment(models.Model):
 
     @api.multi
     def post(self):
+        """Method Post."""
         res = super(AccountPayment, self).post()
         inv_obj = self.env['account.invoice']
-        tenancy_invoice_rec = inv_obj.browse(self._context['active_ids'])
         tenancy_rent_obj = self.env['tenancy.rent.schedule']
-        for invoice in tenancy_invoice_rec:
-            rent_sched_ids = tenancy_rent_obj.search(
-                [('invc_id', '=', invoice.id)])
-            for rent_sched_rec in rent_sched_ids:
-                if rent_sched_rec.invc_id:
-                    amt = rent_sched_rec.invc_id.residual or 0.0
-                rent_sched_rec.write({'pen_amt': amt})
-                if rent_sched_rec.invc_id.state == 'paid':
-                    rent_sched_rec.paid = True
-                    rent_sched_rec.move_check = True
-            if self._context.get('return', False) and \
-                    self._context.get('active_model', False) and \
-                    self._context['active_model'] == 'account.invoice':
-                for invoice in self.env[self._context['active_model']].browse(
-                            self._context.get('active_id', False)):
-                    if invoice.new_tenancy_id:
-                        invoice.new_tenancy_id.write({
-                            'deposit_return': True,
-                            'amount_return': invoice.amount_total})
+        if self._context('active_ids', False):
+            tenancy_invoice_rec = inv_obj.browse(self._context['active_ids'])
+            for invoice in tenancy_invoice_rec:
+                rent_sched_ids = tenancy_rent_obj.search(
+                    [('invc_id', '=', invoice.id)])
+                for rent_sched_rec in rent_sched_ids:
+                    if rent_sched_rec.invc_id:
+                        amt = rent_sched_rec.invc_id.residual or 0.0
+                    rent_sched_rec.write({'pen_amt': amt})
+                    if rent_sched_rec.invc_id.state == 'paid':
+                        rent_sched_rec.paid = True
+                        rent_sched_rec.move_check = True
+                if self._context.get('return', False) and \
+                        self._context.get('active_model', False) and \
+                        self._context['active_model'] == 'account.invoice':
+                    for invoice in self.env[self._context['active_model']].\
+                            browse(self._context.get('active_id', False)):
+                        if invoice.new_tenancy_id:
+                            invoice.new_tenancy_id.write({
+                                'deposit_return': True,
+                                'amount_return': invoice.amount_total})
         return res
 
 
 class SaleCost(models.Model):
+    """Sale Cost."""
+
     _name = "sale.cost"
     _description = 'Sale Cost'
     _order = 'date'
@@ -790,8 +812,9 @@ class SaleCost(models.Model):
     @api.multi
     def create_invoice(self):
         """
-        This button Method is used to create account invoice.
-        @param self: The object pointer
+        Button Method is used to create account invoice.
+
+        @param self: The object pointer.
         """
         if not self.sale_property_id.customer_id:
             raise Warning(_('Please Select Customer'))
@@ -802,7 +825,7 @@ class SaleCost(models.Model):
 
         inv_line_values = {
             'origin': 'Sale.Cost',
-            'name': 'Purchase Cost For'+''+self.sale_property_id.name,
+            'name': 'Purchase Cost For' + '' + self.sale_property_id.name,
             'price_unit': self.amount or 0.00,
             'quantity': 1,
             'account_id': self.sale_property_id.income_acc_id.id,
@@ -836,10 +859,7 @@ class SaleCost(models.Model):
 
     @api.multi
     def open_invoice(self):
-        """
-        This Method is used to Open invoice
-        @param self: The object pointer
-        """
+        """Method is used to Open invoice."""
         context = dict(self._context or {})
         wiz_form_id = self.env['ir.model.data'].get_object_reference(
             'account', 'invoice_form')[1]

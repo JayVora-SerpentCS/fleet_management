@@ -1,16 +1,19 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Daily Parts Issuance."""
 
 import time
-import base64
+
 from odoo import models
 
 
 class DailyPartIssuance(models.AbstractModel):
+    """Daily part issuance model."""
+
     _name = 'report.fleet_operations.daily.parts.issuance.xls'
     _description = 'Daily Parts Issuance Report'
 
     def get_heading(self):
+        """Report Method."""
         head_title = {'name': '',
                       'rev_no': '',
                       'doc_no': '',
@@ -27,6 +30,7 @@ class DailyPartIssuance(models.AbstractModel):
         return head_title
 
     def generate_xlsx_report(self, workbook, data, parts_data):
+        """Report print in ecxl format."""
         worksheet = workbook.add_worksheet('daily_parts_issuance')
         worksheet.set_column(0, 0, 10)
         worksheet.set_column(1, 1, 15)

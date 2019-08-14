@@ -1,19 +1,25 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Wo Over 10 Days."""
 
-import io
-import xlwt
 import base64
+import io
 from datetime import datetime
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
+
 from odoo import models
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
+
+
+import xlwt
 
 
 class WoOver10DaysXlsx(models.AbstractModel):
+    """Wo over 10 days xlsx."""
+
     _name = 'report.fleet_operations.wo.over.daysxls'
     _description = 'Work Order Over 10 Days Report'
 
     def get_wo_over_10days(self, work_orders):
+        """Method to get wo over 10days."""
         over_orders = []
         for wk_order in work_orders:
             if wk_order.state == 'done':
@@ -31,6 +37,7 @@ class WoOver10DaysXlsx(models.AbstractModel):
         return over_orders
 
     def get_identification(self, vehicles_id):
+        """Get Identification."""
         ident = ""
         if vehicles_id:
             if vehicles_id.name:
@@ -42,6 +49,7 @@ class WoOver10DaysXlsx(models.AbstractModel):
         return ident
 
     def get_wo_status(self, status):
+        """Get Wo Status."""
         if status == 'done':
             wo_status = "Closed"
         elif status == 'confirm':
@@ -51,6 +59,7 @@ class WoOver10DaysXlsx(models.AbstractModel):
         return wo_status
 
     def get_over_wo_repair_perform(self, work_order, state):
+        """Get Over Wo Repair Perform."""
         repair_perform = ""
         status = state
         if status == "done":
@@ -60,6 +69,7 @@ class WoOver10DaysXlsx(models.AbstractModel):
         return repair_perform
 
     def get_workperform(self, workorder_id):
+        """Get Workperform."""
         repair_type = ""
         if workorder_id:
             for repair_line in workorder_id.repair_line_ids:
@@ -68,6 +78,7 @@ class WoOver10DaysXlsx(models.AbstractModel):
         return repair_type[:-1]
 
     def get_all_selected_repair(self, workorder_id):
+        """Get All Selected Repair."""
         repair_type = ""
         if workorder_id:
             for repair_line in workorder_id.repair_line_ids:
@@ -75,6 +86,7 @@ class WoOver10DaysXlsx(models.AbstractModel):
         return repair_type[:-1]
 
     def generate_xlsx_report(self, services):
+        """Generate xlsx report."""
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('wo_over_10days')
         worksheet.col(0).width = 5000
@@ -90,11 +102,12 @@ class WoOver10DaysXlsx(models.AbstractModel):
         font.bold = True
         font.name = 'Arial'
         font.height = 200
-        pattern = xlwt.Pattern()
-        tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        # pattern = xlwt.Pattern()
+        # tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
-        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
-        
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; \
+            pattern: pattern solid')
+
         row = 0
         row += 1
         row += 1

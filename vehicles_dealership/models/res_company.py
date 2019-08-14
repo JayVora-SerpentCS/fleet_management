@@ -1,7 +1,12 @@
-from odoo import models, fields
+# -*- coding: utf-8 -*-
+# See LICENSE file for full copyright and licensing details.
+
+"""Fleet Vehicle and products models."""
+from odoo import fields, models
 
 
 class ResCompany(models.Model):
+	"""Res Company models"""
     _inherit = 'res.company'
 
     din_number = fields.Char(string="DIN", help="Dealer Identification Number")

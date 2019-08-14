@@ -1,48 +1,56 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Parts Received Report."""
 
-import io
-import xlwt
+
 import base64
-from odoo import models, fields, api, _
+import io
+
+from odoo import _, api, fields, models
+
+import xlwt
 
 
 class StockPickingReport(models.TransientModel):
+    """Stock Picking Report."""
+
     _name = 'stock.picking.xls.report'
     _description = 'Stock Picking XLSX reports'
 
-    name = fields.Char("Name", default = 'Genric Report.xls')
+    name = fields.Char("Name", default='Genric Report.xls')
     file = fields.Binary("Click On Download Link To Download Xls File",
-                         readonly = True)
+                         readonly=True)
 
     @api.multi
     def print_recived_part_xlsx_report(self):
+        """Print recived part xlsx."""
         rec_parts_obj = self.env['report.fleet_operations.receved.parts.xls']
         for part in self:
             part.write({'name': False,
                         'file': False})
             res = False
             docids = self.env.context.get('active_ids')
-            obj = self.env[self.env.context.get('active_model')].browse(docids) or False
+            obj = self.env[self.env.context.get(
+                'active_model')].browse(docids) or False
             res = rec_parts_obj.generate_xlsx_report(res, obj)
-            module_rec = part.write({'name': 'Recived Parts.xls',
-                                    'file': res})
-            return {
-                      'view_type': 'form',
-                      "view_mode": 'form',
-                      'res_model': 'stock.picking.xls.report',
-                      'type': 'ir.actions.act_window',
-                      'target': 'new',
-                      'name': _('Recived Parts'),
-                      'res_id': part.id
-                      }
+            # module_rec = part.write({'name': 'Recived Parts.xls',
+            #                         'file': res})
+            return {'view_type': 'form',
+                    "view_mode": 'form',
+                    'res_model': 'stock.picking.xls.report',
+                    'type': 'ir.actions.act_window',
+                    'target': 'new',
+                    'name': _('Recived Parts'),
+                    'res_id': part.id}
 
 
 class ReceivedPartsXlsx(models.AbstractModel):
+    """Print recived part xlsx."""
+
     _name = 'report.fleet_operations.receved.parts.xls'
     _description = 'Recived Parts Reports'
 
     def get_purchase_id(self, picking):
+        """Method to get purchase."""
         query = """
             SELECT po.id as purchase_id FROM stock_picking p, stock_move m,\
                      purchase_order_line pol, purchase_order po
@@ -57,6 +65,7 @@ class ReceivedPartsXlsx(models.AbstractModel):
         return False
 
     def generate_xlsx_report(self, res, stock_picking_ids):
+        """Generate recived part xlsx report."""
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('invoice')
         worksheet.col(0).width = 5000
@@ -79,10 +88,12 @@ class ReceivedPartsXlsx(models.AbstractModel):
         font.bold = True
         font.name = 'Arial'
         font.height = 200
-        pattern = xlwt.Pattern()
+        # pattern = xlwt.Pattern()
         tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
-        border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
-        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
+        # border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        format1 = xlwt.easyxf(
+            'font: bold 1; font: name 1; font: height 200;\
+            pattern: pattern solid')
         row = 0
         for picking in stock_picking_ids:
             row += 1

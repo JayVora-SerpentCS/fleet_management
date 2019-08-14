@@ -1,15 +1,18 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Contact Team Trip Ticket."""
 
-import base64
+
 from odoo import models
 
 
 class ContactTeamTrip(models.AbstractModel):
+    """Contact Team Trip Model."""
+
     _name = 'report.fleet_operations.contact.team.trip.ticket.xls'
     _description = 'Contact Team Trip Ticket Report'
 
     def get_heading(self):
+        """Report print method."""
         head_title = {'name': '',
                       'rev_no': '',
                       'doc_no': '',
@@ -26,6 +29,7 @@ class ContactTeamTrip(models.AbstractModel):
         return head_title
 
     def generate_xlsx_report(self, workbook, data, trip_ticket):
+        """Report format Excel."""
         worksheet = workbook.add_worksheet('contact_team_trip_ticket')
         worksheet.set_column(0, 0, 10)
         worksheet.set_column(1, 1, 15)

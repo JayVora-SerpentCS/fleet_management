@@ -1,10 +1,12 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Written Off Parser."""
 
-from odoo import models, api
+from odoo import api, models
 
 
-class report_qweb_write_off(models.AbstractModel):
+class ReportQwebWriteOff (models. AbstractModel):
+    """Report Qweb Write Off."""
+
     _name = 'report.fleet_operations.write_off_qweb'
     _description = 'Write Off Vehicle Report'
 
@@ -27,9 +29,8 @@ class report_qweb_write_off(models.AbstractModel):
         if not docids:
             docids = data.get('docids', [])
         docs = self.env['fleet.wittenoff'].browse(docids)
-        return  {
+        return{
             'doc_ids': docids,
             'doc_model': 'fleet.wittenoff',
             'docs': docs,
-            'get_last_work_order': self._get_last_work_order,
-        }
+            'get_last_work_order': self._get_last_work_order}

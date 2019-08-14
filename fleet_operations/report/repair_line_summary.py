@@ -1,17 +1,21 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Repair line summary."""
 
 import time
 from datetime import datetime
-from odoo import api, models, _
-from odoo.exceptions import Warning, UserError
+
+from odoo import _, api, models
+from odoo.exceptions import UserError, Warning
 
 
 class RepairLineSmry(models.AbstractModel):
+    """Repair Line Smry."""
+
     _name = 'report.fleet_operations.repair_line_summary_qweb'
     _description = 'Repair Line Summary Report'
 
     def get_repair_line_detail(self, date_range):
+        """Method to get repair line detail print report."""
         work_order_obj = self.env['fleet.vehicle.log.services']
         start = datetime.strptime(date_range.get('date_from'), '%Y-%m-%d')
         end = datetime.strptime(date_range.get('date_to'), '%Y-%m-%d')
@@ -46,7 +50,6 @@ class RepairLineSmry(models.AbstractModel):
                 sorted(repair_line_data, key=lambda k: k['repair_type'])
         return repair_line_data
 
-
     @api.model
     def _get_report_values(self, docids, data=None):
         if not data.get('form') or \
@@ -64,5 +67,4 @@ class RepairLineSmry(models.AbstractModel):
             'data': data['form'],
             'docs': docs,
             'time': time,
-            'get_vehicle_history': result
-        }
+            'get_vehicle_history': result}

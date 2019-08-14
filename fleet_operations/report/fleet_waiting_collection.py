@@ -1,17 +1,22 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Fleet Waiting Collection."""
 
-import io
-import xlwt
 import base64
+import io
+
 from odoo import models
+
+import xlwt
 
 
 class FleetWaitingColletion(models.AbstractModel):
+    """Fleet waiting colletion."""
+
     _name = 'report.fleet_operations.fleet.wait.collection.xls'
     _description = 'Fleet Waiting Collection Report'
 
     def generate_complete_stage_xlsx_report(self, res, fleet_waiting):
+        """Method generate complete stage xlsx report."""
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('fleet_waiting_collection')
         worksheet.col(0).width = 5000
@@ -34,10 +39,11 @@ class FleetWaitingColletion(models.AbstractModel):
         font.bold = True
         font.name = 'Arial'
         font.height = 200
-        pattern = xlwt.Pattern()
+        # pattern = xlwt.Pattern()
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
-        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
-        
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
+            pattern: pattern solid')
+
         row = 0
         row += 1
 

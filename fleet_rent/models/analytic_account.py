@@ -1,16 +1,22 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Analytic Account."""
+
 
 import time
 from datetime import datetime
 from datetime import timedelta
-from odoo.exceptions import Warning, ValidationError
-from odoo import models, fields, api, _
+
 from dateutil.relativedelta import relativedelta
+
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError, Warning
+
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DT
 
 
 class AccountAnalyticAccount(models.Model):
+    """Account analytic account."""
+
     _inherit = "account.analytic.account"
     _order = 'ref'
 
@@ -18,8 +24,9 @@ class AccountAnalyticAccount(models.Model):
     @api.depends('account_move_line_ids')
     def _total_deb_cre_amt_calc(self):
         """
-        This method is used to calculate Total income amount.
-        @param self: The object pointer
+        Method is used to calculate Total income amount.
+
+        @param self: The object pointer.
         """
         total = 0.0
         for tenancy_brw in self:
@@ -30,8 +37,9 @@ class AccountAnalyticAccount(models.Model):
     @api.depends('account_move_line_ids')
     def _total_credit_amt_calc(self):
         """
-        This method is used to calculate Total credit amount.
-        @param self: The object pointer
+        Method is used to calculate Total credit amount.
+
+        @param self: The object pointer.
         """
         total = 0.0
         for tenancy_brw in self:
@@ -45,8 +53,9 @@ class AccountAnalyticAccount(models.Model):
     @api.depends('account_move_line_ids')
     def _total_debit_amt_calc(self):
         """
-        This method is used to calculate Total debit amount.
-        @param self: The object pointer
+        Method is used to calculate Total debit amount.
+
+        @param self: The object pointer.
         """
         total = 0.0
         for tenancy_brw in self:
@@ -60,8 +69,10 @@ class AccountAnalyticAccount(models.Model):
     @api.depends('rent_schedule_ids', 'rent_schedule_ids.amount')
     def _total_amount_rent(self):
         """
-        This method is used to calculate Total Rent of current Tenancy.
-        @param self: The object pointer
+        Method is used to calculate Total Rent of current Tenancy.
+
+        @param self: The object pointer.
+
         @return: Calculated Total Rent.
         """
         tot = 0.00
@@ -74,24 +85,28 @@ class AccountAnalyticAccount(models.Model):
     @api.depends('deposit')
     def _get_deposit(self):
         """
-        This method is used to set deposit return and deposit received
+        Method is used to set deposit return and deposit received.
+
         boolean field accordingly to current Tenancy.
-        @param self: The object pointer
+
+        @param self: The object pointer.
         """
         for tennancy in self:
             payment_ids = self.env['account.payment'].search(
                 [('tenancy_id', '=', tennancy.id), ('state', '=', 'posted')])
             if payment_ids and payment_ids.ids:
                 for payment in payment_ids:
-                        tennancy.deposit_received = True
+                    tennancy.deposit_received = True
 
     @api.multi
     @api.depends('cost_id')
     def _total_cost_maint(self):
         """
-        This method is used to calculate total maintenance
+        Method is used to calculate total maintenance.
+
         boolean field accordingly to current Tenancy.
-        @param self: The object pointer
+
+        @param self: The object pointer.
         """
         for data in self:
             total = 0
@@ -101,6 +116,7 @@ class AccountAnalyticAccount(models.Model):
 
     @api.model
     def rent_send_mail(self):
+        """Method to send mail."""
         model_obj = self.env['ir.model.data']
         send_obj = self.env['mail.template']
         rent_obj = self.env['account.analytic.account']
@@ -143,20 +159,20 @@ class AccountAnalyticAccount(models.Model):
                 pro_record.rent = prop_val
 
     def _get_odometer(self):
-        FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
+        fleetvehicalodometer = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = FleetVehicalOdometer.search([
+            vehicle_odometer = fleetvehicalodometer.search([
                 ('vehicle_id', '=', record.vehicle_id.id)], limit=1,
-                                                           order='value desc')
+                order='value desc')
             if vehicle_odometer:
                 record.odometer = vehicle_odometer.value
             else:
                 record.odometer = 0
 
     def _set_odometer(self):
-        FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
+        fleetvehicalodometer = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = FleetVehicalOdometer.search(
+            vehicle_odometer = fleetvehicalodometer.search(
                 [('vehicle_id', '=', record.vehicle_id.id)],
                 limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
@@ -166,21 +182,23 @@ class AccountAnalyticAccount(models.Model):
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
                         'vehicle_id': record.vehicle_id.id}
-                FleetVehicalOdometer.create(data)
+                fleetvehicalodometer.create(data)
 
     @api.onchange('vehicle_id')
     def onchange_vehicle_id(self):
+        """Method Onchange."""
         for rec in self:
-            FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
-            vehicle_odometer = FleetVehicalOdometer.search([
+            fleetvehicalodometer = self.env['fleet.vehicle.odometer']
+            vehicle_odometer = fleetvehicalodometer.search([
                 ('vehicle_id', '=', rec .vehicle_id.id)], limit=1,
-                                                           order='value desc')
+                order='value desc')
             if rec.vehicle_id:
                 rec.odometer = vehicle_odometer.value
 #                 rec.odometer_unit = vehicle_odometer.unit
 
     @api.multi
     def change_color(self):
+        """Method to change color."""
         for color in self:
             if color.state == 'new':
                 color.color = 0
@@ -344,13 +362,13 @@ class AccountAnalyticAccount(models.Model):
         [('insurance', 'Insurance-based')],
         'Type of Scheme')
     state = fields.Selection(
-                             [('draft', 'New'),
-                              ('open', 'In Progress'), ('pending', 'To Renew'),
-                              ('close', 'Closed'), ('cancelled', 'Cancelled')],
-                             string='Status',
-                             required=True,
-                             copy=False,
-                             default='draft')
+        [('draft', 'New'),
+         ('open', 'In Progress'), ('pending', 'To Renew'),
+         ('close', 'Closed'), ('cancelled', 'Cancelled')],
+        string='Status',
+        required=True,
+        copy=False,
+        default='draft')
     main_cost = fields.Float(
         string='Maintenance Cost',
         default=0.0,
@@ -370,6 +388,7 @@ class AccountAnalyticAccount(models.Model):
 
     @api.model
     def rent_done_cron(self):
+        """Method to rent done cron."""
         acc_obj = self.env['account.analytic.account']
         rent_obj = self.env['tenancy.rent.schedule']
         for rec in acc_obj.search([('date', '!=', False),
@@ -392,8 +411,10 @@ class AccountAnalyticAccount(models.Model):
     @api.constrains('date_start', 'date')
     def check_date_overlap(self):
         """
-        This is a constraint method used to check the from date smaller than
+        Method used to check the from date smaller than.
+
         the Expiration date.
+
         @param self : object pointer
         """
         for ver in self:
@@ -407,7 +428,8 @@ class AccountAnalyticAccount(models.Model):
     @api.model
     def default_get(self, fields):
         """
-        This method is return if vehicle state is write-off then its
+        Method is return if vehicle state is write-off then its.
+
         returns false and if vehicle state is other then its returns true.
         """
         res = super(AccountAnalyticAccount, self).default_get(fields)
@@ -425,9 +447,12 @@ class AccountAnalyticAccount(models.Model):
     @api.model
     def create(self, vals):
         """
-        This Method is used to overrides orm create method,
-        to change state and tenant of related property.
-        @param self: The object pointer
+        Method is used to overrides orm create method.
+
+        To change state and tenant of related property.
+
+        @param self: The object pointer.
+
         @param vals: dictionary of fields value.
         """
         vehicle_id = vals.get('vehicle_id', False)
@@ -438,7 +463,7 @@ class AccountAnalyticAccount(models.Model):
         veh_ser_rec = veh_ser_obj.search([('vehicle_id', '=', vehicle_id),
                                           ('date_complete', '>', st_dt)])
         if vehicle_rec.state == 'in_progress' and veh_ser_rec:
-                raise ValidationError('This Vehicle In Service. So You Can Not\
+            raise ValidationError('This Vehicle In Service. So You Can Not\
                                         Create Rent Order For This Vehicle.')
         if not vals:
             vals = {}
@@ -468,9 +493,12 @@ class AccountAnalyticAccount(models.Model):
     @api.multi
     def write(self, vals):
         """
-        This Method is used to overrides orm write method,
+        Method is used to overrides orm write method.
+
         to change state and tenant of related property.
-        @param self: The object pointer
+
+        @param self: The object pointer.
+
         @param vals: dictionary of fields value.
         """
         vehicle_id = self.vehicle_id.id
@@ -481,7 +509,7 @@ class AccountAnalyticAccount(models.Model):
         veh_ser_rec = veh_ser_obj.search([('vehicle_id', '=', vehicle_id),
                                           ('date_complete', '>', st_dt)])
         if vehicle_rec.state == 'in_progress' and veh_ser_rec:
-                raise ValidationError('This Vehicle In Service. So You Can Not\
+            raise ValidationError('This Vehicle In Service. So You Can Not\
                                         Create Rent Order For This Vehicle.')
         rec = super(AccountAnalyticAccount, self).write(vals)
 
@@ -515,8 +543,10 @@ class AccountAnalyticAccount(models.Model):
     @api.multi
     def unlink(self):
         """
-        Overrides orm unlink method,
-        @param self: The object pointer
+        Override orm unlink method.
+
+        @param self: The object pointer.
+
         @return: True/False.
         """
         rent_ids = []
@@ -552,9 +582,11 @@ class AccountAnalyticAccount(models.Model):
     @api.depends('amount_return')
     def amount_return_compute(self):
         """
-        When you change Deposit field value, this method will change
+        When you change Deposit field value, this method will change.
+
         amount_fee_paid field value accordingly.
-        @param self: The object pointer
+
+        @param self: The object pointer.
         """
         for rec in self:
             if rec.amount_return > 0.00:
@@ -563,9 +595,12 @@ class AccountAnalyticAccount(models.Model):
     @api.multi
     def button_receive(self):
         """
-        This button method is used to open the related
-        account payment form view.
-        @param self: The object pointer
+        Button method is used to open the related.
+
+        Account payment form view.
+
+        @param self: The object pointer.
+
         @return: Dictionary of values.
         """
         if not self._ids:
@@ -587,19 +622,19 @@ class AccountAnalyticAccount(models.Model):
                     'type': 'ir.actions.act_window',
                     'target': 'new',
                     'context': {
-                                'default_partner_id': tenancy_rec.tenant_id.id,
-                                'default_partner_type': 'customer',
-                                'default_journal_id': jonral_type and
-                                jonral_type.ids[0] or False,
-                                'default_payment_type': 'inbound',
-                                'default_type': 'receipt',
-                                'default_communication': 'Deposit Received',
-                                'default_tenancy_id': tenancy_rec.id,
-                                'default_amount': tenancy_rec.deposit,
-                                'default_property_id':
-                                tenancy_rec.vehicle_id.id,
-                                'close_after_process': True,
-                                }
+                        'default_partner_id': tenancy_rec.tenant_id.id,
+                        'default_partner_type': 'customer',
+                        'default_journal_id': jonral_type and
+                        jonral_type.ids[0] or False,
+                        'default_payment_type': 'inbound',
+                        'default_type': 'receipt',
+                        'default_communication': 'Deposit Received',
+                        'default_tenancy_id': tenancy_rec.id,
+                        'default_amount': tenancy_rec.deposit,
+                        'default_property_id':
+                        tenancy_rec.vehicle_id.id,
+                        'close_after_process': True,
+                    }
                 }
             if tenancy_rec.deposit == 0.00:
                 raise Warning(_('Please Enter Deposit amount.'))
@@ -635,6 +670,7 @@ class AccountAnalyticAccount(models.Model):
 
     @api.multi
     def button_return(self):
+        """Method button return."""
         account_jrnl_obj = self.env['account.journal'].search(
             [('type', '=', 'purchase')])
         if not self.vehicle_id.expence_acc_id.id:
@@ -687,8 +723,9 @@ class AccountAnalyticAccount(models.Model):
     @api.multi
     def button_start(self):
         """
-        This button method is used to Change Tenancy state to Open.
-        @param self: The object pointer
+        Button method is used to Change Tenancy state to Open.
+
+        @param self: The object pointer.
         """
         if self.rent <= 1:
             raise ValidationError("You Can't Enter Rental Vehicle Rent \
@@ -698,24 +735,26 @@ class AccountAnalyticAccount(models.Model):
     @api.multi
     def button_close(self):
         """
-        This button method is used to Change Tenancy state to close.
-        @param self: The object pointer
+        Button method is used to Change Tenancy state to close.
+
+        @param self: The object pointer.
         """
         return {
-                'name': ('Rent Close Form'),
-                'res_model': 'rent.close.reason',
-                'type': 'ir.actions.act_window',
-                'view_id': False,
-                'view_mode': 'form',
-                'view_type': 'form',
-                'target': 'new'
-                }
+            'name': ('Rent Close Form'),
+            'res_model': 'rent.close.reason',
+            'type': 'ir.actions.act_window',
+            'view_id': False,
+            'view_mode': 'form',
+            'view_type': 'form',
+            'target': 'new'
+        }
 
     @api.multi
     def button_set_to_draft(self):
         """
-        This button method is used to Change Tenancy state to close.
-        @param self: The object pointer
+        Button method is used to Change Tenancy state to close.
+
+        @param self: The object pointer.
         """
         for rec in self:
             if rec.state == 'open':
@@ -728,8 +767,10 @@ class AccountAnalyticAccount(models.Model):
     @api.multi
     def button_set_to_renew(self):
         """
-        This Method is used to open Tenancy renew wizard.
-        @param self: The object pointer
+        Method is used to open Tenancy renew wizard.
+
+        @param self: The object pointer.
+
         @return: Dictionary of values.
         """
         cr, uid, context = self.env.args
@@ -749,7 +790,8 @@ class AccountAnalyticAccount(models.Model):
                 raise Warning(
                     _('In order to Renew a Tenancy, Please make all related \
                     Rent Schedule entries posted.'))
-            date = datetime.strptime(str(tenancy_brw.date), "%Y-%m-%d %H:%M:%S") + \
+            date = datetime.strptime(str(
+                tenancy_brw.date), "%Y-%m-%d %H:%M:%S") + \
                 timedelta(days=1)
             date1 = datetime.strftime(date, "%Y-%m-%d %H:%M:%S")
             context.update({'edate': date1})
@@ -767,9 +809,11 @@ class AccountAnalyticAccount(models.Model):
     @api.model
     def cron_property_states_changed(self):
         """
-        This Method is called by Scheduler for change property state
+        Method is called by Scheduler for change property state.
+
         according to tenancy state.
-        @param self: The object pointer
+
+        @param self: The object pointer.
         """
         curr_date = datetime.now().date()
         tncy_ids = self.search([('date_start', '<=', curr_date),
@@ -786,9 +830,11 @@ class AccountAnalyticAccount(models.Model):
     @api.model
     def cron_property_tenancy(self):
         """
-        This Method is called by Scheduler to send email
+        Method is called by Scheduler to send email.
+
         to tenant as a reminder for rent payment.
-        @param self: The object pointer
+
+        @param self: The object pointer.
         """
         tenancy_ids = []
         due_date = datetime.now().date() + relativedelta(days=7)
@@ -820,23 +866,24 @@ class AccountAnalyticAccount(models.Model):
                         relativedelta(months=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Years':
                     rec.date = datetime.strptime(str(rec.date_start), DT) + \
-                            relativedelta(years=int(rec.rent_type_id.duration))
+                        relativedelta(years=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Weeks':
                     rec.date = datetime.strptime(str(rec.date_start), DT) + \
-                            relativedelta(weeks=int(rec.rent_type_id.duration))
+                        relativedelta(weeks=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Days':
                     rec.date = datetime.strptime(str(rec.date_start), DT) + \
-                            relativedelta(days=int(rec.rent_type_id.duration))
+                        relativedelta(days=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Hours':
                     rec.date = datetime.strptime(str(rec.date_start), DT) + \
-                            relativedelta(hours=int(rec.rent_type_id.duration))
+                        relativedelta(hours=int(rec.rent_type_id.duration))
         return True
 
     @api.multi
     def create_rent_schedule(self):
         """
-        This button method is used to create rent schedule Lines.
-        @param self: The object pointer
+        Button method is used to create rent schedule Lines.
+
+        @param self: The object pointer.
         """
         for tenancy_rec in self:
             for rent_line in tenancy_rec.rent_schedule_ids:

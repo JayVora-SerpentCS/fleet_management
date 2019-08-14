@@ -1,18 +1,23 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Workorder monthly summary report."""
 
-import io
-import xlwt
 import base64
+import io
+
 from odoo import models
 from odoo.exceptions import Warning
 
+import xlwt
+
 
 class WorkorderMontltReportXlsx(models.AbstractModel):
+    """Work Order Monthly Report Xlsx."""
+
     _name = 'report.fleet_operations.workorder.monthly.summary.xls'
     _description = 'Work Order Monthly Summary Report'
 
     def get_wo_mthly_smry(self, workorder_browse):
+        """Method get wo mthly smry."""
         wo_summary_data = []
         wo_check_dict = {}
         no = 0
@@ -102,6 +107,7 @@ class WorkorderMontltReportXlsx(models.AbstractModel):
         return wo_summary_data
 
     def generate_xlsx_report(self, workorder):
+        """Generate Xlsx Report."""
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('invoice')
         worksheet.col(0).width = 5000
@@ -120,14 +126,15 @@ class WorkorderMontltReportXlsx(models.AbstractModel):
         worksheet.col(13).width = 7500
         worksheet.col(14).width = 7500
         worksheet.col(15).width = 7500
-        
+
         font = xlwt.Font()
         font.bold = True
         font.name = 'Arial'
         font.height = 200
-        pattern = xlwt.Pattern()
+        # pattern = xlwt.Pattern()
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
-        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; \
+            pattern: pattern solid')
 
         row = 0
         row += 1

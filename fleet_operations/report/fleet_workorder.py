@@ -1,17 +1,22 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Fleet Workorder Report."""
 
-import io
-import xlwt
 import base64
+import io
+
 from odoo import models
+
+import xlwt
 
 
 class FleetWorkOrder(models.AbstractModel):
+    """Fleet Work Order."""
+
     _name = 'report.fleet_operations.workorder.summary.xls'
     _description = 'Fleet WorkOrder Reports'
 
     def get_wo_status(self, status):
+        """Method get wo status."""
         if status == 'done':
             wo_status = "Closed"
         elif status == 'confirm':
@@ -21,6 +26,7 @@ class FleetWorkOrder(models.AbstractModel):
         return wo_status
 
     def get_wo_smry(self, workorder_browse):
+        """Method get wo smry."""
         wo_summary_data = []
         wo_smry_dict = {}
         if workorder_browse:
@@ -78,13 +84,13 @@ class FleetWorkOrder(models.AbstractModel):
                             {
                                 'team_id': work_rec.team_id and
                                 work_rec.team_id.name or '',
-                                'value': [wo_data]
-                                }
+                                'value': [wo_data]}
         for team_id, workorder_data in wo_smry_dict.items():
             wo_summary_data.append(workorder_data)
         return wo_summary_data
 
     def generate_xlsx_report(self, product):
+        """Method to generate xlsx report."""
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('workorder_summary')
         worksheet.col(0).width = 5000
@@ -98,16 +104,17 @@ class FleetWorkOrder(models.AbstractModel):
         worksheet.col(8).width = 10000
         worksheet.col(9).width = 20000
         worksheet.col(10).width = 7500
-        
+
         font = xlwt.Font()
-        borders = xlwt.Borders()
+        # borders = xlwt.Borders()
         font.bold = True
         font.name = 'Arial'
         font.height = 200
-        pattern = xlwt.Pattern()
-        tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        # pattern = xlwt.Pattern()
+        # tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
-        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
+            pattern: pattern solid')
 
         row = 0
         row += 1

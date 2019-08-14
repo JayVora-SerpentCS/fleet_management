@@ -1,16 +1,22 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
-import io
-import xlwt
+"""Fleet Pending Repairs Report."""
+
 import base64
+import io
+
 from odoo import models
+
+import xlwt
 
 
 class FleetPendinRepair(models.AbstractModel):
+    """Fleet pending repair."""
+
     _name = 'report.fleet_operations.fleet.pending.repairs.xls'
     _description = 'Fleet Pending Repair Report'
 
     def get_heading(self):
+        """Method get heading."""
         head_title = {'name': '',
                       'rev_no': '',
                       'doc_no': '',
@@ -27,6 +33,7 @@ class FleetPendinRepair(models.AbstractModel):
         return head_title
 
     def generate_pending_repairs_xlsx_report(self, res, fleet_pending):
+        """Method generate pending repairs xlsx report."""
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('fleet_pending')
         worksheet.col(0).width = 5000
@@ -38,16 +45,16 @@ class FleetPendinRepair(models.AbstractModel):
         worksheet.col(6).width = 7500
         worksheet.col(7).width = 5000
         worksheet.col(8).width = 2500
-        
         font = xlwt.Font()
-        borders = xlwt.Borders()
+        # borders = xlwt.Borders()
         font.bold = True
         font.name = 'Arial'
         font.height = 200
-        pattern = xlwt.Pattern()
+        # pattern = xlwt.Pattern()
         tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         border = xlwt.easyxf('font: name 1; font: height 200')
-        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;')
+        # format1 = xlwt.easyxf('font: bold 1; font: name 1;\
+        #     font: height 200;')
 
         row = 0
         row += 1

@@ -1,19 +1,26 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
 {
+    # Module Information
     'name': 'Fleet Rental Vehicle',
-    'author': 'Serpent Consulting Services Pvt. Ltd.',
-    'version': '12.0.1.0.0',
-    'license': 'AGPL-3',
-    'website': 'http://www.serpentcs.com',
     'category': 'Fleet Rent',
+    'sequence': 1,
+    'version': '12.0.1.0.0',
+    'license': 'LGPL-3',
+    'summary': """Rental Vehicle Management System
+        This module provides fleet rent features.""",
     'description': """
-    Rental Vehicle Management System
-    This module provides fleet rent features..
+        Rental Vehicle Management System
+        This module provides fleet rent features..
      """,
-     'depends': ['analytic', 'account_voucher', 'ow_account_asset',
+    # Website
+    'author': 'Serpent Consulting Services Pvt. Ltd.',
+    'website': 'http://www.serpentcs.com',
+
+    # Dependencies
+    'depends': ['analytic', 'account_voucher', 'ow_account_asset',
                 'ow_account_budget', 'fleet_operations'],
+    # Data
     'data': [
             'security/rent_security.xml',
             'security/ir.model.access.csv',
@@ -28,7 +35,8 @@
             'wizard/renew_tenancy_view.xml',
             'wizard/rent_close_reason_view.xml',
             'wizard/fleet_rental_vehicle_history_view.xml',
-             ],
+    ],
+    # Technical
     'auto_install': False,
     'installable': True,
     'application': True,
