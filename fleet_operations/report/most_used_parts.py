@@ -1,20 +1,25 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Most Used Parts Report."""
+
 
 from odoo import models
 from odoo.exceptions import Warning
 
 
 class MostUsedPartsXlsx(models.AbstractModel):
+    """Most used parts xlsx."""
+
     _name = 'report.fleet_operations.most.used.parts.xls'
     _description = 'Most Used Parts Report'
 
     most_part_used_garnd_total = 0.0
 
     def get_grand_total(self):
+        """Method to get grand total."""
         return self.most_part_used_garnd_total
 
     def get_most_used_parts(self, date_range, top_no):
+        """Method to get most used parts."""
         work_order_obj = self.env['task.line']
         part_list_data = []
         used_dict = {}
@@ -51,8 +56,7 @@ class MostUsedPartsXlsx(models.AbstractModel):
                                 'unit_cost': p_line.product_id and
                                 p_line.product_id.standard_price or 0.0,
                                 'total_cost':
-                                p_line.qty * p_line.product_id.standard_price,
-                            }
+                                p_line.qty * p_line.product_id.standard_price}
 
         for part_data in used_dict.itervalues():
             part_list_data.append(part_data)
@@ -75,6 +79,7 @@ class MostUsedPartsXlsx(models.AbstractModel):
         return final_data
 
     def generate_xlsx_report(self, workbook, data, parts):
+        """Method to generate xlsx report."""
         worksheet = workbook.add_worksheet('product')
         worksheet.set_column(0, 0, 10)
         worksheet.set_column(1, 1, 15)

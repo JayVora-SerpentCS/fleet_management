@@ -1,34 +1,42 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
-import io
-import xlwt
+"""Fleet Rental Vehicle History Wizard."""
+
 import base64
-from odoo import models, fields, api, _
+import io
+
+from odoo import fields, models
+
+import xlwt
 
 
 class FleetRentalVehicleHistory(models.TransientModel):
+    """Fleet Rental Vehicle History."""
+
     _name = 'rental.fleet.history'
     _description = 'Rental Fleet History Report'
-    
+
     name = fields.Char(string="File Name")
     file = fields.Binary(string="File", readonly=True)
-    
+
     def rental_vehicle_history(self):
+        """Method rental vehicle history."""
         docids = self.env.context.get('active_ids')
-        fleet_rental = self.env[self.env.context.get('active_model')].browse(docids) or False
+        fleet_rental = self.env[self.env.context.get(
+            'active_model')].browse(docids) or False
         file = self.generate_xlsx_report(fleet_rental)
         self.write({'name': 'Vehicle Rental History.xls',
-                   'file': file})
+                    'file': file})
         return {
-                  'view_type': 'form',
-                  'view_mode': 'form',
-                  'res_model': 'rental.fleet.history',
-                  'type': 'ir.actions.act_window',
-                  'target': 'new',
-                  'res_id': self.id
-                }
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'rental.fleet.history',
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+            'res_id': self.id
+        }
 
     def generate_xlsx_report(self, fleet_rental):
+        """Method to generate xlsx report."""
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('fleet_rental')
         worksheet.col(0).width = 7000
@@ -46,15 +54,16 @@ class FleetRentalVehicleHistory(models.TransientModel):
         worksheet.col(12).width = 10000
         worksheet.col(13).width = 10000
         worksheet.col(14).width = 2500
-        
+
         font = xlwt.Font()
         font.bold = True
         font.name = 'Arial'
         font.height = 200
-        pattern = xlwt.Pattern()
+        # pattern = xlwt.Pattern()
         tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 300')
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
-        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
+            pattern: pattern solid')
 
         row = 0
         row += 1

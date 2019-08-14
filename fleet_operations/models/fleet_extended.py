@@ -1,17 +1,20 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
-
-from datetime import date, datetime
-from odoo import models, fields, api, _
-from odoo.exceptions import Warning, ValidationError
-from odoo import tools
-from odoo.tools import misc
+"""Multi Image model."""
 
 import logging
+from datetime import date, datetime
+
+from odoo import _, api, fields, models
+from odoo import tools
+from odoo.exceptions import ValidationError, Warning
+from odoo.tools import misc
+
 _logger = logging.getLogger(__name__)
 
 
 class MultiImages(models.Model):
+    """Multi Image models."""
+
     _inherit = "multi.images"
 
     vehicle_template_id = fields.Many2one('fleet.vehicle',
@@ -21,6 +24,8 @@ class MultiImages(models.Model):
 
 
 class ProductProduct(models.Model):
+    """product model."""
+
     _inherit = 'product.product'
 
     in_active_part = fields.Boolean('In-Active Part?')
@@ -29,12 +34,15 @@ class ProductProduct(models.Model):
 
 
 class FleetOperations(models.Model):
+    """Fleet Operations model."""
+
     _inherit = 'fleet.vehicle'
     _order = 'id desc'
     _rec_name = 'name'
 
     @api.multi
     def copy(self, default=None):
+        """Overridden copy method."""
         if not default:
             default = {}
         if self:
@@ -45,12 +53,12 @@ class FleetOperations(models.Model):
 
     @api.multi
     def unlink(self):
+        """Unlink Method."""
         raise Warning(_('You can\'t delete record !'))
 
     @api.multi
     def update_history(self):
-        """ This method use update color,\
-        engine,battery and tire history."""
+        """Method use update color engine,battery and tire history."""
         mod_obj = self.env['ir.model.data']
         wizard_view = ""
         res_model = ""
@@ -208,9 +216,9 @@ class FleetOperations(models.Model):
                     Greater Than Registration Date.')
 
     def _get_odometer(self):
-        FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
+        fleetvehicalodometer = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = FleetVehicalOdometer.search([
+            vehicle_odometer = fleetvehicalodometer.search([
                 ('vehicle_id', '=', record.id)], limit=1, order='value desc')
             if vehicle_odometer:
                 record.odometer = vehicle_odometer.value
@@ -218,9 +226,9 @@ class FleetOperations(models.Model):
                 record.odometer = 0
 
     def _set_odometer(self):
-        FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
+        fleetvehicalodometer = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = FleetVehicalOdometer.search([
+            vehicle_odometer = fleetvehicalodometer.search([
                 ('vehicle_id', '=', record.id)], limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
                 raise Warning(_('You can\'t enter odometer less than previous \
@@ -229,7 +237,7 @@ class FleetOperations(models.Model):
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
                         'vehicle_id': record.id}
-                FleetVehicalOdometer.create(data)
+                fleetvehicalodometer.create(data)
 
     @api.onchange('f_brand_id')
     def _onchange_brand(self):
@@ -1220,9 +1228,9 @@ class VehicleFuelLog(models.Model):
     _order = 'id desc'
 
     def _get_odometer(self):
-        FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
+        fleetvehicalodometer = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = FleetVehicalOdometer.search([
+            vehicle_odometer = fleetvehicalodometer.search([
                 ('vehicle_id', '=', record.vehicle_id.id)], limit=1,
                 order='value desc')
             if vehicle_odometer:
@@ -1231,9 +1239,9 @@ class VehicleFuelLog(models.Model):
                 record.odometer = 0
 
     def _set_odometer(self):
-        FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
+        fleetvehicalodometer = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = FleetVehicalOdometer.search(
+            vehicle_odometer = fleetvehicalodometer.search(
                 [('vehicle_id', '=', record.vehicle_id.id)],
                 limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
@@ -1243,7 +1251,7 @@ class VehicleFuelLog(models.Model):
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
                         'vehicle_id': record.vehicle_id.id}
-                FleetVehicalOdometer.create(data)
+                fleetvehicalodometer.create(data)
 
     @api.onchange('vehicle_id')
     def _onchange_vehicle(self):

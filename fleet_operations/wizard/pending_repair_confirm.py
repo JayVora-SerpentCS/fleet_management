@@ -1,18 +1,22 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Pending Repair Confrim."""
 
-from datetime import datetime, date, timedelta
-from odoo import models, api, _
+from datetime import date, timedelta
+
+from odoo import _, api, models
 from odoo.exceptions import Warning
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
+# from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 
 
 class PendingRepairConfirm(models.TransientModel):
+    """Pending Repair Confirm."""
+
     _name = 'pending.repair.confirm'
     _description = 'Pending Repair Confirm'
 
     @api.multi
     def confirm_wo_forcefully(self):
+        """Method Confirm wo forcefully."""
         wo_obj = self.env['fleet.vehicle.log.services']
         increment_obj = self.env['next.increment.number']
         pending_rep_obj = self.env['pending.repair.type']

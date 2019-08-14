@@ -1,14 +1,17 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Stock Adjustment Report."""
 
 from odoo import models
 
 
 class StockAdjustment(models.AbstractModel):
+    """Stock adjustment."""
+
     _name = 'report.fleet_operations.stock.adjustment.xls'
     _description = 'Stock Adjustment Report'
 
     def generate_xlsx_report(self, workbook, data, stock):
+        """Method to generate xlsx report."""
         worksheet = workbook.add_worksheet('stock_adjustment')
         worksheet.set_column(0, 0, 5)
         worksheet.set_column(1, 1, 20)
@@ -77,4 +80,3 @@ class StockAdjustment(models.AbstractModel):
                 line_row += 1
                 counter += 1
                 worksheet.write(line_row, line_col, '********', border)
-                

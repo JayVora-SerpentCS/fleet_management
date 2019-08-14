@@ -1,15 +1,20 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Renew Tenancy Wizard."""
 
 from datetime import datetime
-from odoo.tools import misc
+
 from dateutil.relativedelta import relativedelta
-from odoo.exceptions import Warning, ValidationError
-from odoo import models, fields, api, _
+
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError, Warning
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DT
+
+from odoo.tools import misc
 
 
 class WizardRenewTenancy(models.TransientModel):
+    """Wizard Renew Tenancy."""
+
     _name = 'renew.tenancy'
     _description = 'Vehicle Renew Tenacy'
 
@@ -35,25 +40,21 @@ class WizardRenewTenancy(models.TransientModel):
                         relativedelta(months=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Years':
                     rec.end_date = datetime.strptime(rec.start_date, DT) + \
-                            relativedelta(years=int(rec.rent_type_id.duration))
+                        relativedelta(years=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Weeks':
                     rec.end_date = datetime.strptime(rec.start_date, DT) + \
-                            relativedelta(weeks=int(rec.rent_type_id.duration))
+                        relativedelta(weeks=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Days':
-                    rec.end_date = datetime.strptime(str(rec.start_date), DT) + \
-                            relativedelta(days=int(rec.rent_type_id.duration))
+                    rec.end_date = datetime.strptime(str(rec.start_date), DT) \
+                        + relativedelta(days=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Hours':
                     rec.end_date = datetime.strptime(rec.start_date, DT) + \
-                            relativedelta(hours=int(rec.rent_type_id.duration))
+                        relativedelta(hours=int(rec.rent_type_id.duration))
         return True
 
     @api.constrains('start_date', 'end_date')
     def check_date_overlap(self):
-        """
-        This is a constraint method used to check the from date smaller than
-        the Exiration date.
-        @param self : object pointer
-        """
+        """Method used to check the date."""
         for ver in self:
             if ver.start_date and ver.end_date:
                 dt_from = ver.start_date.strftime(DT)
@@ -64,11 +65,7 @@ class WizardRenewTenancy(models.TransientModel):
 
     @api.multi
     def renew_contract(self):
-        """
-                This Button Method is used to Renew Tenancy.
-        @param self: The object pointer
-        @return: Dictionary of values.
-        """
+        """Button Method is used to Renew Tenancy."""
         cr, uid, context = self.env.args
         context = dict(context)
         if context is None:

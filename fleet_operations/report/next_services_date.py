@@ -1,18 +1,23 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Next services Date."""
 
-import io
-import xlwt
 import base64
+import io
 import time
+
 from odoo import models
+
+import xlwt
 
 
 class NextServiceDate(models.AbstractModel):
+    """Next service date."""
+
     _name = 'report.fleet_operations.next.services.by.date.xls'
     _description = 'Next Service by Date'
 
     def generate_service_date_xlsx_report(self, res, next_service):
+        """Metho to generate service date xlsx report."""
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('next_service_by_date')
         worksheet.col(0).width = 5000
@@ -28,11 +33,12 @@ class NextServiceDate(models.AbstractModel):
         font.bold = True
         font.name = 'Arial'
         font.height = 200
-        pattern = xlwt.Pattern()
+        # pattern = xlwt.Pattern()
         tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
-        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
-        
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
+            pattern: pattern solid')
+
         row = 0
         row += 1
         row += 1

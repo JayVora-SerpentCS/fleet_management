@@ -1,16 +1,20 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Vehicle Change History Report."""
 
 import time
-from odoo import api, models, _
+
+from odoo import _, api, models
 from odoo.exceptions import UserError
 
 
 class VehicalChangeHistoryReport(models.AbstractModel):
+    """Vehicle change history report."""
+
     _name = 'report.fleet_operations.vehicle_change_history_qweb'
     _description = 'Vehicle Change History Report'
 
     def get_vehicle_history(self, date_range):
+        """Method to get vehicle history."""
         engine_obj = self.env['engine.history']
         color_obj = self.env['color.history']
         vin_obj = self.env['vin.history']
@@ -54,8 +58,7 @@ class VehicalChangeHistoryReport(models.AbstractModel):
                     'wo_close_date': engine_rec.workorder_id and
                     engine_rec.workorder_id.date_close or False,
                     'remarks': engine_rec.note or '',
-                    'seq': seq + 'a'
-                    }
+                    'seq': seq + 'a'}
                 vehicle_change_history.append(values)
         if color_ids:
             for color_rec in color_ids:
@@ -86,8 +89,7 @@ class VehicalChangeHistoryReport(models.AbstractModel):
                     'wo_close_date': color_rec.workorder_id and
                     color_rec.workorder_id.date_close or False,
                     'remarks': color_rec.note or '',
-                    'seq': seq + 'b'
-                    }
+                    'seq': seq + 'b'}
                 vehicle_change_history.append(cvalues)
         if vin_ids:
             for vin_rec in vin_ids:
@@ -116,8 +118,7 @@ class VehicalChangeHistoryReport(models.AbstractModel):
                     'wo_close_date': vin_rec.workorder_id and
                     vin_rec.workorder_id.date_close or False,
                     'remarks': vin_rec.note or '',
-                    'seq': seq + 'c'
-                    }
+                    'seq': seq + 'c'}
                 vehicle_change_history.append(vvalues)
         if vehicle_change_history:
             vehicle_change_history = sorted(vehicle_change_history,
@@ -141,5 +142,4 @@ class VehicalChangeHistoryReport(models.AbstractModel):
             'data': data['form'],
             'docs': docs,
             'time': time,
-            'get_vehicle_history': result
-        }
+            'get_vehicle_history': result}

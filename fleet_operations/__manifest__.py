@@ -2,18 +2,25 @@
 # See LICENSE file for full copyright and licensing details.
 
 {
+    # Module Information
     'name': 'Fleet Operations',
-    'author': 'Serpent Consulting Services Pvt. Ltd.',
-    'version': '12.0.1.0.0',
-    'license': 'AGPL-3',
-    'website': 'http://www.serpentcs.com',
     'category': 'Managing vehicles and contracts',
-    'description': """
-        This module extends the fleet module and provides extra features and
-        manage fleet operations.
+    'sequence': 1,
+    'version': '12.0.1.0.0',
+    'license': 'LGPL-3',
+    'summary': """This module extends the fleet functionality and
+     provides extra features and manage fleet operations.
     """,
+    'description': """This module extends the fleet functionality and
+    provides extra features and manage fleet operations.
+    """,
+    # Website
+    'author': 'Serpent Consulting Services Pvt. Ltd.',
+    'website': 'http://www.serpentcs.com',
+    # Dependencies
     'depends': ['fleet', 'stock', 'account',
                 'web_widget_multi_image'],
+    # Data
     'data': [
               'security/fleet_security.xml',
               'security/ir.model.access.csv',
@@ -39,7 +46,8 @@
               'wizard/xlsx_report_view.xml',
               'wizard/vehicle_change_history_view.xml',
               'wizard/repair_line_summary_view.xml',
-              ],
+    ],
+    # Technical
     'demo': ['data/fleet_extended_demo.xml'],
     'installable': True,
     'application': True,

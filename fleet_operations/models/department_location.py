@@ -1,10 +1,12 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Service department models."""
 
-from odoo import models, fields
+from odoo import fields, models
 
 
 class ServiceDepartment(models.Model):
+    """service Department."""
+
     _name = 'service.department'
     _description = 'Service Department'
 

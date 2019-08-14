@@ -1,17 +1,20 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Daily Parts issuance Wizard Report."""
 
-import base64
 from datetime import datetime, timedelta
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+
 from odoo import models
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class DailyPartWizard(models.AbstractModel):
+    """Daily Part Wizard."""
+
     _name = 'report.fleet_operations.daily.parts.issuance.wizard.xls'
     _description = 'Daily Parts Insurance'
 
     def get_heading(self):
+        """Report Method."""
         head_title = {'name': '',
                       'rev_no': '',
                       'doc_no': '',
@@ -28,6 +31,7 @@ class DailyPartWizard(models.AbstractModel):
         return head_title
 
     def get_work_order_detail(self, date_range):
+        """Report Method to Get Work Order Details."""
         work_order_obj = self.env['task.line']
         start = datetime.strptime(date_range.get('date_from'), '%Y-%m-%d')
         end = datetime.strptime(date_range.get('date_to'), '%Y-%m-%d')
@@ -82,6 +86,7 @@ class DailyPartWizard(models.AbstractModel):
         return workorder_detail
 
     def generate_xlsx_report(self, workbook, data, parts_data):
+        """Generate xlsx format print report."""
         worksheet = workbook.add_worksheet('daily_parts_issuance_wizard')
         worksheet.set_column(0, 0, 10)
         worksheet.set_column(1, 1, 15)
@@ -188,4 +193,3 @@ class DailyPartWizard(models.AbstractModel):
                 line_row += 1
                 counter += 1
                 worksheet.write(line_row, line_col, '********', border)
-                

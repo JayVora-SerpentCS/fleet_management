@@ -1,17 +1,23 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
-import io
-import xlwt
-import time
+"""Fleet Outstanding Wo Report."""
+
 import base64
+import io
+import time
+
 from odoo import models
+
+import xlwt
 
 
 class NextServiceByOdometer(models.AbstractModel):
+    """Next Service By Odometer."""
+
     _name = 'report.fleet_operations.next.services.by.odometer.xls'
     _description = 'Next Service by Odometer'
 
     def generate_service_odometer_xlsx_report(self, res, next_service):
+        """Method to generate service odometer xlsx report."""
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('next_service_by_odometer')
         worksheet.col(0).width = 5000
@@ -28,10 +34,11 @@ class NextServiceByOdometer(models.AbstractModel):
         font.bold = True
         font.name = 'Arial'
         font.height = 200
-        pattern = xlwt.Pattern()
+        # pattern = xlwt.Pattern()
         tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
-        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
+            pattern: pattern solid')
 
         row = 0
         row += 1

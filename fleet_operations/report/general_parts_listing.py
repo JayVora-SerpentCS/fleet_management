@@ -1,17 +1,22 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""General parts listing Report."""
 
-import io
-import xlwt
 import base64
+import io
+
 from odoo import models
+
+import xlwt
 
 
 class GeneralPartsListingXlsx(models.AbstractModel):
+    """General Parts Listing Xlsxl."""
+
     _name = 'report.fleet_operations.general.parts.listing.xls'
     _description = 'Genral Parts Listing Reports'
 
     def generate_xlsx_report(self, parts):
+        """Method to generate xlsx report."""
         # add the worksheet
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('product')
@@ -31,16 +36,17 @@ class GeneralPartsListingXlsx(models.AbstractModel):
         worksheet.col(13).width = 6000
         worksheet.col(14).width = 6000
         worksheet.col(15).width = 6000
-        
+
         font = xlwt.Font()
-        borders = xlwt.Borders()
+        # borders = xlwt.Borders()
         font.bold = True
         font.name = 'Arial'
         font.height = 200
-        pattern = xlwt.Pattern()
+        # pattern = xlwt.Pattern()
         size = xlwt.easyxf('font: bold 1; font: name 1; font: height 220')
-        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; pattern: pattern solid')
-        
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
+            pattern: pattern solid')
+
         row = 0
         for pr in parts:
             row += 1

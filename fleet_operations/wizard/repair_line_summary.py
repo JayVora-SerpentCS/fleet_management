@@ -1,11 +1,13 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Repair Line Summary."""
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 from odoo.exceptions import Warning
 
 
 class RepairLineSummary(models.TransientModel):
+    """Repair Line Summary."""
+
     _name = 'repair.line.summary'
     _description = 'Repair Line Summary'
 
@@ -14,6 +16,7 @@ class RepairLineSummary(models.TransientModel):
 
     @api.multi
     def print_report(self):
+        """Print Report."""
         for rec in self:
             if rec.date_from > rec.date_to:
                 raise Warning(_("User Error!\n'Date To' must be \

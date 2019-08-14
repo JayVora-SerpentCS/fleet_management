@@ -1,16 +1,21 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Asset Model."""
+
+from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
+
+from odoo import _, api, fields, models
 
 import odoo.addons.decimal_precision as dp
-from datetime import datetime
-from odoo import models, fields, api, _
-from dateutil.relativedelta import relativedelta
-from odoo.tools import misc, DEFAULT_SERVER_DATE_FORMAT
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from odoo.exceptions import ValidationError, except_orm
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, misc
 
 
 class AccountMove(models.Model):
+    """Account Move."""
+
     _inherit = "account.move"
     _description = "Account Entry"
 
@@ -26,6 +31,7 @@ class AccountMove(models.Model):
 
     @api.multi
     def assert_balanced(self):
+        """Method Assert Balanced."""
         if not self.ids:
             return True
         prec = self.env['decimal.precision'].precision_get('Account')
@@ -43,6 +49,8 @@ class AccountMove(models.Model):
 
 
 class AccountAssetAsset(models.Model):
+    """Account Asset Asset."""
+
     _inherit = 'account.asset.asset'
     _description = 'Asset'
 
@@ -50,9 +58,11 @@ class AccountAssetAsset(models.Model):
     @api.depends('image')
     def _has_image(self):
         """
-        This method is used to set Property image.
-        @param self: The object pointer
-        @return: True or False
+        Method is used to set Property image.
+
+        @param self: The object pointer.
+
+        @return: True or False.
         """
         result = False
         for p in self:
@@ -65,8 +75,10 @@ class AccountAssetAsset(models.Model):
                  'tenancy_property_ids.date_start')
     def occupancy_calculation(self):
         """
-        This Method is used to calculate occupancy rate.
-        @param self: The object pointer
+        Method is used to calculate occupancy rate.
+
+        @param self: The object pointer.
+
         @return: Calculated Occupancy Rate.
         """
         occ_rate = 0
@@ -98,8 +110,10 @@ class AccountAssetAsset(models.Model):
                  'tenancy_property_ids', 'tenancy_property_ids.rent')
     def roi_calculation(self):
         """
-        This Method is used to Calculate ROI(Return On Investment).
-        @param self: The object pointer
+        Method is used to Calculate ROI(Return On Investment).
+
+        @param self: The object pointer.
+
         @return: Calculated Return On Investment.
         """
         cost_of_investment = 0
@@ -123,8 +137,10 @@ class AccountAssetAsset(models.Model):
     @api.depends('roi')
     def ten_year_roi_calculation(self):
         """
-        This Method is used to Calculate ten years ROI(Return On Investment).
-        @param self: The object pointer
+        Method is used to Calculate ten years ROI(Return On Investment).
+
+        @param self: The object pointer.
+
         @return: Calculated Return On Investment.
         """
         self.ten_year_roi = 10 * self.roi
@@ -134,9 +150,12 @@ class AccountAssetAsset(models.Model):
                  'tenancy_property_ids.rent_schedule_ids')
     def cal_simulation(self):
         """
-        This Method is used to calculate simulation
+        Method is used to calculate simulation.
+
         which is used in Financial Performance Report.
-        @param self: The object pointer
+
+        @param self: The object pointer.
+
         @return: Calculated Simulation Amount.
         """
         amt = 0.0
@@ -155,9 +174,12 @@ class AccountAssetAsset(models.Model):
                  'tenancy_property_ids.rent_schedule_ids.move_check')
     def cal_revenue(self):
         """
-        This Method is used to calculate revenue
+        Method is used to calculate revenue.
+
         which is used in Financial Performance Report.
-        @param self: The object pointer
+
+        @param self: The object pointer.
+
         @return: Calculated Revenue Amount.
         """
         amt = 0.0
@@ -175,7 +197,8 @@ class AccountAssetAsset(models.Model):
     @api.depends('salvage_value', 'depreciation_line_ids')
     def _amount_residual(self):
         """
-        @param self: The object pointer
+        @param self: The object pointer.
+
         @return: Calculated Residual Amount.
         """
         total_amount = 0.0
@@ -193,8 +216,10 @@ class AccountAssetAsset(models.Model):
     @api.depends('gfa_feet', 'unit_price')
     def cal_total_price(self):
         """
-        This Method is used to Calculate Total Price.
-        @param self: The object pointer
+        Method is used to Calculate Total Price.
+
+        @param self: The object pointer.
+
         @return: Calculated Total Price.
         """
         self.total_price = self.gfa_feet * self.unit_price
@@ -398,8 +423,10 @@ class AccountAssetAsset(models.Model):
     @api.model
     def create(self, vals):
         """
-        This Method is used to overrides orm create method.
-        @param self: The object pointer
+        Method is used to overrides orm create method.
+
+        @param self: The object pointer.
+
         @param vals: dictionary of fields value.
         """
         if not vals:
@@ -418,8 +445,10 @@ class AccountAssetAsset(models.Model):
     @api.multi
     def write(self, vals):
         """
-        This Method is used to overrides orm write method.
-        @param self: The object pointer
+        Method is used to overrides orm write method.
+
+        @param self: The object pointer.
+
         @param vals: dictionary of fields value.
         """
         if 'state' in vals and vals['state'] == 'new_draft':
@@ -441,9 +470,11 @@ class AccountAssetAsset(models.Model):
     @api.onchange('parent_id')
     def parent_property_onchange(self):
         """
-        when you change Parent Property, this method will change
+        Method will change.
+
         address fields values accordingly.
-        @param self: The object pointer
+
+        @param self: The object pointer.
         """
         if self.parent_id:
             self.street = self.parent_id.street or ''
@@ -457,9 +488,12 @@ class AccountAssetAsset(models.Model):
     @api.onchange('gfa_feet')
     def sqft_to_meter(self):
         """
-        when you change GFA Feet, this method will change
+        Method will change.
+
         GFA Meter field value accordingly.
-        @param self: The object pointer
+
+        @param self: The object pointer.
+
         @return: Calculated GFA Feet.
         """
         meter_val = 0.0
@@ -470,9 +504,12 @@ class AccountAssetAsset(models.Model):
     @api.onchange('unit_price', 'gfa_feet')
     def unit_price_calc(self):
         """
-        when you change Unit Price and GFA Feet fields value,
-        this method will change Total Price and Purchase Value
+        Unit Price and GFA Feet fields value.
+
+        Method will change Total Price and Purchase Value.
+
         accordingly.
+
         @param self: The object pointer
         """
         if self.unit_price and self.gfa_feet:
@@ -484,8 +521,9 @@ class AccountAssetAsset(models.Model):
     @api.multi
     def edit_status(self):
         """
-        This method is used to change property state to book.
-        @param self: The object pointer
+        Method is used to change property state to book.
+
+        @param self: The object pointer.
         """
         for rec in self:
             if not rec.property_manager:
@@ -496,8 +534,9 @@ class AccountAssetAsset(models.Model):
     @api.multi
     def edit_status_book(self):
         """
-        This method will open a wizard.
-        @param self: The object pointer
+        Method will open a wizard.
+
+        @param self: The object pointer.
         """
         cr, uid, context = self.env.args
         context = dict(context)
@@ -518,9 +557,11 @@ class AccountAssetAsset(models.Model):
     @api.multi
     def open_url(self):
         """
-        This Button method is used to open a URL
+        Button method is used to open a URL.
+
         according fields values.
-        @param self: The object pointer
+
+        @param self: The object pointer.
         """
         for property_brw in self:
             if property_brw.street:
@@ -536,14 +577,14 @@ class AccountAssetAsset(models.Model):
                     (property_brw.country_id.name and (
                         property_brw.country_id.name + ',') or ' ')
                 rep_address = address_path.replace(' ', '+')
-                URL = "http://maps.google.com/?q=%s&ie=UTF8&z=18" % (
+                url = "http://maps.google.com/?q=%s&ie=UTF8&z=18" % (
                     rep_address)
                 return {
                     'name': 'Go to website',
                     'res_model': 'ir.actions.act_url',
                     'type': 'ir.actions.act_url',
                     'target': 'current',
-                    'url': URL
+                    'url': url
                 }
             else:
                 raise except_orm(
@@ -553,16 +594,18 @@ class AccountAssetAsset(models.Model):
     @api.multi
     def button_normal(self):
         """
-        This Button method is used to change property state to On Lease.
-        @param self: The object pointer
+        Button method is used to change property state to On Lease.
+
+        @param self: The object pointer.
         """
         return self.write({'state': 'normal'})
 
     @api.multi
     def button_sold(self):
         """
-        This Button method is used to change property state to Sold.
-        @param self: The object pointer
+        Button method is used to change property state to Sold.
+
+        @param self: The object pointer.
         """
         data = self
         if not data.expense_account_id:
@@ -593,29 +636,33 @@ class AccountAssetAsset(models.Model):
     @api.multi
     def button_close(self):
         """
-        This Button method is used to change property state to Sale.
-        @param self: The object pointer
+        Button method is used to change property state to Sale.
+
+        @param self: The object pointer.
         """
         return self.write({'state': 'close'})
 
     @api.multi
     def button_cancel(self):
         """
-        This Button method is used to change property state to Cancel.
-        @param self: The object pointer
+        Button method is used to change property state to Cancel.
+
+        @param self: The object pointer.
         """
         return self.write({'state': 'cancel'})
 
     @api.multi
     def button_draft(self):
         """
-        This Button method is used to change property state to Available.
-        @param self: The object pointer
+        Button method is used to change property state to Available.
+
+        @param self: The object pointer.
         """
         return self.write({'state': 'draft'})
 
     @api.multi
     def date_addition(self, starting_date, end_date, period):
+        """Method to date."""
         date_list = []
         if period == 'monthly':
             while starting_date < end_date:

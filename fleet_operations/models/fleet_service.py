@@ -1,16 +1,18 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
-
+"""Fleet Service model."""
 import time
-from datetime import datetime, date, timedelta
-from odoo import models, fields, _, api
-from odoo.tools import misc, DEFAULT_SERVER_DATE_FORMAT
+from datetime import date, datetime, timedelta
+
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError, Warning
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, misc
 from odoo.tools.float_utils import float_compare
-from odoo.exceptions import Warning, ValidationError
 
 
 class ServiceCategory(models.Model):
+    """Service Category Model."""
+
     _name = 'service.category'
     _description = 'Vehicle Service Category'
 
@@ -18,27 +20,33 @@ class ServiceCategory(models.Model):
 
     @api.multi
     def copy(self, default=None):
+        """Copy Method."""
         if not default:
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
 
     @api.multi
     def unlink(self):
+        """Unlink Method."""
         raise Warning(_('You can\'t delete record !'))
 
 
 class FleetVehicleLogServices(models.Model):
+    """Fleet Vehicle Log Services Model."""
+
     _inherit = 'fleet.vehicle.log.services'
     _order = 'id desc'
 
     @api.multi
     def copy(self, default=None):
+        """Copy Method."""
         if not default:
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
 
     @api.multi
     def unlink(self):
+        """Unlink Method."""
         for rec in self:
             if rec.state != 'draft':
                 raise Warning(_('You can\'t delete Work Order which \
@@ -47,6 +55,7 @@ class FleetVehicleLogServices(models.Model):
 
     @api.onchange('vehicle_id')
     def get_vehicle_info(self):
+        """Onchange Method."""
         if self.vehicle_id:
             vehicle = self.vehicle_id
             self.vechical_type_id = vehicle.vechical_type_id and \
@@ -64,6 +73,7 @@ class FleetVehicleLogServices(models.Model):
 
     @api.multi
     def action_confirm(self):
+        """Action Confirm Of Button."""
         sequence = self.env['ir.sequence'].next_by_code('work.order.sequence')
         mod_obj = self.env['ir.model.data']
         cr, uid, context = self.env.args
@@ -114,6 +124,7 @@ class FleetVehicleLogServices(models.Model):
 
     @api.multi
     def action_done(self):
+        """Action Done Of Button."""
         cr, uid, context = self.env.args
         context = dict(context)
         odometer_increment = 0.0
@@ -223,10 +234,9 @@ class FleetVehicleLogServices(models.Model):
 
     @api.multi
     def encode_history(self):
-        """
-        This method is used to create the Encode Qty
-        History for Team Trip from WO
-        ------------------------------------------------------
+        """Method is used to create the Encode Qty.
+
+        History for Team Trip from WO.
         """
         wo_part_his_obj = self.env['workorder.parts.history.details']
         if self._context.get('team_trip', False):
@@ -266,6 +276,7 @@ class FleetVehicleLogServices(models.Model):
 
     @api.multi
     def action_reopen(self):
+        """Method Action Reopen."""
         for order in self:
             if order.vehicle_id:
                 if order.vehicle_id.state == 'write-off':
@@ -304,6 +315,7 @@ class FleetVehicleLogServices(models.Model):
 
     @api.multi
     def write(self, vals):
+        """Method Write."""
         if not self._context:
             self._context = {}
         for work_order in self:
@@ -341,6 +353,7 @@ class FleetVehicleLogServices(models.Model):
 
     @api.model
     def service_send_mail(self):
+        """Method to send mail."""
         model_obj = self.env['ir.model.data']
         send_obj = self.env['mail.template']
         res = model_obj.get_object_reference('fleet_operations',
@@ -365,6 +378,7 @@ class FleetVehicleLogServices(models.Model):
 
     @api.model
     def default_get(self, fields):
+        """Method Default get."""
         vehicle_obj = self.env['fleet.vehicle']
         repair_type_obj = self.env['repair.type']
         if self._context.get('active_ids', False):
@@ -392,6 +406,7 @@ class FleetVehicleLogServices(models.Model):
 
     @api.onchange('cost_subtype_id')
     def get_repair_line(self):
+        """Method get repair line."""
         repair_lines = []
         if self.cost_subtype_id:
             for repair_type in self.cost_subtype_id.repair_type_ids:
@@ -426,6 +441,7 @@ class FleetVehicleLogServices(models.Model):
 
     @api.model
     def get_warehouse(self):
+        """Method Get Warehouse."""
         warehouse_ids = self.env['stock.warehouse'].search([])
         if warehouse_ids:
             return warehouse_ids.ids[0]
@@ -443,6 +459,7 @@ class FleetVehicleLogServices(models.Model):
 
     @api.constrains('date', 'date_complete')
     def check_complete_date(self):
+        """Method to check complete date."""
         for vehicle in self:
             if vehicle.date and vehicle.date_complete:
                 if vehicle.date_complete < vehicle.date:
@@ -528,9 +545,9 @@ class FleetVehicleLogServices(models.Model):
                                 moment of this log')
 
     def _get_odometer(self):
-        FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
+        fleetvehicalodometer = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = FleetVehicalOdometer.search([
+            vehicle_odometer = fleetvehicalodometer.search([
                 ('vehicle_id', '=', record.vehicle_id.id)], limit=1,
                 order='value desc')
             if vehicle_odometer:
@@ -539,9 +556,9 @@ class FleetVehicleLogServices(models.Model):
                 record.odometer = 0
 
     def _set_odometer(self):
-        FleetVehicalOdometer = self.env['fleet.vehicle.odometer']
+        fleetvehicalodometer = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = FleetVehicalOdometer.search(
+            vehicle_odometer = fleetvehicalodometer.search(
                 [('vehicle_id', '=', record.vehicle_id.id)],
                 limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
@@ -551,10 +568,12 @@ class FleetVehicleLogServices(models.Model):
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
                         'vehicle_id': record.vehicle_id.id}
-                FleetVehicalOdometer.create(data)
+                fleetvehicalodometer.create(data)
 
 
 class WorkorderPartsHistoryDetails(models.Model):
+    """Workorder Parts History Details."""
+
     _name = 'workorder.parts.history.details'
     _description = 'Workorder Parts History'
     _order = 'used_date desc'
@@ -581,6 +600,8 @@ class WorkorderPartsHistoryDetails(models.Model):
 
 
 class TripPartsHistoryDetails(models.Model):
+    """Trip Parts History Details."""
+
     _name = 'trip.encoded.history'
     _description = 'Trip History'
 
@@ -629,6 +650,8 @@ class TripPartsHistoryDetails(models.Model):
 
 
 class TripPartsHistoryDetailsTemp(models.Model):
+    """Trip Parts History Details Temp."""
+
     _name = 'trip.encoded.history.temp'
     _description = 'Trip History Temparery'
 
@@ -641,6 +664,8 @@ class TripPartsHistoryDetailsTemp(models.Model):
 
 
 class StockPicking(models.Model):
+    """Stock Picking."""
+
     _inherit = 'stock.picking'
     _order = 'id desc'
 
@@ -655,6 +680,7 @@ class StockPicking(models.Model):
 
     @api.model
     def create(self, vals):
+        """Overridden create method."""
         if vals.get('origin', False) and vals['origin'][0] == ':':
             vals.update({'origin': vals['origin'][1:]})
         if vals.get('origin', False) and vals['origin'][-1] == ':':
@@ -663,6 +689,7 @@ class StockPicking(models.Model):
 
     @api.multi
     def write(self, vals):
+        """Overridden write method."""
         if vals.get('origin', False) and vals['origin'][0] == ':':
             vals.update({'origin': vals['origin'][1:]})
         if vals.get('origin', False) and vals['origin'][-1] == ':':
@@ -671,10 +698,12 @@ class StockPicking(models.Model):
 
     @api.multi
     def unlink(self):
+        """Unlink method."""
         raise Warning(_('You can\'t delete record !'))
 
     @api.multi
     def do_partial_from_migration_script(self):
+        """Do partial from migration script method."""
         assert len(self._ids) == 1, 'Partial picking processing \
                                     may only be done one at a time.'
         stock_move = self.env['stock.move']
@@ -788,6 +817,8 @@ class StockPicking(models.Model):
 
 
 class StockMove(models.Model):
+    """Stock Move."""
+
     _inherit = 'stock.move'
     _order = 'id desc'
 
@@ -798,9 +829,7 @@ class StockMove(models.Model):
 
     @api.onchange('picking_type_id', 'location_id', 'location_dest_id')
     def onchange_move_type(self):
-        """
-        On change of move type gives sorce and destination location.
-        """
+        """On change of move type gives sorce and destination location."""
         if not self.location_id and not self.location_dest_id:
             mod_obj = self.env['ir.model.data']
             location_source_id = 'stock_location_stock'
@@ -822,7 +851,7 @@ class StockMove(models.Model):
 
     @api.model
     def _default_location_source(self):
-        location_id = super(stock_move, self)._default_location_source()
+        location_id = super(StockMove, self)._default_location_source()
         if self._context.get('stock_warehouse_id', False):
             warehouse_pool = self.env['stock.warehouse']
             for rec in warehouse_pool.browse(
@@ -833,7 +862,7 @@ class StockMove(models.Model):
 
     @api.model
     def _default_location_destination(self):
-        location_dest_id = super(stock_move, self)._default_location_source()
+        location_dest_id = super(StockMove, self)._default_location_source()
         if self._context.get('stock_warehouse_id', False):
             warehouse_pool = self.env['stock.warehouse']
             for rec in warehouse_pool.browse(
@@ -845,6 +874,8 @@ class StockMove(models.Model):
 
 
 class FleetWorkOrderSearch(models.TransientModel):
+    """Fleet Workorder search model."""
+
     _name = 'fleet.work.order.search'
     _description = 'Fleet Workorder Search'
     _rec_name = 'state'
@@ -874,6 +905,7 @@ class FleetWorkOrderSearch(models.TransientModel):
 
     @api.constrains('issue_date_from', 'issue_date_to')
     def check_issue_date(self):
+        """Method to check issue date."""
         for vehicle in self:
             if vehicle.issue_date_to:
                 if vehicle.issue_date_to < vehicle.issue_date_from:
@@ -882,6 +914,7 @@ class FleetWorkOrderSearch(models.TransientModel):
 
     @api.constrains('open_date_from', 'open_date_to')
     def check_open_date(self):
+        """Method to check open date."""
         for vehicle in self:
             if vehicle.open_date_to:
                 if vehicle.open_date_to < vehicle.open_date_from:
@@ -890,6 +923,7 @@ class FleetWorkOrderSearch(models.TransientModel):
 
     @api.constrains('close_date_form', 'close_date_to')
     def check_close_date(self):
+        """Method to check close date."""
         for vehicle in self:
             if vehicle.close_date_to:
                 if vehicle.close_date_to < vehicle.close_date_form:
@@ -898,6 +932,7 @@ class FleetWorkOrderSearch(models.TransientModel):
 
     @api.multi
     def get_work_order_detail_by_advance_search(self):
+        """Method to get work order detail by advance search."""
         vehicle_obj = self.env['fleet.vehicle']
         work_order_obj = self.env['fleet.vehicle.log.services']
         part_line_obj = self.env['task.line']
@@ -946,9 +981,7 @@ class FleetWorkOrderSearch(models.TransientModel):
                     for wk_order in wrk_ids:
                         if wk_order.date_open:
                             diff = (datetime.today() -
-                                    datetime.strptime(
-                                        wk_order.date_open,
-                                        DEFAULT_SERVER_DATE_FORMAT)).days
+                                    wk_order.date_open).days
                             if str(diff) == wk_order.open_days:
                                 order_ids.append(wk_order.id)
                     order_ids = sorted(set(order_ids))
@@ -1017,6 +1050,8 @@ class FleetWorkOrderSearch(models.TransientModel):
 
 
 class ResUsers(models.Model):
+    """Res Users Model."""
+
     _inherit = 'res.users'
 
     usersql_id = fields.Char(string='User ID',
@@ -1024,12 +1059,16 @@ class ResUsers(models.Model):
 
 
 class IrAttachment(models.Model):
+    """Ir Attachmentmodel."""
+
     _inherit = 'ir.attachment'
 
     wo_attachment_id = fields.Many2one('fleet.vehicle.log.services')
 
 
 class ServiceTask(models.Model):
+    """Service Task Model."""
+
     _name = 'service.task'
     _description = 'Maintenance of the Task '
 
@@ -1042,6 +1081,8 @@ class ServiceTask(models.Model):
 
 
 class TaskLine(models.Model):
+    """Task Line Model."""
+
     _name = 'task.line'
     _description = 'Task Line'
 
@@ -1068,7 +1109,7 @@ class TaskLine(models.Model):
                 raise Warning(_('You can\'t \
                             enter used quanity as Zero!'))
             # if rec.qty > rec.product_id.qty_available:
-            #     raise Warning(_("You can't add used QTY more then avilable!!"))
+            #     raise Warning(_("You can't add used QTY more then avilable!!"
             # if rec.qty_hand <= 0.0:
             #     raise Warning(
             # _("You can't used product which on hand not available!!"))
@@ -1090,12 +1131,11 @@ class TaskLine(models.Model):
     @api.model
     def create(self, vals):
         """
-        Overridden create method to add the issuer
+        Overridden create method to add the issuer.
+
         of the part and the time when it was issued.
-        -----------------------------------------------------------
-        @param self : object pointer
         """
-        product_obj = self.env['product.product']
+        # product_obj = self.env['product.product']
         if not vals.get('issued_by', False):
             vals.update({'issued_by': self._uid})
         if not vals.get('date_issued', False):
@@ -1116,10 +1156,9 @@ class TaskLine(models.Model):
     @api.multi
     def write(self, vals):
         """
-        Overridden write method to add the issuer of the part
+        Overridden write method to add the issuer of the part.
+
         and the time when it was issued.
-        ---------------------------------------------------------------
-        @param self : object pointer
         """
         if vals.get('product_id', False)\
             or vals.get('qty', False)\
@@ -1160,6 +1199,8 @@ class TaskLine(models.Model):
 
 
 class RepairType(models.Model):
+    """Repair Type."""
+
     _name = 'repair.type'
     _description = 'Vehicle Repair Type'
 
@@ -1168,21 +1209,26 @@ class RepairType(models.Model):
 
     @api.multi
     def copy(self, default=None):
+        """Copy method."""
         if not default:
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
 
     @api.multi
     def unlink(self):
+        """Unlink method."""
         raise Warning(_('You can\'t delete record !'))
 
 
 class ServiceRepairLine(models.Model):
+    """Service Repair Line."""
+
     _name = 'service.repair.line'
     _description = 'Service Repair Line'
 
     @api.constrains('date', 'target_date')
     def check_target_completion_date(self):
+        """Method to check target compleion date."""
         for vehicle in self:
             if vehicle.issue_date and vehicle.target_date:
                 if vehicle.target_date < vehicle.issue_date:
@@ -1191,6 +1237,7 @@ class ServiceRepairLine(models.Model):
 
     @api.constrains('target_date', 'date_complete')
     def check_etic_date(self):
+        """Method to check etic date."""
         for vehicle in self:
             if vehicle.target_date and vehicle.date_complete:
                 if vehicle.target_date > vehicle.date_complete:
@@ -1209,6 +1256,8 @@ class ServiceRepairLine(models.Model):
 
 
 class FleetServiceType(models.Model):
+    """Fleet Service Type."""
+
     _inherit = 'fleet.service.type'
 
     category = fields.Selection([('contract', 'Contract'),

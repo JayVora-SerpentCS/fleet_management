@@ -1,11 +1,14 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Vehicle Change History."""
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
+
 from odoo.exceptions import Warning
 
 
 class VehicleChangeHistory(models.TransientModel):
+    """Vehicle Change History."""
+
     _name = 'vehicle.change.history'
     _description = 'Vehicle Change History'
 
@@ -15,6 +18,7 @@ class VehicleChangeHistory(models.TransientModel):
 
     @api.multi
     def print_report(self):
+        """Method to print report."""
         for rec in self:
             if not rec.date_from and not rec.date_to and not rec.fleet_id:
                 raise Warning(_("User Error!\n 'Please select criteria \
@@ -23,11 +27,9 @@ class VehicleChangeHistory(models.TransientModel):
                 raise Warning(_("User Error!\n Date To' must \
                             be greater than 'Date From'!"))
             data = {
-                'form': {
-                     'date_from': rec.date_from or False,
-                     'date_to': rec.date_to or False,
-                     'fleet_id': rec.fleet_id and rec.fleet_id.id or False
-                },
+                'form': {'date_from': rec.date_from or False,
+                         'date_to': rec.date_to or False,
+                         'fleet_id': rec.fleet_id and rec.fleet_id.id or False}
             }
             return self.env.ref(
                 'fleet_operations.action_report_vehicle_change_history').\

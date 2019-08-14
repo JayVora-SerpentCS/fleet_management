@@ -1,11 +1,15 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Vehicle Change History."""
+
 
 from datetime import date
-from odoo import models, fields, api
+
+from odoo import api, fields, models
 
 
 class WizardWritOffCancelReason(models.TransientModel):
+    """Wizard Writeoff Cancel Reason."""
+
     _name = 'writeoff.cancel.reason'
     _description = 'Vehicle Write-off Cancel Reason'
 
@@ -13,10 +17,11 @@ class WizardWritOffCancelReason(models.TransientModel):
 
     @api.multi
     def cancel_writoff(self):
+        """Method Cancel Writeoff."""
         if self._context.get('active_id', False) and \
-                    self._context.get('active_model', False):
+                self._context.get('active_model', False):
             for reason in self.env[self._context['active_model']].browse(
-                                self._context.get('active_id', False)):
+                    self._context.get('active_id', False)):
                 if reason.vehicle_id:
                     reason.vehicle_id.write({'state': 'inspection',
                                              'last_change_status_date':
@@ -25,4 +30,4 @@ class WizardWritOffCancelReason(models.TransientModel):
                               'state': 'cancel', 'date_cancel': date.today(),
                               'cancel_by_id': self._uid
                               })
-        return True
+            return True

@@ -1,10 +1,12 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Res Users Models."""
 
-from odoo import models, api
+from odoo import api, models
 
 
 class ResUsers(models.Model):
+    """res users models."""
+
     _inherit = 'res.users'
 
     @api.model

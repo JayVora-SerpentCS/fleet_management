@@ -1,14 +1,17 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
+"""Need to order Report."""
 
 from odoo import models
 
 
 class NeedToOrderPartsXlsx(models.AbstractModel):
+    """Need To Order Parts Xlsx."""
+
     _name = 'report.fleet_operations.need.to.order.parts.xls'
     _description = 'Need to Order Parts Report'
 
     def generate_xlsx_report(self, workbook, data, parts):
+        """Method to generate xlsx report."""
         # add the worksheet
         worksheet = workbook.add_worksheet('product')
         worksheet.set_column(0, 0, 10)
