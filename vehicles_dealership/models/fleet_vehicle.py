@@ -33,8 +33,10 @@ class FleetVehicle(models.Model):
     @api.multi
     def write(self, vals):
         """Overrridden method to update the product information."""
+        ctx = dict(self.env.context)
         res = super(FleetVehicle, self).write(vals)
         update_prod_vals = {}
+        ctx.update({"from_vehicle_write": True})
         for vehicle in self:
             if vehicle.product_id:
                 if vals.get('image_medium', False):
@@ -44,7 +46,8 @@ class FleetVehicle(models.Model):
                         vals.get('license_plate', False):
                     update_prod_vals.update({'name': vehicle.name})
                 if update_prod_vals:
-                    vehicle.product_id.write(update_prod_vals)
+                    vehicle.product_id.\
+                        with_context(ctx).write(update_prod_vals)
         return res
 
 
@@ -80,7 +83,8 @@ class ProductProduct(models.Model):
         ctx = dict(self.env.context)
         res = super(ProductProduct, self).write(vals)
         for product in self:
-            if ctx and not ctx.get("from_vehicle_create", False):
+            if ctx and not ctx.get("from_vehicle_create", False) and \
+                    not ctx.get("from_vehicle_write", False):
                 vehicles = self.env['fleet.vehicle'].search([
                     ('product_id', '=', product.id)])
                 update_vehicle_vals = {}
