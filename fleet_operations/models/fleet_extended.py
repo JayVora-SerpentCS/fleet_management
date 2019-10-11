@@ -51,10 +51,10 @@ class FleetOperations(models.Model):
                       because it is already write-off'))
         return super(FleetOperations, self).copy(default=default)
 
-    @api.multi
-    def unlink(self):
-        """Unlink Method."""
-        raise Warning(_('You can\'t delete record !'))
+    # @api.multi
+    # def unlink(self):
+    #     """Unlink Method."""
+    #     raise Warning(_('You can\'t delete record !'))
 
     @api.multi
     def update_history(self):
@@ -509,10 +509,10 @@ class ColorHistory(models.Model):
         raise Warning(_('You can\'t duplicate record!'))
         return super(ColorHistory, self).copy(default=default)
 
-    @api.multi
-    def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(ColorHistory, self).unlink()
+    # @api.multi
+    # def unlink(self):
+    #     raise Warning(_('You can\'t delete record !'))
+    #     return super(ColorHistory, self).unlink()
 
 
 class EngineHistory(models.Model):
@@ -534,10 +534,10 @@ class EngineHistory(models.Model):
         raise Warning(_('You can\'t duplicate record!'))
         return super(EngineHistory, self).copy(default=default)
 
-    @api.multi
-    def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(EngineHistory, self).unlink()
+    # @api.multi
+    # def unlink(self):
+    #     raise Warning(_('You can\'t delete record !'))
+    #     return super(EngineHistory, self).unlink()
 
 
 class VinHistory(models.Model):
@@ -559,10 +559,10 @@ class VinHistory(models.Model):
         raise Warning(_('You can\'t duplicate record!'))
         return super(VinHistory, self).copy(default=default)
 
-    @api.multi
-    def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(VinHistory, self).unlink()
+    # @api.multi
+    # def unlink(self):
+    #     raise Warning(_('You can\'t delete record !'))
+    #     return super(VinHistory, self).unlink()
 
 
 class TireHistory(models.Model):
@@ -592,10 +592,10 @@ class TireHistory(models.Model):
         raise Warning(_('You can\'t duplicate record!'))
         return super(TireHistory, self).copy(default=default)
 
-    @api.multi
-    def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(TireHistory, self).unlink()
+    # @api.multi
+    # def unlink(self):
+    #     raise Warning(_('You can\'t delete record !'))
+    #     return super(TireHistory, self).unlink()
 
 
 class BatteryHistory(models.Model):
@@ -624,10 +624,10 @@ class BatteryHistory(models.Model):
         raise Warning(_('You can\'t duplicate record!'))
         return super(BatteryHistory, self).copy(default=default)
 
-    @api.multi
-    def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(BatteryHistory, self).unlink()
+    # @api.multi
+    # def unlink(self):
+    #     raise Warning(_('You can\'t delete record !'))
+    #     return super(BatteryHistory, self).unlink()
 
 
 class PendingRepairType(models.Model):
@@ -668,10 +668,10 @@ class VehicalDivison(models.Model):
         raise Warning(_('You can\'t duplicate record!'))
         return super(VehicalDivison, self).copy(default=default)
 
-    @api.multi
-    def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(VehicalDivison, self).unlink()
+    # @api.multi
+    # def unlink(self):
+    #     raise Warning(_('You can\'t delete record !'))
+    #     return super(VehicalDivison, self).unlink()
 
 
 class VehicleType(models.Model):
@@ -715,10 +715,10 @@ class VehicleLocation(models.Model):
         raise Warning(_('You can\'t duplicate record!'))
         return super(VehicleLocation, self).copy(default=default)
 
-    @api.multi
-    def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(VehicleLocation, self).unlink()
+    # @api.multi
+    # def unlink(self):
+    #     raise Warning(_('You can\'t delete record !'))
+    #     return super(VehicleLocation, self).unlink()
 
 
 class VehicleDepartment(models.Model):
@@ -735,10 +735,10 @@ class VehicleDepartment(models.Model):
         raise Warning(_('You can\'t duplicate record!'))
         return super(VehicleDepartment, self).copy(default=default)
 
-    @api.multi
-    def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(VehicleDepartment, self).unlink()
+    # @api.multi
+    # def unlink(self):
+    #     raise Warning(_('You can\'t delete record !'))
+    #     return super(VehicleDepartment, self).unlink()
 
 
 class ColorColor(models.Model):
@@ -787,10 +787,10 @@ class ResPartnerExtended(models.Model):
         raise Warning(_('You can\'t duplicate record!'))
         return super(ResPartnerExtended, self).copy(default=default)
 
-    @api.multi
-    def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(ResPartnerExtended, self).unlink()
+    # @api.multi
+    # def unlink(self):
+    #     raise Warning(_('You can\'t delete record !'))
+    #     return super(ResPartnerExtended, self).unlink()
 
 
 class FleetWittenOff(models.Model):
@@ -907,10 +907,10 @@ class FleetWittenOff(models.Model):
         raise Warning(_('You can\'t duplicate record!'))
         return super(FleetWittenOff, self).copy(default=default)
 
-    @api.multi
-    def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
-        return super(FleetWittenOff, self).unlink()
+    # @api.multi
+    # def unlink(self):
+    #     raise Warning(_('You can\'t delete record !'))
+    #     return super(FleetWittenOff, self).unlink()
 
     @api.model
     def default_get(self, fields):
@@ -1187,9 +1187,9 @@ class VehicleUniqueSequence(models.Model):
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
 
-    @api.multi
-    def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
+    # @api.multi
+    # def unlink(self):
+    #     raise Warning(_('You can\'t delete record !'))
 
 
 class NextIncrementNumber(models.Model):
@@ -1307,9 +1307,9 @@ class VehicleFuelLog(models.Model):
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
 
-    @api.multi
-    def unlink(self):
-        raise Warning(_('You can\'t delete record !'))
+    # @api.multi
+    # def unlink(self):
+    #     raise Warning(_('You can\'t delete record !'))
 
 
 class FleetVehicleCost(models.Model):
