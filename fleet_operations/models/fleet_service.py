@@ -25,10 +25,10 @@ class ServiceCategory(models.Model):
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
 
-    @api.multi
-    def unlink(self):
-        """Unlink Method."""
-        raise Warning(_('You can\'t delete record !'))
+    # @api.multi
+    # def unlink(self):
+    #     """Unlink Method."""
+    #     raise Warning(_('You can\'t delete record !'))
 
 
 class FleetVehicleLogServices(models.Model):
@@ -696,10 +696,10 @@ class StockPicking(models.Model):
             vals.update({'origin': vals['origin'][:-1]})
         return super(StockPicking, self).write(vals)
 
-    @api.multi
-    def unlink(self):
-        """Unlink method."""
-        raise Warning(_('You can\'t delete record !'))
+    # @api.multi
+    # def unlink(self):
+    #     """Unlink method."""
+    #     raise Warning(_('You can\'t delete record !'))
 
     @api.multi
     def do_partial_from_migration_script(self):
@@ -1214,10 +1214,10 @@ class RepairType(models.Model):
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
 
-    @api.multi
-    def unlink(self):
-        """Unlink method."""
-        raise Warning(_('You can\'t delete record !'))
+    # @api.multi
+    # def unlink(self):
+    #     """Unlink method."""
+    #     raise Warning(_('You can\'t delete record !'))
 
 
 class ServiceRepairLine(models.Model):
