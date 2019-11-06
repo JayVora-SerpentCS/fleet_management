@@ -1,15 +1,10 @@
 # See LICENSE file for full copyright and licensing details.
 """Renew Tenancy Wizard."""
 
-from datetime import datetime
-
 from dateutil.relativedelta import relativedelta
-
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError, Warning
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DT
-
-from odoo.tools import misc
+from odoo.tools import misc, DEFAULT_SERVER_DATETIME_FORMAT as DT
 
 
 class WizardRenewTenancy(models.TransientModel):
@@ -18,39 +13,32 @@ class WizardRenewTenancy(models.TransientModel):
     _name = 'renew.tenancy'
     _description = 'Vehicle Renew Tenacy'
 
-    start_date = fields.Datetime(
-        string='Start Date')
-    end_date = fields.Datetime(
-        compute='_create_date',
-        store=True,
-        string='End Date')
-    rent_type_id = fields.Many2one(
-        comodel_name='rent.type',
-        string='Rent Type',
-        required=True)
-
-    @api.multi
     @api.depends('rent_type_id', 'start_date')
     def _create_date(self):
         for rec in self:
             if rec.rent_type_id and rec.start_date:
                 if rec.rent_type_id.renttype == 'Months':
-                    rec.end_date = \
-                        datetime.strptime(rec.start_date, DT) + \
+                    rec.end_date = rec.start_date + \
                         relativedelta(months=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Years':
-                    rec.end_date = datetime.strptime(rec.start_date, DT) + \
+                    rec.end_date = rec.start_date + \
                         relativedelta(years=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Weeks':
-                    rec.end_date = datetime.strptime(rec.start_date, DT) + \
+                    rec.end_date = rec.start_date + \
                         relativedelta(weeks=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Days':
-                    rec.end_date = datetime.strptime(str(rec.start_date), DT) \
+                    rec.end_date = rec.start_date \
                         + relativedelta(days=int(rec.rent_type_id.duration))
                 if rec.rent_type_id.renttype == 'Hours':
-                    rec.end_date = datetime.strptime(rec.start_date, DT) + \
+                    rec.end_date = rec.start_date + \
                         relativedelta(hours=int(rec.rent_type_id.duration))
         return True
+
+    start_date = fields.Datetime(string='Start Date')
+    end_date = fields.Datetime(compute='_create_date',
+                               string='End Date', store=True)
+    rent_type_id = fields.Many2one('rent.type',
+                                   string='Rent Type', required=True)
 
     @api.constrains('start_date', 'end_date')
     def check_date_overlap(self):
@@ -66,38 +54,29 @@ class WizardRenewTenancy(models.TransientModel):
     @api.multi
     def renew_contract(self):
         """Button Method is used to Renew Tenancy."""
-        cr, uid, context = self.env.args
-        context = dict(context)
-        if context is None:
-            context = {}
-        modid = self.env['ir.model.data'].get_object_reference(
-            'fleet_rent', 'property_analytic_view_form')
-        if context.get('active_ids', []):
+        view_id = self.env['ir.model.data'].get_object_reference(
+            'fleet_rent', 'view_fleet_rent_form')
+        if self._context.get('active_id', False):
             for rec in self:
-                start_d = datetime.strptime(
-                    str(rec.start_date), DT)
-                end_d = datetime.strptime(
-                    str(rec.end_date), DT)
-                if start_d > end_d:
-                    raise Warning(
-                        _('Please Insert End Date Greater Than Start Date'))
-                act_prop = self.env['account.analytic.account'].browse(
-                    context['active_ids'])
-                act_prop.write({
-                    'date_start': rec.start_date,
-                    'date': rec.end_date,
-                    'rent_type_id': rec.rent_type_id and
-                    rec.rent_type_id.id or False,
-                    'state': 'draft',
-                    'rent_entry_chck': False,
+                if rec.start_date > rec.end_date:
+                    raise Warning(_('Please Insert End Date \
+                        Greater Than Start Date !!'))
+                rent_rec = self.env['fleet.rent'].browse(self._context['active_id'])
+                for rent in rent_rec:
+                    if rec.start_date and rec.start_date < rent.date_close:
+                        raise Warning('Start Date should be Greater Than Rent Close Date.')
+                rent = rent_rec.copy()
+                rent.write({
+                    'rent_type_id': rec.rent_type_id and rec.rent_type_id.id or False,
+                    'name': 'New'
                 })
-        self.env.args = cr, uid, misc.frozendict(context)
+
         return {
+            'view_id': view_id and len(view_id) >= 2 and view_id[1] or False,
             'view_mode': 'form',
-            'view_id': modid[1],
             'view_type': 'form',
-            'res_model': 'account.analytic.account',
+            'res_model': 'fleet.rent',
             'type': 'ir.actions.act_window',
             'target': 'current',
-            'res_id': context['active_ids'][0],
+            'res_id': rent.id,
         }

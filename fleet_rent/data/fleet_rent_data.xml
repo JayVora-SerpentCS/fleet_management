@@ -1,46 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
-        <!--Scheduler of Email for Vehicle Rent -->
-        <record model="ir.cron" id="fleet_mail_rent">
-            <field name="name">Fleet Rent Alert</field>
-            <field name="state">code</field>
-            <field name="code">model.rent_send_mail()</field>
-            <field name="interval_number">1</field>
-            <field name="interval_type">minutes</field>
-            <field name="numbercall">-1</field>
-            <field name="doall" eval="False"/>
-            <field name="model_id" ref="analytic.model_account_analytic_account"/>
-        </record>
-        <!-- Out going Email configuration -->
-        <record id="ir_mail_server_service" model="ir.mail_server">
-            <field name="name">Vehicle Rent Expire</field>
-            <field name="smtp_host">smtp.gmail.com</field>
-            <field eval="465" name="smtp_port"/>
-            <field eval="11" name="sequence"/>
-            <field name="smtp_encryption">ssl</field>
-        </record>
-        <!--Email template  for Vehicle Service-->
-        <record id="email_template_edi_rent" model="mail.template">
-            <field name="name">Fleet Vehicle Rent Expire Date</field>
-            <field name="subject">Fleet Vehicle Rent Expire Date</field>
-            <field name="email_from">${user.partner_id.email}</field>
-            <field name="email_to">${object.tenant_id.email}</field>
-            <field name="model_id" ref="model_account_analytic_account"/>
-            <field name="mail_server_id" ref="ir_mail_server_service"/>
-            <field name="auto_delete" eval="False"/>
-            <field name="body_html"><![CDATA[
-			<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
-			           <p>Hello ${object.tenant_id.name}</p>
-			           <p>We are remind you that your rental vehicle ${object.vehicle_id.name  or ''} 's rent end date is ${object.date or ''}.
-			        <div style="width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;">
-			            <span style="color: #222; margin-bottom: 5px; display: block; ">
-			            <p>Thank you,</p>
-			            <p>Regards,</p>
-			            <p>Fleet Manager</p>
-			        </div>
-			</div>
-            ]]></field>
-        </record>
-    </data>
+    <!--Cron to send Email Notification for Vehicle Rent -->
+    <record id="fleet_mail_rent" model="ir.cron">
+        <field name="name">Fleet Rent Alert</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="fleet_rent.model_fleet_rent"/>
+        <field name="code">model.rent_send_mail()</field>
+        <field name="state">code</field>
+    </record>
+
+    <!-- Email template for Fleet Vehicle Rent Expire Date -->
+    <record id="email_template_edi_rent" model="mail.template">
+        <field name="name">Fleet Vehicle Rent Expire Date</field>
+        <field name="subject">Fleet Vehicle Rent Expire Date</field>
+        <field name="email_from">${object.company_id and object.company_id.email or user.partner_id and user.partner_id.email or ''}</field>
+        <field name="email_to">${object.tenant_id and object.tenant_id.email or ''}</field>
+        <field name="model_id" ref="model_fleet_rent"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="body_html"><![CDATA[
+            <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+	           <p>Hello ${object.tenant_id.name}</p>
+	           <p>We are remind you that your rental vehicle ${object.vehicle_id.name  or ''} 's rent end date is ${object.date or ''}.
+               </p>
+	           <div style="width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;">
+		            <span style="color: #222; margin-bottom: 5px; display: block;">
+		            <p>Thank you,</p>
+		            <p>Regards,</p>
+		            <p>Fleet Manager</p>
+                    </span>
+		      </div>
+		</div>
+        ]]></field>
+    </record>
+
+    <record id="email_rent_remainder_template" model="mail.template">
+        <field name="name">Fleet Vehicle Rent Remainder Template</field>
+        <field name="subject">Fleet Vehicle Rent Remainder Template</field>
+        <field name="email_from">${object.company_id and object.company_id.email or user.partner_id and user.partner_id.email or ''}</field>
+        <field name="email_to">${object.fleet_rent_id.tenant_id and object.fleet_rent_id.tenant_id.email or ''}</field>
+        <field name="model_id" ref="model_tenancy_rent_schedule"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="body_html"><![CDATA[
+            <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+               <p>Hello ${object.fleet_rent_id.tenant_id.name}</p>
+               <p>We are remind you that your rental vehicle ${object.vehicle_id.name  or ''} 's rent end date is ${object.date or ''}.
+               </p>
+               <div style="width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;">
+                    <span style="color: #222; margin-bottom: 5px; display: block;">
+                    <p>Thank you,</p>
+                    <p>Regards,</p>
+                    <p>Fleet Manager</p>
+                    </span>
+              </div>
+        </div>
+        ]]></field>
+    </record>
+
+    <record id="email_rent_complete_template" model="mail.template">
+        <field name="name">Fleet Vehicle Rent Compelte Template</field>
+        <field name="subject">Fleet Vehicle Rent Compelte Template</field>
+        <field name="email_from">${object.company_id and object.company_id.email or user.partner_id and user.partner_id.email or ''}</field>
+        <field name="email_to">${object.fleet_rent_id.tenant_id and object.fleet_rent_id.tenant_id.email or ''}</field>
+        <field name="model_id" ref="model_tenancy_rent_schedule"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="body_html"><![CDATA[
+            <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+               <p>Hello ${object.fleet_rent_id.tenant_id.name}</p>
+               <p>Your Rent Payment is complete.
+               </p>
+               <div style="width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;">
+                    <span style="color: #222; margin-bottom: 5px; display: block;">
+                    <p>Thank you,</p>
+                    <p>Regards,</p>
+                    <p>Fleet Manager</p>
+                    </span>
+              </div>
+        </div>
+        ]]></field>
+    </record>
+
 </odoo>

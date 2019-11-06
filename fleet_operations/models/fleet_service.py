@@ -25,24 +25,13 @@ class ServiceCategory(models.Model):
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
 
-    # @api.multi
-    # def unlink(self):
-    #     """Unlink Method."""
-    #     raise Warning(_('You can\'t delete record !'))
-
 
 class FleetVehicleLogServices(models.Model):
     """Fleet Vehicle Log Services Model."""
 
     _inherit = 'fleet.vehicle.log.services'
     _order = 'id desc'
-
-    @api.multi
-    def copy(self, default=None):
-        """Copy Method."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+    _rec_name = 'name'
 
     @api.multi
     def unlink(self):
@@ -62,19 +51,102 @@ class FleetVehicleLogServices(models.Model):
                 vehicle.vechical_type_id.id or False,
             self.purchaser_id = vehicle.driver_id and \
                 vehicle.driver_id.id or False,
-            self.fmp_id = vehicle.name or "",
+            # self.fmp_id = vehicle.name or "",
 #            self.main_type = vehicle.main_type or False,
             self.f_brand_id = vehicle.f_brand_id and \
                 vehicle.f_brand_id.id or False,
             self.vehical_division_id = vehicle.vehical_division_id and \
                 vehicle.vehical_division_id.id or False,
-            self.vechical_location_id = vehicle.vechical_location_id and \
-                vehicle.vechical_location_id.id or False,
+            self.vehicle_location_id = vehicle.vehicle_location_id and \
+                vehicle.vehicle_location_id.id or False,
+
+    @api.multi
+    def action_create_invoice(self):
+        """Invoice for Deposit Receive."""
+        for service in self:
+            deposit_inv_ids = self.env['account.invoice'].search([
+              ('vehicle_service_id', '=', service.id), ('type', '=', 'out_invoice'),
+                ('state', 'in', ['draft', 'open', 'in_payment'])
+                ])
+            if deposit_inv_ids:
+                raise Warning(_("Deposit invoice is already Pending\n"
+                    "Please proceed that deposit invoice first"))
+
+        self.ensure_one()
+        inv_ser_line = [(0, 0, {
+                'product_id': self.cost_subtype_id.id,
+                'name': 'Service Cost',
+                'price_unit': self.amount,
+                'account_id': self.vehicle_id.income_acc_id.id or False,
+            })]
+        for line in self.parts_ids:
+            inv_line_values = {
+                'product_id': line.product_id.id or False,
+                'name': 'Service Cost',
+                'price_unit': line.price_unit or 0.00,
+                'quantity': line.qty,
+                'account_id': self.vehicle_id.income_acc_id.id or False
+            }
+            inv_ser_line.append((0, 0, inv_line_values))
+        inv_values = {
+            'partner_id': self.purchaser_id.id,
+            'type': 'out_invoice',
+            'date_invoice': self.date_open,
+            'date_due': self.date_complete,
+            'invoice_line_ids': inv_ser_line,
+            'account_id': self.purchaser_id and
+            self.purchaser_id.property_account_receivable_id.id or False,
+            'vehicle_service_id': self.id,
+            'is_invoice_receive': True,
+        }
+        acc_inv = self.env['account.invoice'].create(inv_values)
+
+    @api.multi
+    def action_return_invoice(self):
+        """Invoice for Deposit Return."""
+
+        for service in self:
+            deposit_inv_ids = self.env['account.invoice'].search([
+              ('vehicle_service_id', '=', service.id), ('type', '=', 'out_refund'),
+                ('state', 'in', ['draft', 'open', 'in_payment'])
+                ])
+            if deposit_inv_ids:
+                raise Warning(_("Deposit Return invoice is already Pending\n"
+                    "Please proceed that deposit invoice first"))
+
+        self.ensure_one()
+        inv_ser_line = [(0, 0, {
+                'product_id': self.cost_subtype_id.id,
+                'name': 'Service Cost',
+                'price_unit': self.amount,
+                'account_id': self.vehicle_id.income_acc_id.id or False,
+            })]
+        for line in self.parts_ids:
+            inv_line_values = {
+                'product_id': line.product_id.id or False,
+                'name': 'Service Cost',
+                'price_unit': line.price_unit or 0.00,
+                'quantity': line.qty,
+                'account_id': self.vehicle_id.income_acc_id.id or False
+            }
+            inv_ser_line.append((0, 0, inv_line_values))
+        inv_values = {
+            'partner_id': self.purchaser_id.id,
+            'type': 'out_refund',
+            'date_invoice': self.date_open,
+            'date_due': self.date_complete,
+            'invoice_line_ids': inv_ser_line,
+            'account_id': self.purchaser_id and
+            self.purchaser_id.property_account_receivable_id.id or False,
+            'vehicle_service_id': self.id,
+            'is_invoice_return': True,
+        }
+        acc_inv = self.env['account.invoice'].create(inv_values)
 
     @api.multi
     def action_confirm(self):
         """Action Confirm Of Button."""
-        sequence = self.env['ir.sequence'].next_by_code('work.order.sequence')
+        sequence = self.env['ir.sequence'].next_by_code('service.order.sequence')
         mod_obj = self.env['ir.model.data']
         cr, uid, context = self.env.args
         context = dict(context)
@@ -122,6 +194,7 @@ class FleetVehicleLogServices(models.Model):
                         }
         return True
 
+
     @api.multi
     def action_done(self):
         """Action Done Of Button."""
@@ -153,21 +226,34 @@ class FleetVehicleLogServices(models.Model):
                         'type': 'ir.actions.act_window',
                         'target': 'new',
                     }
+
         increment_ids = increment_obj.search([
             ('vehicle_id', '=', work_order.vehicle_id.id)])
         if not increment_ids:
-            raise Warning(_("Next Increment \
-                    Odometer is not set for %s please set it from \
-                    configuration!") % (work_order.vehicle_id.name))
+            return {
+                'name': ('Next Service Day'),
+                'res_model': 'update.next.service.config',
+                'type': 'ir.actions.act_window',
+                'view_id': False,
+                'view_mode': 'form',
+                'view_type': 'form',
+                'target': 'new'
+            }
         if increment_ids:
             odometer_increment = increment_ids[0].number
+
         next_service_day_ids = next_service_day_obj.search([
             ('vehicle_id', '=', work_order.vehicle_id.id)])
         if not next_service_day_ids:
-            raise Warning(_("Next service days is \
-                     not configured for %s please set it from \
-                     configuration!") % (work_order.vehicle_id.name))
-
+            return {
+                'name': ('Next Service Day'),
+                'res_model': 'update.next.service.config',
+                'type': 'ir.actions.act_window',
+                'view_id': False,
+                'view_mode': 'form',
+                'view_type': 'form',
+                'target': 'new'
+            }
         work_order_vals = {}
         for work_order in self:
             self.env.args = cr, uid, misc.frozendict(context)
@@ -278,23 +364,27 @@ class FleetVehicleLogServices(models.Model):
     def action_reopen(self):
         """Method Action Reopen."""
         for order in self:
-            if order.vehicle_id:
-                if order.vehicle_id.state == 'write-off':
-                    raise Warning(_("You can\'t Re-open this \
-                            work order which vehicle is in write-off state!"))
-                elif order.vehicle_id.state == 'in_progress':
-                    raise Warning(_("Previous work order is not \
-                         complete, complete that work order first than \
-                          you can Re-Open work order!"))
-                elif order.vehicle_id.state == 'draft' or \
-                        order.vehicle_id.state == 'complete':
-                    raise Warning(_("Re-open work order can \
-                                only be generated either vehicle status \
-                                    is in Inspection or Released!"))
-                order.vehicle_id.write({'work_order_close': False,
-                                        'state': 'in_progress'})
-            self.write({'state': 'confirm'})
-        return True
+            order.write({'state': 'done'})
+            new_reopen_service = order.copy()
+            new_reopen_service.write({
+                'source_service_id': order.id,
+                'date_open': False,
+                'date_close': False,
+                'cost_subtype_id': False,
+                'amount': False,
+                'team_id': False,
+                'closed_by': False,
+                'repair_line_ids': [(6, 0, [])],
+                'parts_ids': [(6, 0, [])],
+            })
+            return {
+                'view_mode': 'form',
+                'view_type': 'form',
+                'res_model': 'fleet.vehicle.log.services',
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': new_reopen_service.id,
+            }
 
     @api.depends('parts_ids')
     def _compute_get_total(self):
@@ -303,15 +393,6 @@ class FleetVehicleLogServices(models.Model):
             for line in rec.parts_ids:
                 total += line.total
             rec.sub_total = total
-
-    @api.constrains('sub_total', 'amount')
-    def _check_amount(self):
-        for rec in self:
-            if rec.amount:
-                if rec.amount < rec.sub_total:
-                    raise Warning(
-                        _("Total Price should be greater or equals to\
-                         total amount of parts!!"))
 
     @api.multi
     def write(self, vals):
@@ -337,9 +418,9 @@ class FleetVehicleLogServices(models.Model):
                         'vehical_division_id': work_order.vehicle_id and
                         work_order.vehicle_id.vehical_division_id and
                         work_order.vehicle_id.vehical_division_id.id or False,
-                        'vechical_location_id': work_order.vehicle_id and
-                        work_order.vehicle_id.vechical_location_id and
-                        work_order.vehicle_id.vechical_location_id.id or False,
+                        'vehicle_location_id': work_order.vehicle_id and
+                        work_order.vehicle_id.vehicle_location_id and
+                        work_order.vehicle_id.vehicle_location_id.id or False,
                     })
         return super(FleetVehicleLogServices, self).write(vals)
 
@@ -356,9 +437,9 @@ class FleetVehicleLogServices(models.Model):
         """Method to send mail."""
         model_obj = self.env['ir.model.data']
         send_obj = self.env['mail.template']
+        server_obj = self.env['ir.mail_server']
         res = model_obj.get_object_reference('fleet_operations',
                                              'email_template_edi_fleet')
-        server_obj = self.env['ir.mail_server']
         record_obj = model_obj.get_object_reference('fleet_operations',
                                                     'ir_mail_server_service')
         self._cr.execute("SELECT id FROM fleet_vehicle WHERE \
@@ -413,23 +494,23 @@ class FleetVehicleLogServices(models.Model):
                 repair_lines.append((0, 0, {'repair_type_id': repair_type.id}))
             self.repair_line_ids = repair_lines
 
-    @api.multi
-    def _get_open_days(self):
-        for work_order in self:
-            diff = 0
-            if work_order.state == 'confirm':
-                diff = (datetime.today() -
-                        datetime.strptime(str(work_order.date_open),
-                                          DEFAULT_SERVER_DATE_FORMAT)).days
-                work_order.open_days = str(diff)
-            elif work_order.state == 'done':
-                diff = (datetime.strptime(str(work_order.date_close),
-                                          DEFAULT_SERVER_DATE_FORMAT) -
-                        datetime.strptime(str(work_order.date_open),
-                                          DEFAULT_SERVER_DATE_FORMAT)).days
-                work_order.open_days = str(diff)
-            else:
-                work_order.open_days = str(diff)
+    # @api.multi
+    # def _get_open_days(self):
+    #     for work_order in self:
+    #         diff = 0
+    #         if work_order.state == 'confirm':
+    #             diff = (datetime.today() -
+    #                     datetime.strptime(str(work_order.date_open),
+    #                                       DEFAULT_SERVER_DATE_FORMAT)).days
+    #             work_order.open_days = str(diff)
+    #         elif work_order.state == 'done':
+    #             diff = (datetime.strptime(str(work_order.date_close),
+    #                                       DEFAULT_SERVER_DATE_FORMAT) -
+    #                     datetime.strptime(str(work_order.date_open),
+    #                                       DEFAULT_SERVER_DATE_FORMAT)).days
+    #             work_order.open_days = str(diff)
+    #         else:
+    #             work_order.open_days = str(diff)
 
     @api.multi
     def _get_total_parts_line(self):
@@ -463,16 +544,16 @@ class FleetVehicleLogServices(models.Model):
         for vehicle in self:
             if vehicle.date and vehicle.date_complete:
                 if vehicle.date_complete < vehicle.date:
-                    raise ValidationError('ETIC Date Should Be \
+                    raise ValidationError('Estimated Date Should Be \
                     Greater Than Issue Date.')
 
     wono_id = fields.Integer(string='WONo',
                              help="Take this field for data migration")
     id = fields.Integer(string='ID')
-    purchaser_id = fields.Many2one('res.partner', string='Purchaser')
+    purchaser_id = fields.Many2one('res.partner', string='Purchaser', related='vehicle_id.driver_id')
     name = fields.Char(string='Work Order', size=32, readonly=True,
-                       translate=True)
-    fmp_id = fields.Char(string="Vehicle ID", size=64)
+                       translate=True, copy=False)
+    fmp_id = fields.Char(string="Vehicle ID", size=64, related='vehicle_id.name')
     wo_tax_amount = fields.Float(string='Tax', readonly=True)
     priority = fields.Selection([('normal', 'NORMAL'), ('high', 'HIGH'),
                                  ('low', 'LOW')], default='normal',
@@ -485,7 +566,8 @@ class FleetVehicleLogServices(models.Model):
     date_close = fields.Date(string='Date Close',
                              help="Closing Date of Work Order")
     closed_by = fields.Many2one('res.users', string='Closed By')
-    etic = fields.Boolean(string='ETIC', help="Estimated Time In Completion",
+    etic = fields.Boolean(string='Estimated Time',
+                          help="Estimated Time In Completion",
                           default=True)
     wrk_location_id = fields.Many2one('stock.location',
                                       string='Location ', readonly=True)
@@ -495,14 +577,13 @@ class FleetVehicleLogServices(models.Model):
                                string='Service Task')
     parts_ids = fields.One2many('task.line', 'fleet_service_id',
                                 string='Parts')
-    note = fields.Text(string='Notes')
-    date_child = fields.Date(related='cost_id.date', string='Date', store=True)
-    inv_ref = fields.Many2one('account.invoice', string='Invoice Reference',
-                              readonly=True)
-    sub_total = fields.Float(compute="_compute_get_total", string='Total Cost',
-                             default=0.0, store=True)
+    note = fields.Text(string='Log Notes')
+    date_child = fields.Date(related='cost_id.date', string='Cost Date',
+                             store=True)
+    sub_total = fields.Float(compute="_compute_get_total", string='Total Parts Amount',
+                             store=True)
     state = fields.Selection([('draft', 'New'),
-                              ('confirm', 'Open'), ('done', 'Close'),
+                              ('confirm', 'Open'), ('done', 'Done'),
                               ('cancel', 'Cancel')], string='Status',
                              default='draft', readonly=True)
     warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse')
@@ -526,7 +607,7 @@ class FleetVehicleLogServices(models.Model):
     out_going_ids = fields.One2many('stock.picking', 'work_order_out_id',
                                     string='Out Going', readonly=True)
     vechical_type_id = fields.Many2one('vehicle.type', string='Vechical Type')
-    open_days = fields.Char(compute="_get_open_days", string="Open Days")
+    # open_days = fields.Char(compute="_get_open_days", string="Open Days")
     already_closed = fields.Boolean("Already Closed?")
     total_parts_line = fields.Integer(compute="_get_total_parts_line",
                                       string='Total Parts')
@@ -537,12 +618,54 @@ class FleetVehicleLogServices(models.Model):
                                  string='Main Type')
     f_brand_id = fields.Many2one('fleet.vehicle.model.brand', string='Make')
     vehical_division_id = fields.Many2one('vehicle.divison', string='Division')
-    vechical_location_id = fields.Many2one('service.department',
+    vechical_location_id = fields.Many2one(related="vehicle_id.vehicle_location_id",
                                            string='Registration State')
     odometer = fields.Float(compute='_get_odometer', inverse='_set_odometer',
                             string='Last Odometer',
                             help='Odometer measure of the vehicle at the \
                                 moment of this log')
+    service_amount = fields.Float(compute="total_service_amount", string="Total Service Amount")
+    source_service_id = fields.Many2one('fleet.vehicle.log.services', string="Service", copy=False)
+    invoice_count = fields.Integer(compute="count_invoice", string="Invoice Count")
+    return_inv_count = fields.Integer(compute="return_invoice", string="Return Invoice")
+    amount_receive = fields.Boolean(compute="invoice_receive", string="Invoice Receive")
+    amount_return = fields.Boolean(string="Invoice Return")
+    service_invoice_id = fields.One2many('account.invoice', 'vehicle_service_id',
+        string="Service Invoice")
+    service_ref_invoice_id = fields.One2many('account.invoice', 'vehicle_service_id',
+        string="Service Refund Invoice")
+
+    @api.multi
+    def invoice_receive(self):
+        for rec in self:
+            inv_obj = self.env['account.invoice'].search([('type', '=', 'out_invoice'),
+                ('vehicle_service_id', '=', rec.id), ('state', '=', ['draft', 'paid']),
+                ('is_invoice_receive', '=', True)])
+            if inv_obj:
+                rec.amount_receive = True
+            else:
+                rec.amount_receive = False
+
+    @api.multi
+    def count_invoice(self):
+        obj = self.env['account.invoice']
+        for serv in self:
+            serv.invoice_count = obj.search_count([
+                ('type', '=', 'out_invoice'),
+                ('vehicle_service_id', '=', serv.id)])
+
+    @api.multi
+    def return_invoice(self):
+        obj = self.env['account.invoice']
+        for serv in self:
+            serv.return_inv_count = obj.search_count([
+                ('type', '=', 'out_refund'),
+                ('vehicle_service_id', '=', serv.id)])
+
+    @api.depends('amount', 'sub_total')
+    def total_service_amount(self):
+        for rec in self:
+            rec.service_amount = rec.sub_total + rec.amount
 
     def _get_odometer(self):
         fleetvehicalodometer = self.env['fleet.vehicle.odometer']
@@ -660,7 +783,7 @@ class TripPartsHistoryDetailsTemp(models.Model):
     used_qty = fields.Float(string='Used Qty',
                             help='The Quantity that is used in in Workorder')
     work_order_id = fields.Many2one('fleet.vehicle.log.services',
-                                    string="Work Order")
+                                    string="Service Order")
 
 
 class StockPicking(models.Model):
@@ -695,11 +818,6 @@ class StockPicking(models.Model):
         if vals.get('origin', False) and vals['origin'][-1] == ':':
             vals.update({'origin': vals['origin'][:-1]})
         return super(StockPicking, self).write(vals)
-
-    # @api.multi
-    # def unlink(self):
-    #     """Unlink method."""
-    #     raise Warning(_('You can\'t delete record !'))
 
     @api.multi
     def do_partial_from_migration_script(self):
@@ -894,12 +1012,12 @@ class FleetWorkOrderSearch(models.TransientModel):
     vehical_division_id = fields.Many2one('vehicle.divison',
                                           string="Division")
     work_order_id = fields.Many2one('fleet.vehicle.log.services',
-                                    string='Work Order No')
+                                    string='Service Order')
     fmp_id = fields.Many2one('fleet.vehicle', string='Vehicle ID')
     cost_subtype_id = fields.Many2one('fleet.service.type',
                                       string='Service Type')
     repair_type_id = fields.Many2one('repair.type', string='Repair Type')
-    open_days = fields.Char(string='Open Days', size=16)
+    # open_days = fields.Char(string='Open Days', size=16)
     make_id = fields.Many2one("fleet.vehicle.model.brand", string="Make")
     model_id = fields.Many2one("fleet.vehicle.model", string="Model")
 
@@ -911,6 +1029,14 @@ class FleetWorkOrderSearch(models.TransientModel):
                 if vehicle.issue_date_to < vehicle.issue_date_from:
                     raise ValidationError('Issue To Date Should Be \
                     Greater Than Last Issue From Date.')
+
+
+    @api.constrains('issue_date_to')
+    def check_issue_date(self):
+        """Method to check issue date."""
+        for vehicle in self:
+            if vehicle.issue_date_to:
+                raise ValidationError('Please Enter Issue From Date.')
 
     @api.constrains('open_date_from', 'open_date_to')
     def check_open_date(self):
@@ -975,16 +1101,16 @@ class FleetWorkOrderSearch(models.TransientModel):
                     order_ids = sorted(set(order_ids))
 
             fmp_id = order.fmp_id and order.fmp_id.id or False
-            if order.open_days:
-                wrk_ids = work_order_obj.search([])
-                if wrk_ids:
-                    for wk_order in wrk_ids:
-                        if wk_order.date_open:
-                            diff = (datetime.today() -
-                                    wk_order.date_open).days
-                            if str(diff) == wk_order.open_days:
-                                order_ids.append(wk_order.id)
-                    order_ids = sorted(set(order_ids))
+            # if order.open_days:
+            #     wrk_ids = work_order_obj.search([])
+            #     if wrk_ids:
+            #         for wk_order in wrk_ids:
+            #             if wk_order.date_open:
+            #                 diff = (datetime.today() -
+            #                         wk_order.date_open).days
+            #                 if str(diff) == wk_order.open_days:
+            #                     order_ids.append(wk_order.id)
+            #         order_ids = sorted(set(order_ids))
 
             if fmp_id:
                 work_order_ids = work_order_obj.search([
@@ -1031,8 +1157,9 @@ class FleetWorkOrderSearch(models.TransientModel):
                 domain += [('date_close', '=', order.close_date_form)]
 
             if order.part_id or order.work_order_id or order.repair_type_id \
-                    or order.fmp_id or order.vehical_division_id or \
-                    order.open_days or order.make_id or order.model_id:
+                    or order.fmp_id or order.vehical_division_id:
+                    # or \
+                    # order.open_days or order.make_id or order.model_id:
                 domain += [('id', 'in', order_ids)]
 
             return {
@@ -1093,7 +1220,7 @@ class TaskLine(models.Model):
     product_id = fields.Many2one('product.product', string='Part')
     qty_hand = fields.Float(string='Qty on Hand',
                             help='Quantity on Hand')
-    qty = fields.Float(string='Used')
+    qty = fields.Float(string='Used', default=1.0)
     product_uom = fields.Many2one('uom.uom', string='UOM')
     price_unit = fields.Float(string='Unit Cost')
     total = fields.Float(string='Total Cost')
@@ -1108,25 +1235,27 @@ class TaskLine(models.Model):
             if rec.qty <= 0:
                 raise Warning(_('You can\'t \
                             enter used quanity as Zero!'))
-            # if rec.qty > rec.product_id.qty_available:
-            #     raise Warning(_("You can't add used QTY more then avilable!!"
-            # if rec.qty_hand <= 0.0:
-            #     raise Warning(
-            # _("You can't used product which on hand not available!!"))
 
     @api.onchange('product_id', 'qty')
     def _onchage_product(self):
-        if self.product_id:
-            prod = self.product_id
-            if prod.in_active_part:
-                self.product_id = False
-                raise Warning(_('You can\'t select \
-                         part which is In-Active!'))
-            self.qty_hand = prod.qty_available or 0.0
-            self.product_uom = prod.uom_id or False
-            self.price_unit = prod.list_price or 0.0
-        if self.qty and self.price_unit:
-            self.total = self.qty * self.price_unit
+        for rec in self:
+            if rec.product_id:
+                prod = rec.product_id
+                if prod.in_active_part:
+                    rec.product_id = False
+                    raise Warning(_('You can\'t select \
+                             part which is In-Active!'))
+                rec.qty_hand = prod.qty_available or 0.0
+                rec.product_uom = prod.uom_id or False
+                rec.price_unit = prod.list_price or 0.0
+            if rec.qty and rec.price_unit:
+                rec.total = rec.qty * rec.price_unit
+
+    @api.onchange('price_unit')
+    def _onchange_price_unit(self):
+        for rec in self:
+            if rec.qty and rec.price_unit:
+                rec.total = rec.qty * rec.price_unit
 
     @api.model
     def create(self, vals):
@@ -1214,12 +1343,6 @@ class RepairType(models.Model):
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
 
-    # @api.multi
-    # def unlink(self):
-    #     """Unlink method."""
-    #     raise Warning(_('You can\'t delete record !'))
-
-
 class ServiceRepairLine(models.Model):
     """Service Repair Line."""
 
@@ -1241,8 +1364,8 @@ class ServiceRepairLine(models.Model):
         for vehicle in self:
             if vehicle.target_date and vehicle.date_complete:
                 if vehicle.target_date > vehicle.date_complete:
-                    raise ValidationError('Target Date Should Be \
-                    Less Than ETIC Date.')
+                    raise ValidationError('Repairs target completion date should be \
+                            less than estimated date.')
 
     service_id = fields.Many2one('fleet.vehicle.log.services',
                                  ondelete='cascade')

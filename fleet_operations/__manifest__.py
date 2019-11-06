@@ -18,8 +18,7 @@
     'author': 'Serpent Consulting Services Pvt. Ltd.',
     'website': 'http://www.serpentcs.com',
     # Dependencies
-    'depends': ['fleet', 'stock', 'account',
-                'web_widget_multi_image'],
+    'depends': ['fleet', 'stock', 'account'],
     # Data
     'data': [
               'security/fleet_security.xml',
@@ -32,13 +31,13 @@
               'wizard/continue_pending_repair_view.xml',
               'wizard/update_history_view.xml',
               'wizard/writoff_cancel_reason_view.xml',
+              'wizard/update_next_service.xml',
               'report/report_xlsx.xml',
               'report/report_write_off_qweb.xml',
               'report/vehicle_change_history_qweb.xml',
               'report/repair_line_summary_qweb.xml',
-              'views/workflow_sequence.xml',
-              'views/department_location_view.xml',
               'views/fleet_extended_view.xml',
+              'views/fleet_operation_account.xml',
               'views/fleet_service_view.xml',
               'views/update_pending_history_view.xml',
               'views/template.xml',

@@ -41,13 +41,16 @@ class RepairLineSmry(models.AbstractModel):
                                     {
                                         'repair_type':
                                         repaire_l.repair_type_id.name or '',
-                                        'count': 1}
+                                        'count': 1,
+                                        'vehicle_name': work_rec.fmp_id,
+                                        'issue_date': work_rec.date, }
         for repair_data in repair_l_dic.items():
             if repair_data and len(repair_data) >= 2:
                 repair_line_data.append(repair_data[1])
         if repair_line_data:
             repair_line_data = \
                 sorted(repair_line_data, key=lambda k: k['repair_type'])
+
         return repair_line_data
 
     @api.model
