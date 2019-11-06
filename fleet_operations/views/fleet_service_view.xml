@@ -114,8 +114,8 @@
                 <field name="next_service_odometer" class="oe_inline" string="Next Service Odometer"/>
                 <field name="next_service_date" readonly="True"
                     attrs="{'readonly':[('state','=','done')]}"/>
-                <field name="amount_receive"/>
-                <field name="amount_return"/>
+                <field name="amount_receive" invisible="1"/>
+                <field name="amount_return" invisible="1"/>
                 <field name="source_service_id" string="Re-Opened From" attrs="{'invisible':[('source_service_id','=',False)]}" readonly="1"/>
                 <field name="vehical_division_id" invisible="1" readonly="True"
                   options="{'no_open': True, 'create': false, 'create_edit': false}"/>

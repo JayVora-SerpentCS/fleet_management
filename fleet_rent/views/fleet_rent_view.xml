@@ -70,8 +70,8 @@
 
                     <button name="action_deposite_receive"
                             string="Deposit Receive" type="object"
-                            attrs="{'invisible':[
-                            ('deposit_received','=',True)]}"
+                            attrs="{'invisible':['|',
+                            ('deposit_received','=',True), ('state', '=', 'draft')]}"
                             class="oe_highlight"
                             groups="fleet.fleet_group_manager"/>
                     <button name="action_deposite_return"

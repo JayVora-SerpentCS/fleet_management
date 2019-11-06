@@ -63,22 +63,22 @@ class FleetVehicleLogServices(models.Model):
     @api.multi
     def action_create_invoice(self):
         """Invoice for Deposit Receive."""
+        self.ensure_one()
         for service in self:
             deposit_inv_ids = self.env['account.invoice'].search([
-              ('vehicle_service_id', '=', service.id), ('type', '=', 'out_invoice'),
+                ('vehicle_service_id', '=', service.id), ('type', '=', 'out_invoice'),
                 ('state', 'in', ['draft', 'open', 'in_payment'])
-                ])
+            ])
             if deposit_inv_ids:
                 raise Warning(_("Deposit invoice is already Pending\n"
-                    "Please proceed that deposit invoice first"))
+                                "Please proceed that deposit invoice first"))
 
-        self.ensure_one()
         inv_ser_line = [(0, 0, {
-                'product_id': self.cost_subtype_id.id,
-                'name': 'Service Cost',
-                'price_unit': self.amount,
-                'account_id': self.vehicle_id.income_acc_id.id or False,
-            })]
+            'product_id': self.cost_subtype_id.id,
+            'name': 'Service Cost',
+            'price_unit': self.amount,
+            'account_id': self.vehicle_id.income_acc_id.id or False,
+        })]
         for line in self.parts_ids:
             inv_line_values = {
                 'product_id': line.product_id.id or False,
@@ -104,23 +104,22 @@ class FleetVehicleLogServices(models.Model):
     @api.multi
     def action_return_invoice(self):
         """Invoice for Deposit Return."""
-
+        self.ensure_one()
         for service in self:
             deposit_inv_ids = self.env['account.invoice'].search([
-              ('vehicle_service_id', '=', service.id), ('type', '=', 'out_refund'),
+                ('vehicle_service_id', '=', service.id), ('type', '=', 'out_refund'),
                 ('state', 'in', ['draft', 'open', 'in_payment'])
-                ])
+            ])
             if deposit_inv_ids:
                 raise Warning(_("Deposit Return invoice is already Pending\n"
-                    "Please proceed that deposit invoice first"))
+                                "Please proceed that deposit invoice first"))
 
-        self.ensure_one()
         inv_ser_line = [(0, 0, {
-                'product_id': self.cost_subtype_id.id,
-                'name': 'Service Cost',
-                'price_unit': self.amount,
-                'account_id': self.vehicle_id.income_acc_id.id or False,
-            })]
+            'product_id': self.cost_subtype_id.id,
+            'name': 'Service Cost',
+            'price_unit': self.amount,
+            'account_id': self.vehicle_id.income_acc_id.id or False,
+        })]
         for line in self.parts_ids:
             inv_line_values = {
                 'product_id': line.product_id.id or False,
@@ -146,7 +145,8 @@ class FleetVehicleLogServices(models.Model):
     @api.multi
     def action_confirm(self):
         """Action Confirm Of Button."""
-        sequence = self.env['ir.sequence'].next_by_code('service.order.sequence')
+        sequence = self.env['ir.sequence'].next_by_code(
+            'service.order.sequence')
         mod_obj = self.env['ir.model.data']
         cr, uid, context = self.env.args
         context = dict(context)
@@ -193,7 +193,6 @@ class FleetVehicleLogServices(models.Model):
                             'target': 'new',
                         }
         return True
-
 
     @api.multi
     def action_done(self):
@@ -550,10 +549,12 @@ class FleetVehicleLogServices(models.Model):
     wono_id = fields.Integer(string='WONo',
                              help="Take this field for data migration")
     id = fields.Integer(string='ID')
-    purchaser_id = fields.Many2one('res.partner', string='Purchaser', related='vehicle_id.driver_id')
+    purchaser_id = fields.Many2one(
+        'res.partner', string='Purchaser', related='vehicle_id.driver_id')
     name = fields.Char(string='Work Order', size=32, readonly=True,
                        translate=True, copy=False)
-    fmp_id = fields.Char(string="Vehicle ID", size=64, related='vehicle_id.name')
+    fmp_id = fields.Char(string="Vehicle ID", size=64,
+                         related='vehicle_id.name')
     wo_tax_amount = fields.Float(string='Tax', readonly=True)
     priority = fields.Selection([('normal', 'NORMAL'), ('high', 'HIGH'),
                                  ('low', 'LOW')], default='normal',
@@ -624,23 +625,29 @@ class FleetVehicleLogServices(models.Model):
                             string='Last Odometer',
                             help='Odometer measure of the vehicle at the \
                                 moment of this log')
-    service_amount = fields.Float(compute="total_service_amount", string="Total Service Amount")
-    source_service_id = fields.Many2one('fleet.vehicle.log.services', string="Service", copy=False)
-    invoice_count = fields.Integer(compute="count_invoice", string="Invoice Count")
-    return_inv_count = fields.Integer(compute="return_invoice", string="Return Invoice")
-    amount_receive = fields.Boolean(compute="invoice_receive", string="Invoice Receive")
+    service_amount = fields.Float(
+        compute="total_service_amount", string="Total Service Amount")
+    source_service_id = fields.Many2one(
+        'fleet.vehicle.log.services', string="Service", copy=False)
+    invoice_count = fields.Integer(
+        compute="count_invoice", string="Invoice Count")
+    return_inv_count = fields.Integer(
+        compute="return_invoice", string="Return Invoice")
+    amount_receive = fields.Boolean(
+        compute="invoice_receive", string="Invoice Receive")
     amount_return = fields.Boolean(string="Invoice Return")
     service_invoice_id = fields.One2many('account.invoice', 'vehicle_service_id',
-        string="Service Invoice")
+                                         string="Service Invoice")
     service_ref_invoice_id = fields.One2many('account.invoice', 'vehicle_service_id',
-        string="Service Refund Invoice")
+                                             string="Service Refund Invoice")
 
     @api.multi
     def invoice_receive(self):
         for rec in self:
             inv_obj = self.env['account.invoice'].search([('type', '=', 'out_invoice'),
-                ('vehicle_service_id', '=', rec.id), ('state', '=', ['draft', 'paid']),
-                ('is_invoice_receive', '=', True)])
+                                                          ('vehicle_service_id', '=', rec.id), ('state', '=', [
+                                                              'draft', 'paid']),
+                                                          ('is_invoice_receive', '=', True)])
             if inv_obj:
                 rec.amount_receive = True
             else:
@@ -1030,7 +1037,6 @@ class FleetWorkOrderSearch(models.TransientModel):
                     raise ValidationError('Issue To Date Should Be \
                     Greater Than Last Issue From Date.')
 
-
     @api.constrains('issue_date_to')
     def check_issue_date(self):
         """Method to check issue date."""
@@ -1342,6 +1348,7 @@ class RepairType(models.Model):
         if not default:
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
+
 
 class ServiceRepairLine(models.Model):
     """Service Repair Line."""

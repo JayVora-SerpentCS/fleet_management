@@ -501,6 +501,7 @@ class FleetRent(models.Model):
     @api.multi
     def action_deposite_return(self):
         """Method to return deposite."""
+        self.ensure_one()
         for rent in self:
             deposit_inv_ids = self.env['account.invoice'].search([
                 ('fleet_rent_id', '=', rent.id), ('type', '=', 'out_refund'),
@@ -510,7 +511,6 @@ class FleetRent(models.Model):
                 raise Warning(_("Deposit Return invoice is already Pending\n"
                                 "Please proceed that Return invoice first"))
 
-            self.ensure_one()
             vehicle = rent.vehicle_id or False
             purch_journal = rent.env['account.journal'].search([
                 ('type', '=', 'purchase')], limit=1)
