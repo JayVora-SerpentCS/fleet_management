@@ -82,7 +82,6 @@ class FleetHistoryWorkOrder(models.AbstractModel):
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         # format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
         #     pattern: pattern solid')
-
         row = 0
         row += 1
         row += 1
@@ -90,7 +89,7 @@ class FleetHistoryWorkOrder(models.AbstractModel):
         row = 2
         for order in workorder:
             row += 3
-            worksheet.write(row, 6, 'Work Order No :', tot)
+            worksheet.write(row, 6, 'Service Order :', tot)
             worksheet.write(row, 7, order.name or '')
             row += 1
             worksheet.write(row, 6, 'Actual Date Issued :', tot)
@@ -191,9 +190,9 @@ class FleetHistoryWorkOrder(models.AbstractModel):
                     worksheet.write(line_row, line_col, 'False')
                     line_row += 1
                     line_col = 0
-        row = line_row + 1
+        line_row = row + 1
         worksheet.write(row, 0, '**************************')
-        worksheet.write(row, 1, '****************************************')
+        worksheet.write(row, 1, '**************************')
         worksheet.write(row, 2, '**************************')
         worksheet.write(row, 3, '**************************')
         worksheet.write(row, 4, '**************************')

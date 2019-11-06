@@ -52,66 +52,124 @@
             <field name="usage">internal</field>
         </record>
 
-        	<!-- NDS Repair Types -->
-        	<record id="nds_repair_type01" model="repair.type">
-	            <field name="name">Inspection</field>
-        	</record>
-        	<record id="nds_repair_type02" model="repair.type">
-	            <field name="name">AC Repair</field>
-        	</record>
-        	<record id="nds_repair_type03" model="repair.type">
-	            <field name="name">AC Gas</field>
-        	</record>
-        	<record id="nds_repair_type04" model="repair.type">
-	            <field name="name">Beyond Economical Repair</field>
-        	</record>
-        	<record id="nds_repair_type05" model="repair.type">
-	            <field name="name">Body Repair</field>
-        	</record>
-        	<record id="nds_repair_type06" model="repair.type">
-	            <field name="name">Body Repaint</field>
-        	</record>
-        	<record id="nds_repair_type07" model="repair.type">
-	            <field name="name">Break System</field>
-        	</record>
-        	<record id="nds_repair_type08" model="repair.type">
-	            <field name="name">Cooling System</field>
-        	</record>
-        	<record id="nds_repair_type09" model="repair.type">
-	            <field name="name">Drive Train</field>
-        	</record>
-        	<record id="nds_repair_type10" model="repair.type">
-	            <field name="name">Electrical System</field>
-        	</record>
-        	<record id="nds_repair_type11" model="repair.type">
-	            <field name="name">Engine Overhaul</field>
-        	</record>
-        	<record id="nds_repair_type12" model="repair.type">
-	            <field name="name">Engine Repair</field>
-        	</record>
-        	<record id="nds_repair_type13" model="repair.type">
-	            <field name="name">Exhaust System</field>
-        	</record>
-        	<record id="nds_repair_type14" model="repair.type">
-	            <field name="name">Fuel System</field>
-        	</record>
-        	<record id="nds_repair_type15" model="repair.type">
-	            <field name="name">Insurgent Attack</field>
-        	</record>
-        	<record id="nds_repair_type16" model="repair.type">
-	            <field name="name">Road Wheel and Tire</field>
-        	</record>
-        	<record id="nds_repair_type17" model="repair.type">
-	            <field name="name">Routine Service and Inspection</field>
-        	</record>
-        	<record id="nds_repair_type18" model="repair.type">
-	            <field name="name">Steering System</field>
-        	</record>
-        	<record id="nds_repair_type19" model="repair.type">
-	            <field name="name">Suspension System</field>
-        	</record>
-        	<record id="nds_repair_type20" model="repair.type">
-	            <field name="name">Vehicle Roll Over</field>
-        	</record>
+    	<!-- NDS Repair Types -->
+    	<record id="nds_repair_type01" model="repair.type">
+            <field name="name">Inspection</field>
+    	</record>
+    	<record id="nds_repair_type02" model="repair.type">
+            <field name="name">AC Repair</field>
+    	</record>
+    	<record id="nds_repair_type03" model="repair.type">
+            <field name="name">AC Gas</field>
+    	</record>
+    	<record id="nds_repair_type04" model="repair.type">
+            <field name="name">Beyond Economical Repair</field>
+    	</record>
+    	<record id="nds_repair_type05" model="repair.type">
+            <field name="name">Body Repair</field>
+    	</record>
+    	<record id="nds_repair_type06" model="repair.type">
+            <field name="name">Body Repaint</field>
+    	</record>
+    	<record id="nds_repair_type07" model="repair.type">
+            <field name="name">Break System</field>
+    	</record>
+    	<record id="nds_repair_type08" model="repair.type">
+            <field name="name">Cooling System</field>
+    	</record>
+    	<record id="nds_repair_type09" model="repair.type">
+            <field name="name">Drive Train</field>
+    	</record>
+    	<record id="nds_repair_type10" model="repair.type">
+            <field name="name">Electrical System</field>
+    	</record>
+    	<record id="nds_repair_type11" model="repair.type">
+            <field name="name">Engine Overhaul</field>
+    	</record>
+    	<record id="nds_repair_type12" model="repair.type">
+            <field name="name">Engine Repair</field>
+    	</record>
+    	<record id="nds_repair_type13" model="repair.type">
+            <field name="name">Exhaust System</field>
+    	</record>
+    	<record id="nds_repair_type14" model="repair.type">
+            <field name="name">Fuel System</field>
+    	</record>
+    	<record id="nds_repair_type15" model="repair.type">
+            <field name="name">Insurgent Attack</field>
+    	</record>
+    	<record id="nds_repair_type16" model="repair.type">
+            <field name="name">Road Wheel and Tire</field>
+    	</record>
+    	<record id="nds_repair_type17" model="repair.type">
+            <field name="name">Routine Service and Inspection</field>
+    	</record>
+    	<record id="nds_repair_type18" model="repair.type">
+            <field name="name">Steering System</field>
+    	</record>
+    	<record id="nds_repair_type19" model="repair.type">
+            <field name="name">Suspension System</field>
+    	</record>
+    	<record id="nds_repair_type20" model="repair.type">
+            <field name="name">Vehicle Roll Over</field>
+    	</record>
+
+        <!-- Damage Type data files -->
+        <record id="damage_type_01" model="damage.types">
+            <field name="name">LEFT HAND FRONT</field>
+            <field name="code">DT0001</field>
+        </record>
+        <record id="damage_type_02" model="damage.types">
+            <field name="name">LEFT HAND MIDDLE</field>
+            <field name="code">DT0002</field>
+        </record>
+        <record id="damage_type_03" model="damage.types">
+            <field name="name">INTERIOR</field>
+            <field name="code">DT0003</field>
+        </record>
+        <record id="damage_type_04" model="damage.types">
+            <field name="name">LEFT HAND REAR</field>
+            <field name="code">DT0004</field>
+        </record>
+        <record id="damage_type_05" model="damage.types">
+            <field name="name">LEFT HAND FRONT SUSPENSION</field>
+            <field name="code">DT0005</field>
+        </record>
+        <record id="damage_type_06" model="damage.types">
+            <field name="name">LEFT HAND REAR SUSPENSION</field>
+            <field name="code">DT0006</field>
+        </record>
+        <record id="damage_type_07" model="damage.types">
+            <field name="name">CHASSIS</field>
+            <field name="code">DT0007</field>
+        </record>
+        <record id="damage_type_08" model="damage.types">
+            <field name="name">RIGHT HAND FRONT</field>
+            <field name="code">DT0008</field>
+        </record>
+        <record id="damage_type_09" model="damage.types">
+            <field name="name">ROOF PANEL</field>
+            <field name="code">DT0009</field>
+        </record>
+        <record id="damage_type_10" model="damage.types">
+            <field name="name">RIGHT HAND REAR</field>
+            <field name="code">DT00010</field>
+        </record>
+        <record id="damage_type_11" model="damage.types">
+            <field name="name"> ​RIGHT HAND FRONT SUSPENSION</field>
+            <field name="code">DT00011</field>
+        </record>
+        <record id="damage_type_12" model="damage.types">
+            <field name="name">RIGHT HAND REAR SUSPENSION</field>
+            <field name="code">DT00012</field>
+        </record>
+        <record id="damage_type_13" model="damage.types">
+            <field name="name">UNDER BONNET</field>
+            <field name="code">DT00013</field>
+        </record>
+        <record id="damage_type_14" model="damage.types">
+            <field name="name"> ​TRANSMISSION</field>
+            <field name="code">DT00014</field>
+        </record>
     </data>
 </odoo>

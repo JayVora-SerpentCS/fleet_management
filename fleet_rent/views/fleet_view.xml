@@ -3,17 +3,17 @@
     <record model='ir.ui.view' id='fleet_vehicle_rent_form'>
         <field name="name">fleet.vehicle.rent.form</field>
         <field name="model">fleet.vehicle</field>
-        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form" />
+        <field name="inherit_id"
+              ref="fleet.fleet_vehicle_view_form" />
         <field name="arch" type="xml">
-            <!-- <xpath expr="//div[@class='oe_title']" position="after"> -->
             <xpath expr="//button[@name='return_action_to_open']" position="after">
                 <button icon="fa-adn"
                    class="oe_stat_button"
-                   name="return_action_for_open"
-                   context="{'xml_id':'action_vehicle_rent_analytic_view'}"
-                   type="object"
+                   name="%(action_fleet_vehicle_rent_view)d"
+                   type="action"
                    help="show the rent detail for this vehicle">
-                   <field name="rent_count" widget="statinfo" string="Rent" />
+                   <field name="rent_count" widget="statinfo"
+                        string="Rent" />
                 </button>
             </xpath>
             <xpath expr="//form/sheet/group/group/field[@name='car_value']" position="after">

@@ -191,7 +191,7 @@
                                 </tr>
                                 <tr>
                                     <td style='font-size:12px;font-weight: bold;'>
-                                        <span>Work Order No. :</span>
+                                        <span>Service Order No. :</span>
                                     </td>
                                     <td t-if="get_last_work_order(o.vehicle_id.id)">
                                         <span t-esc="get_last_work_order(o.vehicle_id.id)"/>

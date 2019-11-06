@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!--Renew Tenancy Wizard Form View  -->
+    <!-- Close Rent Wizard Form View  -->
     <record model="ir.ui.view" id="view_rent_close_reason_wizard">
         <field name="name">rent.close.reason.form</field>
         <field name="model">rent.close.reason</field>
         <field name="arch" type="xml">
             <form>
-                <separator string="Reason To Cancel Rent" />
+                <separator string="Reason To close Rent" />
                 <group>
-                    <field name="reason" />
+                    <field name="reason" required="1"
+                        placeholder="Enter Reason to close rent contract..."/>
                 </group>
                 <footer>
-                    <button name="close_rent" type="object" string="OK" class="oe_highlight"/>
-                    <button string="Cancel" class="oe_link" special="cancel" />
+                    <button name="close_rent" type="object"
+                        string="Close" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link"
+                        special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
-    <!--  Action for Renew Tenancy Wizard -->
+    <!--  Action for Close Rent Wizard -->
     <record model="ir.actions.act_window" id="action_rent_close_reason_wizard">
-        <field name="name">Rent Close Wizard</field>
+        <field name="name">Rent Close</field>
         <field name="res_model">rent.close.reason</field>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>

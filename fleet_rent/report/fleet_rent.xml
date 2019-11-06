@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Fleet Rent Reports -->
+    <report
+        id="report_fleet_rent"
+        model="fleet.rent"
+        string="Fleet Rent"
+        report_type="qweb-pdf"
+        name="fleet_rent.report_fleet_rent_pdf"
+        file="fleet_rent.report_fleet_rent_pdf"
+        />
+
+
+    <template id="report_fleet_rent_pdf">
+       <t t-call="web.html_container">
+           <t t-foreach="docs" t-as="o">
+               <t t-call="web.external_layout">
+                   <div class="page">
+                       <h2><center>Fleet Rent</center></h2>
+                   </div>
+                   <h2><b>Vehicle Information:</b></h2>
+                    <div>
+                        <table width="100%"  border="1px solid black">
+                            <tr style="background-color:darkgray">
+                                <th style="padding:5px;">Rental Number</th>
+                                <th style="padding:5px;">Vehicle</th>
+                                <th style="padding:5px;">Rent Type</th>
+                                <th style="padding:5px;">Tenant</th>
+                                <th style="padding:5px;">Odometer</th>
+                            </tr>
+                            <tr>
+                                <td style="padding:5px;"><span t-field="o.name"/></td>
+                                <td style="padding:5px;"><span t-field="o.vehicle_id"/></td>
+                                <td style="padding:5px;"><span t-field="o.rent_type_id"/></td>
+                                <td style="padding:5px;"><span t-field="o.tenant_id"/></td>
+                                <td style="padding:5px;"><span t-field="o.odometer"/></td>
+                            </tr>
+                        </table><br/>
+                    </div>
+                    <h2><b>Rent Schedule Details:</b></h2>
+                    <table width="100%"  border="1px solid black">
+                        <tr style="background-color:darkgray">
+                            <th style="padding:5px;">Date</th>
+                            <th style="padding:5px;">Amount</th>
+                            <th style="padding:5px;">state</th>
+                            <th style="padding:5px;">Note</th>
+                            <th style="padding:5px;">Pending Amount</th>
+                        </tr>
+                        <t t-foreach="o.rent_schedule_ids" t-as="line">
+                            <tr>
+                                <td style="padding:5px;"><span t-field="line.start_date"/></td>
+                                <td style="padding:5px;"><span t-field="line.amount"/></td>
+                                <td style="padding:5px;"><span t-field="line.state"/></td>
+                                <td style="padding:5px;"><span t-field="line.note"/></td>
+                                <td style="padding:5px;"><span t-field="line.pen_amt"/></td>
+                            </tr>
+                        </t>
+                    </table>
+
+               </t>
+           </t>
+       </t>
+    </template>
+</odoo>
+ 

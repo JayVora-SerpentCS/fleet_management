@@ -9,6 +9,7 @@
                 <separator string="Vehicle Change History" colspan="4" />
                 <group col="4" colspan="4">
                     <field name="fleet_id" options="{'no_open': True, 'create': false, 'create_edit': false}" required="1"/>
+                    <field name="report_type" string="Report Type"/>
                     <newline/>
                     <field name="date_from" />
                     <field name="date_to" />

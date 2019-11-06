@@ -108,16 +108,18 @@ class WorkorderMontltReportXlsx(models.AbstractModel):
 
     def generate_xlsx_report(self, workorder):
         """Generate Xlsx Report."""
+
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('invoice')
-        worksheet.col(0).width = 5000
+        # worksheet.merge_range('B4:D4')
+        worksheet.col(0).width = 3000
         worksheet.col(1).width = 7500
-        worksheet.col(2).width = 5000
-        worksheet.col(3).width = 5000
-        worksheet.col(4).width = 20000
-        worksheet.col(5).width = 7500
-        worksheet.col(6).width = 7500
-        worksheet.col(7).width = 20000
+        worksheet.col(2).width = 4000
+        worksheet.col(3).width = 4000
+        worksheet.col(4).width = 13000
+        worksheet.col(5).width = 4000
+        worksheet.col(6).width = 4000
+        worksheet.col(7).width = 13000
         worksheet.col(8).width = 5000
         worksheet.col(9).width = 5000
         worksheet.col(10).width = 5000
@@ -132,15 +134,18 @@ class WorkorderMontltReportXlsx(models.AbstractModel):
         font.name = 'Arial'
         font.height = 200
         # pattern = xlwt.Pattern()
-        border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; \
+            align: horiz center')
         format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; \
-            pattern: pattern solid')
+            pattern: pattern solid; align: horiz center')
+        format2 = xlwt.easyxf('align: horiz center')
+        format3 = xlwt.easyxf('align: horiz left')
 
         row = 0
         row += 1
         row += 1
-        worksheet.write(row, 2,
-                        'Work Order Monthly Summary Report', border)
+        worksheet.write(row, 4,
+                        'Vehicle Services Monthly Summary Report', border)
         row += 3
 
         worksheet.write(row, 0, 'Item No.', format1)
@@ -155,14 +160,14 @@ class WorkorderMontltReportXlsx(models.AbstractModel):
         counter = 1
         for line in self.get_wo_mthly_smry(workorder):
             if line.get('no') > 0:
-                worksheet.write(row, 0, line.get('no'))
-                worksheet.write(row, 1, line.get('location'))
-                worksheet.write(row, 2, line.get('type'))
-                worksheet.write(row, 3, line.get('wo'))
-                worksheet.write(row, 4, line.get('identification'))
-                worksheet.write(row, 5, line.get('vin'))
-                worksheet.write(row, 6, line.get('plate_no'))
-                worksheet.write(row, 7, line.get('work_performed'))
+                worksheet.write(row, 0, line.get('no'), format2)
+                worksheet.write(row, 1, line.get('location'), format3)
+                worksheet.write(row, 2, line.get('type'), format2)
+                worksheet.write(row, 3, line.get('wo'), format2)
+                worksheet.write(row, 4, line.get('identification'), format3)
+                worksheet.write(row, 5, line.get('vin'), format2)
+                worksheet.write(row, 6, line.get('plate_no'), format2)
+                worksheet.write(row, 7, line.get('work_performed'), format3)
             if line.get('no') < 0:
                 worksheet.write(row, 0, line.get('no'))
                 worksheet.write(row, 1, line.get('location'))

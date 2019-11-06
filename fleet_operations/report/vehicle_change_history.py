@@ -17,6 +17,8 @@ class VehicalChangeHistoryReport(models.AbstractModel):
         """Method to get vehicle history."""
         engine_obj = self.env['engine.history']
         color_obj = self.env['color.history']
+        tire_obj = self.env['tire.history']
+        battery_obj = self.env['battery.history']
         vin_obj = self.env['vin.history']
         domain = []
         if date_range.get('date_from'):
@@ -28,6 +30,8 @@ class VehicalChangeHistoryReport(models.AbstractModel):
 
         engine_ids = engine_obj.search(domain)
         color_ids = color_obj.search(domain)
+        tire_ids = tire_obj.search(domain)
+        battery_ids = battery_obj.search(domain)
         vin_ids = vin_obj.search(domain)
         vehicle_change_history = []
         if engine_ids:
@@ -73,8 +77,8 @@ class VehicalChangeHistoryReport(models.AbstractModel):
                     color_rec.vehicle_id.vehical_color_id.name or '',
                     'vin': color_rec.vehicle_id and
                     color_rec.vehicle_id.vin_sn or '',
-                    'plate': engine_rec.vehicle_id and
-                    engine_rec.vehicle_id.license_plate or '',
+                    # 'plate': engine_rec.vehicle_id and
+                    # engine_rec.vehicle_id.license_plate or '',
                     'old_engine': '',
                     'new_engine': '',
                     'old_color': color_rec.previous_color_id and
@@ -91,6 +95,56 @@ class VehicalChangeHistoryReport(models.AbstractModel):
                     'remarks': color_rec.note or '',
                     'seq': seq + 'b'}
                 vehicle_change_history.append(cvalues)
+        if tire_ids:
+            for tire_rec in tire_ids:
+                seq = tire_rec.vehicle_id and tire_rec.vehicle_id.name or ''
+                tvalues = {
+                    'description': seq,
+                    'vehicle_type': tire_rec.vehicle_id and
+                    tire_rec.vehicle_id.vechical_type_id and
+                    tire_rec.vehicle_id.vechical_type_id.name or '',
+                    'color_id': tire_rec.vehicle_id and
+                    tire_rec.vehicle_id.vehical_color_id and
+                    tire_rec.vehicle_id.vehical_color_id.name or '',
+                    'vin': tire_rec.vehicle_id and
+                    tire_rec.vehicle_id.vin_sn or '',
+                    'old_tire': tire_rec.previous_tire_size or '',
+                    'new_tire': tire_rec.new_tire_size or '',
+                    'old_vin': '',
+                    'new_vin': '',
+                    'change_date': tire_rec.changed_date or False,
+                    'work_order': tire_rec.workorder_id and
+                    tire_rec.workorder_id.name or '',
+                    'wo_close_date': tire_rec.workorder_id and
+                    tire_rec.workorder_id.date_close or False,
+                    'remarks': tire_rec.note or '',
+                    'seq': seq + 'b'}
+                vehicle_change_history.append(tvalues)
+        if battery_ids:
+            for battery_rec in battery_ids:
+                seq = battery_rec.vehicle_id and battery_rec.vehicle_id.name or ''
+                tvalues = {
+                    'description': seq,
+                    'vehicle_type': battery_rec.vehicle_id and
+                    battery_rec.vehicle_id.vechical_type_id and
+                    battery_rec.vehicle_id.vechical_type_id.name or '',
+                    'color_id': battery_rec.vehicle_id and
+                    battery_rec.vehicle_id.vehical_color_id and
+                    battery_rec.vehicle_id.vehical_color_id.name or '',
+                    'vin': battery_rec.vehicle_id and
+                    battery_rec.vehicle_id.vin_sn or '',
+                    'old_battery': battery_rec.previous_battery_size or '',
+                    'new_battery': battery_rec.new_battery_size or '',
+                    'old_vin': '',
+                    'new_vin': '',
+                    'change_date': battery_rec.changed_date or False,
+                    'work_order': battery_rec.workorder_id and
+                    battery_rec.workorder_id.name or '',
+                    'wo_close_date': battery_rec.workorder_id and
+                    battery_rec.workorder_id.date_close or False,
+                    'remarks': battery_rec.note or '',
+                    'seq': seq + 'b'}
+                vehicle_change_history.append(tvalues)
         if vin_ids:
             for vin_rec in vin_ids:
                 seq = vin_rec.vehicle_id and vin_rec.vehicle_id.name or ''

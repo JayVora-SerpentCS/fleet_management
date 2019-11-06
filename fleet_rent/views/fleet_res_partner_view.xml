@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherited partner form view -->
+    <record model='ir.ui.view' id='view_tenent_partner_form'>
+        <field name="name">view.tenant.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='email']" position="after">
+                <field name="tenant" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='website']" position="after">
+                <field name="id_attachment" filename="doc_name"/>
+            </xpath>
+            <xpath expr="//notebook/page[@name='internal_notes']"
+            		position="before">
+                <page string="Rental Vehicle Details"
+                        attrs="{'invisible': [('tenant','!=',True)]}">
+                        <group colspan="1">
+                            <separator string="Rental Vehicle Details" colspan="4"/>
+                            <field name="tenancy_ids" readonly="1"
+                        		nolabel="1"
+                                context="{'form_view_ref': 'property_management.property_analytic_view_form'}">
+                                <tree string="Rental Vehicle Details">
+                                    <field name="contract_dt" readonly="1"/>
+                                    <field name="name"
+                                    	string="Rental Vehicle Name "/>
+                                    <field name="vehicle_id"/>
+                                    <field name="tenant_id"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="rent_type_id"/>
+                                    <field name="total_rent" sum="Total Rent"/>
+                                    <field name="state"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </tree>
+                            </field>
+                        </group>
+                </page>
+                <page string="Maintenance Details">
+                    <group colspan="1">
+                        <separator string="Maintenance Details"
+                                colspan="4"/>
+                        <field name="maintanance_ids"
+                                readonly="1" nolabel="1">
+                            <tree string="Maintenance Details">
+                                <field name="cost"/>
+                            </tree>
+                            <form string="Maintenance Details">
+                                <group colspan="4" col="4">
+                                    <field name="cost"/>
+                                </group>
+                            </form>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

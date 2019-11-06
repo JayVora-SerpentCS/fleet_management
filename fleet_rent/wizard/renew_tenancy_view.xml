@@ -11,7 +11,7 @@
 					To Renew Tenancy.
 				</p>
 				<group col="2" colspan="2">
-					<field name="start_date" readonly="1"/>
+					<field name="start_date"/>
 					<field name="end_date" readonly="1"/>
 					<field name="rent_type_id" widget="selection"/>
 				</group>

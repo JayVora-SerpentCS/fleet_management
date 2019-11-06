@@ -53,13 +53,16 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h3 style="text-align:center;">REPAIR SUMMARY BY REPAIR TYPE-COMULATIVE</h3>
+                        <br/><br/><br/>
+                        <h3 style="text-align:center;">VEHICLE REPAIR HISTORY</h3>
                         <table class="table table-bordered table-condensed">
                             <thead>
                             <tr>
                                 <td style="text-align:center;background-color: #E0EBEB;">No.</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">VEHICLE NAME</td>
                                 <td style="text-align:center;background-color: #E0EBEB;">REPAIR TYPE</td>
-                                <td style="text-align:center;background-color: #E0EBEB;">COUNT</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">DATE</td>
+                        <!--         <td style="text-align:center;background-color: #E0EBEB;">COUNT</td> -->
                             </tr>
                             </thead>
                             <tbody>
@@ -67,8 +70,10 @@
                             <tr t-foreach="get_vehicle_history" t-as="line">
                                 <t t-if="line">
                                     <td style="text-align:center;"><span t-esc="counter"/><t t-set="counter" t-value="counter+1"/></td>
-                                    <td style="text-align:left;"><span t-esc="line.get('repair_type', '')"/></td>
-                                    <td style="text-align:center;"><span t-esc="line.get('count', '')"/></td>
+                                    <td style="text-align:center"><span t-esc="line.get('vehicle_name')"/></td>
+                                    <td style="text-align:left;"><span t-esc="line.get('repair_type')"/></td>
+                                    <td style="text-align:center"><span t-esc="line.get('issue_date')"/></td>
+                           <!--          <td style="text-align:center;"><span t-esc="line.get('count')"/></td> -->
                                 </t>
                             </tr>
                             </tbody>

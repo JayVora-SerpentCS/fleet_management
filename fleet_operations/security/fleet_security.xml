@@ -1,48 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data noupdate="0">
-        <record model="ir.module.category" id="special_right">
+         <record id="group_hide_menus" 
+                model="res.groups">
+            <field name="name">Hide Menu</field>
+        </record>
+<!--         <record model="ir.module.category" id="special_right">
             <field name="name">Fleet Access Right</field>
             <field name="sequence">10</field>
-        </record>
+        </record> -->
         
-        <record id="group_write_off" model="res.groups">
+<!--         <record id="group_write_off" model="res.groups">
             <field name="name">Write-Off</field>
             <field name="users" eval="[(4, ref('base.user_root'))]"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="category_id" ref="special_right"/>
-        </record>
+        </record> -->
         
-        <record id="group_reopen_work_order" model="res.groups">
+        <!-- <record id="group_reopen_work_order" model="res.groups">
             <field name="name">Re-open Work Order</field>
             <field name="users" eval="[(4, ref('base.user_root'))]"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="category_id" ref="special_right"/>
-        </record>
+        </record> -->
         
-        <record id="group_fleet_history" model="res.groups">
+        <!-- <record id="group_fleet_history" model="res.groups">
             <field name="name">Fleet History</field>
             <field name="users" eval="[(4, ref('base.user_root'))]"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="category_id" ref="special_right"/>
-        </record>
+        </record> -->
         
-        <record id="group_contact_team_trip" model="res.groups">
+        <!-- <record id="group_contact_team_trip" model="res.groups">
             <field name="name">Contact Team Trip</field>
             <field name="users" eval="[(4, ref('base.user_root'))]"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="category_id" ref="special_right"/>
-        </record>
+        </record> -->
         
-        <record id="group_reopen_contact_team_trip" model="res.groups">
+        <!-- <record id="group_reopen_contact_team_trip" model="res.groups">
             <field name="name">Re-open Contact Team Trip</field>
             <field name="users" eval="[(4, ref('base.user_root'))]"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="category_id" ref="special_right"/>
-        </record>
+        </record> -->
         
-        <record id="group_hide_menu" model="res.groups">
+        <!-- <record id="group_hide_menu" model="res.groups">
             <field name="name">Hide Menu</field>
-        </record>
+        </record> -->
     </data>
 </odoo>
