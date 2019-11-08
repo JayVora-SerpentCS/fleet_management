@@ -89,7 +89,8 @@
                     <button name="action_rent_close" string="Close"
                         type="object" states="open" class="oe_highlight"/>
                     <button name="action_rent_done" string="Done"
-                        type="object" states="open" class="oe_highlight"/>
+                        type="object" states="open" class="oe_highlight" 
+                        />
                     <field name="cr_rent_btn" invisible="1"/>
                     <field name="state" widget="statusbar"
                         statusbar_visible="draft,open,close"

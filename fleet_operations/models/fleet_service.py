@@ -63,8 +63,11 @@ class FleetVehicleLogServices(models.Model):
     @api.multi
     def action_create_invoice(self):
         """Invoice for Deposit Receive."""
-        self.ensure_one()
         for service in self:
+            if service.amount <= 0.0:
+                raise ValidationError("You can not create service invoice without amount!!"
+                    "Please add Service amount first !!")
+
             deposit_inv_ids = self.env['account.invoice'].search([
                 ('vehicle_service_id', '=', service.id), ('type', '=', 'out_invoice'),
                 ('state', 'in', ['draft', 'open', 'in_payment'])
@@ -73,38 +76,44 @@ class FleetVehicleLogServices(models.Model):
                 raise Warning(_("Deposit invoice is already Pending\n"
                                 "Please proceed that deposit invoice first"))
 
-        inv_ser_line = [(0, 0, {
-            'product_id': self.cost_subtype_id.id,
-            'name': 'Service Cost',
-            'price_unit': self.amount,
-            'account_id': self.vehicle_id.income_acc_id.id or False,
-        })]
-        for line in self.parts_ids:
-            inv_line_values = {
-                'product_id': line.product_id.id or False,
+            inv_ser_line = [(0, 0, {
+                'product_id': service.cost_subtype_id and
+                service.cost_subtype_id.id or False,
                 'name': 'Service Cost',
-                'price_unit': line.price_unit or 0.00,
-                'quantity': line.qty,
-                'account_id': self.vehicle_id.income_acc_id.id or False
+                'price_unit': service.amount,
+                'account_id': service.vehicle_id.income_acc_id and
+                service.vehicle_id.income_acc_id.id or False,
+            })]
+            for line in service.parts_ids:
+                inv_line_values = {
+                    'product_id': line.product_id and
+                    line.product_id.id or False,
+                    'name': 'Service Cost',
+                    'price_unit': line.price_unit or 0.00,
+                    'quantity': line.qty,
+                    'account_id': service.vehicle_id.income_acc_id and
+                    service.vehicle_id.income_acc_id.id or False
+                }
+                inv_ser_line.append((0, 0, inv_line_values))
+            inv_values = {
+                'partner_id': service.purchaser_id and
+                service.purchaser_id.id or False,
+                'type': 'out_invoice',
+                'date_invoice': service.date_open,
+                'date_due': service.date_complete,
+                'invoice_line_ids': inv_ser_line,
+                'account_id': service.purchaser_id and
+                service.purchaser_id.property_account_receivable_id and
+                service.purchaser_id.property_account_receivable_id.id or False,
+                'vehicle_service_id': service.id,
+                'is_invoice_receive': True,
             }
-            inv_ser_line.append((0, 0, inv_line_values))
-        inv_values = {
-            'partner_id': self.purchaser_id.id,
-            'type': 'out_invoice',
-            'date_invoice': self.date_open,
-            'date_due': self.date_complete,
-            'invoice_line_ids': inv_ser_line,
-            'account_id': self.purchaser_id and
-            self.purchaser_id.property_account_receivable_id.id or False,
-            'vehicle_service_id': self.id,
-            'is_invoice_receive': True,
-        }
-        acc_inv = self.env['account.invoice'].create(inv_values)
+            self.env['account.invoice'].create(inv_values)
 
     @api.multi
     def action_return_invoice(self):
         """Invoice for Deposit Return."""
-        self.ensure_one()
+
         for service in self:
             deposit_inv_ids = self.env['account.invoice'].search([
                 ('vehicle_service_id', '=', service.id), ('type', '=', 'out_refund'),
@@ -114,33 +123,38 @@ class FleetVehicleLogServices(models.Model):
                 raise Warning(_("Deposit Return invoice is already Pending\n"
                                 "Please proceed that deposit invoice first"))
 
-        inv_ser_line = [(0, 0, {
-            'product_id': self.cost_subtype_id.id,
-            'name': 'Service Cost',
-            'price_unit': self.amount,
-            'account_id': self.vehicle_id.income_acc_id.id or False,
-        })]
-        for line in self.parts_ids:
-            inv_line_values = {
-                'product_id': line.product_id.id or False,
+            inv_ser_line = [(0, 0, {
+                'product_id': service.cost_subtype_id and
+                service.cost_subtype_id.id or False,
                 'name': 'Service Cost',
-                'price_unit': line.price_unit or 0.00,
-                'quantity': line.qty,
-                'account_id': self.vehicle_id.income_acc_id.id or False
+                'price_unit': service.amount or 0.0,
+                'account_id': service.vehicle_id.income_acc_id and
+                service.vehicle_id.income_acc_id.id or False,
+            })]
+            for line in service.parts_ids:
+                inv_line_values = {
+                    'product_id': line.product_id.id or False,
+                    'name': 'Service Cost',
+                    'price_unit': line.price_unit or 0.00,
+                    'quantity': line.qty,
+                    'account_id': service.vehicle_id.income_acc_id and
+                    service.vehicle_id.income_acc_id.id or False
+                }
+                inv_ser_line.append((0, 0, inv_line_values))
+            inv_values = {
+                'partner_id': service.purchaser_id and
+                service.purchaser_id.id or False,
+                'type': 'out_refund',
+                'date_invoice': service.date_open,
+                'date_due': service.date_complete,
+                'invoice_line_ids': inv_ser_line,
+                'account_id': service.purchaser_id and
+                service.purchaser_id.property_account_receivable_id and
+                service.purchaser_id.property_account_receivable_id.id or False,
+                'vehicle_service_id': service.id,
+                'is_invoice_return': True,
             }
-            inv_ser_line.append((0, 0, inv_line_values))
-        inv_values = {
-            'partner_id': self.purchaser_id.id,
-            'type': 'out_refund',
-            'date_invoice': self.date_open,
-            'date_due': self.date_complete,
-            'invoice_line_ids': inv_ser_line,
-            'account_id': self.purchaser_id and
-            self.purchaser_id.property_account_receivable_id.id or False,
-            'vehicle_service_id': self.id,
-            'is_invoice_return': True,
-        }
-        acc_inv = self.env['account.invoice'].create(inv_values)
+            self.env['account.invoice'].create(inv_values)
 
     @api.multi
     def action_confirm(self):
@@ -203,8 +217,15 @@ class FleetVehicleLogServices(models.Model):
         increment_obj = self.env['next.increment.number']
         next_service_day_obj = self.env['next.service.days']
         mod_obj = self.env['ir.model.data']
-
         for work_order in self:
+            service_inv = self.env['account.invoice'].search([
+                ('type', '=', 'out_invoice'),
+                ('vehicle_service_id', '=', work_order.id)])
+            if work_order.amount > 0 and not service_inv:
+                raise ValidationError("Vehicle Service amount is greater"
+                    " than Zero So, "
+                    "Without Service Invoice you can not done the Service !!"
+                    "Please Generate Service Invoice first !!")
             for repair_line in work_order.repair_line_ids:
                 if repair_line.complete is True:
                     continue
@@ -366,6 +387,7 @@ class FleetVehicleLogServices(models.Model):
             order.write({'state': 'done'})
             new_reopen_service = order.copy()
             new_reopen_service.write({
+                # 'name': 'New',
                 'source_service_id': order.id,
                 'date_open': False,
                 'date_close': False,
@@ -552,7 +574,7 @@ class FleetVehicleLogServices(models.Model):
     purchaser_id = fields.Many2one(
         'res.partner', string='Purchaser', related='vehicle_id.driver_id')
     name = fields.Char(string='Work Order', size=32, readonly=True,
-                       translate=True, copy=False)
+                       translate=True, copy=False, default="New")
     fmp_id = fields.Char(string="Vehicle ID", size=64,
                          related='vehicle_id.name')
     wo_tax_amount = fields.Float(string='Tax', readonly=True)

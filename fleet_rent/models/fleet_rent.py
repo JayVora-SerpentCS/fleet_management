@@ -319,7 +319,9 @@ class FleetRent(models.Model):
                 ('state', '=', ['draft', 'open', 'pending']),
                 ('id', '!=', rec.id), ('vehicle_id', '=', rec.vehicle_id.id)])
             if duplicate_rent:
-                raise ValidationError(_('The vehicle already exists.'))
+                raise ValidationError(_("Vehicle Rent Order is already "
+                  "available for this vehicle !! \n Choose other"
+                  " vehicle and Prepare new rent order !!"))
 
     @api.multi
     def count_invoice(self):
@@ -414,7 +416,7 @@ class FleetRent(models.Model):
             rent_vals = {'state': 'open'}
             if rent.rent_amt < 1:
                 raise ValidationError("Rental Vehicle Rent \
-                        amount should'nt be less than one(1) !! \n \
+                        amount should be greater than zero !! \n \
                         Please add 'Rental Vehicle Rent' amount !!")
             if not rent.name or rent.name == 'New':
                 seq = self.env['ir.sequence'].next_by_code('fleet.rent')
@@ -439,6 +441,9 @@ class FleetRent(models.Model):
         """Method to Change rent state to done."""
         rent_sched_obj = self.env['tenancy.rent.schedule']
         for rent in self:
+            if not rent.rent_schedule_ids:
+                raise ValidationError("Without Rent schedule you can not done the rent.\
+                    please first create the rent schedule.")
             if rent.rent_schedule_ids:
                 rent_schedule = rent_sched_obj.search([
                     ('paid', '=', False),
@@ -482,7 +487,10 @@ class FleetRent(models.Model):
             if tenancy_rent_ids:
                 raise Warning(_('In order to Renew a Tenancy, \
                     Please make all related Rent Schedule entries posted !!'))
-            date = rent.date_close + timedelta(days=1)
+            if rent.date_close:
+                date = rent.date_close + timedelta(days=1)
+            else:
+                date = rent.date_end + timedelta(days=1)
             str_date = datetime.strftime(date, DTF)
             context.update({
                 'default_start_date': date
@@ -501,7 +509,6 @@ class FleetRent(models.Model):
     @api.multi
     def action_deposite_return(self):
         """Method to return deposite."""
-        self.ensure_one()
         for rent in self:
             deposit_inv_ids = self.env['account.invoice'].search([
                 ('fleet_rent_id', '=', rent.id), ('type', '=', 'out_refund'),
@@ -511,6 +518,7 @@ class FleetRent(models.Model):
                 raise Warning(_("Deposit Return invoice is already Pending\n"
                                 "Please proceed that Return invoice first"))
 
+            self.ensure_one()
             vehicle = rent.vehicle_id or False
             purch_journal = rent.env['account.journal'].search([
                 ('type', '=', 'purchase')], limit=1)

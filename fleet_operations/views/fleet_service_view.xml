@@ -262,7 +262,7 @@
                          nolabel="1" placeholder="Put an internal note..." />
                      <field name="already_closed" invisible="1"/>
                  </page>
-                 <page string="Service Invoice">
+                 <page string="Service Invoice" invisible="1">
                      <field name="service_invoice_id" domain="[('type', '=', 'out_invoice')]"
                         context="{'form_view_ref': 'account.invoice_form', 'tree_view_ref':
                         'account.invoice_tree_with_onboarding'}"/>

@@ -63,8 +63,12 @@ class WizardRenewTenancy(models.TransientModel):
                         Greater Than Start Date !!'))
                 rent_rec = self.env['fleet.rent'].browse(self._context['active_id'])
                 for rent in rent_rec:
-                    if rec.start_date and rec.start_date < rent.date_close:
-                        raise Warning('Start Date should be Greater Than Rent Close Date.')
+                    if rent.date_close and rec.start_date:
+                        if rec.start_date < rent.date_close:
+                            raise Warning('Start Date should be Greater Than Rent Close Date.')
+                    elif rent.date_end and rec.start_date:
+                        if rec.start_date < rent.date_end:
+                            raise Warning('Start Date should be Greater Than Rent Expiration Date.')
                 rent = rent_rec.copy()
                 rent.write({
                     'rent_type_id': rec.rent_type_id and rec.rent_type_id.id or False,
