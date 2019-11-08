@@ -9,8 +9,8 @@
                 position="after">
                 <group>
                     <field name="vehicle_service_id" invisible="1"/>
-                    <field name="is_invoice_receive"/>
-                    <field name="is_invoice_return"/>
+                    <field name="is_invoice_receive" invisible="1"/>
+                    <field name="is_invoice_return" invisible="1"/>
                 </group>
             </xpath>
         </field>
