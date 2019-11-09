@@ -5,7 +5,7 @@
     'name': 'Vehicles Dealership',
     'category': 'vehicles',
     'sequence': 1,
-    'version': '12.0.1.0.0',
+    'version': '13.0.1.0.0',
     'license': 'AGPL-3',
     'summary': """Vehicles Dealership Management System""",
     'description': """
@@ -27,6 +27,6 @@
 
     # Technical
     'auto_install': False,
-    'installable': True,
+    'installable': False,
     'application': True,
 }
