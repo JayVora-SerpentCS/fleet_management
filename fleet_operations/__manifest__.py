@@ -6,8 +6,8 @@
     'name': 'Fleet Operations',
     'category': 'Managing vehicles and contracts',
     'sequence': 1,
-    'version': '12.0.1.0.0',
-    'license': 'LGPL-3',
+    'version': '13.0.1.0.0',
+    'license': 'AGPL-3',
     'summary': """This module extends the fleet functionality and
      provides extra features and manage fleet operations.
     """,
@@ -48,6 +48,6 @@
     ],
     # Technical
     'demo': ['data/fleet_extended_demo.xml'],
-    'installable': True,
+    'installable': False,
     'application': True,
 }
