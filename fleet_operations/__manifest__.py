@@ -7,7 +7,7 @@
     'category': 'Managing vehicles and contracts',
     'sequence': 1,
     'version': '12.0.1.0.0',
-    'license': 'LGPL-3',
+    'license': 'AGPL-3',
     'summary': """This module extends the fleet functionality and
      provides extra features and manage fleet operations.
     """,
