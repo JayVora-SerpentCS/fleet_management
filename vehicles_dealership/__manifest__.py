@@ -6,7 +6,7 @@
     'category': 'vehicles',
     'sequence': 1,
     'version': '12.0.1.0.0',
-    'license': 'LGPL-3',
+    'license': 'AGPL-3',
     'summary': """Vehicles Dealership Management System""",
     'description': """
         Vehicles Dealership Management System
