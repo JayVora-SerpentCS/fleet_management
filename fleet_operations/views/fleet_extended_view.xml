@@ -104,6 +104,8 @@
                 <field name="updated_by" readonly="1"/>
                 <field name="updated_date" readonly="1"/>
                 <field name="warranty_period" attrs="{'readonly':[('state','in',('write-off'))]}"/>
+                <field name="income_acc_id" required="1"/>
+                <field name="expence_acc_id" required="1"/>
                 <field name="increment_odometer" invisible="1"/>
             </xpath>
             <xpath expr="//field[@name='odometer']" position="attributes">
@@ -968,7 +970,7 @@
         <field name="name">fleet.vehicle.wittenoff.off</field>
         <field name="model">fleet.wittenoff</field>
         <field name="arch" type="xml">
-            <tree string="Vehicle Witten-off">
+            <tree string="Vehicle Witten-off" create="false">
                 <field name="vehicle_id" />
                 <field name="vehicle_plate" />
                 <field name="report_date" />

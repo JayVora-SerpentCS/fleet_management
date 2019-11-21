@@ -185,7 +185,7 @@ class FleetRent(models.Model):
                 tot_rent += rent_line.amount or 0.0
             rent.total_rent = tot_rent
 
-    name = fields.Char(string="Name", translate=True, copy=False)
+    name = fields.Char(string="Name", translate=True, copy=False, default="New")
     state = fields.Selection([('draft', 'New'), ('open', 'In Progress'),
                               ('pending', 'To Renew'), ('close', 'Closed'),
                               ('done', 'Done'),
@@ -288,7 +288,7 @@ class FleetRent(models.Model):
                                             'fleet_rent_id',
                                             string='Entries')
     account_payment_ids = fields.One2many(
-        'account.payment', 'fleet_rent_id', string='Entries')
+        'account.payment', 'fleet_rent_id', string='Entry')
     total_debit_amt = fields.Float(compute='_total_debit_amt_calc',
                                    string='Total Debit Amount',
                                    currency_field='currency_id')
@@ -299,15 +299,15 @@ class FleetRent(models.Model):
                                      string='Total Expenditure',
                                      currency_field='currency_id')
     invoice_id = fields.Many2one('account.invoice',
-                                 string='Invoice')
+                                 string='Invoices')
     cr_rent_btn = fields.Boolean(string='Hide Rent Button', copy=False)
     acc_pay_dep_rec_id = fields.Many2one('account.voucher',
                                          string='Rental Account Manager',
                                          help="Manager of Rental Vehicle.")
     close_reson = fields.Text(string='Rent Close Reason',
                               help='Rent Close Reason.')
-    vehicle_property_id = fields.Many2one('account.asset.asset',
-                                          string='Property')
+    # vehicle_property_id = fields.Many2one('account.asset.asset',
+    #                                       string='Property')
     invoice_count = fields.Integer(compute='count_invoice', string="Invoice")
     refund_inv_count = fields.Integer(compute='count_refund_invoice',
                                       string="Refund")
@@ -316,7 +316,7 @@ class FleetRent(models.Model):
     def _check_vehicle_id(self):
         for rec in self:
             duplicate_rent = self.env['fleet.rent'].search([
-                ('state', '=', ['draft', 'open', 'pending']),
+                ('state', 'in', ['draft', 'open', 'pending']),
                 ('id', '!=', rec.id), ('vehicle_id', '=', rec.vehicle_id.id)])
             if duplicate_rent:
                 raise ValidationError(_("Vehicle Rent Order is already "

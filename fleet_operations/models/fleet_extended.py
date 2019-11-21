@@ -400,6 +400,10 @@ class FleetOperations(models.Model):
     updated_date = fields.Date(string='Updated date')
     work_order_close = fields.Boolean(string='Work Order Close', default=True)
     fmp_id_editable = fields.Boolean(string='Vehicle ID Editable?')
+    income_acc_id = fields.Many2one("account.account",
+                                    string="Income Account")
+    expence_acc_id = fields.Many2one("account.account",
+                                     string="Expense Account")
 
     _sql_constraints = [('vehilce_unique', 'unique(vin_sn)',
                          'The vehicle is already exist with this vin no.!'),
