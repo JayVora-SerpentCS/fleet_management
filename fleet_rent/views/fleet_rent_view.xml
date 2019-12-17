@@ -85,12 +85,13 @@
                         groups="fleet.fleet_group_manager"/>
                     <button name="action_set_to_draft"
                         string="Set To Draft" type="object" states="open"
-                        class="oe_highlight"/>
+                        class="oe_highlight" groups="fleet_rent.group_vehicle_rent_manager"/>
                     <button name="action_rent_close" string="Close"
-                        type="object" states="open" class="oe_highlight"/>
+                        type="object" states="open" class="oe_highlight"
+                        groups="fleet_rent.group_vehicle_rent_manager"/>
                     <button name="action_rent_done" string="Done"
                         type="object" states="open" class="oe_highlight" 
-                        />
+                        groups="fleet_rent.group_vehicle_rent_manager"/>
                     <field name="cr_rent_btn" invisible="1"/>
                     <field name="state" widget="statusbar"
                         statusbar_visible="draft,open,close"
@@ -291,7 +292,7 @@
         <field name="name">Vehicles Rent</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">fleet.rent</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">tree,form,kanban</field>
     </record>
 
@@ -304,6 +305,11 @@
         parent="fleet_rent.menu_vehicle_rent"
         action="action_fleet_rent_view"
         sequence="1"/>
+        
+    <menuitem name="Fleet" id="fleet.menu_root" 
+        sequence="115" groups="fleet.fleet_group_user,fleet_rent.group_vehicle_rent_user" 
+        web_icon="fleet,static/description/icon.png"/>
+
 
     <!-- Action view for Vehicles Rent to open from the Vehicle -->
     <record id="action_fleet_vehicle_rent_view"
@@ -313,7 +319,7 @@
         <field name="res_model">fleet.rent</field>
         <field name="context">{'default_vehicle_id': active_id,'from_rent_smartbutton': True}</field>
         <field name="domain">[('vehicle_id','=',active_id)]</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -373,7 +379,7 @@
         <field name="name">Rent Type</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">rent.type</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -435,7 +441,7 @@
         <field name="name">Maintenance Type</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">maintenance.type</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -539,7 +545,7 @@
         <field name="name">Tenancy Rent Schedule</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">tenancy.rent.schedule</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">calendar,tree,form</field>
     </record>
 

@@ -9,7 +9,7 @@ from odoo.tools import ustr
 class AccountInvoice(models.Model):
     """Account Invoice Model."""
 
-    _inherit = "account.invoice"
+    _inherit = "account.move"
 
     vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle',
                                  help='Vehicle Name.')
@@ -18,15 +18,14 @@ class AccountInvoice(models.Model):
     is_deposit_inv = fields.Boolean(string="Is Deposit Invoice")
     is_deposit_return_inv = fields.Boolean(string="Is Deposit Return Invoice")
 
-    @api.multi
-    def _prepare_refund(self, invoice, date_invoice=None, date=None, description=None, journal_id=None):
-        refund_vals = super(AccountInvoice, self)._prepare_refund(invoice, date_invoice, date, description, journal_id)
+    def _prepare_refund(self, invoice, invoice_date=None, date=None, description=None, journal_id=None):
+        refund_vals = super(AccountInvoice, self)._prepare_refund(
+            invoice, invoice_date, date, description, journal_id)
         refund_vals.update({
             'fleet_rent_id': self.fleet_rent_id and self.fleet_rent_id.id or False,
-            })
+        })
         return refund_vals
 
-    @api.multi
     def action_move_create(self):
         """Method Action Move Create."""
         res = super(AccountInvoice, self).action_move_create()
@@ -39,12 +38,12 @@ class AccountInvoice(models.Model):
                 })
         return res
 
-    @api.multi
     def action_invoice_open(self):
         """Method to Change state in Open."""
         res = super(AccountInvoice, self).action_invoice_open()
         for invoice in self:
-            record = self.env['tenancy.rent.schedule'].search([('invc_id', '=', invoice.id)])
+            record = self.env['tenancy.rent.schedule'].search(
+                [('invc_id', '=', invoice.id)])
             record.write({'state': 'open'})
         return res
 
@@ -58,16 +57,16 @@ class AccountMoveLine(models.Model):
                                     string='Rental Vehicle')
 
 
-class account_abstract_payment(models.AbstractModel):
+class account_payment(models.AbstractModel):
     """Account Abstract Model."""
 
-    _inherit = 'account.abstract.payment'
+    _inherit = 'account.payment'
 
-    @api.multi
-    def _compute_payment_amount(self, invoices=None, currency=None):
+    # def _compute_payment_amount(self, invoices=None, currency=None):
+    def _compute_payment_amount(self, invoices, currency, journal, date):
         """Overridden Method to update deposit amount in payment wizard."""
-        rec = super(account_abstract_payment, self).\
-            _compute_payment_amount(invoices, currency)
+        rec = super(account_payment, self).\
+            _compute_payment_amount(invoices, currency, journal, date)
         if self._context.get('active_model', False) == 'fleet.rent':
             return self._context.get('default_amount' or 0.0)
         return rec
@@ -87,13 +86,12 @@ class AccountPayment(models.Model):
         res = super(AccountPayment, self)._create_payment_entry(amount)
         res.line_ids.write({
             'fleet_rent_id': self.fleet_rent_id and self.fleet_rent_id.id or False,
-            })
+        })
         return res
 
-    @api.multi
     def post(self):
         """Overridden Method to update tenancy infromation."""
-        inv_obj = self.env['account.invoice']
+        inv_obj = self.env['account.move']
         rent_sched_obj = self.env['tenancy.rent.schedule']
         if self._context.get('active_ids', False):
             for invoice in inv_obj.browse(self._context['active_ids']):
@@ -112,9 +110,9 @@ class AccountPayment(models.Model):
                 tenancy_vals = {'pen_amt': 0.0}
                 if rent_line.invc_id:
                     tenancy_vals.update({
-                        'pen_amt': rent_line.invc_id.residual or 0.0
+                        'pen_amt': rent_line.invc_id.amount_residual or 0.0
                     })
-                    if rent_line.invc_id.state == 'paid':
+                    if rent_line.invc_id.state == 'posted':
                         tenancy_vals.update({
                             'paid': True,
                             'move_check': True,
@@ -123,11 +121,11 @@ class AccountPayment(models.Model):
                         })
                 rent_line.write(tenancy_vals)
             if self._context.get('active_model', False) and \
-                    self._context['active_model'] == 'account.invoice':
+                    self._context['active_model'] == 'account.move':
                 for inv in inv_obj.browse(self._context['active_ids']):
                     if inv.fleet_rent_id and inv.is_deposit_return_inv:
                         inv.fleet_rent_id.write({
                             'is_deposit_return': True,
-                            'amount_return': inv.amount_total - inv.residual or 0.0
+                            'amount_return': inv.amount_total - inv.amount_residual or 0.0
                         })
         return res

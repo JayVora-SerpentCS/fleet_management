@@ -19,15 +19,25 @@
         </field>
     </record>
     
-    <act_window 
+     <act_window 
             name="Recived Parts xlsx"
             res_model="stock.picking.xls.report"
-            src_model="stock.picking"
+            binding_model="stock.picking"
+            view_mode="form"
+            target="new"
+            id="action_print_recived_parts"
+            view_id="recieved_part_wizard_form"
+            />
+
+    <!-- <act_window 
+            name="Recived Parts xlsx"
+            res_model="stock.picking.xls.report"
+            binding_model="stock.picking"
             view_mode="form"
             multi="True"
             target="new"
             key2="client_print_multi"
             id="action_print_recived_parts"
             view_id="recieved_part_wizard_form"
-            />
+            /> -->
 </odoo>

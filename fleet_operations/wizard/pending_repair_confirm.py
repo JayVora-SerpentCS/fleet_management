@@ -14,7 +14,6 @@ class PendingRepairConfirm(models.TransientModel):
     _name = 'pending.repair.confirm'
     _description = 'Pending Repair Confirm'
 
-    @api.multi
     def confirm_wo_forcefully(self):
         """Method Confirm wo forcefully."""
         wo_obj = self.env['fleet.vehicle.log.services']

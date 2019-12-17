@@ -31,8 +31,7 @@ class UpdatePendingRepairHistory(models.Model):
         """Onchange Method."""
         if self.vehicle_id:
             self.fmp_id = self.vehicle_id.name or ""
-
-    @api.multi
+            
     def remove_selected_pending(self):
         """Method use to remove pending repair line.
 

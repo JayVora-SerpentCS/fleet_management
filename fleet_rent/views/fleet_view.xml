@@ -16,10 +16,10 @@
                         string="Rent" />
                 </button>
             </xpath>
-            <xpath expr="//form/sheet/group/group/field[@name='car_value']" position="after">
+            <!-- <xpath expr="//form/sheet/group/group/field[@name='car_value']" position="after">
                 <field name="income_acc_id" string="Income Account" required="1"/>
                 <field name="expence_acc_id" string="Expence Account" required="1" />
-            </xpath>
+            </xpath> -->
         </field>
     </record>
 </odoo>

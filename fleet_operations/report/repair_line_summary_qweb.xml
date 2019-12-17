@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <record id="excel_sg_leave_summary_report_wiz" model="ir.ui.view">
+    <record id="excel_sg_leave_summary_report_wiz" model="ir.ui.view">
         <field name="name">excel.fleet.report.wizard</field>
         <field name="model">excel.fleet.report</field>
         <field name="arch" type="xml">
@@ -37,16 +37,25 @@
         </field>
     </record>
     
-    <act_window name="Fleet xlsx Report"
+   <!--  <act_window name="Fleet xlsx Report"
                 res_model="print.fleet.history"
-                src_model="fleet.vehicle"
+                binding_model="fleet.vehicle"
                 view_mode="form"
-                multi="True"
                 target="new"
-                key2="client_print_multi"
                 id="action_print_fleet_history"
                 view_id="fleet_print"
                 />
+ -->
+    <!-- <act_window name="Fleet xlsx Report"
+                res_model="print.fleet.history"
+                binding_model="fleet.vehicle"
+                view_mode="form"
+                multi="True"
+                target="new"
+                id="action_print_fleet_history"
+                view_id="fleet_print"
+                key2="client_print_multi"
+                /> -->
 
     <template id="repair_line_summary_qweb">
         <t t-call="web.html_container">

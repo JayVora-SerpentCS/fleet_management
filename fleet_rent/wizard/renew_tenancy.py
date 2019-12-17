@@ -51,7 +51,6 @@ class WizardRenewTenancy(models.TransientModel):
                     raise ValidationError(
                         'End Date Should Be Greater Than Start Date!')
 
-    @api.multi
     def renew_contract(self):
         """Button Method is used to Renew Tenancy."""
         view_id = self.env['ir.model.data'].get_object_reference(

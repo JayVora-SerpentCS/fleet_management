@@ -17,7 +17,6 @@ class FleetRent(models.Model):
     _inherit = ['mail.thread']
     _description = "Fleet Rent"
 
-    @api.multi
     @api.onchange('vehicle_id')
     def change_vehicle_owner(self):
         """Method to display owner name."""
@@ -25,7 +24,6 @@ class FleetRent(models.Model):
             if rent.vehicle_id:
                 rent.vehicle_owner = rent.vehicle_id.vehicle_owner.name
 
-    @api.multi
     @api.onchange('vehicle_id')
     def change_odometer(self):
         """Method to display odometer value."""
@@ -33,7 +31,6 @@ class FleetRent(models.Model):
             if rent.vehicle_id:
                 rent.odometer = rent.vehicle_id.odometer
 
-    @api.multi
     @api.depends('account_move_line_ids')
     def _total_deb_cre_amt_calc(self):
         """Method to calculate Total income amount."""
@@ -41,8 +38,6 @@ class FleetRent(models.Model):
             rent.total_deb_cre_amt = \
                 rent.total_debit_amt - rent.total_credit_amt
 
-    @api.multi
-    @api.depends('account_move_line_ids', 'account_move_line_ids.credit')
     def _total_credit_amt_calc(self):
         """Method to calculate Total credit amount."""
         for rent in self:
@@ -51,7 +46,6 @@ class FleetRent(models.Model):
                 total_credit += acc_mov_line.credit or 0.0
             rent.total_credit_amt = total_credit
 
-    @api.multi
     @api.depends('account_move_line_ids', 'account_move_line_ids.debit')
     def _total_debit_amt_calc(self):
         """Method to calculate Total debit amount."""
@@ -71,8 +65,8 @@ class FleetRent(models.Model):
             vehicle = vehical_obj.browse(res['vehicle_id'])
             if context.get('from_rent_smartbutton', False) and \
                     vehicle.state == 'write-off':
-                raise Warning("Rent can not create when vehicle \
-                        in write-off state !!")
+                raise Warning("Rent can not create when vehicle "
+                              "in write-off state !!")
             if vehicle.state == 'write-off':
                 res.update({'vehicle_id': False,
                             'odometer': vehicle.odometer or 0.0})
@@ -100,8 +94,8 @@ class FleetRent(models.Model):
                     [('vehicle_id', '=', rent.vehicle_id.id)],
                     limit=1, order='value desc')
                 if rent.odometer < odometer.value:
-                    raise Warning(('User Error!\nYou can\'t add odometer less \
-                    than previous odometer value %s !') % (odometer.value))
+                    raise Warning(('User Error!\nYou can\'t add odometer less '
+                                   'than previous odometer value %s !') % (odometer.value))
                 if rent.odometer:
                     date = fields.Date.context_today(rent)
                     odometer_obj.create({
@@ -114,15 +108,16 @@ class FleetRent(models.Model):
     def _get_deposit(self):
         """Method to set deposit return and deposit received."""
         for rent in self:
-            deposit_inv_ids = self.env['account.invoice'].search([
+            deposit_inv_ids = self.env['account.move'].search([
                 ('fleet_rent_id', '=', rent.id), ('type', '=', 'out_invoice'),
-                ('state', 'in', ['open', 'in_payment', 'paid']),
+                # ('state', 'in', ['open', 'in_payment', 'paid']),
+                ('state', 'in', ['posted']),
                 ('is_deposit_inv', '=', True)])
             residual_amt = 0.0
             rent.deposit_received = False
             if deposit_inv_ids:
                 residual_amt = sum(
-                    [dp_inv.residual for dp_inv in deposit_inv_ids if dp_inv.residual > 0.0])
+                    [dp_inv.amount_residual for dp_inv in deposit_inv_ids if dp_inv.amount_residual > 0.0])
                 if residual_amt > 0.0:
                     rent.deposit_received = False
                 else:
@@ -132,21 +127,21 @@ class FleetRent(models.Model):
     def amount_return_compute(self):
         """Method to set the deposit return value."""
         for rent in self:
-            credit_inv_ids = self.env['account.invoice'].search([
+            credit_inv_ids = self.env['account.move'].search([
                 ('fleet_rent_id', '=', rent.id), ('type', '=', 'out_refund'),
-                ('state', 'in', ['open', 'in_payment', 'paid']),
+                # ('state', 'in', ['open', 'in_payment', 'paid']),
+                ('state', 'in', ['posted']),
                 ('is_deposit_return_inv', '=', True)])
             residual_amt = 0.0
             rent.is_deposit_return = False
             if credit_inv_ids:
                 residual_amt = sum(
-                    [credit_inv.residual for credit_inv in credit_inv_ids if credit_inv.residual > 0.0])
+                    [credit_inv.amount_residual for credit_inv in credit_inv_ids if credit_inv.amount_residual > 0.0])
                 if residual_amt > 0.0:
                     rent.is_deposit_return = False
                 else:
                     rent.is_deposit_return = True
 
-    @api.multi
     @api.depends('rent_type_id', 'date_start')
     def _create_date(self):
         for rent in self:
@@ -185,7 +180,8 @@ class FleetRent(models.Model):
                 tot_rent += rent_line.amount or 0.0
             rent.total_rent = tot_rent
 
-    name = fields.Char(string="Name", translate=True, copy=False)
+    name = fields.Char(string="Name", translate=True,
+                       copy=False, default="New")
     state = fields.Selection([('draft', 'New'), ('open', 'In Progress'),
                               ('pending', 'To Renew'), ('close', 'Closed'),
                               ('done', 'Done'),
@@ -298,7 +294,7 @@ class FleetRent(models.Model):
     total_deb_cre_amt = fields.Float(compute='_total_deb_cre_amt_calc',
                                      string='Total Expenditure',
                                      currency_field='currency_id')
-    invoice_id = fields.Many2one('account.invoice',
+    invoice_id = fields.Many2one('account.move',
                                  string='Invoice')
     cr_rent_btn = fields.Boolean(string='Hide Rent Button', copy=False)
     acc_pay_dep_rec_id = fields.Many2one('account.voucher',
@@ -316,27 +312,25 @@ class FleetRent(models.Model):
     def _check_vehicle_id(self):
         for rec in self:
             duplicate_rent = self.env['fleet.rent'].search([
-                ('state', '=', ['draft', 'open', 'pending']),
+                ('state', '=', ['open', 'pending', 'close']),
                 ('id', '!=', rec.id), ('vehicle_id', '=', rec.vehicle_id.id)])
             if duplicate_rent:
                 raise ValidationError(_("Vehicle Rent Order is already "
-                  "available for this vehicle !! \n Choose other"
-                  " vehicle and Prepare new rent order !!"))
+                                        "available for this vehicle !! \n Choose other"
+                                        " vehicle and Prepare new rent order !!"))
 
-    @api.multi
     def count_invoice(self):
         """Method to count Out Invoice."""
-        obj = self.env['account.invoice']
+        obj = self.env['account.move']
         for rent in self:
             rent.invoice_count = obj.search_count([
                 ('type', '=', 'out_invoice'),
                 ('fleet_rent_id', '=', rent.id),
                 ('is_deposit_inv', '=', True)])
 
-    @api.multi
     def count_refund_invoice(self):
         """Method to count Refund Invoice."""
-        obj = self.env['account.invoice']
+        obj = self.env['account.move']
         for rent in self:
             rent.refund_inv_count = obj.search_count([
                 ('type', '=', 'out_refund'),
@@ -368,8 +362,8 @@ class FleetRent(models.Model):
                     ('id', 'in', rent.rent_schedule_ids.ids)])
             if not records:
                 if datetime.now() >= rent.date_end:
-                    reason = "This Rent Order is auto completed due to your \
-                            rent limit is over."
+                    reason = "This Rent Order is auto completed due to your "
+                    "rent limit is over."
                     rent.write({'state': 'done',
                                 'close_reson': reason,
                                 'date_cancel': datetime.now(),
@@ -409,21 +403,18 @@ class FleetRent(models.Model):
             if not records:
                 mail_temp_rec.send_mail(rent.id, force_send=True)
 
-    @api.multi
     def action_rent_confirm(self):
         """Method to confirm rent status."""
         for rent in self:
             rent_vals = {'state': 'open'}
             if rent.rent_amt < 1:
-                raise ValidationError("Rental Vehicle Rent \
-                        amount should be greater than zero !! \n \
-                        Please add 'Rental Vehicle Rent' amount !!")
+                raise ValidationError("Rental Vehicle Rent amount should be greater than zero !! \n \
+                    Please add 'Rental Vehicle Rent' amount !!")
             if not rent.name or rent.name == 'New':
                 seq = self.env['ir.sequence'].next_by_code('fleet.rent')
                 rent_vals.update({'name': seq})
             rent.write(rent_vals)
 
-    @api.multi
     def action_rent_close(self):
         """Method to Change rent state to close."""
         return {
@@ -436,24 +427,22 @@ class FleetRent(models.Model):
             'target': 'new'
         }
 
-    @api.multi
     def action_rent_done(self):
         """Method to Change rent state to done."""
         rent_sched_obj = self.env['tenancy.rent.schedule']
         for rent in self:
             if not rent.rent_schedule_ids:
-                raise ValidationError("Without Rent schedule you can not done the rent.\
-                    please first create the rent schedule.")
+                raise ValidationError("Without Rent schedule you can not done the rent."
+                                      "\nplease first create the rent schedule.")
             if rent.rent_schedule_ids:
                 rent_schedule = rent_sched_obj.search([
                     ('paid', '=', False),
                     ('id', 'in', rent.rent_schedule_ids.ids)])
                 if rent_schedule:
-                    raise ValidationError("Scheduled Rents is remaining.\
-                            please first pay scheduled rents.!!")
+                    raise ValidationError("Scheduled Rents is remaining."
+                                          "\nplease first pay scheduled rents.!!")
                 rent.state = 'done'
 
-    @api.multi
     def action_set_to_draft(self):
         """Method to Change rent state to close."""
         for rent in self:
@@ -462,17 +451,9 @@ class FleetRent(models.Model):
                         stage because rent schedule is already created !!'))
             rent.state = 'draft'
 
-        # for rent in self:
-        #     if rent.state == 'open':
-        #         if rent.rent_schedule_ids:
-        #             raise Warning(_('You can not move rent to draft \
-        #                 stage because rent schedule is already created !!'))
-        #     rent.state = 'draft'
-
-    @api.multi
     def action_set_to_renew(self):
         """Method to open rent renew wizard."""
-        cr, uid, context = self.env.args
+        context = self.env.context
         context = dict(context)
         if context is None:
             context = {}
@@ -485,8 +466,8 @@ class FleetRent(models.Model):
             tenancy_rent_ids = self.env['tenancy.rent.schedule'].search(
                 [('fleet_rent_id', '=', rent.id), ('state', 'in', ['draft', 'open'])])
             if tenancy_rent_ids:
-                raise Warning(_('In order to Renew a Tenancy, \
-                    Please make all related Rent Schedule entries posted !!'))
+                raise Warning(_('In order to Renew a Tenancy,'
+                                'Please make all related Rent Schedule entries posted !!'))
             if rent.date_close:
                 date = rent.date_close + timedelta(days=1)
             else:
@@ -506,13 +487,13 @@ class FleetRent(models.Model):
                 'context': context
             }
 
-    @api.multi
     def action_deposite_return(self):
         """Method to return deposite."""
         for rent in self:
-            deposit_inv_ids = self.env['account.invoice'].search([
+            deposit_inv_ids = self.env['account.move'].search([
                 ('fleet_rent_id', '=', rent.id), ('type', '=', 'out_refund'),
-                ('state', 'in', ['draft', 'open', 'in_payment'])
+                ('state', 'in', ['draft', 'open', 'in_payment']),
+                ('is_deposit_return_inv', '=', True)
             ])
             if deposit_inv_ids:
                 raise Warning(_("Deposit Return invoice is already Pending\n"
@@ -521,29 +502,28 @@ class FleetRent(models.Model):
             self.ensure_one()
             vehicle = rent.vehicle_id or False
             purch_journal = rent.env['account.journal'].search([
-                ('type', '=', 'purchase')], limit=1)
+                ('type', '=', 'sale')], limit=1)
             if vehicle and not vehicle.expence_acc_id:
-                raise Warning(_('Please Configure Expense Account in \
-                    Vehicle Registration form !!'))
+                raise Warning(_('Please Configure Expense Account in '
+                                'Vehicle Registration form !!'))
 
             inv_line_values = {
                 'name': 'Deposit Return' or "",
-                'origin': 'account.analytic.account' or "",
                 'quantity': 1,
                 'account_id': vehicle and vehicle.expence_acc_id and
                 vehicle.expence_acc_id.id or False,
                 'price_unit': rent.deposit_amt or 0.00,
                 'fleet_rent_id': rent.id,
             }
-            invoice_id = rent.env['account.invoice'].create({
-                'origin': 'Deposit Return For ' + rent.name or "",
+            invoice_id = rent.env['account.move'].create({
+                'invoice_origin': 'Deposit Return For ' + rent.name or "",
                 'type': 'out_refund',
-                'property_id': vehicle and vehicle.id or False,
+                # 'property_id': vehicle and vehicle.id or False,
                 'partner_id': rent.tenant_id and rent.tenant_id.partner_id.id or False,
-                'account_id': rent.tenant_id and
-                rent.tenant_id.property_account_payable_id.id or False,
+                # 'account_id': rent.tenant_id and
+                # rent.tenant_id.property_account_payable_id.id or False,
                 'invoice_line_ids': [(0, 0, inv_line_values)],
-                'date_invoice': datetime.now().strftime(DTF) or False,
+                'invoice_date': datetime.now().strftime(DTF) or False,
                 'fleet_rent_id': rent.id,
                 'is_deposit_return_inv': True,
                 'journal_id': purch_journal and purch_journal.id or False,
@@ -552,11 +532,15 @@ class FleetRent(models.Model):
             rent.write({'invoice_id': invoice_id.id})
         return True
 
-    @api.multi
     def action_deposite_receive(self):
         """Method to open the related payment form view."""
         for rent in self:
-            deposit_inv_ids = self.env['account.invoice'].search([
+
+            if rent.deposit_amt < 1:
+                raise Warning(_("Deposit amount should not be zero.\n"
+                                "Please Enter Deposit Amount."))
+
+            deposit_inv_ids = self.env['account.move'].search([
                 ('fleet_rent_id', '=', rent.id), ('type', '=', 'out_invoice'),
                 ('state', 'in', ['draft', 'open', 'in_payment']),
                 ('is_deposit_inv', '=', True)])
@@ -566,25 +550,24 @@ class FleetRent(models.Model):
 
             inv_line_values = {
                 'name': 'Deposit Receive' or "",
-                'origin': rent.name or "",
+                # 'origin': rent.name or "",
                 'quantity': 1,
-                'account_id': rent.vehicle_id and rent.vehicle_id.expence_acc_id and
-                rent.vehicle_id.expence_acc_id.id or False,
+                # 'account_id': rent.vehicle_id and rent.vehicle_id.expence_acc_id and
+                # rent.vehicle_id.expence_acc_id.id or False,
                 'price_unit': rent.deposit_amt or 0.00,
                 'fleet_rent_id': rent.id,
             }
-            invoice_id = rent.env['account.invoice'].create({
+            invoice_id = rent.env['account.move'].create({
                 'type': 'out_invoice',
                 'partner_id': rent.tenant_id and rent.tenant_id.partner_id.id or False,
                 'invoice_line_ids': [(0, 0, inv_line_values)],
-                'date_invoice': datetime.now().strftime(DTF) or False,
+                'invoice_date': datetime.now().strftime(DTF) or False,
                 'fleet_rent_id': rent.id,
                 'is_deposit_inv': True,
             })
             rent.write({'invoice_id': invoice_id.id})
             return True
 
-    @api.multi
     def create_rent_schedule(self):
         """Method to create rent schedule Lines."""
         for rent in self:
@@ -667,11 +650,10 @@ class RentType(models.Model):
     def create(self, vals):
         """Overridden Method."""
         if vals.get('duration') < 1:
-            raise ValidationError("You Can't Enter Duration Less \
-                                    Than One(1).")
+            raise ValidationError("You Can't Enter Duration Less "
+                                  "Than One(1).")
         return super(RentType, self).create(vals)
 
-    @api.multi
     @api.depends('duration', 'renttype')
     def name_get(self):
         """Name get Method."""
@@ -754,7 +736,7 @@ class MaintenanaceCost(models.Model):
                                       help="Tenant Name of Rental Vehicle.")
 
     @api.onchange('maint_type')
-    def onchange_property_id(self):
+    def onchange_maint_type(self):
         """Method is used to set maintenance type related.
 
         Fields value on change of property.
@@ -786,7 +768,7 @@ class TenancyRentSchedule(models.Model):
     cheque_detail = fields.Char(string='Cheque Detail', size=30)
     move_check = fields.Boolean(compute='_get_move_check', string='Posted',
                                 store=True)
-    rel_tenant_id = fields.Many2one('res.partner',
+    rel_tenant_id = fields.Many2one('res.users',
                                     string="Tenant")
     move_id = fields.Many2one('account.move',
                               string='Depreciation Entry')
@@ -800,11 +782,10 @@ class TenancyRentSchedule(models.Model):
                           help="True if this rent is paid by tenant")
     state = fields.Selection([('draft', 'Draft'), ('open', 'Open'),
                               ('paid', 'Paid'), ('cancel', 'Cancel')], string="State", default="draft")
-    invc_id = fields.Many2one('account.invoice', string='Invoice')
+    invc_id = fields.Many2one('account.move', string='Invoice')
     inv = fields.Boolean(string='Is Invoice?')
     pen_amt = fields.Float(string='Pending Amount', help='Pending Amount.')
 
-    @api.multi
     def create_invoice(self):
         """Create invoice for Rent Schedule."""
         self.ensure_one()
@@ -815,18 +796,18 @@ class TenancyRentSchedule(models.Model):
         if vehicle and not vehicle.income_acc_id:
             raise Warning(_('Please Configure Income Account from Vehicle !!'))
         inv_line_main = {
-            'origin': 'tenancy.rent.schedule',
+            'invoice_origin': 'tenancy.rent.schedule',
             'name': 'Maintenance cost',
             'price_unit': rent and rent.maintenance_cost or 0.00,
             'quantity': 1,
-            'account_id': rent.vehicle_id.income_acc_id.id or False,
+            # 'account_id': rent.vehicle_id.income_acc_id.id or False,
         }
         inv_line_values = {
-            'origin': 'tenancy.rent.schedule',
+            # 'origin': 'tenancy.rent.schedule',
             'name': 'Tenancy(Rent) Cost',
             'price_unit': self.amount or 0.00,
             'quantity': 1,
-            'account_id': vehicle and vehicle.income_acc_id.id or False,
+            # 'account_id': vehicle and vehicle.income_acc_id.id or False,
         }
         inv_values = {
             'partner_id': rent and rent.tenant_id and
@@ -834,11 +815,11 @@ class TenancyRentSchedule(models.Model):
             rent.tenant_id.partner_id.id or False,
             'type': 'out_invoice',
             'vehicle_id': vehicle and vehicle.id or False,
-            'date_invoice': datetime.now().strftime(DF) or False,
+            'invoice_date': datetime.now().strftime(DF) or False,
             'journal_id': journal_id and journal_id.id or False,
-            'account_id': rent and rent.tenant_id and
-            rent.tenant_id.property_account_receivable_id and
-            rent.tenant_id.property_account_receivable_id.id or False,
+            # 'account_id': rent and rent.tenant_id and
+            # rent.tenant_id.property_account_receivable_id and
+            # rent.tenant_id.property_account_receivable_id.id or False,
             'fleet_rent_id': rent and rent.id or False,
         }
         if self.fleet_rent_id and self.fleet_rent_id.maintenance_cost:
@@ -847,41 +828,39 @@ class TenancyRentSchedule(models.Model):
         else:
             inv_values.update(
                 {'invoice_line_ids': [(0, 0, inv_line_values)]})
-        acc_id = self.env['account.invoice'].create(inv_values)
+        acc_id = self.env['account.move'].create(inv_values)
         self.write({'invc_id': acc_id.id, 'inv': True})
         context = dict(self._context or {})
         wiz_form_id = self.env['ir.model.data'].get_object_reference(
-            'account', 'invoice_form')[1]
+            'account', 'view_move_form')[1]
 
         return {
             'view_type': 'form',
             'view_id': wiz_form_id,
             'view_mode': 'form',
-            'res_model': 'account.invoice',
+            'res_model': 'account.move',
             'res_id': self.invc_id.id,
             'type': 'ir.actions.act_window',
             'target': 'current',
             'context': context,
         }
 
-    @api.multi
     def open_invoice(self):
         """Method Open Invoice."""
         context = dict(self._context or {})
         wiz_form_id = self.env['ir.model.data'].get_object_reference(
-            'account', 'invoice_form')[1]
+            'account', 'view_move_form')[1]
         return {
             'view_type': 'form',
             'view_id': wiz_form_id,
             'view_mode': 'form',
-            'res_model': 'account.invoice',
+            'res_model': 'account.move',
             'res_id': self.invc_id.id,
             'type': 'ir.actions.act_window',
             'target': 'current',
             'context': context,
         }
 
-    @api.multi
     def create_move(self):
         """
         Button Method is used to create account move.
@@ -915,8 +894,8 @@ class TenancyRentSchedule(models.Model):
                 'name': line.tenancy_id.name,
                 'ref': line.tenancy_id.ref,
                 'move_id': move_id.id,
-                'account_id':
-                line.tenancy_id.property_id.income_acc_id.id or False,
+                # 'account_id':
+                # line.tenancy_id.property_id.income_acc_id.id or False,
                 'debit': 0.0,
                 'credit': line.tenancy_id.rent,
                 'journal_id': journal_ids and journal_ids.ids[0],
@@ -930,8 +909,8 @@ class TenancyRentSchedule(models.Model):
                 'name': line.tenancy_id.name,
                 'ref': 'Tenancy Rent',
                 'move_id': move_id.id,
-                'account_id':
-                line.tenancy_id.tenant_id.property_account_receivable_id.id,
+                # 'account_id':
+                # line.tenancy_id.tenant_id.property_account_receivable_id.id,
                 'credit': 0.0,
                 'debit': line.tenancy_id.rent,
                 'journal_id': journal_ids and journal_ids.ids[0],

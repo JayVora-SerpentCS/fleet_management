@@ -35,7 +35,6 @@ class PrintFleetHistory(models.TransientModel):
         ('nex_ser_date', 'Next Service by Date')],
         string="Select Report")
 
-    @api.multi
     def print_xlsx_report(self):
         for rep in self:
             res = False
@@ -111,7 +110,6 @@ class PrintFleetHistory(models.TransientModel):
                                  'res_id': module_rec.id})
             return ret_dict
 
-    @api.multi
     def print_fleet_history_xlsx_report(self, res=False, fleet_history=False):
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('fleet_history')

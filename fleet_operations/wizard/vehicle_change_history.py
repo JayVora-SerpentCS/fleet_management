@@ -34,7 +34,6 @@ class VehicleChangeHistory(models.TransientModel):
             'date_to': datetime.strftime(end_date, DSDF)})
         return res
 
-    @api.multi
     def print_report(self):
         """Method to print report."""
         for rec in self:

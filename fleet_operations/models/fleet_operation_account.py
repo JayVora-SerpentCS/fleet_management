@@ -7,7 +7,7 @@ from odoo import api, fields, models
 class AccountInvoice(models.Model):
     """Account Invoice Model."""
 
-    _inherit = "account.invoice"
+    _inherit = "account.move"
 
     vehicle_service_id = fields.Many2one('fleet.vehicle.log.services', string='Vehicle Service')
     is_invoice_receive = fields.Boolean(string="Is Service Invoice Receive")

@@ -2,7 +2,7 @@
 <odoo>
     <!-- Paper Format For Write-off -->
     <record id="wittenoff_format" model="report.paperformat">
-        <field name="name">Hostel Demo</field>
+        <field name="name">Invoice and write-off paperformat</field>
         <field name="default" eval="True" />
         <field name="format">A4</field>
         <field name="page_height">0</field>
@@ -27,6 +27,14 @@
         menu="True"/>
 
     <record id="write_off_report_qweb" model="ir.actions.report">
+        <field name="paperformat_id" ref="fleet_operations.wittenoff_format"/>
+    </record>
+
+    <record id="account.account_invoices" model="ir.actions.report">
+        <field name="paperformat_id" ref="fleet_operations.wittenoff_format"/>
+    </record>
+
+    <record id="account.account_invoices_without_payment" model="ir.actions.report">
         <field name="paperformat_id" ref="fleet_operations.wittenoff_format"/>
     </record>
 

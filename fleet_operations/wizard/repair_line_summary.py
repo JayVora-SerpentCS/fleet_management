@@ -30,7 +30,6 @@ class RepairLineSummary(models.TransientModel):
                     'date_to': datetime.strftime(end_date, DSDF)})
         return res
 
-    @api.multi
     def print_report(self):
         """Print Report."""
         for rec in self:
