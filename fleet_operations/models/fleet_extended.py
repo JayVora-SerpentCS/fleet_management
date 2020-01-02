@@ -35,8 +35,8 @@ class FleetOperations(models.Model):
             default = {}
         if self:
             if self.state == 'write-off':
-                raise Warning(_('You can\'t duplicate this record \
-                      because it is already write-off'))
+                raise Warning(_('You can\'t duplicate this record '
+                                'because it is already write-off'))
         return super(FleetOperations, self).copy(default=default)
 
     def update_history(self):
@@ -94,8 +94,8 @@ class FleetOperations(models.Model):
                                'last_change_status_date': date.today(),
                                'released_date': date.today()})
             else:
-                raise Warning(_('Vehicle status will only set to released \
-                                      if it is in compeleted state.'))
+                raise Warning(_('Vehicle status will only set to released '
+                                'if it is in compeleted state.'))
         return True
 
     def name_get(self):
@@ -176,8 +176,8 @@ class FleetOperations(models.Model):
         for vehicle in self:
             if vehicle.acquisition_date and vehicle.date_sold:
                 if vehicle.date_sold < vehicle.acquisition_date:
-                    raise ValidationError('Sold Date Should Be \
-                    Greater Than Registration Date.')
+                    raise ValidationError('Sold Date Should Be '
+                                          'Greater Than Registration Date.')
 
     @api.constrains('date_sold', 'transfer_date')
     def check_transfer_date(self):
@@ -185,8 +185,8 @@ class FleetOperations(models.Model):
         for vehicle in self:
             if vehicle.transfer_date and vehicle.date_sold:
                 if vehicle.transfer_date < vehicle.date_sold:
-                    raise ValidationError('Transfer Date Should Be \
-                    Greater Than Sold Date.')
+                    raise ValidationError('Transfer Date Should Be '
+                                          'Greater Than Sold Date.')
 
     @api.constrains('start_date_insurance', 'end_date_insurance')
     def check_insurance_end_date(self):
@@ -194,8 +194,8 @@ class FleetOperations(models.Model):
         for vehicle in self:
             if vehicle.start_date_insurance and vehicle.end_date_insurance:
                 if vehicle.end_date_insurance < vehicle.start_date_insurance:
-                    raise ValidationError('Insurance End Date Should Be \
-                    Greater Than Start Date.')
+                    raise ValidationError('Insurance end date should be '
+                                          'greater than start date.')
 
     @api.constrains('start_date_insurance', 'acquisition_date')
     def check_insurance_start_date(self):
@@ -203,8 +203,8 @@ class FleetOperations(models.Model):
         for vehicle in self:
             if vehicle.start_date_insurance and vehicle.acquisition_date:
                 if vehicle.start_date_insurance < vehicle.acquisition_date:
-                    raise ValidationError('Insurance Start Date Should Be \
-                    Greater Than Registration Date.')
+                    raise ValidationError('Insurance start date should be '
+                                          'greater than registration date.')
 
     def _get_odometer(self):
         fleetvehicalodometer = self.env['fleet.vehicle.odometer']
@@ -222,8 +222,8 @@ class FleetOperations(models.Model):
             vehicle_odometer = fleetvehicalodometer.search([
                 ('vehicle_id', '=', record.id)], limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
-                raise Warning(_('You can\'t enter odometer less than previous \
-                                odometer %s !') % (vehicle_odometer.value))
+                raise Warning(_('You can\'t enter odometer less than previous '
+                                'odometer %s !') % (vehicle_odometer.value))
             if record.odometer:
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
@@ -737,8 +737,8 @@ class ColorColor(models.Model):
     code = fields.Char(string='Code', size=12, translate=True)
     name = fields.Char(string='Name', size=32, required=True, translate=True)
 
-    _sql_constraints = [('color_uniq', 'unique(name)',
-                         'This color is already exist!')]
+    # _sql_constraints = [('color_uniq', 'unique(name)',
+    #                      'This color is already exist!')]
 
     def copy(self, default=None):
         """Copy method cannot duplicate record and overide method."""
@@ -746,6 +746,16 @@ class ColorColor(models.Model):
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
         return super(ColorColor, self).copy(default=default)
+
+    @api.constrains('name')
+    def check_color(self):
+        """Method to check duplicate value."""
+        for rec in self:
+            count = self.env['color.color'].search_count(
+                [('name', 'in', [rec.name.upper(), rec.name.lower()]),
+                 ('id', '!=', rec.id)])
+            if count:
+                raise ValidationError("This color is already exist")
 
 
 class IrAttachment(models.Model):
@@ -1024,8 +1034,8 @@ class FleetVehicleAdvanceSearch(models.TransientModel):
         for vehicle in self:
             if vehicle.acquisition_date_to:
                 if vehicle.acquisition_date_to < vehicle.acquisition_date:
-                    raise ValidationError('Registration To Date Should Be \
-                    Greater Than Registration From Date.')
+                    raise ValidationError('Registration To Date Should Be '
+                    'Greater Than Registration From Date.')
 
     @api.constrains('last_service_date', 'last_service_date_to')
     def check_last_service_date(self):
@@ -1033,8 +1043,8 @@ class FleetVehicleAdvanceSearch(models.TransientModel):
         for vehicle in self:
             if vehicle.last_service_date_to:
                 if vehicle.last_service_date_to < vehicle.last_service_date:
-                    raise ValidationError('Last Service To Date Should Be \
-                    Greater Than Last Service From Date.')
+                    raise ValidationError('Last Service To Date Should Be '
+                    'Greater Than Last Service From Date.')
 
     @api.constrains('next_service_date', 'next_service_date_to')
     def check_next_service_date(self):
@@ -1042,8 +1052,8 @@ class FleetVehicleAdvanceSearch(models.TransientModel):
         for vehicle in self:
             if vehicle.next_service_date_to:
                 if vehicle.next_service_date_to < vehicle.next_service_date:
-                    raise ValidationError('Next Service To Date Should Be \
-                    Greater Than Next Service From Date.')
+                    raise ValidationError('Next Service To Date Should Be '
+                    'Greater Than Next Service From Date.')
 
     @api.constrains('release_date_from', 'release_date_to')
     def check_released_date(self):
@@ -1051,8 +1061,8 @@ class FleetVehicleAdvanceSearch(models.TransientModel):
         for vehicle in self:
             if vehicle.release_date_to:
                 if vehicle.release_date_to < vehicle.release_date_from:
-                    raise ValidationError('Released To Date Should Be \
-                    Greater Than Released From Date.')
+                    raise ValidationError('Released To Date Should Be '
+                    'Greater Than Released From Date.')
 
     def get_vehicle_detail_by_advance_search(self):
         """Method to get vehicle detail by advance search."""
@@ -1186,8 +1196,8 @@ class NextIncrementNumber(models.Model):
                 ('vehicle_id', '=', increment.vehicle_id.id),
                 ('id', '!=', increment.id)])
             if duplicate_hist:
-                raise ValidationError('You can not add more than one odoometer \
-                        increment configuration for same vehicle.!!!')
+                raise ValidationError('You can not add more than one odoometer '
+                        'increment configuration for same vehicle.!!!')
 
 
 class NextServiceDays(models.Model):
@@ -1215,8 +1225,8 @@ class NextServiceDays(models.Model):
                 ('vehicle_id', '=', service.vehicle_id.id),
                 ('id', '!=', service.id)])
             if duplicate_hist:
-                raise ValidationError('You can not add more than one next \
-                        service days configuration for same vehicle.!!!')
+                raise ValidationError('You can not add more than one next '
+                        'service days configuration for same vehicle.!!!')
 
 
 class DamageTypes(models.Model):
@@ -1260,8 +1270,8 @@ class VehicleFuelLog(models.Model):
                 [('vehicle_id', '=', record.vehicle_id.id)],
                 limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
-                raise Warning(_('You can\'t enter odometer less than previous \
-                              odometer %s !') % (vehicle_odometer.value))
+                raise Warning(_('You can\'t enter odometer less than previous '
+                              'odometer %s !') % (vehicle_odometer.value))
             if record.odometer:
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,

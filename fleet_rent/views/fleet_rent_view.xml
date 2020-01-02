@@ -73,13 +73,14 @@
                             attrs="{'invisible':['|',
                             ('deposit_received','=',True), ('state', '=', 'draft')]}"
                             class="oe_highlight"
-                            groups="fleet.fleet_group_manager"/>
+                            groups="fleet_rent.group_vehicle_rent_manager"/>
                     <button name="action_deposite_return"
                             string="Deposit Return"
                             type="object" attrs="{'invisible':['|',
                             ('is_deposit_return','=',True),
                             ('deposit_received','=',False)]}"
-                            class="oe_highlight" context="{'return':1}"/>
+                            class="oe_highlight" context="{'return':1}"
+                            groups="fleet_rent.group_vehicle_rent_manager"/>
                     <button name="action_set_to_renew" string="Renew"
                         type="object" states="close,done" class="oe_highlight"
                         groups="fleet.fleet_group_manager"/>

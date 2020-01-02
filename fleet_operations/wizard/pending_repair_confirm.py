@@ -27,21 +27,21 @@ class PendingRepairConfirm(models.TransientModel):
             increment_ids = increment_obj.search([
                 ('vehicle_id', '=', work_order.vehicle_id.id)])
             if not increment_ids:
-                raise Warning(_("Next Increment Odometer is not set for %s \
-          please set it from configuration!") % (work_order.vehicle_id.name))
+                raise Warning(_("Next Increment Odometer is not set for %s "
+                                "please set it from configuration!") % (work_order.vehicle_id.name))
             if increment_ids:
                 odometer_increment = increment_ids[0].number
             next_service_day_ids = next_service_day_obj.search([
                 ('vehicle_id', '=', work_order.vehicle_id.id)],
                 limit=1)
             if not next_service_day_ids:
-                raise Warning(_("Next service days is \
-                     not configured for %s please set it from \
-                     configuration!") % (work_order.vehicle_id.name))
+                raise Warning(_("Next service days is "
+                                "not configured for %s please set it from "
+                                "configuration!") % (work_order.vehicle_id.name))
             work_order_vals = {}
             if work_order.odometer == 0:
-                raise Warning(_("Please set the \
-                        current Odometer of vehilce in work order!"))
+                raise Warning(_("Please set the "
+                                "current Odometer of vehilce in work order!"))
             odometer_increment += work_order.odometer
             next_service_date = work_order.date + \
                 timedelta(days=next_service_day_ids.days)

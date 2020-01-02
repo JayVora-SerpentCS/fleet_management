@@ -207,13 +207,15 @@
                 <button name="%(fleet_operations.fleet_vehicle_log_services_form_action)d"
                         type="action"
                         string="Services" 
+                        icon="fa-gears"
                         class="oe_stat_button oe_highlight"
                         domain="[('state','in',('inspection','released'))]"
                         context="{'default_vehicle_id': active_id}"
                         />
                 <button name="%(fleet_operations.fleet_vehicle_write_off_form_action)d"
                         type="action"
-                        string="Write-off" 
+                        string="Write-off"
+                        icon="fa-gears" 
                         class="oe_stat_button oe_highlight"
                         domain="[('state','in',('inspection','released'))]"
                         context="{'default_vehicle_id': active_id}"
@@ -1080,7 +1082,7 @@
     <!-- Hidden the not required menus -->
     <menuitem id="fleet.fleet_vehicle_log_contract_menu"
         action="fleet.fleet_vehicle_log_contract_action"
-        groups="group_hide_menus"
+        groups="-fleet.fleet_group_user,group_hide_menus"
         parent="fleet.fleet_vehicles"  />
 
     <!-- portal.group_anonymous -->

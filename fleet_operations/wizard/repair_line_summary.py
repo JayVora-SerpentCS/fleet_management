@@ -34,8 +34,8 @@ class RepairLineSummary(models.TransientModel):
         """Print Report."""
         for rec in self:
             if rec.date_from > rec.date_to:
-                raise Warning(_("User Error!\n'Date To' must be \
-                                greater than 'Date From' !"))
+                raise Warning(_("User Error!\n'Date To' must be "
+                                "greater than 'Date From' !"))
             data = {
                 'form': {
                     'date_from': rec.date_from,

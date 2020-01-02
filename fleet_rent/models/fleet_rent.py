@@ -22,7 +22,8 @@ class FleetRent(models.Model):
         """Method to display owner name."""
         for rent in self:
             if rent.vehicle_id:
-                rent.vehicle_owner = rent.vehicle_id.vehicle_owner.name
+                # we added sudo in below code to fix the access issue with rent user
+                rent.vehicle_owner = rent.vehicle_id.sudo().vehicle_owner.name
 
     @api.onchange('vehicle_id')
     def change_odometer(self):
@@ -408,8 +409,8 @@ class FleetRent(models.Model):
         for rent in self:
             rent_vals = {'state': 'open'}
             if rent.rent_amt < 1:
-                raise ValidationError("Rental Vehicle Rent amount should be greater than zero !! \n \
-                    Please add 'Rental Vehicle Rent' amount !!")
+                raise ValidationError("Rental Vehicle Rent amount should be greater than zero !! "
+                                      "Please add 'Rental Vehicle Rent' amount !!")
             if not rent.name or rent.name == 'New':
                 seq = self.env['ir.sequence'].next_by_code('fleet.rent')
                 rent_vals.update({'name': seq})
@@ -447,8 +448,8 @@ class FleetRent(models.Model):
         """Method to Change rent state to close."""
         for rent in self:
             if rent.state == 'open' and rent.rent_schedule_ids:
-                raise Warning(_('You can not move rent to draft \
-                        stage because rent schedule is already created !!'))
+                raise Warning(_('You can not move rent to draft '
+                                'stage because rent schedule is already created !!'))
             rent.state = 'draft'
 
     def action_set_to_renew(self):
@@ -573,9 +574,9 @@ class FleetRent(models.Model):
         for rent in self:
             for rent_line in rent.rent_schedule_ids:
                 if not rent_line.paid and not rent_line.move_check:
-                    raise Warning(_('You can\'t create new rent \
-                        schedule Please make all related Rent Schedule \
-                        entries paid.'))
+                    raise Warning(_('You can\'t create new rent '
+                                    'schedule Please make all related Rent Schedule '
+                                    'entries paid.'))
             rent_obj = self.env['tenancy.rent.schedule']
             currency = rent.currency_id or False
             tenent = rent.tenant_id or False

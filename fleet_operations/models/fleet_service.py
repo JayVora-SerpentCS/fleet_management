@@ -36,8 +36,8 @@ class FleetVehicleLogServices(models.Model):
         """Unlink Method."""
         for rec in self:
             if rec.state != 'draft':
-                raise Warning(_('You can\'t delete Work Order which \
-                                  in Confirmed or Done state!'))
+                raise Warning(_('You can\'t delete Work Order which '
+                                'in Confirmed or Done state!'))
         return super(FleetVehicleLogServices, self).unlink()
 
     @api.onchange('vehicle_id')
@@ -274,8 +274,8 @@ class FleetVehicleLogServices(models.Model):
             # self.env.args = cr, uid, misc.frozendict(context)
             user = self.env.user
             if work_order.odometer == 0:
-                raise Warning(_("Please set the current \
-                                     Odometer of vehilce in work order!"))
+                raise Warning(_("Please set the current "
+                                "Odometer of vehilce in work order!"))
             odometer_increment += work_order.odometer
             next_service_date = datetime.strptime(
                 str(date.today()), DEFAULT_SERVER_DATE_FORMAT) + \
@@ -494,8 +494,8 @@ class FleetVehicleLogServices(models.Model):
         res = super(FleetVehicleLogServices, self).default_get(fields)
         repair_type_ids = repair_type_obj.search([])
         if not repair_type_ids:
-            raise Warning(_("There is no data for \
-                        repair type, add repair type from configuration!"))
+            raise Warning(_("There is no data for "
+                            "repair type, add repair type from configuration!"))
         return res
 
     @api.onchange('cost_subtype_id')
@@ -555,8 +555,8 @@ class FleetVehicleLogServices(models.Model):
         for vehicle in self:
             if vehicle.date and vehicle.date_complete:
                 if vehicle.date_complete < vehicle.date:
-                    raise ValidationError('Estimated Date Should Be \
-                    Greater Than Issue Date.')
+                    raise ValidationError('Estimated Date Should Be '
+                                          'Greater Than Issue Date.')
 
     wono_id = fields.Integer(string='WONo',
                              help="Take this field for data migration")
@@ -702,8 +702,8 @@ class FleetVehicleLogServices(models.Model):
                 [('vehicle_id', '=', record.vehicle_id.id)],
                 limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
-                raise Warning(_('You can\'t enter odometer less than previous \
-                               odometer %s !') % (vehicle_odometer.value))
+                raise Warning(_('You can\'t enter odometer less than previous '
+                                'odometer %s !') % (vehicle_odometer.value))
             if record.odometer:
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
@@ -767,8 +767,8 @@ class TripPartsHistoryDetails(models.Model):
         for rec in self:
             available_qty = rec.used_qty - rec.dummy_encoded_qty
             if available_qty < 0:
-                raise Warning(_('Quantity Available \
-                                    must be greater than zero!'))
+                raise Warning(_('Quantity Available '
+                                'must be greater than zero!'))
             rec.available_qty = available_qty
 
     product_id = fields.Many2one('product.product', string='Part No',
@@ -1040,8 +1040,8 @@ class FleetWorkOrderSearch(models.TransientModel):
         for vehicle in self:
             if vehicle.issue_date_to:
                 if vehicle.issue_date_to < vehicle.issue_date_from:
-                    raise ValidationError('Issue To Date Should Be \
-                    Greater Than Last Issue From Date.')
+                    raise ValidationError('Issue To Date Should Be '
+                                          'Greater Than Last Issue From Date.')
 
     @api.constrains('issue_date_to')
     def check_issue_date(self):
@@ -1056,8 +1056,8 @@ class FleetWorkOrderSearch(models.TransientModel):
         for vehicle in self:
             if vehicle.open_date_to:
                 if vehicle.open_date_to < vehicle.open_date_from:
-                    raise ValidationError('Open To Date Should Be \
-                    Greater Than Open From Date.')
+                    raise ValidationError('Open To Date Should Be '
+                                          'Greater Than Open From Date.')
 
     @api.constrains('close_date_form', 'close_date_to')
     def check_close_date(self):
@@ -1065,8 +1065,8 @@ class FleetWorkOrderSearch(models.TransientModel):
         for vehicle in self:
             if vehicle.close_date_to:
                 if vehicle.close_date_to < vehicle.close_date_form:
-                    raise ValidationError('Close To Date Should Be \
-                    Greater Than Close From Date.')
+                    raise ValidationError('Close To Date Should Be '
+                                          'Greater Than Close From Date.')
 
     def get_work_order_detail_by_advance_search(self):
         """Method to get work order detail by advance search."""
@@ -1244,8 +1244,8 @@ class TaskLine(models.Model):
     def _check_used_qty(self):
         for rec in self:
             if rec.qty <= 0:
-                raise Warning(_('You can\'t \
-                            enter used quanity as Zero!'))
+                raise Warning(_('You can\'t '
+                                'enter used quanity as Zero!'))
 
     @api.onchange('product_id', 'qty')
     def _onchage_product(self):
@@ -1254,8 +1254,8 @@ class TaskLine(models.Model):
                 prod = rec.product_id
                 if prod.in_active_part:
                     rec.product_id = False
-                    raise Warning(_('You can\'t select \
-                             part which is In-Active!'))
+                    raise Warning(_('You can\'t select '
+                                    'part which is In-Active!'))
                 rec.qty_hand = prod.qty_available or 0.0
                 rec.product_uom = prod.uom_id or False
                 rec.price_unit = prod.list_price or 0.0
@@ -1288,8 +1288,8 @@ class TaskLine(models.Model):
                 ('fleet_service_id', '=', vals['fleet_service_id']),
                 ('product_id', '=', vals['product_id'])])
             if task_line_ids:
-                warrnig = 'You can not have duplicate \
-                            parts assigned !!!'
+                warrnig = 'You can not have duplicate '
+                'parts assigned !!!'
                 raise Warning(_(warrnig))
         return super(TaskLine, self).create(vals)
 
@@ -1322,9 +1322,9 @@ class TaskLine(models.Model):
             if not self.date_issued >= date_open and \
                     not self.date_issued <= current_date:
                 self.date_issued = False
-                raise Warning(_('You can\t enter \
-                        parts issue either open work order date or in \
-                           between open work order date and current date!'))
+                raise Warning(_('You can\t enter '
+                                'parts issue either open work order date or in '
+                                'between open work order date and current date!'))
 
     def unlink(self):
         """Overridden method to add validation before delete the history."""
@@ -1364,8 +1364,8 @@ class ServiceRepairLine(models.Model):
         for vehicle in self:
             if vehicle.issue_date and vehicle.target_date:
                 if vehicle.target_date < vehicle.issue_date:
-                    raise ValidationError('Target Completion Date Should Be \
-                    Greater Than Issue Date.')
+                    raise ValidationError('Target Completion Date Should Be '
+                                          'Greater Than Issue Date.')
 
     @api.constrains('target_date', 'date_complete')
     def check_etic_date(self):
@@ -1373,8 +1373,8 @@ class ServiceRepairLine(models.Model):
         for vehicle in self:
             if vehicle.target_date and vehicle.date_complete:
                 if vehicle.target_date > vehicle.date_complete:
-                    raise ValidationError('Repairs target completion date should be \
-                            less than estimated date.')
+                    raise ValidationError('Repairs target completion date should be '
+                                          'less than estimated date.')
 
     service_id = fields.Many2one('fleet.vehicle.log.services',
                                  ondelete='cascade')
