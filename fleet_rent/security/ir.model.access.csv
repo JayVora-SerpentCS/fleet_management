@@ -11,3 +11,4 @@ access_fleet_rent_admin,fleet_rent_admin,model_fleet_rent,group_vehicle_rent_man
 access_fleet_rent_tenant,fleet_rent_tenant,model_fleet_rent,group_vehicle_rent_user,1,0,0,0
 access_fleet_rent_user,access_fleet_rent_user,model_fleet_rent,fleet.fleet_group_user,1,0,0,0
 access_fleet_rent_mgr,access_fleet_rent_mgr,model_fleet_rent,fleet.fleet_group_manager,1,1,1,1
+access_fleet_odometer,access_fleet_odometer,fleet.model_fleet_vehicle_odometer,group_vehicle_rent_user,1,0,0,0

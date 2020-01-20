@@ -25,7 +25,6 @@ class WorkOrderReports(models.TransientModel):
     file = fields.Binary("Click On Download Link To Download Xls File",
                          readonly=True)
 
-    @api.multi
     def print_wo_xlsx_report(self):
         """Print Wo xlsx report."""
         for vehicle in self:

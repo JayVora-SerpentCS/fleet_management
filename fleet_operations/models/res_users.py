@@ -47,7 +47,6 @@ class ResPartnerExtended(models.Model):
     is_driver = fields.Boolean(string='Is Driver')
     insurance = fields.Boolean(string='Insurance')
 
-    @api.multi
     def copy(self, default=None):
         """Copy method cannot duplicate record and overide method."""
         if not default:

@@ -6,7 +6,7 @@
     'category': 'Fleet Rent',
     'sequence': 1,
     'version': '13.0.1.0.0',
-    'license': 'AGPL-3',
+    'license': 'LGPL-3',
     'summary': """Rental Vehicle Management System
         This module provides fleet rent features.""",
     'description': """
@@ -18,8 +18,7 @@
     'website': 'http://www.serpentcs.com',
 
     # Dependencies
-    'depends': ['analytic', 'account_voucher',
-                'fleet_operations'],
+    'depends': ['analytic', 'fleet_operations'],
     # Data
     'data': [
             'security/rent_security.xml',
@@ -44,6 +43,6 @@
     ],
     # Technical
     'auto_install': False,
-    'installable': False,
+    'installable': True,
     'application': True,
 }

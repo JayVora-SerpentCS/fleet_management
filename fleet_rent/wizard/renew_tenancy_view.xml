@@ -28,7 +28,7 @@
 	<record model="ir.actions.act_window" id="action_renew_tenancy_wizz_wizz">
 		<field name="name">Renew Tenancy Wizard</field>
 		<field name="res_model">renew.tenancy</field>
-		<field name="view_type">form</field>
+		<!-- <field name="view_type">form</field> -->
 		<field name="view_mode">form</field>
 		<field name="target">new</field>
 	</record>

@@ -20,7 +20,6 @@ class StockPickingReport(models.TransientModel):
     file = fields.Binary("Click On Download Link To Download Xls File",
                          readonly=True)
 
-    @api.multi
     def print_recived_part_xlsx_report(self):
         """Print recived part xlsx."""
         rec_parts_obj = self.env['report.fleet_operations.receved.parts.xls']

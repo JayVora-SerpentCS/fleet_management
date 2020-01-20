@@ -33,8 +33,8 @@ class UpdateEngineInfo(models.TransientModel):
         for vehicle in self:
             if vehicle.changed_date and vehicle.vehicle_id.acquisition_date:
                 if vehicle.changed_date < vehicle.vehicle_id.acquisition_date:
-                    raise ValidationError('Engine Change Date Should Be \
-                    Greater Than Vehicle Registration Date.')
+                    raise ValidationError('Engine Change Date Should Be '
+                                          'Greater Than Vehicle Registration Date.')
 
     @api.model
     def default_get(self, fields):
@@ -47,7 +47,6 @@ class UpdateEngineInfo(models.TransientModel):
                         'vehicle_id': self._context['active_id'] or False})
         return res
 
-    @api.multi
     def set_new_engine_info(self):
         """Method set new engine info."""
         vehicle_obj = self.env['fleet.vehicle']
@@ -91,8 +90,8 @@ class UpdateColorInfo(models.TransientModel):
         for vehicle in self:
             if vehicle.changed_date and vehicle.vehicle_id.acquisition_date:
                 if vehicle.changed_date < vehicle.vehicle_id.acquisition_date:
-                    raise ValidationError('Color Change Date Should Be \
-                    Greater Than Vehicle Registration Date.')
+                    raise ValidationError('Color Change Date Should Be '
+                                          'Greater Than Vehicle Registration Date.')
 
     @api.model
     def default_get(self, fields):
@@ -106,7 +105,6 @@ class UpdateColorInfo(models.TransientModel):
                         'vehicle_id': self._context['active_id'] or False})
         return res
 
-    @api.multi
     def set_new_color_info(self):
         """Method set new color info."""
         vehicle_obj = self.env['fleet.vehicle']
@@ -160,7 +158,6 @@ class UpdateVinInfo(models.TransientModel):
                         'vehicle_id': self._context['active_id'] or False})
         return res
 
-    @api.multi
     def set_new_vin_info(self):
         """Method to set new vin info."""
         vehicle_obj = self.env['fleet.vehicle']
@@ -210,8 +207,8 @@ class UpdateTireInfo(models.TransientModel):
                     vehicle.new_tire_issue_date:
                 if vehicle.new_tire_issue_date < \
                         vehicle.previous_tire_issue_date:
-                    raise ValidationError('New Tire Issuance Date Should Be \
-                    Greater Than Previous Tire Issuance Date.')
+                    raise ValidationError('New Tire Issuance Date Should Be '
+                                          'Greater Than Previous Tire Issuance Date.')
 
     @api.constrains('changed_date', 'new_tire_issue_date')
     def check_tire_changed_date(self):
@@ -219,8 +216,8 @@ class UpdateTireInfo(models.TransientModel):
         for vehicle in self:
             if vehicle.changed_date and vehicle.new_tire_issue_date:
                 if vehicle.changed_date < vehicle.new_tire_issue_date:
-                    raise ValidationError('Tire Change Date Should Be \
-                    Greater Than New Tire Issuance Date.')
+                    raise ValidationError('Tire Change Date Should Be '
+                                          'Greater Than New Tire Issuance Date.')
 
     @api.model
     def default_get(self, fields):
@@ -236,7 +233,6 @@ class UpdateTireInfo(models.TransientModel):
                 'vehicle_id': self._context['active_id'] or False})
         return res
 
-    @api.multi
     def set_new_tire_info(self):
         """Method set new tire info."""
         vehicle_obj = self.env['fleet.vehicle']
@@ -297,8 +293,8 @@ class UpdateBatteryInfo(models.TransientModel):
                     vehicle.new_battery_issue_date:
                 if vehicle.new_battery_issue_date < \
                         vehicle.previous_battery_issue_date:
-                    raise ValidationError('New Battery Issuance Date Should Be \
-                    Greater Than Previous Battery Issuance Date.')
+                    raise ValidationError('New Battery Issuance Date Should Be '
+                                          'Greater Than Previous Battery Issuance Date.')
 
     @api.constrains('changed_date', 'new_battery_issue_date')
     def check_battery_changed_date(self):
@@ -306,8 +302,8 @@ class UpdateBatteryInfo(models.TransientModel):
         for vehicle in self:
             if vehicle.changed_date and vehicle.new_battery_issue_date:
                 if vehicle.changed_date < vehicle.new_battery_issue_date:
-                    raise ValidationError('Battery Change Date Should Be \
-                    Greater Than New Battery Issuance Date.')
+                    raise ValidationError('Battery Change Date Should Be '
+                                          'Greater Than New Battery Issuance Date.')
 
     @api.model
     def default_get(self, fields):
@@ -323,7 +319,6 @@ class UpdateBatteryInfo(models.TransientModel):
                 'vehicle_id': self._context['active_id'] or False})
         return res
 
-    @api.multi
     def set_new_battery_info(self):
         """Method to set new battery info."""
         vehicle_obj = self.env['fleet.vehicle']

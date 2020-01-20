@@ -616,7 +616,7 @@ msgstr ""
 
 #. module: fleet_operations
 #: model:ir.model.fields,help:fleet_operations.field_fleet_service_type__category
-msgid "Choose wheter the                                                 service refer to contracts,                                                 vehicle services or both"
+msgid "Choose wheter the service refer to contracts,vehicle services or both"
 msgstr ""
 
 #. module: fleet_operations
@@ -736,7 +736,7 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:164
 #, python-format
-msgid "Confirm work order can only                         when vehicle status is in Inspection or Released!"
+msgid "Confirm work order can only when vehicle status is in Inspection or Released!"
 msgstr ""
 
 #. module: fleet_operations
@@ -1473,13 +1473,13 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/report/repair_line_summary.py:61
 #, python-format
-msgid "Form content is missing,                                 this report cannot be printed."
+msgid "Form content is missing,this report cannot be printed."
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/report/vehicle_change_history.py:187
 #, python-format
-msgid "Form content is missing,                     this report cannot be printed."
+msgid "Form content is missing,this report cannot be printed."
 msgstr ""
 
 #. module: fleet_operations
@@ -2158,7 +2158,7 @@ msgstr ""
 
 #. module: fleet_operations
 #: sql_constraint:vehicle.unique.sequence:0
-msgid "Location, Make and Sequence all should be                 uniqe for unique sequence!"
+msgid "Location, Make and Sequence all should be uniqe for unique sequence!"
 msgstr ""
 
 #. module: fleet_operations
@@ -2205,7 +2205,7 @@ msgstr "العلامة التجارية"
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:454
 #, python-format
-msgid "May be Out Going Mail                                     server is not configuration."
+msgid "May be Out Going Mail server is not configuration."
 msgstr ""
 
 #. module: fleet_operations
@@ -2416,7 +2416,7 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:478
 #, python-format
-msgid "New work order can only be                             generated either vehicle status is in                             Inspection or Released!"
+msgid "New work order can only be generated either vehicle status is in Inspection or Released!"
 msgstr ""
 
 #. module: fleet_operations
@@ -2432,7 +2432,7 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/wizard/pending_repair_confirm.py:31
 #, python-format
-msgid "Next Increment Odometer is not set for %s           please set it from configuration!"
+msgid "Next Increment Odometer is not set for %s please set it from configuration!"
 msgstr ""
 
 #. module: fleet_operations
@@ -2511,7 +2511,7 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/wizard/pending_repair_confirm.py:39
 #, python-format
-msgid "Next service days is                      not configured for %s please set it from                      configuration!"
+msgid "Next service days is not configured for %s please set it from                      configuration!"
 msgstr ""
 
 #. module: fleet_operations
@@ -2613,7 +2613,7 @@ msgstr "سجل عداد المسافات لمركبة"
 #. module: fleet_operations
 #: model:ir.model.fields,help:fleet_operations.field_fleet_vehicle__odometer
 #: model:ir.model.fields,help:fleet_operations.field_fleet_vehicle_log_services__odometer
-msgid "Odometer measure of the vehicle at the                                 moment of this log"
+msgid "Odometer measure of the vehicle at the moment of this log"
 msgstr ""
 
 #. module: fleet_operations
@@ -2810,13 +2810,13 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/wizard/pending_repair_confirm.py:44
 #, python-format
-msgid "Please set the                         current Odometer of vehilce in work order!"
+msgid "Please set the current Odometer of vehilce in work order!"
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:261
 #, python-format
-msgid "Please set the current                                      Odometer of vehilce in work order!"
+msgid "Please set the current Odometer of vehilce in work order!"
 msgstr ""
 
 #. module: fleet_operations
@@ -2911,13 +2911,13 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:159
 #, python-format
-msgid "Previous work order is not                             complete, complete that work order first than                                 you can confirm this work order!"
+msgid "Previous work order is not complete, complete that work order first than you can confirm this work order!"
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:471
 #, python-format
-msgid "Previous work order is not                         complete, complete that work order first than you                         can create new work order!"
+msgid "Previous work order is not complete, complete that work order first than you can create new work order!"
 msgstr ""
 
 #. module: fleet_operations
@@ -2990,7 +2990,7 @@ msgstr "الكمية"
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:755
 #, python-format
-msgid "Quantity Available                                     must be greater than zero!"
+msgid "Quantity Available must be greater than zero!"
 msgstr ""
 
 #. module: fleet_operations
@@ -3381,7 +3381,7 @@ msgstr ""
 
 #. module: fleet_operations
 #: model:ir.model.fields,help:fleet_operations.field_report_heading__image_small
-msgid "Small-sized image of the Report.                                 It is automatically resized as a 64x64px image,                                 with aspect ratio preserved. Use this field anywhere a small                                 image is required."
+msgid "Small-sized image of the Report.It is automatically resized as a 64x64px image,with aspect ratio preserved. Use this field anywhere a small                                 image is required."
 msgstr ""
 
 #. module: fleet_operations
@@ -3465,27 +3465,27 @@ msgstr ""
 
 #. module: fleet_operations
 #: model:ir.model.fields,field_description:fleet_operations.field_update_tire_info__temp_bool
-msgid "Temp Bool for making                                                 previous Tire info readonly"
+msgid "Temp Bool for making previous Tire info readonly"
 msgstr ""
 
 #. module: fleet_operations
 #: model:ir.model.fields,field_description:fleet_operations.field_update_engine_info__temp_bool
-msgid "Temp Bool for making                                     previous color readonly"
+msgid "Temp Bool for making previous color readonly"
 msgstr ""
 
 #. module: fleet_operations
 #: model:ir.model.fields,field_description:fleet_operations.field_update_battery_info__temp_bool
-msgid "Temp Bool for making previous                                              Battery info readonly"
+msgid "Temp Bool for making previous Battery info readonly"
 msgstr ""
 
 #. module: fleet_operations
 #: model:ir.model.fields,field_description:fleet_operations.field_update_vin_info__temp_bool
-msgid "Temp Bool for making previous                                 color readonly"
+msgid "Temp Bool for making previous color readonly"
 msgstr ""
 
 #. module: fleet_operations
 #: model:ir.model.fields,field_description:fleet_operations.field_update_color_info__temp_bool
-msgid "Temp Bool for making previous                                color readonly"
+msgid "Temp Bool for making previous color readonly"
 msgstr ""
 
 #. module: fleet_operations
@@ -3507,7 +3507,7 @@ msgstr ""
 
 #. module: fleet_operations
 #: model:ir.model.fields,help:fleet_operations.field_trip_encoded_history__encoded_qty
-msgid "The Quantity that is used in                                         in Workorder"
+msgid "The Quantity that is used in Workorder"
 msgstr ""
 
 #. module: fleet_operations
@@ -3566,12 +3566,12 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:484
 #, python-format
-msgid "There is no data for                         repair type, add repair type from configuration!"
+msgid "There is no data for repair type, add repair type from configuration!"
 msgstr ""
 
 #. module: fleet_operations
 #: sql_constraint:fleet.vehicle.model.brand:0
-msgid "This brand Name is already exist you                         can't duplicate it!"
+msgid "This brand Name is already exist you can't duplicate it!"
 msgstr ""
 
 #. module: fleet_operations
@@ -3586,7 +3586,7 @@ msgstr ""
 
 #. module: fleet_operations
 #: model:ir.model.fields,help:fleet_operations.field_report_heading__image
-msgid "This field holds the image used as image                             for the Report , limited to 1024x1024px."
+msgid "This field holds the image used as image for the Report , limited to 1024x1024px."
 msgstr ""
 
 #. module: fleet_operations

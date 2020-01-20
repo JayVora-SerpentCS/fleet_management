@@ -30,13 +30,12 @@ class RepairLineSummary(models.TransientModel):
                     'date_to': datetime.strftime(end_date, DSDF)})
         return res
 
-    @api.multi
     def print_report(self):
         """Print Report."""
         for rec in self:
             if rec.date_from > rec.date_to:
-                raise Warning(_("User Error!\n'Date To' must be \
-                                greater than 'Date From' !"))
+                raise Warning(_("User Error!\n'Date To' must be "
+                                "greater than 'Date From' !"))
             data = {
                 'form': {
                     'date_from': rec.date_from,

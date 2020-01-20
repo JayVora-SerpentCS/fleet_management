@@ -7,7 +7,7 @@
     'category': 'Managing vehicles and contracts',
     'sequence': 1,
     'version': '13.0.1.0.0',
-    'license': 'AGPL-3',
+    'license': 'LGPL-3',
     'summary': """This module extends the fleet functionality and
      provides extra features and manage fleet operations.
     """,
@@ -36,9 +36,11 @@
               'report/report_write_off_qweb.xml',
               'report/vehicle_change_history_qweb.xml',
               'report/repair_line_summary_qweb.xml',
-              'views/fleet_extended_view.xml',
               'views/fleet_operation_account.xml',
               'views/fleet_service_view.xml',
+              'views/fleet_extended_view.xml',
+              # 'views/fleet_operation_account.xml',
+              # 'views/fleet_service_view.xml',
               'views/update_pending_history_view.xml',
               'views/template.xml',
               'wizard/work_order_reports_view.xml',
@@ -48,6 +50,6 @@
     ],
     # Technical
     'demo': ['data/fleet_extended_demo.xml'],
-    'installable': False,
+    'installable': True,
     'application': True,
 }

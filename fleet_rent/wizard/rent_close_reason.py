@@ -16,7 +16,6 @@ class WizardRentCloseReason(models.TransientModel):
 
     reason = fields.Text(string='Reason')
 
-    @api.multi
     def close_rent(self):
         """Method to close rent."""
         user = self.env.user

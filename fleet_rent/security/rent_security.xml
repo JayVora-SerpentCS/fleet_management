@@ -22,7 +22,6 @@
             <field name="implied_ids" eval="[(4, ref('group_vehicle_rent_user'))]"/>
         </record>
 
-
     </data>
     <data noupdate="0">
         <record id="base.user_admin" model="res.users">
@@ -50,7 +49,7 @@
             <field name="domain_force">[(1,'=',1)]</field>
         </record>
 
-        <record id="fleet_rule_tenancy_visibility_user" model="ir.rule">
+        <!-- <record id="fleet_rule_tenancy_visibility_user" model="ir.rule">
             <field name="name">User can only see his/her tenancy</field>
             <field name="model_id" ref="model_tenancy_rent_schedule"/>
             <field name="groups" eval="[(4, ref('group_vehicle_rent_user'))]"/>
@@ -59,7 +58,7 @@
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
             <field name="domain_force">['|',('fleet_rent_id.tenant_id','=',user.id),('fleet_rent_id.tenant_id','=',False)]</field>
-        </record>
+        </record> -->
 
         <record id="fleet_rule_tenancy_visibility_manager" model="ir.rule">
             <field name="name">Manager can see all the tenancy</field>

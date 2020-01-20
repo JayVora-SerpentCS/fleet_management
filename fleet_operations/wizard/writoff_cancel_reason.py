@@ -16,7 +16,6 @@ class WizardWritOffCancelReason(models.TransientModel):
 
     reason = fields.Char(string='Reason', required=True)
 
-    @api.multi
     def cancel_writoff(self):
         """Method Cancel Writeoff."""
         if self._context.get('active_id', False) and \

@@ -16,12 +16,12 @@
     <record model='ir.actions.act_window' id='service_category_tree_act'>
         <field name="name">Service Category</field>
         <field name="res_model">service.category</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree</field>
+        <!-- <field name="view_type">form</field> -->
+        <field name="view_mode">form,tree</field>
     </record>
 
     <!-- Inherited Fleet Service Form View. -->
-    <record model='ir.ui.view' id='fleet_vehicle_log_services_view'>
+    <record model='ir.ui.view' id='fleet_vehicle_log_services_view_inherit'>
         <field name="name">fleet.vehicle.log.services_view</field>
         <field name="model">fleet.vehicle.log.services</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form" />
@@ -54,13 +54,6 @@
                         statusbar_colors='{"confirm":"blue","done":"blue", "cancel":"red"}'/>
                 </header>
             </xpath>
-            <xpath expr="//sheet/group" position="before">
-                <div class="oe_title oe_left">
-                    <h1>
-                        <field name="name" string="Service Order#"/>
-                    </h1>
-                </div>
-            </xpath>
 
             <xpath expr="//group" position="before">
                 <div class="oe_button_box" name="button_box">
@@ -75,6 +68,11 @@
                         groups="fleet.fleet_group_manager">
                         <field name="return_inv_count" string="Return Invoice" widget="statinfo"/>
                     </button>
+                </div>
+                <div class="oe_title">
+                    <h1>
+                        <field name="name" string="Service Order#"/>
+                    </h1>
                 </div>
             </xpath>
 
@@ -114,6 +112,7 @@
                 <field name="next_service_odometer" class="oe_inline" string="Next Service Odometer"/>
                 <field name="next_service_date" readonly="True"
                     attrs="{'readonly':[('state','=','done')]}"/>
+                <!-- <field name="deposit_receive"/> -->
                 <field name="amount_receive" invisible="1"/>
                 <field name="amount_return" invisible="1"/>
                 <field name="source_service_id" string="Re-Opened From" attrs="{'invisible':[('source_service_id','=',False)]}" readonly="1"/>
@@ -264,8 +263,8 @@
                  </page>
                  <page string="Service Invoice" invisible="1">
                      <field name="service_invoice_id" domain="[('type', '=', 'out_invoice')]"
-                        context="{'form_view_ref': 'account.invoice_form', 'tree_view_ref':
-                        'account.invoice_tree_with_onboarding'}"/>
+                        context="{'form_view_ref': 'account.view_move_form', 'tree_view_ref':
+                        'account.view_invoice_tree'}"/>
                      <field name="service_ref_invoice_id" domain="[('type', '=', 'out_refund')]" />
                  </page>
              </notebook>
@@ -275,33 +274,37 @@
             </xpath>
         </field>
     </record>
-
-    <record model='ir.ui.view' id='fleet.fleet_vehicle_log_services_view_tree'>
+<!-- 
+    <record model='ir.ui.view' id='fleet_vehicle_log_services_view_tree_inherit'>
         <field name="name">fleet.vehicle.log.services.tree</field>
         <field name="model">fleet.vehicle.log.services</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_tree" />
         <field name="arch" type="xml">
-            <tree string="Services Logs" create="false"
-                colors="blue:state=='confirm';black:state=='done';">
-                 <field name="name" string="Service Order#"/>
-                <field name="vehicle_id" string="Vehicle-Identification"/>
-                <field name="fmp_id" />
-                <field name="vechical_type_id" />
-                <field name="cost_subtype_id" string="Service Type"/>
-                <field name="date" string="Service Report On" />
-                <field name="date_open" string="Service Start Date"/>
-                <field name="date_close" string="Service Close Date" />
-                <!-- <field name="open_days" /> -->
-                <field name="odometer" />
-                <field name="next_service_odometer" />
-                <field name="purchaser_id" string="Driver"/>
-                <field name="team_id" string="Work Shop"/>
-                <field name="amount" sum="Total price"/>
-                <field name="state" string="Status"/>
-                <field name="closed_by" invisible="1"/>
-            </tree>
+            <xpath expr="//tree" position="replace">
+                <tree string="Services Logs" create="false"
+                    colors="blue:state=='confirm';black:state=='done';">
+                     <field name="name" string="Service Order#"/>
+                    <field name="vehicle_id" string="Vehicle-Identification"/>
+                    <field name="fmp_id" />
+                    <field name="vechical_type_id" />
+                    <field name="cost_subtype_id" string="Service Type"/>
+                    <field name="date" string="Service Report On" />
+                    <field name="date_open" string="Service Start Date"/>
+                    <field name="date_close" string="Service Close Date" /> -->
+                    <!-- <field name="open_days" /> -->
+             <!--        <field name="odometer" />
+                    <field name="next_service_odometer" />
+                    <field name="purchaser_id" string="Driver"/>
+                    <field name="team_id" string="Work Shop"/>
+                    <field name="amount" sum="Total price"/>
+                    <field name="state" string="Status"/>
+                    <field name="closed_by" invisible="1"/>
+                </tree>
+            </xpath>
         </field>
-    </record>
-     <record model='ir.ui.view' id='fleet.fleet_vehicle_log_services_view_search'>
+    </record> -->
+    
+    <record model='ir.ui.view' id='fleet.fleet_vehicle_log_services_view_search'>
             <field name="name">fleet.vehicle.log.services_search_view</field>
             <field name="model">fleet.vehicle.log.services</field>
             <field name="arch" type="xml">
@@ -349,7 +352,7 @@
     <record model='ir.actions.act_window' id='fleet_work_order_advance_search_act'>
         <field name="name">Services Search</field>
         <field name="res_model">fleet.work.order.search</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
@@ -358,7 +361,7 @@
     <record model='ir.actions.act_window' id='fleet.fleet_vehicle_log_services_action'>
         <field name="name">Services</field>
         <field name="res_model">fleet.vehicle.log.services</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">tree,form,graph</field>
         <field name="context">{"search_default_groupby_vehicle" : True}</field>
         <field name="help" type="html">
@@ -366,11 +369,19 @@
             Click to create a new service entry.
           </p><p>
             OpenERP helps you keeping track of all the services done
-            on your vehicle. Services can be of many type: occasional
+            on your vehicle.Services can be of many type: occasional
             repair, fixed maintenance, etc.
           </p>
         </field>
     </record>
+
+    <record id="fleet_vehicle_log_services_form_action" model="ir.actions.act_window">
+        <field name="name">Services</field>
+        <field name="res_model">fleet.vehicle.log.services</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="fleet.fleet_vehicle_log_services_view_form"/>
+    </record>
+
 
     <!-- Work Order Menu. -->
     <menuitem action="fleet.fleet_vehicle_log_services_action"
@@ -432,7 +443,7 @@
     <record model='ir.actions.act_window' id='fleet_work_order_advance_search_act'>
         <field name="name">Services Search</field>
         <field name="res_model">fleet.work.order.search</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">form</field>
     </record>
 
@@ -468,7 +479,7 @@
     <record model='ir.actions.act_window' id='fleet_repair_type_tree_act'>
         <field name="name">Repair Type</field>
         <field name="res_model">repair.type</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">tree,form</field>
     </record>
 

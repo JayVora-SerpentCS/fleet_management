@@ -15,6 +15,7 @@ class FleetVehicle(models.Model):
     product_id = fields.Many2one('product.product', 'Product',
                                  ondelete="cascade", delegate=True,
                                  required=True)
+    image_128 = fields.Image(string="Image", readonly=False)
 
     @api.model
     def create(self, vals):
@@ -26,11 +27,10 @@ class FleetVehicle(models.Model):
         if new_vehicle.product_id:
             new_vehicle.product_id.with_context(ctx).write({
                 'name': new_vehicle.name,
-                'image_medium': new_vehicle.image_medium,
+                'image_1920': new_vehicle.image_1920,
                 'is_vehicle': True})
         return new_vehicle
 
-    @api.multi
     def write(self, vals):
         """Overrridden method to update the product information."""
         ctx = dict(self.env.context)
@@ -39,9 +39,9 @@ class FleetVehicle(models.Model):
         ctx.update({"from_vehicle_write": True})
         for vehicle in self:
             if vehicle.product_id:
-                if vals.get('image_medium', False):
+                if vals.get('image_1920', False):
                     update_prod_vals.update({
-                        'image_medium': vehicle.image_medium})
+                        'image_1920': vehicle.image_1920})
                 if vals.get('model_id', False) or \
                         vals.get('license_plate', False):
                     update_prod_vals.update({'name': vehicle.name})
@@ -56,7 +56,7 @@ class ProductTemplate(models.Model):
 
     _inherit = 'product.template'
 
-#    is_vehicle = fields.Boolean(string="Vehicle")
+    is_vehicle = fields.Boolean(string="Vehicle")
 
 
 class ProductProduct(models.Model):
@@ -69,7 +69,6 @@ class ProductProduct(models.Model):
     @api.model
     def create(self, vals):
         """Overrridden method to update the product information."""
-        # ctx = dict(self.env.context)
         if not vals.get('name', False) and \
                 self._context.get('create_fleet_vehicle', False):
             vals.update({'name': 'NEW VEHICLE',
@@ -77,7 +76,6 @@ class ProductProduct(models.Model):
                          'is_vehicle': True})
         return super(ProductProduct, self).create(vals)
 
-    @api.multi
     def write(self, vals):
         """Overrridden method to update the vehicle information."""
         ctx = dict(self.env.context)
@@ -88,9 +86,9 @@ class ProductProduct(models.Model):
                 vehicles = self.env['fleet.vehicle'].search([
                     ('product_id', '=', product.id)])
                 update_vehicle_vals = {}
-                if vals.get('image_medium', False):
+                if vals.get('image_1920', False):
                     update_vehicle_vals.update({
-                        'image_medium': product.image_medium})
+                        'image_1920': product.image_1920})
                 if vals.get('name', False):
                     update_vehicle_vals.update({'name': product.name})
                 if update_vehicle_vals and vehicles:

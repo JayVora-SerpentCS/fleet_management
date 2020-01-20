@@ -17,15 +17,24 @@
             </form>
         </field>
     </record>
-    
+
     <act_window name="Rental Vehicle History"
                 res_model="rental.fleet.history"
-                src_model="account.analytic.account"
+                binding_model="account.analytic.account"
+                view_mode="form"
+                target="new"
+                id="action_print_rental_fleet_history"
+                view_id="rental_fleet_wizard"
+                />
+    
+   <!--  <act_window name="Rental Vehicle History"
+                res_model="rental.fleet.history"
+                binding_model="account.analytic.account"
                 view_mode="form"
                 multi="True"
                 target="new"
                 key2="client_print_multi"
                 id="action_print_rental_fleet_history"
                 view_id="rental_fleet_wizard"
-                />
+                /> -->
 </odoo>

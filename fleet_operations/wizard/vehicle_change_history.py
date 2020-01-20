@@ -17,9 +17,10 @@ class VehicleChangeHistory(models.TransientModel):
     fleet_id = fields.Many2one('fleet.vehicle', string='Vehicle-ID')
     date_from = fields.Date(string='Date From')
     date_to = fields.Date(string='Date To')
-    report_type = fields.Selection([('engine_history', 'Engine History'), 
-        ('color_history', 'Color History'), ('tire_history', 'Tire History'), 
-        ('battery_history', 'Battery History')], default='color_history')
+    report_type = fields.Selection([('engine_history', 'Engine History'),
+                                    ('color_history',
+                                     'Color History'), ('tire_history', 'Tire History'),
+                                    ('battery_history', 'Battery History')], default='color_history')
 
     @api.model
     def default_get(self, default_fields):
@@ -31,19 +32,18 @@ class VehicleChangeHistory(models.TransientModel):
         start_date = date(curr_year, curr_month, 1)
         end_date = date(curr_year, curr_month, last_day)
         res.update({'date_from': datetime.strftime(start_date, DSDF),
-            'date_to': datetime.strftime(end_date, DSDF)})
+                    'date_to': datetime.strftime(end_date, DSDF)})
         return res
 
-    @api.multi
     def print_report(self):
         """Method to print report."""
         for rec in self:
             if not rec.date_from and not rec.date_to:
-                raise Warning(_("User Error!\n 'Please select criteria \
-                         to create Vehicle Change History Report!"))
+                raise Warning(_("User Error!\n 'Please select criteria "
+                                "to create Vehicle Change History Report!"))
             if rec.date_from and rec.date_to and rec.date_from > rec.date_to:
-                raise Warning(_("User Error!\n Date To' must \
-                            be greater than 'Date From'!"))
+                raise Warning(_("User Error!\n Date To' must "
+                                "be greater than 'Date From'!"))
             data = {
                 'form': {'date_from': rec.date_from or False,
                          'date_to': rec.date_to or False,
