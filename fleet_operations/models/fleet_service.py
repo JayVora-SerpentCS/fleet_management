@@ -5,8 +5,7 @@ from datetime import date, datetime, timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError, Warning
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, misc
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT, misc, ustr
 from odoo.tools.float_utils import float_compare
 
 
@@ -66,7 +65,7 @@ class FleetVehicleLogServices(models.Model):
         for service in self:
             if service.amount <= 0.0:
                 raise ValidationError("You can not create service invoice without amount!!"
-                    "Please add Service amount first !!")
+                                      "Please add Service amount first !!")
 
             deposit_inv_ids = self.env['account.invoice'].search([
                 ('vehicle_service_id', '=', service.id), ('type', '=', 'out_invoice'),
@@ -76,9 +75,14 @@ class FleetVehicleLogServices(models.Model):
                 raise Warning(_("Deposit invoice is already Pending\n"
                                 "Please proceed that deposit invoice first"))
 
+            if not service.purchaser_id:
+                raise Warning(_("Please configure Driver from vehicle or in a service order!!"))
+
             inv_ser_line = [(0, 0, {
-                'product_id': service.cost_subtype_id and
-                service.cost_subtype_id.id or False,
+                # 'product_id': service.cost_subtype_id and
+                # service.cost_subtype_id.id or False,
+                'name': ustr(service.cost_subtype_id and
+                             service.cost_subtype_id.name) + ' - Service Cost',
                 'name': 'Service Cost',
                 'price_unit': service.amount,
                 'account_id': service.vehicle_id.income_acc_id and
@@ -223,9 +227,9 @@ class FleetVehicleLogServices(models.Model):
                 ('vehicle_service_id', '=', work_order.id)])
             if work_order.amount > 0 and not service_inv:
                 raise ValidationError("Vehicle Service amount is greater"
-                    " than Zero So, "
-                    "Without Service Invoice you can not done the Service !!"
-                    "Please Generate Service Invoice first !!")
+                                      " than Zero So, "
+                                      "Without Service Invoice you can not done the Service !!"
+                                      "Please Generate Service Invoice first !!")
             for repair_line in work_order.repair_line_ids:
                 if repair_line.complete is True:
                     continue
