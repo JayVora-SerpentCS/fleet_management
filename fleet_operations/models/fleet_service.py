@@ -5,8 +5,7 @@ from datetime import date, datetime, timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError, Warning
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, misc
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT, misc, ustr
 from odoo.tools.float_utils import float_compare
 
 
@@ -73,10 +72,12 @@ class FleetVehicleLogServices(models.Model):
                 raise Warning(_("Deposit invoice is already Pending\n"
                                 "Please proceed that deposit invoice first"))
 
+            if not service.purchaser_id:
+                raise Warning(_("Please configure Driver from vehicle or in a service order!!"))
+
             inv_ser_line = [(0, 0, {
-                'product_id': service.cost_subtype_id and
-                service.cost_subtype_id.id or False,
-                'name': 'Service Cost',
+                'name': ustr(service.cost_subtype_id and
+                             service.cost_subtype_id.name) + ' - Service Cost',
                 'price_unit': service.amount,
                 'account_id': service.vehicle_id.income_acc_id and
                 service.vehicle_id.income_acc_id.id or False,
@@ -85,7 +86,8 @@ class FleetVehicleLogServices(models.Model):
                 inv_line_values = {
                     'product_id': line.product_id and
                     line.product_id.id or False,
-                    'name': 'Service Cost',
+                    'name': line.product_id and
+                    line.product_id.name or '',
                     'price_unit': line.price_unit or 0.00,
                     'quantity': line.qty,
                     'account_id': service.vehicle_id.income_acc_id and
@@ -99,17 +101,10 @@ class FleetVehicleLogServices(models.Model):
                 'invoice_date': service.date_open,
                 'invoice_date_due': service.date_complete,
                 'invoice_line_ids': inv_ser_line,
-                # 'account_id': service.purchaser_id and
-                # service.purchaser_id.property_account_receivable_id and
-                # service.purchaser_id.property_account_receivable_id.id
-                # or False,
                 'vehicle_service_id': service.id,
                 'is_invoice_receive': True,
             }
             self.env['account.move'].create(inv_values)
-            # self.update({
-            #     'deposit_receive': True,
-            #     })
 
     def action_return_invoice(self):
         """Invoice for Deposit Return."""
@@ -148,9 +143,6 @@ class FleetVehicleLogServices(models.Model):
                 'invoice_date': service.date_open,
                 'invoice_date_due': service.date_complete,
                 'invoice_line_ids': inv_ser_line,
-                # 'account_id': service.purchaser_id and
-                # service.purchaser_id.property_account_receivable_id and
-                # service.purchaser_id.property_account_receivable_id.id or False,
                 'vehicle_service_id': service.id,
                 'is_invoice_return': True,
             }
