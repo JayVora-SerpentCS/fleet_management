@@ -185,7 +185,8 @@ class FleetRent(models.Model):
                 tot_rent += rent_line.amount or 0.0
             rent.total_rent = tot_rent
 
-    name = fields.Char(string="Name", translate=True, copy=False, default="New")
+    name = fields.Char(string="Name", translate=True,
+                       copy=False, default="New")
     state = fields.Selection([('draft', 'New'), ('open', 'In Progress'),
                               ('pending', 'To Renew'), ('close', 'Closed'),
                               ('done', 'Done'),
@@ -320,8 +321,8 @@ class FleetRent(models.Model):
                 ('id', '!=', rec.id), ('vehicle_id', '=', rec.vehicle_id.id)])
             if duplicate_rent:
                 raise ValidationError(_("Vehicle Rent Order is already "
-                  "available for this vehicle !! \n Choose other"
-                  " vehicle and Prepare new rent order !!"))
+                                        "available for this vehicle !! \n Choose other"
+                                        " vehicle and Prepare new rent order !!"))
 
     @api.multi
     def count_invoice(self):
@@ -819,14 +820,16 @@ class TenancyRentSchedule(models.Model):
             'name': 'Maintenance cost',
             'price_unit': rent and rent.maintenance_cost or 0.00,
             'quantity': 1,
-            'account_id': rent.vehicle_id.income_acc_id.id or False,
+            'account_id': rent.vehicle_id and rent.vehicle_id.income_acc_id
+            and rent.vehicle_id.income_acc_id.id or False,
         }
         inv_line_values = {
             'origin': 'tenancy.rent.schedule',
             'name': 'Tenancy(Rent) Cost',
             'price_unit': self.amount or 0.00,
             'quantity': 1,
-            'account_id': vehicle and vehicle.income_acc_id.id or False,
+            'account_id': vehicle and vehicle.income_acc_id
+            and vehicle.income_acc_id.id or False,
         }
         inv_values = {
             'partner_id': rent and rent.tenant_id and
@@ -915,7 +918,8 @@ class TenancyRentSchedule(models.Model):
                 'name': line.tenancy_id.name,
                 'ref': line.tenancy_id.ref,
                 'move_id': move_id.id,
-                'account_id':
+                'account_id': line.tenancy_id and line.tenancy_id.property_id
+                and line.tenancy_id.property_id.income_acc_id and  
                 line.tenancy_id.property_id.income_acc_id.id or False,
                 'debit': 0.0,
                 'credit': line.tenancy_id.rent,
