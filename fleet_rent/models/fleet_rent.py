@@ -315,8 +315,8 @@ class PropertyMaintenace(models.Model):
                         'name': 'Maintenance For ' + data.type.name or "",
                         'origin': 'property.maintenance',
                         'quantity': 1,
-                        'account_id':
-                        data.property_id.income_acc_id.id or False,
+                        'account_id': data.property_id and data.property_id.income_acc_id
+                        and data.property_id.income_acc_id.id or False,
                         'price_unit': data.cost or 0.00,
                     }
 
@@ -535,7 +535,9 @@ class TenancyRentSchedule(models.Model):
             'name': 'Maintenance cost',
             'price_unit': self.tenancy_id.main_cost or 0.00,
             'quantity': 1,
-            'account_id': self.tenancy_id.vehicle_id.income_acc_id.id or False,
+            'account_id': self.tenancy_id and self.tenancy_id.vehicle_id
+            and self.tenancy_id.vehicle_id.income_acc_id
+            and self.tenancy_id.vehicle_id.income_acc_id.id or False,
             'account_analytic_id': self.tenancy_id.id or False,
         }
         if self.tenancy_id.multi_prop:
@@ -548,7 +550,9 @@ class TenancyRentSchedule(models.Model):
             'name': 'Tenancy(Rent) Cost',
             'price_unit': self.amount or 0.00,
             'quantity': 1,
-            'account_id': self.tenancy_id.vehicle_id.income_acc_id.id or False,
+            'account_id': self.tenancy_id and self.tenancy_id.vehicle_id
+                and self.tenancy_id.vehicle_id.income_acc_id and
+                self.tenancy_id.vehicle_id.income_acc_id.id or False,
             'account_analytic_id': self.tenancy_id.id or False,
         }
         if self.tenancy_id.multi_prop:
