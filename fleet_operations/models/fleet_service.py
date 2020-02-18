@@ -85,7 +85,7 @@ class FleetVehicleLogServices(models.Model):
                              service.cost_subtype_id.name) + ' - Service Cost',
                 'name': 'Service Cost',
                 'price_unit': service.amount,
-                'account_id': service.vehicle_id.income_acc_id and
+                'account_id': service.vehicle_id and service.vehicle_id.income_acc_id and
                 service.vehicle_id.income_acc_id.id or False,
             })]
             for line in service.parts_ids:
@@ -95,7 +95,7 @@ class FleetVehicleLogServices(models.Model):
                     'name': 'Service Cost',
                     'price_unit': line.price_unit or 0.00,
                     'quantity': line.qty,
-                    'account_id': service.vehicle_id.income_acc_id and
+                    'account_id': service.vehicle_id and service.vehicle_id.income_acc_id and
                     service.vehicle_id.income_acc_id.id or False
                 }
                 inv_ser_line.append((0, 0, inv_line_values))
@@ -132,7 +132,7 @@ class FleetVehicleLogServices(models.Model):
                 service.cost_subtype_id.id or False,
                 'name': 'Service Cost',
                 'price_unit': service.amount or 0.0,
-                'account_id': service.vehicle_id.income_acc_id and
+                'account_id': service.vehicle_id and service.vehicle_id.income_acc_id and
                 service.vehicle_id.income_acc_id.id or False,
             })]
             for line in service.parts_ids:
@@ -141,7 +141,7 @@ class FleetVehicleLogServices(models.Model):
                     'name': 'Service Cost',
                     'price_unit': line.price_unit or 0.00,
                     'quantity': line.qty,
-                    'account_id': service.vehicle_id.income_acc_id and
+                    'account_id': service.vehicle_id and service.vehicle_id.income_acc_id and
                     service.vehicle_id.income_acc_id.id or False
                 }
                 inv_ser_line.append((0, 0, inv_line_values))

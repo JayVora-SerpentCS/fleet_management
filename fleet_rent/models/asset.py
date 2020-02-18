@@ -614,7 +614,7 @@ class AccountAssetAsset(models.Model):
             'name': data.name or "",
             'origin': 'account.asset.asset',
             'quantity': 1,
-            'account_id': data.income_acc_id.id or False,
+            'account_id': data.income_acc_id and data.income_acc_id.id or False,
             'price_unit': data.sale_price or 0.00,
         }
 
