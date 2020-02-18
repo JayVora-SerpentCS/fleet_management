@@ -636,7 +636,8 @@ class AccountAnalyticAccount(models.Model):
             'name': 'Deposit Return' or "",
             'origin': 'account.analytic.account' or "",
             'quantity': 1,
-            'account_id': self.vehicle_id.expence_acc_id.id or False,
+            'account_id': self.vehicle_id and self.vehicle_id.expence_acc_id and
+            self.vehicle_id.expence_acc_id.id or False,
             'price_unit': self.deposit or 0.00,
             'account_analytic_id': self.id or False,
         }
