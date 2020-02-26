@@ -73,13 +73,14 @@ class FleetVehicleLogServices(models.Model):
                                 "Please proceed that deposit invoice first"))
 
             if not service.purchaser_id:
-                raise Warning(_("Please configure Driver from vehicle or in a service order!!"))
+                raise Warning(
+                    _("Please configure Driver from vehicle or in a service order!!"))
 
             inv_ser_line = [(0, 0, {
                 'name': ustr(service.cost_subtype_id and
                              service.cost_subtype_id.name) + ' - Service Cost',
                 'price_unit': service.amount,
-                'account_id': service.vehicle_id.income_acc_id and
+                'account_id': service.vehicle_id and service.vehicle_id.income_acc_id and
                 service.vehicle_id.income_acc_id.id or False,
             })]
             for line in service.parts_ids:
@@ -90,7 +91,7 @@ class FleetVehicleLogServices(models.Model):
                     line.product_id.name or '',
                     'price_unit': line.price_unit or 0.00,
                     'quantity': line.qty,
-                    'account_id': service.vehicle_id.income_acc_id and
+                    'account_id': service.vehicle_id and service.vehicle_id.income_acc_id and
                     service.vehicle_id.income_acc_id.id or False
                 }
                 inv_ser_line.append((0, 0, inv_line_values))
@@ -123,7 +124,7 @@ class FleetVehicleLogServices(models.Model):
                 service.cost_subtype_id.id or False,
                 'name': 'Service Cost',
                 'price_unit': service.amount or 0.0,
-                'account_id': service.vehicle_id.income_acc_id and
+                'account_id': service.vehicle_id and service.vehicle_id.income_acc_id and
                 service.vehicle_id.income_acc_id.id or False,
             })]
             for line in service.parts_ids:
@@ -132,7 +133,7 @@ class FleetVehicleLogServices(models.Model):
                     'name': 'Service Cost',
                     'price_unit': line.price_unit or 0.00,
                     'quantity': line.qty,
-                    'account_id': service.vehicle_id.income_acc_id and
+                    'account_id': service.vehicle_id and service.vehicle_id.income_acc_id and
                     service.vehicle_id.income_acc_id.id or False
                 }
                 inv_ser_line.append((0, 0, inv_line_values))
@@ -199,7 +200,7 @@ class FleetVehicleLogServices(models.Model):
 
     def action_done(self):
         """Action Done Of Button."""
-        context = self.env.context
+        context = dict(self.env.context)
         odometer_increment = 0.0
         increment_obj = self.env['next.increment.number']
         next_service_day_obj = self.env['next.service.days']
@@ -222,7 +223,7 @@ class FleetVehicleLogServices(models.Model):
                         ('name', '=', 'pending_repair_confirm_form_view')])
                     resource_id = model_data_ids.read(['res_id'])[0]['res_id']
                     context.update({'work_order_id': work_order.id})
-                    self.env.args = cr, uid, misc.frozendict(context)
+                    # self.env.args = cr, uid, misc.frozendict(context)
                     return {
                         'name': _('WO Close Forcefully'),
                         'context': context,
