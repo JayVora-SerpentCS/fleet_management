@@ -23,7 +23,6 @@ class PendingRepairConfirm(models.TransientModel):
         odometer_increment = 0.0
         work_order = False
         if self._context.get('work_order_id', False):
-            print("context::::::::::::::::::::::", self._context.get('work_order_id', False))
             work_order = wo_obj.browse(self._context['work_order_id'])
             increment_ids = increment_obj.search([
                 ('vehicle_id', '=', work_order.vehicle_id.id)])
