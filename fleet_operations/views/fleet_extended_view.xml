@@ -231,6 +231,14 @@
                         <field name="active" string="Active" widget="boolean_button"
                             options='{"terminology": "archive"}'/>
                    </button> -->
+                    <button name="open_assignation_logs"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-history"
+                        help="show all the driver history"
+                        groups="fleet.fleet_group_manager">
+                        <field name="history_count" widget="statinfo" string="Drivers History"/>
+                    </button>
                     <button name="act_show_log_cost"
                         type="object"
                         class="oe_stat_button"
