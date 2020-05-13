@@ -19,7 +19,11 @@ class TestRent(TransactionCase):
         tenant_id = self.env.ref('base.user_admin')
         self.rent_type_obj = self.env['rent.type']
         cr_dt = datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-
+        date_end = self.rent_obj._create_date()
+        rent_schedule = self.rent_obj.create_rent_schedule()
+        vehicle_owner = self.rent_obj.change_vehicle_owner()
+        vehicle_odometer = self.rent_obj.change_odometer()
+        
         self.vehicle = self.vehicle_obj.create({
             'f_brand_id': fleet_brand.id,
             'model_id': fleet_model.id,
@@ -37,5 +41,8 @@ class TestRent(TransactionCase):
             'vehicle_id': self.vehicle.id,
             'tenant_id': tenant_id.id,
             'ten_date': cr_dt,
-            'rent_type_id': self.rent_type_id.id
+            'rent_type_id': self.rent_type_id.id,
+            'rent_amt':1000,
+            'deposit_amt':100,
+            'date_end': date_end,
         })

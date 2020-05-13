@@ -17,7 +17,7 @@ class TestRegistration(TransactionCase):
         registration_state_obj = self.env['res.country.state']
         driver_obj = self.env['res.partner']
         cr_dt = datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-
+        driver_no = self.vehicle_obj.get_driver_id_no()
 
         vehicle_registration_state = registration_state_obj.search([('name','=', 'Gujarat')])            
        
@@ -42,4 +42,6 @@ class TestRegistration(TransactionCase):
                                 'driver_id':driver_obj.id,
                                 'engine_no':'ABC09X5',
                                 'transmission':'manual',
-                                'acquisition_date':cr_dt})
+                                'acquisition_date':cr_dt,
+                                'start_date_insurance':cr_dt,
+                                'end_date_insurance':cr_dt})
