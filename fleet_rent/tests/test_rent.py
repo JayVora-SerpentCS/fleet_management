@@ -40,7 +40,7 @@ class TestRent(TransactionCase):
             'name': 'Test Rent',
             'vehicle_id': self.vehicle.id,
             'tenant_id': tenant_id.id,
-            'ten_date': cr_dt,
+            #'ten_date': cr_dt,
             'rent_type_id': self.rent_type_id.id,
             'rent_amt':1000,
             'deposit_amt':100,
