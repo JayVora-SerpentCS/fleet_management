@@ -17,7 +17,7 @@
     'website': 'http://www.serpentcs.com',
 
     # Dependenices
-    'depends': ['fleet', 'sale_management', 'purchase'],
+    'depends': ['fleet', 'sale_management', 'stock', 'purchase'],
 
     # Data
     'data': [
