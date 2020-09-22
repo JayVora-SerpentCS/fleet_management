@@ -7,9 +7,7 @@ class TestRentType(TransactionCase):
         super(TestRentType, self).setUp()
 
     def test(self):
-        self.rent_type_obj = self.env['rent.type']
-
-        self.rent_type_id = self.rent_type_obj.create({
-            'duration': 3,
-            'renttype': 'Months'
-        })
+        self.rent_type_obj = self.env['rent.type'].create({
+            							'duration': 3,
+            							'renttype': 'Months'
+        								})

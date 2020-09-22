@@ -8,8 +8,6 @@ class TestVehicleTag(TransactionCase):
 
     def test(self):
         vehicle_tag_obj = self.env['fleet.vehicle.tag']
-       
         vehicle_tag = vehicle_tag_obj.search([('name','=','Break')])
-
         self.tag = vehicle_tag_obj.create({
                                 'name':vehicle_tag.id})

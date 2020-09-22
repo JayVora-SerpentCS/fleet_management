@@ -13,10 +13,8 @@ class TestVehicleCost(TransactionCase):
         fleet_vehicle = self.env.ref('fleet.vehicle_1')
         service_type_obj = self.env['fleet.service.type']
         cr_dt = datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-
         self.vehicle_service = service_type_obj.create({
                                 'name':'Washing'})
-
         self.vehicle_cost = cost_obj.create({
                                     'vehicle_id':fleet_vehicle.id,
                                     'date':cr_dt,

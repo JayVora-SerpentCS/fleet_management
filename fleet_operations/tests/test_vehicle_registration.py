@@ -22,13 +22,11 @@ class TestRegistration(TransactionCase):
         vehicle_registration_state = registration_state_obj.search([('name','=', 'Gujarat')])            
        
         vehicle_color = vehicle_color_obj.search([('name','=','BLACK')])
-
         vehicle_type = vehicle_type_obj.search([('name','=','Car')])
                                        
         self.driver = driver_obj.create({
                             'name':'Shivam',
                             'email':'shivam@gmail.com'})
-
         self.vehicle = self.vehicle_obj.create({
                                 'f_brand_id': fleet_brand.id,
                                 'model_id': fleet_model.id,
