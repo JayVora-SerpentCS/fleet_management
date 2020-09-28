@@ -233,9 +233,9 @@ class FleetOperations(models.Model):
     @api.onchange('f_brand_id')
     def _onchange_brand(self):
         if self.f_brand_id:
-            self.image_medium = self.f_brand_id.image_128
+            self.image_128 = self.f_brand_id.image_128
         else:
-            self.image_medium = False
+            self.image_128 = False
 
     @api.depends('model_id', 'license_plate')
     def _compute_vehicle_name(self):
@@ -1244,114 +1244,114 @@ class DamageTypes(models.Model):
             default = {}
         raise Warning(_('You can\'t duplicate record!'))
 
+# TODO
+# class VehicleFuelLog(models.Model):
+#     """Model Vehicle Fuel Log."""
 
-class VehicleFuelLog(models.Model):
-    """Model Vehicle Fuel Log."""
+#     _inherit = 'fleet.vehicle.log.fuel'
 
-    _inherit = 'fleet.vehicle.log.fuel'
+#     _order = 'id desc'
 
-    _order = 'id desc'
+#     def _get_odometer(self):
+#         fleetvehicalodometer = self.env['fleet.vehicle.odometer']
+#         for record in self:
+#             vehicle_odometer = fleetvehicalodometer.search([
+#                 ('vehicle_id', '=', record.vehicle_id.id)], limit=1,
+#                 order='value desc')
+#             if vehicle_odometer:
+#                 record.odometer = vehicle_odometer.value
+#             else:
+#                 record.odometer = 0
 
-    def _get_odometer(self):
-        fleetvehicalodometer = self.env['fleet.vehicle.odometer']
-        for record in self:
-            vehicle_odometer = fleetvehicalodometer.search([
-                ('vehicle_id', '=', record.vehicle_id.id)], limit=1,
-                order='value desc')
-            if vehicle_odometer:
-                record.odometer = vehicle_odometer.value
-            else:
-                record.odometer = 0
+#     def _set_odometer(self):
+#         fleetvehicalodometer = self.env['fleet.vehicle.odometer']
+#         for record in self:
+#             vehicle_odometer = fleetvehicalodometer.search(
+#                 [('vehicle_id', '=', record.vehicle_id.id)],
+#                 limit=1, order='value desc')
+#             if record.odometer < vehicle_odometer.value:
+#                 raise Warning(_('You can\'t enter odometer less than previous '
+#                               'odometer %s !') % (vehicle_odometer.value))
+#             if record.odometer:
+#                 date = fields.Date.context_today(record)
+#                 data = {'value': record.odometer, 'date': date,
+#                         'vehicle_id': record.vehicle_id.id}
+#                 fleetvehicalodometer.create(data)
 
-    def _set_odometer(self):
-        fleetvehicalodometer = self.env['fleet.vehicle.odometer']
-        for record in self:
-            vehicle_odometer = fleetvehicalodometer.search(
-                [('vehicle_id', '=', record.vehicle_id.id)],
-                limit=1, order='value desc')
-            if record.odometer < vehicle_odometer.value:
-                raise Warning(_('You can\'t enter odometer less than previous '
-                              'odometer %s !') % (vehicle_odometer.value))
-            if record.odometer:
-                date = fields.Date.context_today(record)
-                data = {'value': record.odometer, 'date': date,
-                        'vehicle_id': record.vehicle_id.id}
-                fleetvehicalodometer.create(data)
+#     @api.onchange('vehicle_id')
+#     def _onchange_vehicle(self):
+#         if not self.vehicle_id:
+#             return {}
+#         if self.vehicle_id:
+#             self.odometer = self.vehicle_id.odometer
+#             self.odometer_unit = self.vehicle_id.odometer_unit
+#             self.purchaser_id = self.vehicle_id.driver_id.id
 
-    @api.onchange('vehicle_id')
-    def _onchange_vehicle(self):
-        if not self.vehicle_id:
-            return {}
-        if self.vehicle_id:
-            self.odometer = self.vehicle_id.odometer
-            self.odometer_unit = self.vehicle_id.odometer_unit
-            self.purchaser_id = self.vehicle_id.driver_id.id
+#     odometer = fields.Float(
+#         compute='_get_odometer',
+#         inverse='_set_odometer',
+#         string='Last Odometer',
+#         help='Odometer measure of the vehicle at the moment of this log')
+#     odometer_unit = fields.Selection(
+#         related='vehicle_id.odometer_unit',
+#         help='Unit of the odometer ', store=True)
+#     make = fields.Many2one(related='vehicle_id.f_brand_id',
+#                            string='Make', store=True)
+#     model = fields.Many2one(related='vehicle_id.model_id',
+#                             string='Model', store=True)
+#     current_fuel = fields.Float(string='Current Fuel', size=64)
+#     fuel_type = fields.Selection(related='vehicle_id.fuel_type',
+#                                  store=True,
+#                                  help='Fuel Used by the vehicle')
 
-    odometer = fields.Float(
-        compute='_get_odometer',
-        inverse='_set_odometer',
-        string='Last Odometer',
-        help='Odometer measure of the vehicle at the moment of this log')
-    odometer_unit = fields.Selection(
-        related='vehicle_id.odometer_unit',
-        help='Unit of the odometer ', store=True)
-    make = fields.Many2one(related='vehicle_id.f_brand_id',
-                           string='Make', store=True)
-    model = fields.Many2one(related='vehicle_id.model_id',
-                            string='Model', store=True)
-    current_fuel = fields.Float(string='Current Fuel', size=64)
-    fuel_type = fields.Selection(related='vehicle_id.fuel_type',
-                                 store=True,
-                                 help='Fuel Used by the vehicle')
+#     @api.model
+#     def default_get(self, fields):
+#         """Vehicle fuel log default get the records."""
+#         res = super(VehicleFuelLog, self).default_get(fields)
+#         fleet_obj = self.env['fleet.vehicle']
+#         if self._context:
+#             ctx_keys = self._context.keys()
+#             if 'active_model' in ctx_keys:
+#                 if 'active_id' in ctx_keys:
+#                     vehicle_id = self.env[self._context[
+#                         'active_model']].browse(
+#                         self._context['active_id'])
+#                     if vehicle_id.state != 'write-off':
+#                         res.update({'vehicle_id': self._context['active_id']})
+#                     else:
+#                         res['vehicle_id'] = False
+#             if 'vehicle_id' in ctx_keys:
+#                 vehicle_id = fleet_obj.browse(self._context['vehicle_id'])
+#                 if vehicle_id.state != 'write-off':
+#                     res.update({'vehicle_id': self._context['vehicle_id']})
+#         return res
 
-    @api.model
-    def default_get(self, fields):
-        """Vehicle fuel log default get the records."""
-        res = super(VehicleFuelLog, self).default_get(fields)
-        fleet_obj = self.env['fleet.vehicle']
-        if self._context:
-            ctx_keys = self._context.keys()
-            if 'active_model' in ctx_keys:
-                if 'active_id' in ctx_keys:
-                    vehicle_id = self.env[self._context[
-                        'active_model']].browse(
-                        self._context['active_id'])
-                    if vehicle_id.state != 'write-off':
-                        res.update({'vehicle_id': self._context['active_id']})
-                    else:
-                        res['vehicle_id'] = False
-            if 'vehicle_id' in ctx_keys:
-                vehicle_id = fleet_obj.browse(self._context['vehicle_id'])
-                if vehicle_id.state != 'write-off':
-                    res.update({'vehicle_id': self._context['vehicle_id']})
-        return res
+#     def copy(self, default=None):
+#         """
+#         Method copy for can not duplicate records.
 
-    def copy(self, default=None):
-        """
-        Method copy for can not duplicate records.
+#         In the vehicle fuel log.
+#         """
+#         if not default:
+#             default = {}
+#         raise Warning(_('You can\'t duplicate record!'))
 
-        In the vehicle fuel log.
-        """
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+# TODO
+# class FleetVehicleCost(models.Model):
+#     """Model Fleet Vehicle Cost."""
 
+#     _inherit = 'fleet.vehicle.cost'
 
-class FleetVehicleCost(models.Model):
-    """Model Fleet Vehicle Cost."""
-
-    _inherit = 'fleet.vehicle.cost'
-
-    @api.model
-    def default_get(self, fields):
-        """Default get method is set vehilce id."""
-        res = super(FleetVehicleCost, self).default_get(fields)
-        fleet_obj = self.env['fleet.vehicle']
-        if self._context.get('active_id', False):
-            vehicle_id = fleet_obj.browse(self._context['active_id'])
-            if vehicle_id.state == 'write-off':
-                res['vehicle_id'] = False
-        return res
+#     @api.model
+#     def default_get(self, fields):
+#         """Default get method is set vehilce id."""
+#         res = super(FleetVehicleCost, self).default_get(fields)
+#         fleet_obj = self.env['fleet.vehicle']
+#         if self._context.get('active_id', False):
+#             vehicle_id = fleet_obj.browse(self._context['active_id'])
+#             if vehicle_id.state == 'write-off':
+#                 res['vehicle_id'] = False
+#         return res
 
 
 class FleetVehicleOdometer(models.Model):

@@ -94,7 +94,7 @@
                 <!-- <field name="purchaser_id" string="Driver" readonly="1"
                     attrs="{'readonly':[('state','=','done')]}"/> -->
             </xpath>
-            <xpath expr="//field[@name='cost_subtype_id']" position="replace">
+            <xpath expr="//field[@name='service_type_id']" position="replace">
                 <field name="fmp_id" readonly="True"/>
                 <field name="f_brand_id" readonly="True"
                     options="{'no_open': True, 'create': false, 'create_edit': false}"/>
@@ -104,7 +104,7 @@
                     options="{'no_open': True, 'create': false, 'create_edit': false}"/>
                 <field name="purchaser_id" string="Driver" readonly="1"
                     attrs="{'readonly':[('state','=','done')]}"/>
-                <field name="cost_subtype_id" string="Service Type"
+                <field name="service_type_id" string="Service Type"
                     options="{'no_open': True, 'create': false, 'create_edit': false}"
                     attrs="{'readonly':[('state','=','done')],'required':[('state','in',('confirm'))]}"/>
             </xpath>
@@ -146,7 +146,7 @@
             <xpath expr="//field[@name='amount']" position="after">
                 <field name="service_amount"/>
             </xpath>
-            <xpath expr="//sheet/group[2]" position="inside">
+            <xpath expr="//sheet/group[1]/group[2]" position="inside">
                 <group string="Service Order Details" col="2">
                     <field name="priority" required="1" string="Service Priority"
                         attrs="{'readonly':[('state','in',('draft','done'))]}"/>
@@ -164,7 +164,7 @@
                         domain="[('is_company','=',True)]" />
                 </group>
             </xpath>
-            <xpath expr="//sheet/group[3]" position="replace">
+            <xpath expr="//sheet/group[2]" position="replace">
                  <notebook>
                  <page string="Repairs" >
                      <field name="repair_line_ids"
@@ -262,16 +262,16 @@
                      <field name="already_closed" invisible="1"/>
                  </page>
                  <page string="Service Invoice" invisible="1">
-                     <field name="service_invoice_id" domain="[('type', '=', 'out_invoice')]"
+                     <field name="service_invoice_id" domain="[('move_type', '=', 'out_invoice')]"
                         context="{'form_view_ref': 'account.view_move_form', 'tree_view_ref':
                         'account.view_invoice_tree'}"/>
-                     <field name="service_ref_invoice_id" domain="[('type', '=', 'out_refund')]" />
+                     <field name="service_ref_invoice_id" domain="[('move_type', '=', 'out_refund')]" />
                  </page>
              </notebook>
             </xpath>
-            <xpath expr="//sheet/group[3]" position="attributes">
+           <!--  <xpath expr="//sheet/group[3]" position="attributes">
                 <attribute name="invisible">1</attribute>
-            </xpath>
+            </xpath> -->
         </field>
     </record>
 <!-- 
@@ -324,7 +324,7 @@
                         domain="[('date_close','=',context_today().strftime('%%Y-%%m-%%d'))]" />
                     <group expand="0" string="Group By...">
                         <filter string="Vehicle" name="vehicle" domain="[]" context="{'group_by':'vehicle_id'}"/>
-                        <filter string="Service Type" name="service_type" domain="[]" context="{'group_by':'cost_subtype_id'}"/>
+                        <filter string="Service Type" name="service_type" domain="[]" context="{'group_by':'service_type_id'}"/>
                         <filter string="Status" name="status" domain="[]" context="{'group_by':'state'}"/>
                         <filter string="Location(Team)" name="location" domain="[]" context="{'group_by':'team_id'}"/>
                         <filter string="Vehicle Type" name="vehicle_type" domain="[]" context="{'group_by':'vechical_type_id'}"/>
@@ -387,7 +387,7 @@
     <menuitem action="fleet.fleet_vehicle_log_services_action"
         parent="fleet.fleet_vehicles" id="fleet.fleet_vehicle_log_services_menu"
         sequence="5" groups="fleet.fleet_group_user" 
-        string="Vehicle Services"/>
+        name="Vehicle Services"/>
 
      <!-- Vehicle Work order advance search view -->
     <record model='ir.ui.view' id='fleet_work_order_advance_search_form_view'>
@@ -448,7 +448,7 @@
     </record>
 
     <!-- Work Order Search Menu. -->
-    <menuitem action="fleet_work_order_advance_search_act" string="Services Search"
+    <menuitem action="fleet_work_order_advance_search_act" name="Services Search"
               parent="fleet.menu_fleet_reporting" id="work_order_advance_search_sub_menu"
               sequence="2" groups="fleet.fleet_group_manager,fleet.fleet_group_user"/>
 
@@ -485,7 +485,7 @@
 
     <!-- Repair Type Menu. -->
     <menuitem action="fleet_repair_type_tree_act" 
-        string="Repair Type"
+        name="Repair Type"
         parent="fleet.fleet_configuration" 
         groups="fleet.fleet_group_manager"
         id="fleet_repair_type_menu" sequence="2"/>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-
         <!--  Search view of write-off  -->
     <record model="ir.ui.view" id="fleet_wittenoff_search">
         <field name="name">fleet.wittenoff.search</field>
@@ -16,7 +15,6 @@
            </search>
         </field>
     </record>
-
      <!--  Form view of write-off  -->
     <record id='fleet_vehicle_wittenoff_form_view' model='ir.ui.view'>
         <field name="name">fleet.vehicle.wittenoff.off</field>
@@ -159,7 +157,7 @@
         <field name="view_id" ref="fleet_operations.fleet_vehicle_wittenoff_form_view"/>
     </record>
 
-    <!-- Inherited vehicle registration form view added extra fields on fleet vehicle -->
+      <!-- Inherited vehicle registration form view added extra fields on fleet vehicle -->
     <record model='ir.ui.view' id='fleet_vehicle_model_form_extended'>
         <field name="name">fleet.vehicle.model.form.extended</field>
         <field name="model">fleet.vehicle</field>
@@ -204,14 +202,8 @@
                         class="oe_stat_button oe_highlight"
                         groups="fleet.fleet_group_manager"
                         attrs="{'invisible':[('state','in',('write-off'))]}"/>
-                <button name="%(fleet_operations.fleet_vehicle_log_services_form_action)d"
-                        type="action"
-                        string="Services" 
-                        icon="fa-gears"
-                        class="oe_stat_button oe_highlight"
-                        domain="[('state','in',('inspection','released'))]"
-                        context="{'default_vehicle_id': active_id}"
-                        />
+                        <!-- Comment by MEM -->
+                <!-- Button fleet_operations.fleet_vehicle_log_services_form_action -->
                 <button name="%(fleet_operations.fleet_vehicle_write_off_form_action)d"
                         type="action"
                         string="Write-off"
@@ -239,14 +231,15 @@
                         groups="fleet.fleet_group_manager">
                         <field name="history_count" widget="statinfo" string="Drivers History"/>
                     </button>
-                    <button name="act_show_log_cost"
+                    <!-- Comment By MEM -->
+                    <!-- <button name="act_show_log_cost"
                         type="object"
                         class="oe_stat_button"
                         icon="fa-usd"
                         help="show all the costs for this vehicle"
                         groups="fleet.fleet_group_manager">
                         <field name="cost_count" widget="statinfo" string="Costs"/>
-                    </button>
+                    </button> -->
                     <button name="return_action_to_open"
                         type="object"
                         class="oe_stat_button"
@@ -255,14 +248,15 @@
                         help="show the services logs for this vehicle" >
                         <field name="service_count" widget="statinfo" string="Services"/>
                     </button>
-                    <button name="return_action_to_open"
+                    <!-- Comment By mem -->
+                   <!--  <button name="return_action_to_open"
                         type="object"
                         class="oe_stat_button"
                         icon="fa-flask"
                         context="{'xml_id':'fleet_vehicle_log_fuel_action'}"
                         help="show the fuel logs for this vehicle" >
                         <field name="fuel_logs_count" widget="statinfo" string="Fuel"/>
-                    </button>
+                    </button> -->
                     <button name="return_action_to_open"
                         type="object"
                         class="oe_stat_button"
@@ -498,7 +492,8 @@
                         <field name="work_order_ids" invisible="1">
                             <tree>
                                 <field name="name" />
-                                <field name="cost_subtype_id" />
+                                <!-- Comment By MEM -->
+                                <!-- <field name="cost_subtype_id" /> -->
                                 <field name="date" string="Issue Date"/>
                                 <field name="date_open" />
                                 <field name="date_close" />
@@ -687,6 +682,7 @@
         </field>
     </record>
 
+
     <!-- Override the tree view of fleet vehicle added extra fields on tree view.  -->
     <!-- <record model='ir.ui.view' id='fleet.fleet_vehicle_view_tree'>
         <field name="name">fleet.vehicle.tree</field>
@@ -799,7 +795,7 @@
         </field>
     </record>
 
-    <!-- Inherited fleet vehicle kanban view and Removed contracts related fields from view -->
+        <!-- Inherited fleet vehicle kanban view and Removed contracts related fields from view -->
     <record model='ir.ui.view' id='fleet_kanban_extended_view'>
         <field name="name">fleet.vehicle.model.kanban.extended</field>
         <field name="model">fleet.vehicle</field>
@@ -826,7 +822,7 @@
             <xpath expr="//kanban/field[@name='contract_renewal_name']" position="replace" />
             <xpath expr="//kanban/field[@name='contract_renewal_total']" position="replace" />
             <xpath expr="//div[hasclass('oe_kanban_details')]/ul/li[2]" position="replace" />
-            <xpath expr="//div[hasclass('o_kanban_button')]" position="replace" />
+            <xpath expr="//div[hasclass('o_kanban_record_bottom')]" position="replace" />
         </field>
     </record>
 
@@ -890,7 +886,7 @@
         </field>
     </record>
 
-    <!-- Pending reapir type tree view.  -->
+     <!-- Pending reapir type tree view.  -->
     <record model='ir.ui.view' id='pending_repair_type_tree_view'>
         <field name="name">pending.repair.typeltree_view</field>
         <field name="model">pending.repair.type</field>
@@ -908,7 +904,8 @@
     </record>
 
     <!-- Form view of vehicle fuel logs -->
-    <record id="fleet_vehicle_log_fuel_form_view" model='ir.ui.view'>
+    <!-- Comment MEM -->
+    <!-- <record id="fleet_vehicle_log_fuel_form_view" model='ir.ui.view'>
         <field name="name">vehicle.log.fuel.form</field>
         <field name="model">fleet.vehicle.log.fuel</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_log_fuel_view_form"/>
@@ -928,9 +925,9 @@
                 <attribute name="help">Quantity(Liter) Of The Fuel.</attribute>
             </xpath>
             <xpath expr="//field[@name='amount']" position="attributes">
-                <attribute name="required">1</attribute>
+                <attribute name="required">1</attribute> -->
                <!--  <attribute name="readonly">1</attribute> -->
-            </xpath>
+           <!--  </xpath>
             <xpath expr="//field[@name='price_per_liter']" position="attributes">
                 <attribute name="string">Price Per Quantity</attribute>
                  <attribute name="help">Price Per Quantity(Liter) Of The Fuel.</attribute>
@@ -940,10 +937,11 @@
                 <attribute name="required">1</attribute>
             </xpath>
         </field>
-    </record>
+    </record> -->
 
+    <!-- Comment MEM -->
     <!-- Tree view of vehilce fuel logs -->
-    <record id="fleet.fleet_vehicle_log_fuel_view_tree" model='ir.ui.view'>
+  <!--   <record id="fleet.fleet_vehicle_log_fuel_view_tree" model='ir.ui.view'>
         <field name="name">vehicle.log.fuel.tree</field>
         <field name="model">fleet.vehicle.log.fuel</field>
         <field name="arch" type="xml">
@@ -955,10 +953,11 @@
                 <field name="current_fuel"/>
             </tree>
         </field>
-    </record>
+    </record> -->
 
+    <!-- Comment MEM -->
     <!-- Search view of vehicle fuel logs -->
-    <record model="ir.ui.view" id="fleet.fleet_vehicle_log_fuel_view_search">
+   <!--  <record model="ir.ui.view" id="fleet.fleet_vehicle_log_fuel_view_search">
         <field name="name">fleet.log.fuel.search.view</field>
         <field name="model">fleet.vehicle.log.fuel</field>
         <field name="arch" type="xml">
@@ -975,23 +974,26 @@
                 </group>
            </search>
         </field>
-    </record>
+    </record> -->
 
+    <!-- Comment MEM -->
     <!-- Action for fuel log -->
-    <record id="fleet.fleet_vehicle_log_fuel_action" model="ir.actions.act_window">
+  <!--   <record id="fleet.fleet_vehicle_log_fuel_action" model="ir.actions.act_window">
         <field name="name">Vehicle Fuel Log</field>
-        <field name="res_model">fleet.vehicle.log.fuel</field>
+        <field name="res_model">fleet.vehicle.log.fuel</field> -->
         <!-- <field name="view_type">form</field> -->
-        <field name="view_mode">tree,form,graph</field>
+        <!-- <field name="view_mode">tree,form,graph</field>
         <field name="context">{"search_default_groupby_vehicle" : True}</field>
-    </record>
+    </record> -->
 
+    <!-- Comment MEM -->
     <!-- Menuitem for fuel log -->
-    <menuitem action="fleet.fleet_vehicle_log_fuel_action" parent="fleet.fleet_vehicles"
+<!--     <menuitem action="fleet.fleet_vehicle_log_fuel_action" parent="fleet.fleet_vehicles"
         id="fleet.fleet_vehicle_log_fuel_menu"
-        groups="fleet.fleet_group_manager,fleet.fleet_group_user"/>
+        groups="fleet.fleet_group_manager,fleet.fleet_group_user"/> -->
 
-    <!-- Search view of vehicle odometer -->
+
+      <!-- Search view of vehicle odometer -->
     <record model='ir.ui.view' id='fleet_vehicle_odometer_search_view'>
         <field name="name">fleet.vehicle.odometer.search.view</field>
         <field name="model">fleet.vehicle.odometer</field>
@@ -1011,7 +1013,7 @@
     </record>
 
     <!-- Inherited Form view for Vehicle odometer  -->
-      <record id="view_fleet_odometer" model="ir.ui.view">
+    <record id="view_fleet_odometer" model="ir.ui.view">
         <field name="name">fleet.vehicle.odometer</field>
         <field name="model">fleet.vehicle.odometer</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_odometer_view_form" />
@@ -1021,10 +1023,10 @@
                 <attribute name="required">1</attribute>
             </xpath>
         </field>
-      </record>
+    </record>
 
     <!-- Inherited view for Vehicle odometer  -->
-      <record id="view_fleet_odometer" model="ir.ui.view">
+    <record id="view_fleet_odometer" model="ir.ui.view">
         <field name="name">fleet.vehicle.odometer</field>
         <field name="model">fleet.vehicle.odometer</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_odometer_view_tree" />
@@ -1035,10 +1037,11 @@
                 <field name="model" readonly="1"/>
             </field>
         </field>
-      </record>
+    </record>
 
+      <!-- Comment MEM -->
     <!-- Inherited Form View For Vehicle Costs  -->
-      <record id="view_fleet_cost" model="ir.ui.view">
+   <!--  <record id="view_fleet_cost" model="ir.ui.view">
         <field name="name">fleet.vehicle.cost.form</field>
         <field name="model">fleet.vehicle.cost</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_costs_view_form" />
@@ -1047,12 +1050,10 @@
                 <attribute name="domain">[('state','!=','write-off')]</attribute>
             </xpath>
         </field>
-      </record>
+    </record> -->
 
-
-
-   <!-- override the fleet vehicle action for changing the menu item label -->
-   <record model='ir.actions.act_window' id='fleet.fleet_vehicle_action'>
+    <!-- override the fleet vehicle action for changing the menu item label -->
+    <record model='ir.actions.act_window' id='fleet.fleet_vehicle_action'>
         <field name="name">Vehicles Registration</field>
         <field name="res_model">fleet.vehicle</field>
         <!-- <field name="view_type">form</field> -->
@@ -1078,12 +1079,12 @@
         parent="fleet.fleet_configuration" id="fleet.fleet_vehicle_model_menu" />
 
     <!-- Menu itesm of existing fleet module with new labels and added new one. -->
-    <menuitem action="fleet.fleet_vehicle_action" string="Vehicles Registration"
+    <menuitem action="fleet.fleet_vehicle_action" name="Vehicles Registration"
         groups="fleet.fleet_group_manager"
         parent="fleet.fleet_vehicles" id="fleet.fleet_vehicle_menu" sequence="3"/>
 
     <!-- Menuitem for write-off -->
-    <menuitem id="vehicle_written_off_menu_id" string="Vehicles Write-off"
+    <menuitem id="vehicle_written_off_menu_id" name="Vehicles Write-off"
         groups="fleet.fleet_group_manager"
         action="fleet_vehicle_witten_off_act" parent = "fleet.fleet_vehicles" sequence="4" />
 
@@ -1094,10 +1095,11 @@
         parent="fleet.fleet_vehicles"  />
 
     <!-- portal.group_anonymous -->
-    <menuitem action="fleet.fleet_vehicle_costs_action" parent="fleet.fleet_vehicles"
+    <!-- Comment by mem -->
+    <!-- <menuitem action="fleet.fleet_vehicle_costs_action" parent="fleet.fleet_vehicles"
         id="fleet.fleet_vehicle_costs_menu"
         groups="fleet.fleet_group_manager" />
-
+ -->
     <!-- Menu for state -->
     <menuitem action="fleet.fleet_vehicle_state_action" parent="fleet.fleet_configuration"
         id="fleet.fleet_vehicle_state_menu"
@@ -1130,8 +1132,9 @@
         domain="[('state','in',('inspection','released'))]"
         context="{'default_vehicle_id': active_id}"/> -->
 
-      <!-- Advance search view of fleet vehicle -->
-      <record model='ir.ui.view' id='fleet_vehicle_advance_search_form_view'>
+
+   <!-- Advance search view of fleet vehicle -->
+   <record model='ir.ui.view' id='fleet_vehicle_advance_search_form_view'>
         <field name="name">fleet.vehicle.advance.search.form</field>
         <field name="model">fleet.vehicle.advance.search</field>
         <field name="arch" type="xml">
@@ -1177,7 +1180,7 @@
         </field>
     </record>
 
-    <!-- Action for advance search of vehicle -->
+       <!-- Action for advance search of vehicle -->
     <record model='ir.actions.act_window' id='fleet_vehicle_advance_search_act'>
         <field name="name">Vehicles Search</field>
         <field name="res_model">fleet.vehicle.advance.search</field>
@@ -1192,7 +1195,7 @@
 
     <!-- Menuitem for vehicle advance search views -->
     <menuitem action="fleet_vehicle_advance_search_act"
-        string="Vehicles Search" parent="fleet.menu_fleet_reporting"
+        name="Vehicles Search" parent="fleet.menu_fleet_reporting"
         id="fleet_advance_search_menu" sequence="3"
         groups="fleet.fleet_group_manager,fleet.fleet_group_user" />
 
@@ -1290,7 +1293,7 @@
 
     <!-- Menuitem for odometer increment -->
     <menuitem action="next_increment_number_tree_act"
-        string="Odometer Increment" parent="fleet.fleet_configuration"
+        name="Odometer Increment" parent="fleet.fleet_configuration"
         id="odometer_increment_menu" sequence="4"
         groups="fleet.fleet_group_manager" />
 
@@ -1337,7 +1340,7 @@
 
     <!-- Menuitem for Damage Type -->
     <menuitem action="damage_type_action"
-        string="Damage Types" parent="fleet.fleet_configuration"
+        name="Damage Types" parent="fleet.fleet_configuration"
         id="damage_type_menu" 
         groups="fleet.fleet_group_manager" />
 
@@ -1563,5 +1566,7 @@
     <!-- <menuitem action="report_heading_act" id="report_heading_menu"
         parent="fleet.fleet_configuration" sequence="22"
         groups="fleet.fleet_group_manager"/> -->
+
+
 
 </odoo>

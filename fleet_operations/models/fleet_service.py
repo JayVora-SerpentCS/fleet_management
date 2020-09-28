@@ -54,8 +54,8 @@ class FleetVehicleLogServices(models.Model):
                 vehicle.f_brand_id.id or False,
             self.vehical_division_id = vehicle.vehical_division_id and \
                 vehicle.vehical_division_id.id or False,
-            self.vehicle_location_id = vehicle.vehicle_location_id and \
-                vehicle.vehicle_location_id.id or False,
+            # self.vehicle_location_id = vehicle.vehicle_location_id and \
+            #     vehicle.vehicle_location_id.id or False,
 
     def action_create_invoice(self):
         """Invoice for Deposit Receive."""
@@ -584,8 +584,8 @@ class FleetVehicleLogServices(models.Model):
     parts_ids = fields.One2many('task.line', 'fleet_service_id',
                                 string='Parts')
     note = fields.Text(string='Log Notes')
-    date_child = fields.Date(related='cost_id.date', string='Cost Date',
-                             store=True)
+    # date_child = fields.Date(related='cost_id.date', string='Cost Date',
+    #                          store=True)
     sub_total = fields.Float(compute="_compute_get_total", string='Total Parts Amount',
                              store=True)
     state = fields.Selection([('draft', 'New'),

@@ -6,7 +6,7 @@
     'name': 'Fleet Operations',
     'category': 'Managing vehicles and contracts',
     'sequence': 1,
-    'version': '13.0.1.0.0',
+    'version': '14.0.1.0.0',
     'license': 'LGPL-3',
     'summary': """This module extends the fleet functionality and
      provides extra features and manage fleet operations.

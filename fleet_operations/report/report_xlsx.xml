@@ -17,14 +17,17 @@
     </record>
 
     <!-- Export Qweb Report For Write-off -->
-    <report
-        id="write_off_report_qweb"
-        model="fleet.wittenoff"
-        string="Write-Off"
-        report_type="qweb-pdf"
-        file="fleet_operations.write_off_qweb"
-        name="fleet_operations.write_off_qweb"
-        menu="True"/>
+    <record id="write_off_report_qweb" model="ir.actions.report">
+        <field name="name">Write-Off</field>
+        <field name="model">fleet.wittenoff</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fleet_operations.write_off_qweb</field>
+        <field name="report_file">fleet_operations.write_off_qweb</field>
+        <field name="print_report_name">'Write-Off'</field>
+        <field name="binding_model_id" ref="fleet_operations.model_fleet_wittenoff"/>
+        <field name="binding_type">report</field>
+    </record>
+
 
     <record id="write_off_report_qweb" model="ir.actions.report">
         <field name="paperformat_id" ref="fleet_operations.wittenoff_format"/>
@@ -39,24 +42,26 @@
     </record>
 
     <!-- QWEB Report For Repair Line Summary Report -->
-    <report
-        id="action_report_repair_line_summary"
-        model="repair.line.summary"
-        string="Repair Line Summary"
-        report_type="qweb-pdf"
-        name="fleet_operations.repair_line_summary_qweb"
-        file="fleet_operations.repair_line_summary_qweb"
-        attachment_use="False"
-        menu="False"/>
+    <record id="action_report_repair_line_summary" model="ir.actions.report">
+        <field name="name">Repair Line Summary</field>
+        <field name="model">repair.line.summary</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fleet_operations.repair_line_summary_qweb</field>
+        <field name="report_file">fleet_operations.repair_line_summary_qweb</field>
+        <field name="print_report_name">'Repair Line Summary'</field>
+        <field name="binding_model_id" ref=""/>
+        <field name="binding_type">report</field>
+    </record>
 
     <!-- QWEB Report For Vehicle Change History Report -->
-    <report
-        id="action_report_vehicle_change_history"
-        model="vehicle.change.history"
-        string="Vehicle Change History"
-        report_type="qweb-pdf"
-        name="fleet_operations.vehicle_change_history_qweb"
-        file="fleet_operations.vehicle_change_history_qweb"
-        attachment_use="False"
-        menu="False"/>
+    <record id="action_report_vehicle_change_history" model="ir.actions.report">
+        <field name="name">Vehicle Change History</field>
+        <field name="model">vehicle.change.history</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fleet_operations.vehicle_change_history_qweb</field>
+        <field name="report_file">fleet_operations.vehicle_change_history_qweb</field>
+        <field name="print_report_name">'Vehicle Change History'</field>
+        <field name="binding_model_id" ref=""/>
+        <field name="binding_type">report</field>
+    </record>
 </odoo>
