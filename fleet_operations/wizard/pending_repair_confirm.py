@@ -4,7 +4,7 @@
 from datetime import date, timedelta
 
 from odoo import _, api, models
-from odoo.exceptions import Warning
+from odoo.exceptions import UserError
 # from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 
 
@@ -27,7 +27,7 @@ class PendingRepairConfirm(models.TransientModel):
             increment_ids = increment_obj.search([
                 ('vehicle_id', '=', work_order.vehicle_id.id)])
             if not increment_ids:
-                raise Warning(_("Next Increment Odometer is not set for %s "
+                raise UserError(_("Next Increment Odometer is not set for %s "
                                 "please set it from configuration!") % (work_order.vehicle_id.name))
             if increment_ids:
                 odometer_increment = increment_ids[0].number
@@ -35,12 +35,12 @@ class PendingRepairConfirm(models.TransientModel):
                 ('vehicle_id', '=', work_order.vehicle_id.id)],
                 limit=1)
             if not next_service_day_ids:
-                raise Warning(_("Next service days is "
+                raise UserError(_("Next service days is "
                                 "not configured for %s please set it from "
                                 "configuration!") % (work_order.vehicle_id.name))
             work_order_vals = {}
             if work_order.odometer == 0:
-                raise Warning(_("Please set the "
+                raise UserError(_("Please set the "
                                 "current Odometer of vehilce in work order!"))
             odometer_increment += work_order.odometer
             next_service_date = work_order.date + \

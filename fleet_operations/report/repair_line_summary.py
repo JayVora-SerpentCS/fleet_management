@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 
 from odoo import _, api, models
-from odoo.exceptions import UserError, Warning
+from odoo.exceptions import UserError
 
 
 class RepairLineSmry(models.AbstractModel):
@@ -26,7 +26,7 @@ class RepairLineSmry(models.AbstractModel):
         repair_line_data = []
         repair_l_dic = {}
         if not work_order_ids:
-            raise Warning("Warning! \n\
+            raise UserError("Warning! \n\
                 No Work order found between the selected date !!")
         if work_order_ids:
             for work_rec in work_order_ids:
@@ -61,12 +61,12 @@ class RepairLineSmry(models.AbstractModel):
             raise UserError(_("Form content is missing, \
                                 this report cannot be printed."))
 
-        self.model = self.env.context.get('active_model')
-        docs = self.env[self.model].browse(self.env.context.get('active_id'))
+        model = self.env.context.get('active_model')
+        docs = self.env[model].browse(self.env.context.get('active_id'))
         result = self.get_repair_line_detail(data.get('form'))
         return {
             'doc_ids': self.ids,
-            'doc_model': self.model,
+            'doc_model': model,
             'data': data['form'],
             'docs': docs,
             'time': time,

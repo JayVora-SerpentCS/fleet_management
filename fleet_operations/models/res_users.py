@@ -2,7 +2,7 @@
 """Res Users Models."""
 
 from odoo import _, fields, api, models
-
+from odoo.exceptions import UserError
 
 class ResUsers(models.Model):
     """res users models."""
@@ -51,5 +51,5 @@ class ResPartnerExtended(models.Model):
         """Copy method cannot duplicate record and overide method."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
         return super(ResPartnerExtended, self).copy(default=default)

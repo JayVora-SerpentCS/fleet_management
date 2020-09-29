@@ -6,8 +6,7 @@ from datetime import date, datetime
 
 from odoo import _, api, fields, models
 from odoo import tools
-from odoo.exceptions import ValidationError, Warning
-from odoo.tools import misc
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -33,10 +32,9 @@ class FleetOperations(models.Model):
         """Overridden copy method."""
         if not default:
             default = {}
-        if self:
-            if self.state == 'write-off':
-                raise Warning(_('You can\'t duplicate this record '
-                                'because it is already write-off'))
+        if self.state == 'write-off':
+            raise UserError(_('You can\'t duplicate this record '
+                              'because it is already write-off'))
         return super(FleetOperations, self).copy(default=default)
 
     def update_history(self):
@@ -94,8 +92,8 @@ class FleetOperations(models.Model):
                                'last_change_status_date': date.today(),
                                'released_date': date.today()})
             else:
-                raise Warning(_('Vehicle status will only set to released '
-                                'if it is in compeleted state.'))
+                raise UserError(_('Vehicle status will only set to released '
+                                  'if it is in compeleted state.'))
         return True
 
     def name_get(self):
@@ -152,23 +150,20 @@ class FleetOperations(models.Model):
                         vehicle.tire_issuance_date < vehicle.acquisition_date:
                     raise ValidationError('Tire Issuance Date And Battery '
                                           'Issuance Date Should Be Greater Than Registration Date.')
-            if vehicle.tire_issuance_date:
-                if vehicle.tire_issuance_date < vehicle.acquisition_date:
-                    raise ValidationError('Tire Issuance Date Should Be '
-                                          'Greater Than Registration Date.')
-            if vehicle.battery_issuance_date:
-                if vehicle.battery_issuance_date < vehicle.acquisition_date:
-                    raise ValidationError('Battery Issuance Date Should Be '
-                                          'Greater Than Registration Date.')
+            if vehicle.tire_issuance_date and vehicle.tire_issuance_date < vehicle.acquisition_date:
+                raise ValidationError('Tire Issuance Date Should Be '
+                                      'Greater Than Registration Date.')
+            if vehicle.battery_issuance_date and vehicle.battery_issuance_date < vehicle.acquisition_date:
+                raise ValidationError('Battery Issuance Date Should Be '
+                                      'Greater Than Registration Date.')
 
     @api.constrains('warranty_period')
     def check_warranty_date(self):
         """Method to check warranty date."""
         for vehicle in self:
-            if vehicle.warranty_period:
-                if vehicle.warranty_period < vehicle.acquisition_date:
-                    raise ValidationError('Warranty Period Should Be '
-                                          'Greater Than Registration Date.')
+            if vehicle.warranty_period and vehicle.warranty_period < vehicle.acquisition_date:
+                raise ValidationError('Warranty Period Should Be '
+                                      'Greater Than Registration Date.')
 
     @api.constrains('date_sold', 'acquisition_date')
     def check_sold_date(self):
@@ -222,8 +217,8 @@ class FleetOperations(models.Model):
             vehicle_odometer = fleetvehicalodometer.search([
                 ('vehicle_id', '=', record.id)], limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
-                raise Warning(_('You can\'t enter odometer less than previous '
-                                'odometer %s !') % (vehicle_odometer.value))
+                raise UserError(_('You can\'t enter odometer less than previous '
+                                  'odometer %s !') % (vehicle_odometer.value))
             if record.odometer:
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
@@ -417,7 +412,7 @@ class FleetOperations(models.Model):
     def create(self, vals):
         """Create method override."""
         if not vals.get('model_id', False):
-            raise Warning(_('Model is not selected for this vehicle!'))
+            raise UserError(_('Model is not selected for this vehicle!'))
         vals.update({'fmp_id_editable': True})
         seq = self.env['ir.sequence'].next_by_code('fleet.vehicle')
         vals.update({'name': seq})
@@ -483,8 +478,7 @@ class FleetOperations(models.Model):
         if vals.get('battery_issuance_date', False):
             vals.update({'is_battery_issue_set': True})
 
-        res = super(FleetOperations, self).write(vals)
-        return res
+        return super(FleetOperations, self).write(vals)
 
     @api.onchange('driver_id')
     def get_driver_id_no(self):
@@ -515,7 +509,7 @@ class ColorHistory(models.Model):
         """Method copy."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
         return super(ColorHistory, self).copy(default=default)
 
 
@@ -537,7 +531,7 @@ class EngineHistory(models.Model):
         """Method to copy."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
         return super(EngineHistory, self).copy(default=default)
 
 
@@ -559,7 +553,7 @@ class VinHistory(models.Model):
         """Copy Method."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
         return super(VinHistory, self).copy(default=default)
 
 
@@ -589,7 +583,7 @@ class TireHistory(models.Model):
         """Method to copy."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
         return super(TireHistory, self).copy(default=default)
 
 
@@ -618,7 +612,7 @@ class BatteryHistory(models.Model):
         """Method to copy."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
         return super(BatteryHistory, self).copy(default=default)
 
 
@@ -641,7 +635,7 @@ class PendingRepairType(models.Model):
         """Copy Method."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
         return super(PendingRepairType, self).copy(default=default)
 
 
@@ -661,7 +655,7 @@ class VehicalDivison(models.Model):
         """Method to copy."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
         return super(VehicalDivison, self).copy(default=default)
 
 
@@ -678,7 +672,7 @@ class VehicleType(models.Model):
                for x in vehicle_type_ids if x.name and x.id not in self._ids]
         for self_obj in self:
             if self_obj.name and self_obj.name.lower().strip() in lst:
-                return Warning('Vehicle Type is already Exist in system.!')
+                return UserError('Vehicle Type is already Exist in system.!')
         return True
 
     code = fields.Char(string='Code', size=10, translate=True)
@@ -689,7 +683,7 @@ class VehicleType(models.Model):
         """Method to copy."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
         return super(VehicleType, self).copy(default=default)
 
 
@@ -707,7 +701,7 @@ class VehicleLocation(models.Model):
         """Copy Method can not duplicate record and override."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
         return super(VehicleLocation, self).copy(default=default)
 
 
@@ -724,7 +718,7 @@ class VehicleDepartment(models.Model):
         """Copy method can not duplicate records and override."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
         return super(VehicleDepartment, self).copy(default=default)
 
 
@@ -744,7 +738,7 @@ class ColorColor(models.Model):
         """Copy method cannot duplicate record and overide method."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
         return super(ColorColor, self).copy(default=default)
 
     @api.constrains('name')
@@ -770,7 +764,7 @@ class IrAttachment(models.Model):
         """Copy method cannot duplicate record and override method."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
         return super(IrAttachment, self).copy(default=default)
 
 
@@ -862,7 +856,7 @@ class FleetWittenOff(models.Model):
         """Copy method cannot duplicate record and overide method."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
         return super(FleetWittenOff, self).copy(default=default)
 
     @api.model
@@ -873,18 +867,18 @@ class FleetWittenOff(models.Model):
         if self._context.get('active_ids', False):
             for vehicle in vehicle_obj.browse(self._context['active_ids']):
                 if vehicle.state == 'write-off':
-                    raise Warning(_("This vehicle is already in "
-                                    "write-off state!"))
+                    raise UserError(_("This vehicle is already in "
+                                      "write-off state!"))
                 elif vehicle.state == 'in_progress' or \
                         vehicle.state == 'complete':
-                    raise Warning(_("You can\'t write-off this vehicle "
-                                    "which is in Progress or Complete state!"))
+                    raise UserError(_("You can\'t write-off this vehicle "
+                                      "which is in Progress or Complete state!"))
                 elif vehicle.state == 'inspection':
-                    raise Warning(_("You can\'t write-off this "
-                                    "vehicle which is in Inspection"))
+                    raise UserError(_("You can\'t write-off this "
+                                      "vehicle which is in Inspection"))
                 elif vehicle.state == 'rent':
-                    raise Warning(_("You can\'t write-off this "
-                                    "vehicle which is On Rent."))
+                    raise UserError(_("You can\'t write-off this "
+                                      "vehicle which is On Rent."))
                 res.update({'contact_no': vehicle.driver_contact_no or ''})
         return res
 
@@ -946,7 +940,8 @@ class FleetWittenOff(models.Model):
         currency_obj = self.env['res.currency']
         usd_ids = currency_obj.search([('name', '=', 'USD')])
         if not usd_ids:
-            raise Warning(_("Please, check USD Currency is not in your list!"))
+            raise UserError(
+                _("Please, check USD Currency is not in your list!"))
         usd = usd_ids and usd_ids[0] or False
         return usd
 
@@ -1032,37 +1027,37 @@ class FleetVehicleAdvanceSearch(models.TransientModel):
     def check_registration_date(self):
         """Method to check registration date."""
         for vehicle in self:
-            if vehicle.acquisition_date_to:
-                if vehicle.acquisition_date_to < vehicle.acquisition_date:
-                    raise ValidationError('Registration To Date Should Be '
-                    'Greater Than Registration From Date.')
+            if vehicle.acquisition_date_to and\
+                    vehicle.acquisition_date_to < vehicle.acquisition_date:
+                raise ValidationError('Registration To Date Should Be '
+                                      'Greater Than Registration From Date.')
 
     @api.constrains('last_service_date', 'last_service_date_to')
     def check_last_service_date(self):
         """Method to check last service date."""
         for vehicle in self:
-            if vehicle.last_service_date_to:
-                if vehicle.last_service_date_to < vehicle.last_service_date:
-                    raise ValidationError('Last Service To Date Should Be '
-                    'Greater Than Last Service From Date.')
+            if vehicle.last_service_date_to and\
+                    vehicle.last_service_date_to < vehicle.last_service_date:
+                raise ValidationError('Last Service To Date Should Be '
+                                      'Greater Than Last Service From Date.')
 
     @api.constrains('next_service_date', 'next_service_date_to')
     def check_next_service_date(self):
         """Method to check next service date."""
         for vehicle in self:
-            if vehicle.next_service_date_to:
-                if vehicle.next_service_date_to < vehicle.next_service_date:
-                    raise ValidationError('Next Service To Date Should Be '
-                    'Greater Than Next Service From Date.')
+            if vehicle.next_service_date_to and\
+                    vehicle.next_service_date_to < vehicle.next_service_date:
+                raise ValidationError('Next Service To Date Should Be '
+                                      'Greater Than Next Service From Date.')
 
     @api.constrains('release_date_from', 'release_date_to')
     def check_released_date(self):
         """Method to check released date."""
         for vehicle in self:
-            if vehicle.release_date_to:
-                if vehicle.release_date_to < vehicle.release_date_from:
-                    raise ValidationError('Released To Date Should Be '
-                    'Greater Than Released From Date.')
+            if vehicle.release_date_to and\
+                    vehicle.release_date_to < vehicle.release_date_from:
+                raise ValidationError('Released To Date Should Be '
+                                      'Greater Than Released From Date.')
 
     def get_vehicle_detail_by_advance_search(self):
         """Method to get vehicle detail by advance search."""
@@ -1168,7 +1163,7 @@ class VehicleUniqueSequence(models.Model):
         """Copy method cannot duplicate record and overide method."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
 
 
 class NextIncrementNumber(models.Model):
@@ -1185,7 +1180,7 @@ class NextIncrementNumber(models.Model):
         """Copy method cannot duplicate record and overide method."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
 
     @api.constrains('vehicle_id')
     def _check_vehicle_id(self):
@@ -1197,7 +1192,7 @@ class NextIncrementNumber(models.Model):
                 ('id', '!=', increment.id)])
             if duplicate_hist:
                 raise ValidationError('You can not add more than one odoometer '
-                        'increment configuration for same vehicle.!!!')
+                                      'increment configuration for same vehicle.!!!')
 
 
 class NextServiceDays(models.Model):
@@ -1214,7 +1209,7 @@ class NextServiceDays(models.Model):
         """Copy method cannot duplicate record and overide method."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
 
     @api.constrains('vehicle_id')
     def _check_vehicle_id(self):
@@ -1226,7 +1221,7 @@ class NextServiceDays(models.Model):
                 ('id', '!=', service.id)])
             if duplicate_hist:
                 raise ValidationError('You can not add more than one next '
-                        'service days configuration for same vehicle.!!!')
+                                      'service days configuration for same vehicle.!!!')
 
 
 class DamageTypes(models.Model):
@@ -1242,7 +1237,7 @@ class DamageTypes(models.Model):
         """Copy method cannot duplicate record and overide method."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
 
 # TODO
 # class VehicleFuelLog(models.Model):

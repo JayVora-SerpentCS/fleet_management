@@ -4,8 +4,8 @@ import time
 from datetime import date, datetime, timedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError, Warning
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT, misc, ustr
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT, ustr
 from odoo.tools.float_utils import float_compare
 
 
@@ -21,7 +21,7 @@ class ServiceCategory(models.Model):
         """Copy Method."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
 
 
 class FleetVehicleLogServices(models.Model):
@@ -35,8 +35,8 @@ class FleetVehicleLogServices(models.Model):
         """Unlink Method."""
         for rec in self:
             if rec.state != 'draft':
-                raise Warning(_('You can\'t delete Work Order which '
-                                'in Confirmed or Done state!'))
+                raise UserError(_('You can\'t delete Work Order which '
+                                  'in Confirmed or Done state!'))
         return super(FleetVehicleLogServices, self).unlink()
 
     @api.onchange('vehicle_id')
@@ -48,14 +48,10 @@ class FleetVehicleLogServices(models.Model):
                 vehicle.vechical_type_id.id or False,
             self.purchaser_id = vehicle.driver_id and \
                 vehicle.driver_id.id or False,
-            # self.fmp_id = vehicle.name or "",
-#            self.main_type = vehicle.main_type or False,
             self.f_brand_id = vehicle.f_brand_id and \
                 vehicle.f_brand_id.id or False,
             self.vehical_division_id = vehicle.vehical_division_id and \
                 vehicle.vehical_division_id.id or False,
-            # self.vehicle_location_id = vehicle.vehicle_location_id and \
-            #     vehicle.vehicle_location_id.id or False,
 
     def action_create_invoice(self):
         """Invoice for Deposit Receive."""
@@ -65,20 +61,21 @@ class FleetVehicleLogServices(models.Model):
                                       "Please add Service amount first !!")
 
             deposit_inv_ids = self.env['account.move'].search([
-                ('vehicle_service_id', '=', service.id), ('type', '=', 'out_invoice'),
+                ('vehicle_service_id', '=',
+                 service.id), ('move_type', '=', 'out_invoice'),
                 ('state', 'in', ['draft', 'open', 'in_payment'])
             ])
             if deposit_inv_ids:
-                raise Warning(_("Deposit invoice is already Pending\n"
-                                "Please proceed that deposit invoice first"))
+                raise UserError(_("Deposit invoice is already Pending\n"
+                                  "Please proceed that deposit invoice first"))
 
             if not service.purchaser_id:
-                raise Warning(
+                raise UserError(
                     _("Please configure Driver from vehicle or in a service order!!"))
 
             inv_ser_line = [(0, 0, {
-                'name': ustr(service.cost_subtype_id and
-                             service.cost_subtype_id.name) + ' - Service Cost',
+                'name': ustr(service.service_type_id and
+                             service.service_type_id.name) + ' - Service Cost',
                 'price_unit': service.amount,
                 'account_id': service.vehicle_id and service.vehicle_id.income_acc_id and
                 service.vehicle_id.income_acc_id.id or False,
@@ -98,7 +95,7 @@ class FleetVehicleLogServices(models.Model):
             inv_values = {
                 'partner_id': service.purchaser_id and
                 service.purchaser_id.id or False,
-                'type': 'out_invoice',
+                'move_type': 'out_invoice',
                 'invoice_date': service.date_open,
                 'invoice_date_due': service.date_complete,
                 'invoice_line_ids': inv_ser_line,
@@ -112,16 +109,17 @@ class FleetVehicleLogServices(models.Model):
 
         for service in self:
             deposit_inv_ids = self.env['account.move'].search([
-                ('vehicle_service_id', '=', service.id), ('type', '=', 'out_refund'),
+                ('vehicle_service_id', '=',
+                 service.id), ('move_type', '=', 'out_refund'),
                 ('state', 'in', ['draft', 'open', 'in_payment'])
             ])
             if deposit_inv_ids:
-                raise Warning(_("Deposit Return invoice is already Pending\n"
-                                "Please proceed that deposit invoice first"))
+                raise UserError(_("Deposit Return invoice is already Pending\n"
+                                  "Please proceed that deposit invoice first"))
 
             inv_ser_line = [(0, 0, {
-                'product_id': service.cost_subtype_id and
-                service.cost_subtype_id.id or False,
+                'product_id': service.service_type_id and
+                service.service_type_id.id or False,
                 'name': 'Service Cost',
                 'price_unit': service.amount or 0.0,
                 'account_id': service.vehicle_id and service.vehicle_id.income_acc_id and
@@ -140,7 +138,7 @@ class FleetVehicleLogServices(models.Model):
             inv_values = {
                 'partner_id': service.purchaser_id and
                 service.purchaser_id.id or False,
-                'type': 'out_refund',
+                'move_type': 'out_refund',
                 'invoice_date': service.date_open,
                 'invoice_date_due': service.date_complete,
                 'invoice_line_ids': inv_ser_line,
@@ -158,16 +156,16 @@ class FleetVehicleLogServices(models.Model):
         for work_order in self:
             if work_order.vehicle_id:
                 if work_order.vehicle_id.state == 'write-off':
-                    raise Warning(_("You can\'t confirm this \
+                    raise UserError(_("You can\'t confirm this \
                             work order which vehicle is in write-off state!"))
                 elif work_order.vehicle_id.state == 'in_progress':
-                    raise Warning(_("Previous work order is not "
-                                    "complete, complete that work order first than "
-                                    "you can confirm this work order!"))
+                    raise UserError(_("Previous work order is not "
+                                      "complete, complete that work order first than "
+                                      "you can confirm this work order!"))
                 elif work_order.vehicle_id.state == 'draft' or \
                         work_order.vehicle_id.state == 'complete':
-                    raise Warning(_("Confirm work order can only "
-                                    "when vehicle status is in Inspection or Released!"))
+                    raise UserError(_("Confirm work order can only "
+                                      "when vehicle status is in Inspection or Released!"))
                 work_order.vehicle_id.write({
                     'state': 'in_progress',
                     'last_change_status_date': date.today(),
@@ -207,7 +205,7 @@ class FleetVehicleLogServices(models.Model):
         mod_obj = self.env['ir.model.data']
         for work_order in self:
             service_inv = self.env['account.move'].search([
-                ('type', '=', 'out_invoice'),
+                ('move_type', '=', 'out_invoice'),
                 ('vehicle_service_id', '=', work_order.id)])
             if work_order.amount > 0 and not service_inv:
                 raise ValidationError("Vehicle Service amount is greater"
@@ -267,8 +265,8 @@ class FleetVehicleLogServices(models.Model):
             # self.env.args = cr, uid, misc.frozendict(context)
             user = self.env.user
             if work_order.odometer == 0:
-                raise Warning(_("Please set the current "
-                                "Odometer of vehilce in work order!"))
+                raise UserError(_("Please set the current "
+                                  "Odometer of vehilce in work order!"))
             odometer_increment += work_order.odometer
             next_service_date = datetime.strptime(
                 str(date.today()), DEFAULT_SERVER_DATE_FORMAT) + \
@@ -371,13 +369,14 @@ class FleetVehicleLogServices(models.Model):
     def action_reopen(self):
         """Method Action Reopen."""
         for order in self:
+            service_type_id = self.env.ref('fleet.type_service_service_8')
             order.write({'state': 'done'})
             new_reopen_service = order.copy()
             new_reopen_service.write({
                 'source_service_id': order.id,
                 'date_open': False,
                 'date_close': False,
-                'cost_subtype_id': False,
+                'service_type_id': service_type_id.id,
                 'amount': False,
                 'team_id': False,
                 'closed_by': False,
@@ -424,9 +423,6 @@ class FleetVehicleLogServices(models.Model):
                         'vehical_division_id': work_order.vehicle_id and
                         work_order.vehicle_id.vehical_division_id and
                         work_order.vehicle_id.vehical_division_id.id or False,
-                        # 'vehicle_location_id': work_order.vehicle_id and
-                        # work_order.vehicle_id.vehicle_location_id and
-                        # work_order.vehicle_id.vehicle_location_id.id or False,
                     })
         return super(FleetVehicleLogServices, self).write(vals)
 
@@ -457,7 +453,7 @@ class FleetVehicleLogServices(models.Model):
         for rec in self.browse(vehicle_ids):
             email_from = email_from_brw.smtp_user
             if not email_from:
-                raise Warning(_("May be Out Going Mail \
+                raise UserError(_("May be Out Going Mail \
                                     server is not configuration."))
             if vehicle_ids:
                 temp_rec.send_mail(rec.id, force_send=True)
@@ -471,32 +467,32 @@ class FleetVehicleLogServices(models.Model):
         if self._context.get('active_ids', False):
             for vehicle in vehicle_obj.browse(self._context['active_ids']):
                 if vehicle.state == 'write-off':
-                    raise Warning(_("You can\'t create work order "
-                                    "for vehicle which is already write-off!"))
+                    raise UserError(_("You can\'t create work order "
+                                      "for vehicle which is already write-off!"))
                 elif vehicle.state == 'in_progress':
-                    raise Warning(_("Previous work order is not "
-                                    "complete,Please complete that work order first than you "
-                                    "can create new work order!"))
+                    raise UserError(_("Previous work order is not "
+                                      "complete,Please complete that work order first than you "
+                                      "can create new work order!"))
                 elif vehicle.state == 'rent':
-                    raise Warning(_("You can\'t create work order "
-                                    "for vehicle which is already On Rent!"))
+                    raise UserError(_("You can\'t create work order "
+                                      "for vehicle which is already On Rent!"))
                 elif vehicle.state == 'draft' or vehicle.state == 'complete':
-                    raise Warning(_("New work order can only be "
-                                    "generated either vehicle status is in "
-                                    "Inspection or Released!"))
+                    raise UserError(_("New work order can only be "
+                                      "generated either vehicle status is in "
+                                      "Inspection or Released!"))
         res = super(FleetVehicleLogServices, self).default_get(fields)
         repair_type_ids = repair_type_obj.search([])
         if not repair_type_ids:
-            raise Warning(_("There is no data for "
-                            "repair type, add repair type from configuration!"))
+            raise UserError(_("There is no data for "
+                              "repair type, add repair type from configuration!"))
         return res
 
-    @api.onchange('cost_subtype_id')
+    @api.onchange('service_type_id')
     def get_repair_line(self):
         """Method get repair line."""
         repair_lines = []
-        if self.cost_subtype_id:
-            for repair_type in self.cost_subtype_id.repair_type_ids:
+        if self.service_type_id:
+            for repair_type in self.service_type_id.repair_type_ids:
                 repair_lines.append((0, 0, {'repair_type_id': repair_type.id}))
             self.repair_line_ids = repair_lines
 
@@ -649,7 +645,7 @@ class FleetVehicleLogServices(models.Model):
 
     def invoice_receive(self):
         for rec in self:
-            inv_obj = self.env['account.move'].search([('type', '=', 'out_invoice'),
+            inv_obj = self.env['account.move'].search([('move_type', '=', 'out_invoice'),
                                                        ('vehicle_service_id', '=', rec.id), ('state', '=', [
                                                            'draft', 'paid']),
                                                        ('is_invoice_receive', '=', True)])
@@ -662,14 +658,14 @@ class FleetVehicleLogServices(models.Model):
         obj = self.env['account.move']
         for serv in self:
             serv.invoice_count = obj.search_count([
-                ('type', '=', 'out_invoice'),
+                ('move_type', '=', 'out_invoice'),
                 ('vehicle_service_id', '=', serv.id)])
 
     def return_invoice(self):
         obj = self.env['account.move']
         for serv in self:
             serv.return_inv_count = obj.search_count([
-                ('type', '=', 'out_refund'),
+                ('move_type', '=', 'out_refund'),
                 ('vehicle_service_id', '=', serv.id)])
 
     @api.depends('amount', 'sub_total')
@@ -695,8 +691,8 @@ class FleetVehicleLogServices(models.Model):
                 [('vehicle_id', '=', record.vehicle_id.id)],
                 limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
-                raise Warning(_('You can\'t enter odometer less than previous '
-                                'odometer %s !') % (vehicle_odometer.value))
+                raise UserError(_('You can\'t enter odometer less than previous '
+                                  'odometer %s !') % (vehicle_odometer.value))
             if record.odometer:
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
@@ -760,8 +756,8 @@ class TripPartsHistoryDetails(models.Model):
         for rec in self:
             available_qty = rec.used_qty - rec.dummy_encoded_qty
             if available_qty < 0:
-                raise Warning(_('Quantity Available '
-                                'must be greater than zero!'))
+                raise UserError(_('Quantity Available '
+                                  'must be greater than zero!'))
             rec.available_qty = available_qty
 
     product_id = fields.Many2one('product.product', string='Part No',
@@ -859,7 +855,7 @@ class StockPicking(models.Model):
             if line_uom.factor and line_uom.factor != 0:
                 if float_compare(qty_in_line_uom, wizard_line.product_qty,
                                  precision_rounding=line_uom.rounding) != 0:
-                    raise Warning(_('The unit of measure \
+                    raise UserError(_('The unit of measure \
                             rounding does not allow you to ship "%s %s", \
                             only rounding of "%s %s" is accepted by the \
                             Unit of Measure.') % (wizard_line.product_qty,
@@ -883,7 +879,7 @@ class StockPicking(models.Model):
                                         line_uom.factor) * initial_uom.factor
                 if float_compare(qty_in_initial_uom, without_rounding_qty,
                                  precision_rounding=initial_uom.rounding) != 0:
-                    raise Warning(_('The rounding of the \
+                    raise UserError(_('The rounding of the \
                         initial uom does not allow you to ship "%s %s", \
                         as it would let a quantity of "%s %s" to ship and \
                         only rounding of "%s %s" is accepted \
@@ -1020,7 +1016,7 @@ class FleetWorkOrderSearch(models.TransientModel):
     work_order_id = fields.Many2one('fleet.vehicle.log.services',
                                     string='Service Order')
     fmp_id = fields.Many2one('fleet.vehicle', string='Vehicle ID')
-    cost_subtype_id = fields.Many2one('fleet.service.type',
+    service_type_id = fields.Many2one('fleet.service.type',
                                       string='Service Type')
     repair_type_id = fields.Many2one('repair.type', string='Repair Type')
     # open_days = fields.Char(string='Open Days', size=16)
@@ -1031,35 +1027,31 @@ class FleetWorkOrderSearch(models.TransientModel):
     def check_issue_date(self):
         """Method to check issue date."""
         for vehicle in self:
-            if vehicle.issue_date_to:
-                if vehicle.issue_date_to < vehicle.issue_date_from:
-                    raise ValidationError('Issue To Date Should Be '
-                                          'Greater Than Last Issue From Date.')
-
-    @api.constrains('issue_date_to')
-    def check_issue_date(self):
-        """Method to check issue date."""
-        for vehicle in self:
-            if vehicle.issue_date_to:
+            if vehicle.issue_date_to and not vehicle.issue_date_from:
                 raise ValidationError('Please Enter Issue From Date.')
+
+            elif vehicle.issue_date_to and vehicle.issue_date_from and\
+                    vehicle.issue_date_to < vehicle.issue_date_from:
+                raise ValidationError('Issue To Date Should Be '
+                                      'Greater Than Last Issue From Date.')
 
     @api.constrains('open_date_from', 'open_date_to')
     def check_open_date(self):
         """Method to check open date."""
         for vehicle in self:
-            if vehicle.open_date_to:
-                if vehicle.open_date_to < vehicle.open_date_from:
-                    raise ValidationError('Open To Date Should Be '
-                                          'Greater Than Open From Date.')
+            if vehicle.open_date_to and\
+                    vehicle.open_date_to < vehicle.open_date_from:
+                raise ValidationError('Open To Date Should Be '
+                                      'Greater Than Open From Date.')
 
     @api.constrains('close_date_form', 'close_date_to')
     def check_close_date(self):
         """Method to check close date."""
         for vehicle in self:
-            if vehicle.close_date_to:
-                if vehicle.close_date_to < vehicle.close_date_form:
-                    raise ValidationError('Close To Date Should Be '
-                                          'Greater Than Close From Date.')
+            if vehicle.close_date_to and\
+                    vehicle.close_date_to < vehicle.close_date_form:
+                raise ValidationError('Close To Date Should Be '
+                                      'Greater Than Close From Date.')
 
     def get_work_order_detail_by_advance_search(self):
         """Method to get work order detail by advance search."""
@@ -1142,8 +1134,8 @@ class FleetWorkOrderSearch(models.TransientModel):
                 domain += [('priority', '=', order.priority)]
             if order.work_order_id:
                 order_ids.append(order.work_order_id.id)
-            if order.cost_subtype_id:
-                domain += [('cost_subtype_id', '=', order.cost_subtype_id.id)]
+            if order.service_type_id:
+                domain += [('service_type_id', '=', order.service_type_id.id)]
             if order.issue_date_from and order.issue_date_to:
                 domain += [('date', '>=', order.issue_date_from)]
                 domain += [('date', '<=', order.issue_date_to)]
@@ -1237,8 +1229,8 @@ class TaskLine(models.Model):
     def _check_used_qty(self):
         for rec in self:
             if rec.qty <= 0:
-                raise Warning(_('You can\'t '
-                                'enter used quanity as Zero!'))
+                raise UserError(_('You can\'t '
+                                  'enter used quanity as Zero!'))
 
     @api.onchange('product_id', 'qty')
     def _onchage_product(self):
@@ -1247,8 +1239,8 @@ class TaskLine(models.Model):
                 prod = rec.product_id
                 if prod.in_active_part:
                     rec.product_id = False
-                    raise Warning(_('You can\'t select '
-                                    'part which is In-Active!'))
+                    raise UserError(_('You can\'t select '
+                                      'part which is In-Active!'))
                 rec.qty_hand = prod.qty_available or 0.0
                 rec.product_uom = prod.uom_id or False
                 rec.price_unit = prod.list_price or 0.0
@@ -1283,7 +1275,7 @@ class TaskLine(models.Model):
             if task_line_ids:
                 warrnig = 'You can not have duplicate '
                 'parts assigned !!!'
-                raise Warning(_(warrnig))
+                raise UserError(_(warrnig))
         return super(TaskLine, self).create(vals)
 
     def write(self, vals):
@@ -1315,17 +1307,17 @@ class TaskLine(models.Model):
             if not self.date_issued >= date_open and \
                     not self.date_issued <= current_date:
                 self.date_issued = False
-                raise Warning(_('You can\t enter '
-                                'parts issue either open work order date or in '
-                                'between open work order date and current date!'))
+                raise UserError(_('You can\t enter '
+                                  'parts issue either open work order date or in '
+                                  'between open work order date and current date!'))
 
     def unlink(self):
         """Overridden method to add validation before delete the history."""
         for part in self:
             if part.fleet_service_id.state == 'done':
-                raise Warning(_("You can't delete part those already used."))
+                raise UserError(_("You can't delete part those already used."))
             if part.is_deliver:
-                raise Warning(_("You can't delete part those already used."))
+                raise UserError(_("You can't delete part those already used."))
         return super(TaskLine, self).unlink()
 
 
@@ -1342,7 +1334,7 @@ class RepairType(models.Model):
         """Copy method."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
 
 
 class ServiceRepairLine(models.Model):
@@ -1400,5 +1392,5 @@ class FleetServiceType(models.Model):
         """Method copy."""
         if not default:
             default = {}
-        raise Warning(_('You can\'t duplicate record!'))
+        raise UserError(_('You can\'t duplicate record!'))
         return super(FleetServiceType, self).copy(default=default)

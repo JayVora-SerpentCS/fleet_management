@@ -3,7 +3,7 @@
 
 
 from odoo import models
-from odoo.exceptions import Warning
+from odoo.exceptions import UserError
 
 
 class MostUsedPartsXlsx(models.AbstractModel):
@@ -64,7 +64,7 @@ class MostUsedPartsXlsx(models.AbstractModel):
             part_list_data = sorted(part_list_data,
                                     key=lambda k: k['qty'], reverse=True)
         else:
-            raise Warning("Warning! \n\
+            raise UserError("Warning! \n\
                     No parts were used in selected date.")
 
         flag = 1

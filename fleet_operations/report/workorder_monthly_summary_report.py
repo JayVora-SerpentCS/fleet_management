@@ -5,7 +5,7 @@ import base64
 import io
 
 from odoo import models
-from odoo.exceptions import Warning
+from odoo.exceptions import UserError
 
 import xlwt
 
@@ -102,7 +102,7 @@ class WorkorderMontltReportXlsx(models.AbstractModel):
                         }
                         wo_summary_data.append(parts_data)
         if not wo_summary_data:
-            raise Warning("Warning! \n\
+            raise UserError("Warning! \n\
                 No data Available for selected work order.")
         return wo_summary_data
 

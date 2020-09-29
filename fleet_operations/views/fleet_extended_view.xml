@@ -202,8 +202,14 @@
                         class="oe_stat_button oe_highlight"
                         groups="fleet.fleet_group_manager"
                         attrs="{'invisible':[('state','in',('write-off'))]}"/>
-                        <!-- Comment by MEM -->
-                <!-- Button fleet_operations.fleet_vehicle_log_services_form_action -->
+                        
+                <button name="%(fleet_operations.fleet_vehicle_log_services_form_action)d" 
+                        type="action" 
+                        string="Services" 
+                        icon="fa-gears"
+                        class="oe_stat_button oe_highlight" 
+                        domain="[('state','in',('inspection','released'))]" 
+                        context="{'default_vehicle_id': active_id}"/>
                 <button name="%(fleet_operations.fleet_vehicle_write_off_form_action)d"
                         type="action"
                         string="Write-off"
@@ -492,8 +498,7 @@
                         <field name="work_order_ids" invisible="1">
                             <tree>
                                 <field name="name" />
-                                <!-- Comment By MEM -->
-                                <!-- <field name="cost_subtype_id" /> -->
+                                <field name="service_type_id" />
                                 <field name="date" string="Issue Date"/>
                                 <field name="date_open" />
                                 <field name="date_close" />

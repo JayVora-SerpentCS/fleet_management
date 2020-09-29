@@ -34,7 +34,7 @@ class VehicalChangeHistoryReport(models.AbstractModel):
         battery_ids = battery_obj.search(domain)
         vin_ids = vin_obj.search(domain)
         vehicle_change_history = []
-        if engine_ids:
+        if engine_ids and date_range.get('report') == 'engine_history':
             for engine_rec in engine_ids:
                 seq = engine_rec.vehicle_id and \
                     engine_rec.vehicle_id.name or ''
@@ -64,7 +64,7 @@ class VehicalChangeHistoryReport(models.AbstractModel):
                     'remarks': engine_rec.note or '',
                     'seq': seq + 'a'}
                 vehicle_change_history.append(values)
-        if color_ids:
+        if color_ids and date_range.get('report') == 'color_history':
             for color_rec in color_ids:
                 seq = color_rec.vehicle_id and color_rec.vehicle_id.name or ''
                 cvalues = {
@@ -95,7 +95,7 @@ class VehicalChangeHistoryReport(models.AbstractModel):
                     'remarks': color_rec.note or '',
                     'seq': seq + 'b'}
                 vehicle_change_history.append(cvalues)
-        if tire_ids:
+        if tire_ids and date_range.get('report') == 'tire_history':
             for tire_rec in tire_ids:
                 seq = tire_rec.vehicle_id and tire_rec.vehicle_id.name or ''
                 tvalues = {
@@ -120,7 +120,7 @@ class VehicalChangeHistoryReport(models.AbstractModel):
                     'remarks': tire_rec.note or '',
                     'seq': seq + 'b'}
                 vehicle_change_history.append(tvalues)
-        if battery_ids:
+        if battery_ids and date_range.get('report') == 'battery_history':
             for battery_rec in battery_ids:
                 seq = battery_rec.vehicle_id and battery_rec.vehicle_id.name or ''
                 tvalues = {
@@ -187,12 +187,12 @@ class VehicalChangeHistoryReport(models.AbstractModel):
             raise UserError(_("Form content is missing, \
                     this report cannot be printed."))
 
-        self.model = self.env.context.get('active_model')
-        docs = self.env[self.model].browse(self.env.context.get('active_id'))
+        model = self.env.context.get('active_model')
+        docs = self.env[model].browse(self.env.context.get('active_id'))
         result = self.get_vehicle_history(data.get('form'))
         return {
             'doc_ids': self.ids,
-            'doc_model': self.model,
+            'doc_model': model,
             'data': data['form'],
             'docs': docs,
             'time': time,
