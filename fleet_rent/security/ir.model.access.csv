@@ -12,3 +12,6 @@ access_fleet_rent_tenant,fleet_rent_tenant,model_fleet_rent,group_vehicle_rent_u
 access_fleet_rent_user,access_fleet_rent_user,model_fleet_rent,fleet.fleet_group_user,1,0,0,0
 access_fleet_rent_mgr,access_fleet_rent_mgr,model_fleet_rent,fleet.fleet_group_manager,1,1,1,1
 access_fleet_odometer,access_fleet_odometer,fleet.model_fleet_vehicle_odometer,group_vehicle_rent_user,1,0,0,0
+access_renew_tenancy,access_renew_tenancy,model_renew_tenancy,base.group_user,1,1,1,1
+access_rent_close_reason,access_rent_close_reason,model_rent_close_reason,base.group_user,1,1,1,1
+access_rental_fleet_history,access_rental_fleet_history,model_rental_fleet_history,base.group_user,1,1,1,1

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Fleet Rent Reports -->
-    <report
-        id="report_fleet_rent"
-        model="fleet.rent"
-        string="Fleet Rent"
-        report_type="qweb-pdf"
-        name="fleet_rent.report_fleet_rent_pdf"
-        file="fleet_rent.report_fleet_rent_pdf"
-        />
-
+    <record id="report_fleet_rent" model="ir.actions.report">
+        <field name="name">Fleet Rent</field>
+        <field name="model">fleet.rent</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fleet_rent.report_fleet_rent_pdf</field>
+        <field name="report_file">fleet_rent.report_fleet_rent_pdf</field>
+        <field name="print_report_name">'Fleet Rent'</field>
+        <field name="binding_model_id" ref="fleet_rent.model_fleet_rent"/>
+        <field name="binding_type">report</field>
+    </record>
 
     <template id="report_fleet_rent_pdf">
        <t t-call="web.html_container">

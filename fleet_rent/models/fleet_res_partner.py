@@ -41,6 +41,7 @@ class ResPartner(models.Model):
                         _('Please enter valid email address !!'))
 
 
+
 class ResUsers(models.Model):
     """Res Users Model."""
 

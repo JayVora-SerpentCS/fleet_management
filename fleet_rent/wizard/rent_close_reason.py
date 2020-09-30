@@ -2,9 +2,9 @@
 """Rent Close Reason ."""
 
 
-from datetime import datetime, date
+from datetime import datetime
 
-from odoo import api, fields, models
+from odoo import fields, models
 from odoo.tools import ustr
 
 
@@ -26,9 +26,11 @@ class WizardRentCloseReason(models.TransientModel):
                 self._context.get('active_model', False):
             for rent in self.env[self._context['active_model']].browse(
                     self._context.get('active_id', False)):
-                tenancy_obj = self.env['tenancy.rent.schedule'].search([('state', '=', ['draft', 'open']), ('fleet_rent_id', '=', rent.id)])
+                tenancy_obj = self.env['tenancy.rent.schedule'].search(
+                    [('state', '=', ['draft', 'open']),
+                     ('fleet_rent_id', '=', rent.id)])
                 tenancy_obj.write({'state': 'cancel',
-                                    'note': notes})
+                                   'note': notes})
                 rent.write({'state': 'close',
                             'close_reson': self.reason,
                             'date_close': date.today(),

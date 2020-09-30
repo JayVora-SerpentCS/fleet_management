@@ -81,15 +81,23 @@ class AccountPayment(models.Model):
                                     string='Rental Vehicle',
                                     help='Rental Vehicle Name')
 
-    def _create_payment_entry(self, amount):
 
-        res = super(AccountPayment, self)._create_payment_entry(amount)
-        res.line_ids.write({
-            'fleet_rent_id': self.fleet_rent_id and self.fleet_rent_id.id or False,
-        })
+class AccountPaymentRegister(models.TransientModel):
+
+    _inherit = "account.payment.register"
+
+    fleet_rent_id = fields.Many2one('fleet.rent',
+                                    string='Rental Vehicle',
+                                    help='Rental Vehicle Name')
+
+    def _create_payment_vals_from_wizard(self):
+        res = super(AccountPaymentRegister,
+                    self)._create_payment_vals_from_wizard()
+        res.update({'fleet_rent_id': self.fleet_rent_id and
+                    self.fleet_rent_id.id or False, })
         return res
 
-    def post(self):
+    def _create_payments(self):
         """Overridden Method to update tenancy infromation."""
         inv_obj = self.env['account.move']
         rent_sched_obj = self.env['tenancy.rent.schedule']
@@ -100,32 +108,32 @@ class AccountPayment(models.Model):
                         'fleet_rent_id': invoice.fleet_rent_id and
                         invoice.fleet_rent_id.id or False
                     })
-        res = super(AccountPayment, self).post()
+        res = super(AccountPaymentRegister, self)._create_payments()
         user = self.env.user
         notes = 'Your Rent Payment is Registered by' + " " + user.name + \
             " " + 'on' + " " + ustr(datetime.now().date())
-        for invoice in self.invoice_ids:
-            for rent_line in rent_sched_obj.search([
-                    ('invc_id', '=', invoice and invoice.id or False)]):
-                tenancy_vals = {'pen_amt': 0.0}
-                if rent_line.invc_id:
-                    tenancy_vals.update({
-                        'pen_amt': rent_line.invc_id.amount_residual or 0.0
-                    })
-                    if rent_line.invc_id.state == 'posted':
+        if self._context.get('active_model', False) and\
+                self._context['active_model'] == 'account.move' and\
+                self._context.get('active_ids', False):
+            for move in inv_obj.browse(self._context['active_ids']):
+                for rent_line in rent_sched_obj.search([
+                        ('invc_id', '=', move.id)]):
+                    tenancy_vals = {'pen_amt': 0.0}
+                    if rent_line.invc_id:
                         tenancy_vals.update({
-                            'paid': True,
-                            'move_check': True,
-                            'state': 'paid',
-                            'note': notes,
+                            'pen_amt': rent_line.invc_id.amount_residual or 0.0
                         })
-                rent_line.write(tenancy_vals)
-            if self._context.get('active_model', False) and \
-                    self._context['active_model'] == 'account.move':
-                for inv in inv_obj.browse(self._context['active_ids']):
-                    if inv.fleet_rent_id and inv.is_deposit_return_inv:
-                        inv.fleet_rent_id.write({
-                            'is_deposit_return': True,
-                            'amount_return': inv.amount_total - inv.amount_residual or 0.0
-                        })
+                        if rent_line.invc_id.state == 'posted':
+                            tenancy_vals.update({
+                                'paid': True,
+                                'move_check': True,
+                                'state': 'paid',
+                                'note': notes,
+                            })
+                    rent_line.write(tenancy_vals)
+                if move.fleet_rent_id and move.is_deposit_return_inv:
+                    move.fleet_rent_id.write({
+                        'is_deposit_return': True,
+                        'amount_return': move.amount_total - move.amount_residual or 0.0
+                    })
         return res
