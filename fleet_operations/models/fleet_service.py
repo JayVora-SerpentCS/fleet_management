@@ -57,8 +57,9 @@ class FleetVehicleLogServices(models.Model):
         """Invoice for Deposit Receive."""
         for service in self:
             if service.amount <= 0.0:
-                raise ValidationError("You can not create service invoice without amount!!"
-                                      "Please add Service amount first !!")
+                raise ValidationError(
+                    _("You can not create service invoice without amount!!"
+                      "Please add Service amount first !!"))
 
             deposit_inv_ids = self.env['account.move'].search([
                 ('vehicle_service_id', '=',
@@ -70,14 +71,15 @@ class FleetVehicleLogServices(models.Model):
                                   "Please proceed that deposit invoice first"))
 
             if not service.purchaser_id:
-                raise UserError(
-                    _("Please configure Driver from vehicle or in a service order!!"))
+                raise UserError(_("Please configure Driver from vehicle or in "
+                                  "a service order!!"))
 
             inv_ser_line = [(0, 0, {
                 'name': ustr(service.service_type_id and
                              service.service_type_id.name) + ' - Service Cost',
                 'price_unit': service.amount,
-                'account_id': service.vehicle_id and service.vehicle_id.income_acc_id and
+                'account_id': service.vehicle_id and
+                service.vehicle_id.income_acc_id and
                 service.vehicle_id.income_acc_id.id or False,
             })]
             for line in service.parts_ids:
@@ -88,7 +90,8 @@ class FleetVehicleLogServices(models.Model):
                     line.product_id.name or '',
                     'price_unit': line.price_unit or 0.00,
                     'quantity': line.qty,
-                    'account_id': service.vehicle_id and service.vehicle_id.income_acc_id and
+                    'account_id': service.vehicle_id and
+                    service.vehicle_id.income_acc_id and
                     service.vehicle_id.income_acc_id.id or False
                 }
                 inv_ser_line.append((0, 0, inv_line_values))
@@ -106,7 +109,6 @@ class FleetVehicleLogServices(models.Model):
 
     def action_return_invoice(self):
         """Invoice for Deposit Return."""
-
         for service in self:
             deposit_inv_ids = self.env['account.move'].search([
                 ('vehicle_service_id', '=',
@@ -116,36 +118,48 @@ class FleetVehicleLogServices(models.Model):
             if deposit_inv_ids:
                 raise UserError(_("Deposit Return invoice is already Pending\n"
                                   "Please proceed that deposit invoice first"))
+            invoice = self.env['account.move'].search([
+                ('vehicle_service_id', '=',
+                 service.id), ('move_type', '=', 'out_invoice'),
+                ('state', '=', 'posted')
+            ], limit=1, order='id desc')
+            move_reversal = self.env['account.move.reversal'].with_context(
+                active_model="account.move", active_ids=invoice.ids).create({
+                    'refund_method': 'refund',
+                })
+            move_reversal.reverse_moves()
 
-            inv_ser_line = [(0, 0, {
-                'product_id': service.service_type_id and
-                service.service_type_id.id or False,
-                'name': 'Service Cost',
-                'price_unit': service.amount or 0.0,
-                'account_id': service.vehicle_id and service.vehicle_id.income_acc_id and
-                service.vehicle_id.income_acc_id.id or False,
-            })]
-            for line in service.parts_ids:
-                inv_line_values = {
-                    'product_id': line.product_id.id or False,
-                    'name': 'Service Cost',
-                    'price_unit': line.price_unit or 0.00,
-                    'quantity': line.qty,
-                    'account_id': service.vehicle_id and service.vehicle_id.income_acc_id and
-                    service.vehicle_id.income_acc_id.id or False
-                }
-                inv_ser_line.append((0, 0, inv_line_values))
-            inv_values = {
-                'partner_id': service.purchaser_id and
-                service.purchaser_id.id or False,
-                'move_type': 'out_refund',
-                'invoice_date': service.date_open,
-                'invoice_date_due': service.date_complete,
-                'invoice_line_ids': inv_ser_line,
-                'vehicle_service_id': service.id,
-                'is_invoice_return': True,
-            }
-            self.env['account.move'].create(inv_values)
+            # inv_ser_line = [(0, 0, {
+            #     'product_id': service.service_type_id and
+            #     service.service_type_id.id or False,
+            #     'name': 'Service Cost',
+            #     'price_unit': service.amount or 0.0,
+            #     'account_id': service.vehicle_id and
+            #     service.vehicle_id.income_acc_id and
+            #     service.vehicle_id.income_acc_id.id or False,
+            # })]
+            # for line in service.parts_ids:
+            #     inv_line_values = {
+            #         'product_id': line.product_id.id or False,
+            #         'name': 'Service Cost',
+            #         'price_unit': line.price_unit or 0.00,
+            #         'quantity': line.qty,
+            #         'account_id': service.vehicle_id and
+            #         service.vehicle_id.income_acc_id and
+            #         service.vehicle_id.income_acc_id.id or False
+            #     }
+            #     inv_ser_line.append((0, 0, inv_line_values))
+            # inv_values = {
+            #     'partner_id': service.purchaser_id and
+            #     service.purchaser_id.id or False,
+            #     'move_type': 'out_refund',
+            #     'invoice_date': service.date_open,
+            #     'invoice_date_due': service.date_complete,
+            #     'invoice_line_ids': inv_ser_line,
+            #     'vehicle_service_id': service.id,
+            #     'is_invoice_return': True,
+            # }
+            # self.env['account.move'].create(inv_values)
 
     def action_confirm(self):
         """Action Confirm Of Button."""
@@ -159,13 +173,15 @@ class FleetVehicleLogServices(models.Model):
                     raise UserError(_("You can\'t confirm this \
                             work order which vehicle is in write-off state!"))
                 elif work_order.vehicle_id.state == 'in_progress':
-                    raise UserError(_("Previous work order is not "
-                                      "complete, complete that work order first than "
-                                      "you can confirm this work order!"))
+                    raise UserError(
+                        _("Previous work order is not "
+                          "complete, complete that work order first than "
+                          "you can confirm this work order!"))
                 elif work_order.vehicle_id.state == 'draft' or \
                         work_order.vehicle_id.state == 'complete':
-                    raise UserError(_("Confirm work order can only "
-                                      "when vehicle status is in Inspection or Released!"))
+                    raise UserError(
+                        _("Confirm work order can only "
+                          "when vehicle status is in Inspection or Released!"))
                 work_order.vehicle_id.write({
                     'state': 'in_progress',
                     'last_change_status_date': date.today(),
@@ -208,10 +224,11 @@ class FleetVehicleLogServices(models.Model):
                 ('move_type', '=', 'out_invoice'),
                 ('vehicle_service_id', '=', work_order.id)])
             if work_order.amount > 0 and not service_inv:
-                raise ValidationError("Vehicle Service amount is greater"
-                                      " than Zero So, "
-                                      "Without Service Invoice you can not done the Service !!"
-                                      "Please Generate Service Invoice first !!")
+                raise ValidationError(
+                    _("Vehicle Service amount is greater"
+                      " than Zero So, "
+                      "Without Service Invoice you can not done the Service !!"
+                      "Please Generate Service Invoice first !!"))
             for repair_line in work_order.repair_line_ids:
                 if repair_line.complete is True:
                     continue
@@ -221,7 +238,6 @@ class FleetVehicleLogServices(models.Model):
                         ('name', '=', 'pending_repair_confirm_form_view')])
                     resource_id = model_data_ids.read(['res_id'])[0]['res_id']
                     context.update({'work_order_id': work_order.id})
-                    # self.env.args = cr, uid, misc.frozendict(context)
                     return {
                         'name': _('WO Close Forcefully'),
                         'context': context,
@@ -468,11 +484,13 @@ class FleetVehicleLogServices(models.Model):
             for vehicle in vehicle_obj.browse(self._context['active_ids']):
                 if vehicle.state == 'write-off':
                     raise UserError(_("You can\'t create work order "
-                                      "for vehicle which is already write-off!"))
+                                      "for vehicle which is already write-off!"
+                                      ))
                 elif vehicle.state == 'in_progress':
-                    raise UserError(_("Previous work order is not "
-                                      "complete,Please complete that work order first than you "
-                                      "can create new work order!"))
+                    raise UserError(
+                        _("Previous work order is not "
+                          "complete,Please complete that work order first than"
+                          " you can create new work order!"))
                 elif vehicle.state == 'rent':
                     raise UserError(_("You can\'t create work order "
                                       "for vehicle which is already On Rent!"))
@@ -483,8 +501,8 @@ class FleetVehicleLogServices(models.Model):
         res = super(FleetVehicleLogServices, self).default_get(fields)
         repair_type_ids = repair_type_obj.search([])
         if not repair_type_ids:
-            raise UserError(_("There is no data for "
-                              "repair type, add repair type from configuration!"))
+            raise UserError(_("There is no data for repair type, add repair"
+                              " type from configuration!"))
         return res
 
     @api.onchange('service_type_id')
@@ -513,7 +531,8 @@ class FleetVehicleLogServices(models.Model):
     #         else:
     #             work_order.open_days = str(diff)
 
-    def _get_total_parts_line(self):
+    def _compute_get_total_parts_line(self):
+        """Method to used to compute Parts count."""
         for work_order in self:
             total_parts = [parts_line.id
                            for parts_line in work_order.parts_ids
@@ -582,8 +601,8 @@ class FleetVehicleLogServices(models.Model):
     note = fields.Text(string='Log Notes')
     # date_child = fields.Date(related='cost_id.date', string='Cost Date',
     #                          store=True)
-    sub_total = fields.Float(compute="_compute_get_total", string='Total Parts Amount',
-                             store=True)
+    sub_total = fields.Float(compute="_compute_get_total",
+                             string='Total Parts Amount', store=True)
     state = fields.Selection([('draft', 'New'),
                               ('confirm', 'Open'), ('done', 'Done'),
                               ('cancel', 'Cancel')], string='Status',
@@ -611,7 +630,7 @@ class FleetVehicleLogServices(models.Model):
     vechical_type_id = fields.Many2one('vehicle.type', string='Vechical Type')
     # open_days = fields.Char(compute="_get_open_days", string="Open Days")
     already_closed = fields.Boolean("Already Closed?")
-    total_parts_line = fields.Integer(compute="_get_total_parts_line",
+    total_parts_line = fields.Integer(compute="_compute_get_total_parts_line",
                                       string='Total Parts')
     is_parts = fields.Boolean(string="Is Parts Available?")
     from_migration = fields.Boolean('From Migration')
@@ -620,48 +639,55 @@ class FleetVehicleLogServices(models.Model):
                                  string='Main Type')
     f_brand_id = fields.Many2one('fleet.vehicle.model.brand', string='Make')
     vehical_division_id = fields.Many2one('vehicle.divison', string='Division')
-    vechical_location_id = fields.Many2one(related="vehicle_id.vehicle_location_id",
-                                           string='Registration State', store=True)
-    odometer = fields.Float(compute='_get_odometer', inverse='_set_odometer',
+    vechical_location_id = fields.Many2one(
+        related="vehicle_id.vehicle_location_id",
+        string='Registration State', store=True)
+    odometer = fields.Float(compute='_compute_get_odometer',
+                            inverse='_compute_set_odometer',
                             string='Last Odometer',
                             help='Odometer measure of the vehicle at the \
                                 moment of this log')
     service_amount = fields.Float(
-        compute="total_service_amount", string="Total Service Amount")
+        compute="_compute_total_service_amount", string="Total Service Amount")
     source_service_id = fields.Many2one(
         'fleet.vehicle.log.services', string="Service", copy=False)
     invoice_count = fields.Integer(
-        compute="count_invoice", string="Invoice Count")
+        compute="_compute_count_invoice", string="Invoice Count")
     return_inv_count = fields.Integer(
-        compute="return_invoice", string="Return Invoice")
+        compute="_compute_return_invoice", string="Return Invoice")
     amount_receive = fields.Boolean(
-        compute="invoice_receive", string="Invoice Receive")
+        compute="_compute_invoice_receive", string="Invoice Receive")
     amount_return = fields.Boolean(string="Invoice Return")
     service_invoice_id = fields.One2many('account.move', 'vehicle_service_id',
                                          string="Service Invoice")
-    service_ref_invoice_id = fields.One2many('account.move', 'vehicle_service_id',
+    service_ref_invoice_id = fields.One2many('account.move',
+                                             'vehicle_service_id',
                                              string="Service Refund Invoice")
     deposit_receive = fields.Boolean(string="Deposit Received?")
 
     def invoice_receive(self):
+        """Method used to check amount recived."""
         for rec in self:
-            inv_obj = self.env['account.move'].search([('move_type', '=', 'out_invoice'),
-                                                       ('vehicle_service_id', '=', rec.id), ('state', '=', [
-                                                           'draft', 'paid']),
-                                                       ('is_invoice_receive', '=', True)])
+            inv_obj = self.env['account.move'].search(
+                [('move_type', '=', 'out_invoice'),
+                 ('vehicle_service_id', '=', rec.id), ('state', '=', [
+                     'draft', 'paid']),
+                 ('is_invoice_receive', '=', True)])
             if inv_obj:
                 rec.amount_receive = True
             else:
                 rec.amount_receive = False
 
-    def count_invoice(self):
+    def _compute_count_invoice(self):
+        """Method used count Invoice."""
         obj = self.env['account.move']
         for serv in self:
             serv.invoice_count = obj.search_count([
                 ('move_type', '=', 'out_invoice'),
                 ('vehicle_service_id', '=', serv.id)])
 
-    def return_invoice(self):
+    def _compute_return_invoice(self):
+        """Method used to count Refund Invoice."""
         obj = self.env['account.move']
         for serv in self:
             serv.return_inv_count = obj.search_count([
@@ -669,11 +695,11 @@ class FleetVehicleLogServices(models.Model):
                 ('vehicle_service_id', '=', serv.id)])
 
     @api.depends('amount', 'sub_total')
-    def total_service_amount(self):
+    def _compute_total_service_amount(self):
         for rec in self:
             rec.service_amount = rec.sub_total + rec.amount
 
-    def _get_odometer(self):
+    def _compute_get_odometer(self):
         fleetvehicalodometer = self.env['fleet.vehicle.odometer']
         for record in self:
             vehicle_odometer = fleetvehicalodometer.search([
@@ -684,15 +710,16 @@ class FleetVehicleLogServices(models.Model):
             else:
                 record.odometer = 0
 
-    def _set_odometer(self):
+    def _compute_set_odometer(self):
         fleetvehicalodometer = self.env['fleet.vehicle.odometer']
         for record in self:
             vehicle_odometer = fleetvehicalodometer.search(
                 [('vehicle_id', '=', record.vehicle_id.id)],
                 limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
-                raise UserError(_('You can\'t enter odometer less than previous '
-                                  'odometer %s !') % (vehicle_odometer.value))
+                raise UserError(
+                    _('You can\'t enter odometer less than previous '
+                      'odometer %s !') % (vehicle_odometer.value))
             if record.odometer:
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
@@ -1307,9 +1334,10 @@ class TaskLine(models.Model):
             if not self.date_issued >= date_open and \
                     not self.date_issued <= current_date:
                 self.date_issued = False
-                raise UserError(_('You can\t enter '
-                                  'parts issue either open work order date or in '
-                                  'between open work order date and current date!'))
+                raise UserError(
+                    _('You can\t enter '
+                      'parts issue either open work order date or in '
+                      'between open work order date and current date!'))
 
     def unlink(self):
         """Overridden method to add validation before delete the history."""
@@ -1349,8 +1377,8 @@ class ServiceRepairLine(models.Model):
         for vehicle in self:
             if vehicle.issue_date and vehicle.target_date:
                 if vehicle.target_date < vehicle.issue_date:
-                    raise ValidationError('Target Completion Date Should Be '
-                                          'Greater Than Issue Date.')
+                    raise ValidationError(_('Target Completion Date Should Be '
+                                          'Greater Than Issue Date.'))
 
     @api.constrains('target_date', 'date_complete')
     def check_etic_date(self):
@@ -1358,8 +1386,9 @@ class ServiceRepairLine(models.Model):
         for vehicle in self:
             if vehicle.target_date and vehicle.date_complete:
                 if vehicle.target_date > vehicle.date_complete:
-                    raise ValidationError('Repairs target completion date should be '
-                                          'less than estimated date.')
+                    raise ValidationError(
+                        _('Repairs target completion date should be '
+                          'less than estimated date.'))
 
     service_id = fields.Many2one('fleet.vehicle.log.services',
                                  ondelete='cascade')

@@ -148,22 +148,26 @@ class FleetOperations(models.Model):
                 if vehicle.battery_issuance_date < \
                     vehicle.acquisition_date and \
                         vehicle.tire_issuance_date < vehicle.acquisition_date:
-                    raise ValidationError('Tire Issuance Date And Battery '
-                                          'Issuance Date Should Be Greater Than Registration Date.')
-            if vehicle.tire_issuance_date and vehicle.tire_issuance_date < vehicle.acquisition_date:
-                raise ValidationError('Tire Issuance Date Should Be '
-                                      'Greater Than Registration Date.')
-            if vehicle.battery_issuance_date and vehicle.battery_issuance_date < vehicle.acquisition_date:
-                raise ValidationError('Battery Issuance Date Should Be '
-                                      'Greater Than Registration Date.')
+                    raise ValidationError(
+                        _('Tire Issuance Date And Battery Issuance Date Should'
+                          ' Be Greater Than Registration Date.'))
+            if vehicle.tire_issuance_date and\
+                    vehicle.tire_issuance_date < vehicle.acquisition_date:
+                raise ValidationError(_('Tire Issuance Date Should Be '
+                                        'Greater Than Registration Date.'))
+            if vehicle.battery_issuance_date and\
+                    vehicle.battery_issuance_date < vehicle.acquisition_date:
+                raise ValidationError(_('Battery Issuance Date Should Be '
+                                        'Greater Than Registration Date.'))
 
     @api.constrains('warranty_period')
     def check_warranty_date(self):
         """Method to check warranty date."""
         for vehicle in self:
-            if vehicle.warranty_period and vehicle.warranty_period < vehicle.acquisition_date:
-                raise ValidationError('Warranty Period Should Be '
-                                      'Greater Than Registration Date.')
+            if vehicle.warranty_period and\
+                    vehicle.warranty_period < vehicle.acquisition_date:
+                raise ValidationError(_('Warranty Period Should Be '
+                                        'Greater Than Registration Date.'))
 
     @api.constrains('date_sold', 'acquisition_date')
     def check_sold_date(self):
@@ -171,8 +175,8 @@ class FleetOperations(models.Model):
         for vehicle in self:
             if vehicle.acquisition_date and vehicle.date_sold:
                 if vehicle.date_sold < vehicle.acquisition_date:
-                    raise ValidationError('Sold Date Should Be '
-                                          'Greater Than Registration Date.')
+                    raise ValidationError(_('Sold Date Should Be '
+                                            'Greater Than Registration Date.'))
 
     @api.constrains('date_sold', 'transfer_date')
     def check_transfer_date(self):
@@ -180,8 +184,8 @@ class FleetOperations(models.Model):
         for vehicle in self:
             if vehicle.transfer_date and vehicle.date_sold:
                 if vehicle.transfer_date < vehicle.date_sold:
-                    raise ValidationError('Transfer Date Should Be '
-                                          'Greater Than Sold Date.')
+                    raise ValidationError(_('Transfer Date Should Be '
+                                            'Greater Than Sold Date.'))
 
     @api.constrains('start_date_insurance', 'end_date_insurance')
     def check_insurance_end_date(self):
@@ -189,8 +193,8 @@ class FleetOperations(models.Model):
         for vehicle in self:
             if vehicle.start_date_insurance and vehicle.end_date_insurance:
                 if vehicle.end_date_insurance < vehicle.start_date_insurance:
-                    raise ValidationError('Insurance end date should be '
-                                          'greater than start date.')
+                    raise ValidationError(_('Insurance end date should be '
+                                            'greater than start date.'))
 
     @api.constrains('start_date_insurance', 'acquisition_date')
     def check_insurance_start_date(self):
@@ -198,8 +202,8 @@ class FleetOperations(models.Model):
         for vehicle in self:
             if vehicle.start_date_insurance and vehicle.acquisition_date:
                 if vehicle.start_date_insurance < vehicle.acquisition_date:
-                    raise ValidationError('Insurance start date should be '
-                                          'greater than registration date.')
+                    raise ValidationError(_('Insurance start date should be '
+                                            'greater than registration date.'))
 
     def _get_odometer(self):
         fleetvehicalodometer = self.env['fleet.vehicle.odometer']
@@ -217,8 +221,9 @@ class FleetOperations(models.Model):
             vehicle_odometer = fleetvehicalodometer.search([
                 ('vehicle_id', '=', record.id)], limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
-                raise UserError(_('You can\'t enter odometer less than previous '
-                                  'odometer %s !') % (vehicle_odometer.value))
+                raise UserError(
+                    _('You can\'t enter odometer less than previous '
+                      'odometer %s !') % (vehicle_odometer.value))
             if record.odometer:
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
@@ -247,13 +252,13 @@ class FleetOperations(models.Model):
                        store=True)
     odometer_check = fields.Boolean('Odometer Change', default=True)
     fuel_qty = fields.Char(string='Fuel Quality')
-    fuel_type = fields.Selection([('gasoline', 'Gasoline'),
-                                  ('diesel', 'Diesel'),
-                                  ('petrol', 'Petrol'),
-                                  ('electric', 'Electric'),
-                                  ('hybrid', 'Hybrid')], 'Fuel Type',
-                                 default='diesel',
-                                 help='Fuel Used by the vehicle')
+    # fuel_type = fields.Selection([('gasoline', 'Gasoline'),
+    #                               ('diesel', 'Diesel'),
+    #                               ('petrol', 'Petrol'),
+    #                               ('electric', 'Electric'),
+    #                               ('hybrid', 'Hybrid')], 'Fuel Type',
+    #                              default='diesel',
+    #                              help='Fuel Used by the vehicle')
     oil_name = fields.Char(string='Oil Name')
     oil_capacity = fields.Char(string='Oil Capacity')
     fleet_id = fields.Integer(string='Fleet ID',
@@ -796,10 +801,14 @@ class FleetWittenOff(models.Model):
                                     'fleet_written_off_attachment_rel',
                                     'writeoff_id',
                                     'attachment_id', string='Multi Images')
-    damage_type_ids = fields.Many2many('damage.types', 'fleet_wittenoff_damage_types_rel',
-                                       'write_off_id', 'damage_id', string="Damage Type")
-    repair_type_ids = fields.Many2many('repair.type', 'fleet_wittenoff_repair_types_rel',
-                                       'write_off_id', 'repair_id', string="Repair Type")
+    damage_type_ids = fields.Many2many('damage.types',
+                                       'fleet_wittenoff_damage_types_rel',
+                                       'write_off_id', 'damage_id',
+                                       string="Damage Type")
+    repair_type_ids = fields.Many2many('repair.type',
+                                       'fleet_wittenoff_repair_types_rel',
+                                       'write_off_id', 'repair_id',
+                                       string="Repair Type")
     location_id = fields.Many2one('vehicle.location', string='Location')
     driver_id = fields.Many2one('res.partner', string='Driver')
     write_off_type = fields.Selection([
@@ -872,7 +881,8 @@ class FleetWittenOff(models.Model):
                 elif vehicle.state == 'in_progress' or \
                         vehicle.state == 'complete':
                     raise UserError(_("You can\'t write-off this vehicle "
-                                      "which is in Progress or Complete state!"))
+                                      "which is in Progress or Complete state!"
+                                      ))
                 elif vehicle.state == 'inspection':
                     raise UserError(_("You can\'t write-off this "
                                       "vehicle which is in Inspection"))
@@ -1191,8 +1201,9 @@ class NextIncrementNumber(models.Model):
                 ('vehicle_id', '=', increment.vehicle_id.id),
                 ('id', '!=', increment.id)])
             if duplicate_hist:
-                raise ValidationError('You can not add more than one odoometer '
-                                      'increment configuration for same vehicle.!!!')
+                raise ValidationError(
+                    _('You can not add more than one odoometer '
+                      'increment configuration for same vehicle.!!!'))
 
 
 class NextServiceDays(models.Model):
@@ -1220,8 +1231,9 @@ class NextServiceDays(models.Model):
                 ('vehicle_id', '=', service.vehicle_id.id),
                 ('id', '!=', service.id)])
             if duplicate_hist:
-                raise ValidationError('You can not add more than one next '
-                                      'service days configuration for same vehicle.!!!')
+                raise ValidationError(
+                    _('You can not add more than one next '
+                      'service days configuration for same vehicle.!!!'))
 
 
 class DamageTypes(models.Model):
@@ -1265,7 +1277,7 @@ class DamageTypes(models.Model):
 #                 [('vehicle_id', '=', record.vehicle_id.id)],
 #                 limit=1, order='value desc')
 #             if record.odometer < vehicle_odometer.value:
-#                 raise Warning(_('You can\'t enter odometer less than previous '
+#                 raise Warning(_('You can\'t enter odometer less than previous'
 #                               'odometer %s !') % (vehicle_odometer.value))
 #             if record.odometer:
 #                 date = fields.Date.context_today(record)

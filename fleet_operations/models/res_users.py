@@ -4,6 +4,7 @@
 from odoo import _, fields, api, models
 from odoo.exceptions import UserError
 
+
 class ResUsers(models.Model):
     """res users models."""
 
@@ -25,17 +26,6 @@ class ResUsers(models.Model):
     _defaults = {
         'groups_id': read_group,
     }
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Create method to the users."""
-        users = super(ResUsers, self.with_context(
-            default_customer=False)).create(vals_list)
-        for user in users:
-            user.partner_id.active = user.active
-            if user.partner_id.company_id:
-                user.partner_id.write({'company_id': user.company_id.id})
-        return users
 
 
 class ResPartnerExtended(models.Model):

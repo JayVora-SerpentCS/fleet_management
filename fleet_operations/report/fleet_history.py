@@ -138,6 +138,7 @@ class PrintFleetHistory(models.TransientModel):
         row += 1
         worksheet.write(row, 1, 'Fleet History Report', tit)
         row = 2
+        print ("\n fleet_historyfleet_history", fleet_history)
         for obj in fleet_history:
             row += 3
             worksheet.write(row, 0, 'Identification :', format1)
@@ -165,9 +166,9 @@ class PrintFleetHistory(models.TransientModel):
             row += 1
             worksheet.write(row, 0, 'Plate No :', format1)
             worksheet.write(row, 1, obj.license_plate or '', border)
-            worksheet.write(row, 2, 'Registration State :', format1)
-            worksheet.write(row, 3, obj.vechical_location_id and
-                            obj.vechical_location_id.name or '', border)
+            # worksheet.write(row, 2, 'Registration State :', format1)
+            # worksheet.write(row, 3, obj.vechical_location_id and
+            #                 obj.vechical_location_id.name or '', border)
             row += 2
             for order in obj.work_order_ids:
                 row += 1
@@ -178,9 +179,9 @@ class PrintFleetHistory(models.TransientModel):
                 row += 1
                 worksheet.write(row, 0, 'Actual Date Issued :', format1)
                 worksheet.write(row, 1, order.date or '', border)
-                worksheet.write(row, 2, 'Location :', format1)
-                worksheet.write(row, 3, order.vechical_location_id and
-                                order.vechical_location_id.name or '', border)
+                # worksheet.write(row, 2, 'Location :', format1)
+                # worksheet.write(row, 3, order.vechical_location_id and
+                #                 order.vechical_location_id.name or '', border)
                 row += 1
                 worksheet.write(row, 2, 'Notes :', format1)
                 worksheet.write(row, 3, order.notes or '', border)

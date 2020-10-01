@@ -120,7 +120,7 @@
         <field name="name">fleet.vehicle.wittenoff.off</field>
         <field name="model">fleet.wittenoff</field>
         <field name="arch" type="xml">
-            <tree string="Vehicle Witten-off">
+            <tree create='false' string="Vehicle Witten-off">
                 <field name="vehicle_id" />
                 <field name="vehicle_plate" />
                 <field name="report_date" />
@@ -137,7 +137,6 @@
     <record model='ir.actions.act_window' id='fleet_vehicle_witten_off_act'>
         <field name="name">Vehicles Write-off</field>
         <field name="res_model">fleet.wittenoff</field>
-        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
         <p class="oe_view_nocontent_create">
@@ -224,11 +223,6 @@
 
             <xpath expr="//div[@name='button_box']" position="replace">
                 <div class="oe_button_box" name="button_box">
-                   <!-- <button name="toggle_active" type="object"
-                       class="oe_stat_button" icon="fa-archive">
-                        <field name="active" string="Active" widget="boolean_button"
-                            options='{"terminology": "archive"}'/>
-                   </button> -->
                     <button name="open_assignation_logs"
                         type="object"
                         class="oe_stat_button"
@@ -237,7 +231,7 @@
                         groups="fleet.fleet_group_manager">
                         <field name="history_count" widget="statinfo" string="Drivers History"/>
                     </button>
-                    <!-- Comment By MEM -->
+                    <!-- Cost Model is removed -->
                     <!-- <button name="act_show_log_cost"
                         type="object"
                         class="oe_stat_button"
@@ -254,7 +248,7 @@
                         help="show the services logs for this vehicle" >
                         <field name="service_count" widget="statinfo" string="Services"/>
                     </button>
-                    <!-- Comment By mem -->
+                    <!-- Fuel Log Model removed -->
                    <!--  <button name="return_action_to_open"
                         type="object"
                         class="oe_stat_button"
@@ -302,7 +296,6 @@
             <xpath expr="//field[@name='odometer_unit']" position="attributes">
                 <attribute name="attrs">{'readonly':[('state','in',('write-off'))]}</attribute>
             </xpath>
-          <!--   <xpath expr="//sheet/field[@name='image_medium']" position="after" > -->
             <xpath expr="//sheet/field[@name='image_128']" position="after" >
                 <div class="oe_title">
                 <label for="f_brand_id" class="oe_edit_only"/>
@@ -377,7 +370,6 @@
             <xpath expr="//form/sheet/group/group[3]" position="replace">
             </xpath>
 
-            <!-- <xpath expr="//form/sheet/group[@col='2'][2]" position="replace"> -->
             <xpath expr="//form/sheet/group[@col='2']" position="after">
                 <notebook colspan="4">
                     <page string="Engine Specifications">
@@ -450,8 +442,6 @@
                                         attrs="{'readonly':[('state','in',('write-off'))]}"/>
                                     <field name="doors" string="No of Doors"
                                         attrs="{'readonly':[('state','in',('write-off'))]}"/>
-                                    <!-- <field name="color"
-                                        attrs="{'readonly':[('state','in',('write-off'))]}"/> -->
                                 </group>
                             </page>
 
@@ -502,7 +492,6 @@
                                 <field name="date" string="Issue Date"/>
                                 <field name="date_open" />
                                 <field name="date_close" />
-                                <!-- <field name="open_days" /> -->
                                 <field name="state" />
                             </tree>
                         </field>
@@ -909,7 +898,7 @@
     </record>
 
     <!-- Form view of vehicle fuel logs -->
-    <!-- Comment MEM -->
+    <!-- Fuel Logs Model Removed -->
     <!-- <record id="fleet_vehicle_log_fuel_form_view" model='ir.ui.view'>
         <field name="name">vehicle.log.fuel.form</field>
         <field name="model">fleet.vehicle.log.fuel</field>
@@ -944,7 +933,7 @@
         </field>
     </record> -->
 
-    <!-- Comment MEM -->
+    <!-- Model Removed -->
     <!-- Tree view of vehilce fuel logs -->
   <!--   <record id="fleet.fleet_vehicle_log_fuel_view_tree" model='ir.ui.view'>
         <field name="name">vehicle.log.fuel.tree</field>
@@ -960,7 +949,7 @@
         </field>
     </record> -->
 
-    <!-- Comment MEM -->
+    <!-- Model Removed -->
     <!-- Search view of vehicle fuel logs -->
    <!--  <record model="ir.ui.view" id="fleet.fleet_vehicle_log_fuel_view_search">
         <field name="name">fleet.log.fuel.search.view</field>
@@ -981,7 +970,7 @@
         </field>
     </record> -->
 
-    <!-- Comment MEM -->
+    <!-- Model Removed -->
     <!-- Action for fuel log -->
   <!--   <record id="fleet.fleet_vehicle_log_fuel_action" model="ir.actions.act_window">
         <field name="name">Vehicle Fuel Log</field>
@@ -991,7 +980,7 @@
         <field name="context">{"search_default_groupby_vehicle" : True}</field>
     </record> -->
 
-    <!-- Comment MEM -->
+    <!-- Model Removed -->
     <!-- Menuitem for fuel log -->
 <!--     <menuitem action="fleet.fleet_vehicle_log_fuel_action" parent="fleet.fleet_vehicles"
         id="fleet.fleet_vehicle_log_fuel_menu"
@@ -1044,7 +1033,7 @@
         </field>
     </record>
 
-      <!-- Comment MEM -->
+      <!-- Model Removed -->
     <!-- Inherited Form View For Vehicle Costs  -->
    <!--  <record id="view_fleet_cost" model="ir.ui.view">
         <field name="name">fleet.vehicle.cost.form</field>
@@ -1061,7 +1050,6 @@
     <record model='ir.actions.act_window' id='fleet.fleet_vehicle_action'>
         <field name="name">Vehicles Registration</field>
         <field name="res_model">fleet.vehicle</field>
-        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">kanban,tree,form</field>
         <field name="context">{"search_default_vehicle_non_writeoff_filter" : True}</field>
         <field name="help" type="html">
@@ -1100,7 +1088,7 @@
         parent="fleet.fleet_vehicles"  />
 
     <!-- portal.group_anonymous -->
-    <!-- Comment by mem -->
+    <!-- Model Removed -->
     <!-- <menuitem action="fleet.fleet_vehicle_costs_action" parent="fleet.fleet_vehicles"
         id="fleet.fleet_vehicle_costs_menu"
         groups="fleet.fleet_group_manager" />
@@ -1115,27 +1103,6 @@
         action="fleet.fleet_vehicle_tag_action" 
         sequence="112"
         groups="base.group_no_one"/>
-
-    <!--  Action for creating work order from vehicle registration -->
-    <!-- <act_window
-        name="Services"
-        id="act_create_fleet_work_order"
-        res_model="fleet.vehicle.log.services"
-        binding_model="fleet.vehicle"
-        view_mode="form"
-        domain="[('state','in',('inspection','released'))]"
-        context="{'default_vehicle_id': active_id}"
-        /> -->
-
-    <!-- Action for creating write-off from vehicle registration form -->
-    <!-- <act_window
-        name="Write-off"
-        id="act_write-off_vehicle"
-        res_model="fleet.wittenoff"
-        binding_model="fleet.vehicle"
-        view_mode="form"
-        domain="[('state','in',('inspection','released'))]"
-        context="{'default_vehicle_id': active_id}"/> -->
 
 
    <!-- Advance search view of fleet vehicle -->
