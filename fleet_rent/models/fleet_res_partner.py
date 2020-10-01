@@ -15,7 +15,7 @@ class ResPartner(models.Model):
     is_tenant = fields.Boolean(string="Is Tenant")
     tenant = fields.Boolean(string="Is Tenant?")
     tenancy_ids = fields.One2many('fleet.rent', 'fleet_tenant_id',
-                                  string='Rental Details',
+                                  string='Fleet Rental Details',
                                   help='Rental Details')
     maintanance_ids = fields.One2many('maintenance.cost', 'tenant_id',
                                       string='Maintenance Details')
@@ -39,7 +39,6 @@ class ResPartner(models.Model):
                 if re.match(expr, tenent.email) is None:
                     raise ValidationError(
                         _('Please enter valid email address !!'))
-
 
 
 class ResUsers(models.Model):

@@ -96,7 +96,7 @@
             </search>
         </field>
     </record>
-    <record id="action_res_users" model="ir.actions.act_window">
+    <record id="action_res_users_tenant" model="ir.actions.act_window">
         <field name="name">Tenant</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.users</field>
@@ -110,17 +110,17 @@
         <field name="sequence" eval="1"/>
         <field name="view_mode">tree</field>
         <field name="view_id" ref="view_tenant_users_tree"/>
-        <field name="act_window_id" ref="action_res_users"/>
+        <field name="act_window_id" ref="action_res_users_tenant"/>
     </record>
     <record id="action_res_users_view" model="ir.actions.act_window.view">
         <field name="sequence" eval="2"/>
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_tenant_users_form"/>
-        <field name="act_window_id" ref="action_res_users"/>
+        <field name="act_window_id" ref="action_res_users_tenant"/>
     </record>
     <menuitem id="sub_menu_res_users"
         name="Tenant"
         parent="fleet_rent.menu_vehicle_rent"
-        action="action_res_users"
+        action="action_res_users_tenant"
         sequence="2"/>
 </odoo>

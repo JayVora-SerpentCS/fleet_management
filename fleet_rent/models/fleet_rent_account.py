@@ -2,7 +2,7 @@
 """Fleet Rent and Account related model."""
 
 from datetime import datetime
-from odoo import api, fields, models
+from odoo import fields, models
 from odoo.tools import ustr
 
 
@@ -18,11 +18,13 @@ class AccountInvoice(models.Model):
     is_deposit_inv = fields.Boolean(string="Is Deposit Invoice")
     is_deposit_return_inv = fields.Boolean(string="Is Deposit Return Invoice")
 
-    def _prepare_refund(self, invoice, invoice_date=None, date=None, description=None, journal_id=None):
+    def _prepare_refund(self, invoice, invoice_date=None, date=None,
+                        description=None, journal_id=None):
         refund_vals = super(AccountInvoice, self)._prepare_refund(
             invoice, invoice_date, date, description, journal_id)
         refund_vals.update({
-            'fleet_rent_id': self.fleet_rent_id and self.fleet_rent_id.id or False,
+            'fleet_rent_id': self.fleet_rent_id and
+            self.fleet_rent_id.id or False,
         })
         return refund_vals
 
@@ -57,23 +59,8 @@ class AccountMoveLine(models.Model):
                                     string='Rental Vehicle')
 
 
-class account_payment(models.AbstractModel):
+class AccountPayment(models.AbstractModel):
     """Account Abstract Model."""
-
-    _inherit = 'account.payment'
-
-    # def _compute_payment_amount(self, invoices=None, currency=None):
-    def _compute_payment_amount(self, invoices, currency, journal, date):
-        """Overridden Method to update deposit amount in payment wizard."""
-        rec = super(account_payment, self).\
-            _compute_payment_amount(invoices, currency, journal, date)
-        if self._context.get('active_model', False) == 'fleet.rent':
-            return self._context.get('default_amount' or 0.0)
-        return rec
-
-
-class AccountPayment(models.Model):
-    """Account Payment Model."""
 
     _inherit = 'account.payment'
 
@@ -81,8 +68,18 @@ class AccountPayment(models.Model):
                                     string='Rental Vehicle',
                                     help='Rental Vehicle Name')
 
+    # def _compute_payment_amount(self, invoices=None, currency=None):
+    def _compute_payment_amount(self, invoices, currency, journal, date):
+        """Overridden Method to update deposit amount in payment wizard."""
+        rec = super(AccountPayment, self).\
+            _compute_payment_amount(invoices, currency, journal, date)
+        if self._context.get('active_model', False) == 'fleet.rent':
+            return self._context.get('default_amount' or 0.0)
+        return rec
+
 
 class AccountPaymentRegister(models.TransientModel):
+    """Inherit Account Payment Register."""
 
     _inherit = "account.payment.register"
 
@@ -134,6 +131,7 @@ class AccountPaymentRegister(models.TransientModel):
                 if move.fleet_rent_id and move.is_deposit_return_inv:
                     move.fleet_rent_id.write({
                         'is_deposit_return': True,
-                        'amount_return': move.amount_total - move.amount_residual or 0.0
+                        'amount_return':
+                        move.amount_total - move.amount_residual or 0.0
                     })
         return res
