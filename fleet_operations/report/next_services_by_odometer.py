@@ -83,9 +83,9 @@ class NextServiceByOdometer(models.AbstractModel):
             worksheet.write(line_row, line_col,
                             obj.due_odometer or '', border)
             line_col += 1
-            worksheet.write(line_row, line_col,
-                            obj.vechical_location_id and
-                            obj.vechical_location_id.name or '', border)
+            # worksheet.write(line_row, line_col,
+            #                 obj.vechical_location_id and
+            #                 obj.vechical_location_id.name or '', border)
             line_col = 0
             line_row += 1
             counter += 1

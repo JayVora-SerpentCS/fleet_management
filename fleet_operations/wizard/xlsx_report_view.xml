@@ -19,25 +19,15 @@
         </field>
     </record>
     
-     <act_window 
-            name="Recived Parts xlsx"
-            res_model="stock.picking.xls.report"
-            binding_model="stock.picking"
-            view_mode="form"
-            target="new"
-            id="action_print_recived_parts"
-            view_id="recieved_part_wizard_form"
-            />
+    <record id="action_print_recived_parts" model="ir.actions.act_window">
+        <field name="name">Recived Parts xlsx</field>
+        <field name="res_model">stock.picking.xls.report</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="view_id" ref="fleet_operations.recieved_part_wizard_form"/>
+        <field name="type">ir.actions.act_window</field>
+        <field name="binding_type">report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
 
-    <!-- <act_window 
-            name="Recived Parts xlsx"
-            res_model="stock.picking.xls.report"
-            binding_model="stock.picking"
-            view_mode="form"
-            multi="True"
-            target="new"
-            key2="client_print_multi"
-            id="action_print_recived_parts"
-            view_id="recieved_part_wizard_form"
-            /> -->
 </odoo>

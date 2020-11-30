@@ -1,7 +1,7 @@
 # See LICENSE file for full copyright and licensing details.
 """Fleet Tenent, Res Partner Model."""
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class AccountInvoice(models.Model):
@@ -9,6 +9,7 @@ class AccountInvoice(models.Model):
 
     _inherit = "account.move"
 
-    vehicle_service_id = fields.Many2one('fleet.vehicle.log.services', string='Vehicle Service')
+    vehicle_service_id = fields.Many2one(
+        'fleet.vehicle.log.services', string='Vehicle Service')
     is_invoice_receive = fields.Boolean(string="Is Service Invoice Receive")
     is_invoice_return = fields.Boolean(string="Is Service Invoice Deposit")

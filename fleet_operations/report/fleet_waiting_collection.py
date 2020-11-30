@@ -57,9 +57,9 @@ class FleetWaitingColletion(models.AbstractModel):
         worksheet.write(row, 4, 'METER', format1)
         worksheet.write(row, 5, 'MAKE', format1)
         worksheet.write(row, 6, 'MODEL', format1)
-        worksheet.write(row, 7, 'REGISTRATION STATE', format1)
-        worksheet.write(row, 8, 'DRIVER', format1)
-        worksheet.write(row, 9, 'DRIVER CONTACT NO', format1)
+        # worksheet.write(row, 7, 'REGISTRATION STATE', format1)
+        worksheet.write(row, 7, 'DRIVER', format1)
+        worksheet.write(row, 8, 'DRIVER CONTACT NO', format1)
         line_row = row + 1
         line_col = 0
         counter = 1
@@ -81,10 +81,10 @@ class FleetWaitingColletion(models.AbstractModel):
                 line_col += 1
                 worksheet.write(line_row, line_col, obj.model_id and
                                 obj.model_id.name or '', border)
-                line_col += 1
-                worksheet.write(line_row, line_col,
-                                obj.vechical_location_id and
-                                obj.vechical_location_id.name or '', border)
+                # line_col += 1
+                # worksheet.write(line_row, line_col,
+                #                 obj.vechical_location_id and
+                #                 obj.vechical_location_id.name or '', border)
                 line_col += 1
                 worksheet.write(line_row, line_col, obj.driver_id and
                                 obj.driver_id.name or '', border)

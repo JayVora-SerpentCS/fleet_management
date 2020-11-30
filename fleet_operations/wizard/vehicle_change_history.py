@@ -2,7 +2,7 @@
 """Vehicle Change History."""
 
 from odoo import _, api, fields, models
-from odoo.exceptions import Warning
+from odoo.exceptions import UserError
 from datetime import datetime, date
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DSDF
 import calendar
@@ -39,10 +39,10 @@ class VehicleChangeHistory(models.TransientModel):
         """Method to print report."""
         for rec in self:
             if not rec.date_from and not rec.date_to:
-                raise Warning(_("User Error!\n 'Please select criteria "
+                raise UserError(_("User Error!\n 'Please select criteria "
                                 "to create Vehicle Change History Report!"))
             if rec.date_from and rec.date_to and rec.date_from > rec.date_to:
-                raise Warning(_("User Error!\n Date To' must "
+                raise UserError(_("User Error!\n Date To' must "
                                 "be greater than 'Date From'!"))
             data = {
                 'form': {'date_from': rec.date_from or False,

@@ -2,7 +2,7 @@
 """Repair Line Summary."""
 
 from odoo import _, api, fields, models
-from odoo.exceptions import Warning
+from odoo.exceptions import UserError
 from datetime import datetime, date
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DSDF
 import calendar
@@ -34,7 +34,7 @@ class RepairLineSummary(models.TransientModel):
         """Print Report."""
         for rec in self:
             if rec.date_from > rec.date_to:
-                raise Warning(_("User Error!\n'Date To' must be "
+                raise UserError(_("User Error!\n'Date To' must be "
                                 "greater than 'Date From' !"))
             data = {
                 'form': {

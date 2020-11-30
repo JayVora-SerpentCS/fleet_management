@@ -43,6 +43,6 @@
     
     <!-- Menuitem for Work Order Reports views -->
     <menuitem action="fleet_vehicle_work_order"
-        string="Vehicles Search" parent="fleet.menu_fleet_reporting"
+        name="Services Search" parent="fleet.menu_fleet_reporting"
         id="fleet_work_order_report_menu" sequence="4"/>
 </odoo>
