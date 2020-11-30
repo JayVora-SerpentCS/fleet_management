@@ -5,7 +5,7 @@
     'name': 'Fleet Rental Vehicle',
     'category': 'Fleet Rent',
     'sequence': 1,
-    'version': '13.0.1.0.0',
+    'version': '14.0.1.0.0',
     'license': 'LGPL-3',
     'summary': """Rental Vehicle Management System
         This module provides fleet rent features.""",
@@ -18,7 +18,7 @@
     'website': 'http://www.serpentcs.com',
 
     # Dependencies
-    'depends': ['analytic', 'fleet_operations'],
+    'depends': ['fleet_operations'],
     # Data
     'data': [
             'security/rent_security.xml',
@@ -38,7 +38,6 @@
             'views/template.xml',
             'wizard/renew_tenancy_view.xml',
             'wizard/rent_close_reason_view.xml',
-            'wizard/fleet_rental_vehicle_history_view.xml',
             'report/fleet_rent.xml',
     ],
     # Technical

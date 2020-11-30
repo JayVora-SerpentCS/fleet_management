@@ -19,9 +19,5 @@ class FleetVehicleExtend(models.Model):
             vehicle.rent_count = \
                 rent_obj.search_count([('vehicle_id', '=', vehicle.id)])
 
-    # income_acc_id = fields.Many2one("account.account",
-    #                                 string="Income Account")
-    # expence_acc_id = fields.Many2one("account.account",
-    #                                  string="Expense Account")
     rent_count = fields.Integer(compute='_count_rent',
                                 string="Rents")

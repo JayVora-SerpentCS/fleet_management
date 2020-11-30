@@ -15,7 +15,7 @@ class ResPartner(models.Model):
     is_tenant = fields.Boolean(string="Is Tenant")
     tenant = fields.Boolean(string="Is Tenant?")
     tenancy_ids = fields.One2many('fleet.rent', 'fleet_tenant_id',
-                                  string='Rental Details',
+                                  string='Fleet Rental Details',
                                   help='Rental Details')
     maintanance_ids = fields.One2many('maintenance.cost', 'tenant_id',
                                       string='Maintenance Details')

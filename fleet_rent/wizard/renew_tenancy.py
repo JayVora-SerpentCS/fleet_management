@@ -3,8 +3,8 @@
 
 from dateutil.relativedelta import relativedelta
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError, Warning
-from odoo.tools import misc, DEFAULT_SERVER_DATETIME_FORMAT as DT
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DT
 
 
 class WizardRenewTenancy(models.TransientModel):
@@ -48,8 +48,8 @@ class WizardRenewTenancy(models.TransientModel):
                 dt_from = ver.start_date.strftime(DT)
                 dt_to = ver.end_date.strftime(DT)
                 if dt_to < dt_from:
-                    raise ValidationError(
-                        'End Date Should Be Greater Than Start Date!')
+                    raise ValidationError(_(
+                        'End Date Should Be Greater Than Start Date!'))
 
     def renew_contract(self):
         """Button Method is used to Renew Tenancy."""
@@ -58,19 +58,25 @@ class WizardRenewTenancy(models.TransientModel):
         if self._context.get('active_id', False):
             for rec in self:
                 if rec.start_date > rec.end_date:
-                    raise Warning(_('Please Insert End Date \
+                    raise UserError(_('Please Insert End Date \
                         Greater Than Start Date !!'))
-                rent_rec = self.env['fleet.rent'].browse(self._context['active_id'])
+                rent_rec = self.env['fleet.rent'].browse(
+                    self._context['active_id'])
                 for rent in rent_rec:
                     if rent.date_close and rec.start_date:
                         if rec.start_date < rent.date_close:
-                            raise Warning('Start Date should be Greater Than Rent Close Date.')
+                            raise UserError(
+                                _('Start Date should be Greater Than Rent '
+                                    'Close Date.'))
                     elif rent.date_end and rec.start_date:
                         if rec.start_date < rent.date_end:
-                            raise Warning('Start Date should be Greater Than Rent Expiration Date.')
+                            raise UserError(
+                                _('Start Date should be Greater Than Rent '
+                                    'Expiration Date.'))
                 rent = rent_rec.copy()
                 rent.write({
-                    'rent_type_id': rec.rent_type_id and rec.rent_type_id.id or False,
+                    'rent_type_id': rec.rent_type_id and
+                    rec.rent_type_id.id or False,
                     'name': 'New'
                 })
 

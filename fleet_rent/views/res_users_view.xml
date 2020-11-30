@@ -9,9 +9,6 @@
                     <widget name="web_ribbon" text="ARCHIVED" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                     <field name="id" invisible="1"/>
                     <div class="oe_button_box" name="button_box">
-                        <!-- <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-check">
-                            <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;active&quot;}"/>
-                        </button> -->
                     </div>
                     <field name="active_partner" required="0" readonly="1" invisible="1"/>
                     <field name="image_1920" widget="image" class="oe_avatar" options="{&quot;preview_image&quot;: &quot;image_medium&quot;}"/>
@@ -99,13 +96,12 @@
             </search>
         </field>
     </record>
-    <record id="action_res_users" model="ir.actions.act_window">
+    <record id="action_res_users_tenant" model="ir.actions.act_window">
         <field name="name">Tenant</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.users</field>
         <field name="context">{'default_is_tenant': True}</field>
         <field name="domain">[('is_tenant','=',True)]</field>
-        <!-- <field name="view_type">form</field> -->
         <field name="search_view_id" ref="view_tenant_users_search"/>
         <field name="view_mode">search,tree,form</field>
     </record>
@@ -114,17 +110,17 @@
         <field name="sequence" eval="1"/>
         <field name="view_mode">tree</field>
         <field name="view_id" ref="view_tenant_users_tree"/>
-        <field name="act_window_id" ref="action_res_users"/>
+        <field name="act_window_id" ref="action_res_users_tenant"/>
     </record>
     <record id="action_res_users_view" model="ir.actions.act_window.view">
         <field name="sequence" eval="2"/>
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_tenant_users_form"/>
-        <field name="act_window_id" ref="action_res_users"/>
+        <field name="act_window_id" ref="action_res_users_tenant"/>
     </record>
     <menuitem id="sub_menu_res_users"
         name="Tenant"
         parent="fleet_rent.menu_vehicle_rent"
-        action="action_res_users"
+        action="action_res_users_tenant"
         sequence="2"/>
 </odoo>
