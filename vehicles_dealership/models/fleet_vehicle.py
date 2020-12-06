@@ -15,7 +15,7 @@ class FleetVehicle(models.Model):
     product_id = fields.Many2one('product.product', 'Product',
                                  ondelete="cascade", delegate=True,
                                  required=True)
-    image_128 = fields.Image(string="Image", readonly=False)
+    image_128 = fields.Image(string="Image Small", readonly=False)
 
     @api.model
     def create(self, vals):

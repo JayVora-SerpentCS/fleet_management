@@ -47,7 +47,7 @@ class ResUsers(models.Model):
     _inherit = "res.users"
 
     fleet_rent_ids = fields.One2many('fleet.rent', 'tenant_id',
-                                     string='Rental Details',
-                                     help='Rental Details')
+                                     string='Rental Detail',
+                                     help='Rental Detail')
     maintanance_ids = fields.One2many('maintenance.cost', 'tenant_id',
                                       string='Maintenance Details')

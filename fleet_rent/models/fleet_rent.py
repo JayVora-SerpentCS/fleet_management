@@ -285,7 +285,7 @@ class FleetRent(models.Model):
                                             'fleet_rent_id',
                                             string='Entries')
     account_payment_ids = fields.One2many(
-        'account.payment', 'fleet_rent_id', string='Entries')
+        'account.payment', 'fleet_rent_id', string='Payment Entries')
     total_debit_amt = fields.Float(compute='_total_debit_amt_calc',
                                    string='Total Debit Amount',
                                    currency_field='currency_id')
@@ -298,14 +298,15 @@ class FleetRent(models.Model):
     invoice_id = fields.Many2one('account.move',
                                  string='Invoice')
     cr_rent_btn = fields.Boolean(string='Hide Rent Button', copy=False)
-    acc_pay_dep_rec_id = fields.Many2one('account.voucher',
-                                         string='Rental Account Manager',
-                                         help="Manager of Rental Vehicle.")
+    # acc_pay_dep_rec_id = fields.Many2one('account.voucher',
+    #                                      string='Rental Account Manager',
+    #                                      help="Manager of Rental Vehicle.")
     close_reson = fields.Text(string='Rent Close Reason',
                               help='Rent Close Reason.')
-    vehicle_property_id = fields.Many2one('account.asset.asset',
-                                          string='Property')
-    invoice_count = fields.Integer(compute='count_invoice', string="Invoice")
+    # vehicle_property_id = fields.Many2one('account.asset.asset',
+    #                                       string='Property')
+    invoice_count = fields.Integer(compute='count_invoice',
+                                   string="Deposit Receive")
     refund_inv_count = fields.Integer(compute='count_refund_invoice',
                                       string="Refund")
 
@@ -797,7 +798,6 @@ class TenancyRentSchedule(models.Model):
         if vehicle and not vehicle.income_acc_id:
             raise Warning(_('Please Configure Income Account from Vehicle !!'))
         inv_line_main = {
-            'invoice_origin': 'tenancy.rent.schedule',
             'name': 'Maintenance cost',
             'price_unit': rent and rent.maintenance_cost or 0.00,
             'quantity': 1,

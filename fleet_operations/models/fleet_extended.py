@@ -252,11 +252,12 @@ class FleetOperations(models.Model):
                        store=True)
     odometer_check = fields.Boolean('Odometer Change', default=True)
     fuel_qty = fields.Char(string='Fuel Quality')
-    fuel_type = fields.Selection([('gasoline', 'Gasoline'),
-                                  ('diesel', 'Diesel'),
-                                  ('petrol', 'Petrol'),
-                                  ('electric', 'Electric'),
-                                  ('hybrid', 'Hybrid')], 'Fuel Type',
+    fuel_type = fields.Selection(selection_add=[('gasoline', 'Gasoline'),
+                                                ('diesel', 'Diesel'),
+                                                ('petrol', 'Petrol'),
+                                                ('electric', 'Electric'),
+                                                ('hybrid', 'Hybrid')],
+                                 string='Fuel Type',
                                  default='diesel',
                                  help='Fuel Used by the vehicle')
     oil_name = fields.Char(string='Oil Name')
@@ -1035,7 +1036,7 @@ class FleetVehicleAdvanceSearch(models.TransientModel):
             if vehicle.acquisition_date_to:
                 if vehicle.acquisition_date_to < vehicle.acquisition_date:
                     raise ValidationError('Registration To Date Should Be '
-                    'Greater Than Registration From Date.')
+                                          'Greater Than Registration From Date.')
 
     @api.constrains('last_service_date', 'last_service_date_to')
     def check_last_service_date(self):
@@ -1044,7 +1045,7 @@ class FleetVehicleAdvanceSearch(models.TransientModel):
             if vehicle.last_service_date_to:
                 if vehicle.last_service_date_to < vehicle.last_service_date:
                     raise ValidationError('Last Service To Date Should Be '
-                    'Greater Than Last Service From Date.')
+                                          'Greater Than Last Service From Date.')
 
     @api.constrains('next_service_date', 'next_service_date_to')
     def check_next_service_date(self):
@@ -1053,7 +1054,7 @@ class FleetVehicleAdvanceSearch(models.TransientModel):
             if vehicle.next_service_date_to:
                 if vehicle.next_service_date_to < vehicle.next_service_date:
                     raise ValidationError('Next Service To Date Should Be '
-                    'Greater Than Next Service From Date.')
+                                          'Greater Than Next Service From Date.')
 
     @api.constrains('release_date_from', 'release_date_to')
     def check_released_date(self):
@@ -1062,7 +1063,7 @@ class FleetVehicleAdvanceSearch(models.TransientModel):
             if vehicle.release_date_to:
                 if vehicle.release_date_to < vehicle.release_date_from:
                     raise ValidationError('Released To Date Should Be '
-                    'Greater Than Released From Date.')
+                                          'Greater Than Released From Date.')
 
     def get_vehicle_detail_by_advance_search(self):
         """Method to get vehicle detail by advance search."""
@@ -1197,7 +1198,7 @@ class NextIncrementNumber(models.Model):
                 ('id', '!=', increment.id)])
             if duplicate_hist:
                 raise ValidationError('You can not add more than one odoometer '
-                        'increment configuration for same vehicle.!!!')
+                                      'increment configuration for same vehicle.!!!')
 
 
 class NextServiceDays(models.Model):
@@ -1226,7 +1227,7 @@ class NextServiceDays(models.Model):
                 ('id', '!=', service.id)])
             if duplicate_hist:
                 raise ValidationError('You can not add more than one next '
-                        'service days configuration for same vehicle.!!!')
+                                      'service days configuration for same vehicle.!!!')
 
 
 class DamageTypes(models.Model):
@@ -1271,7 +1272,7 @@ class VehicleFuelLog(models.Model):
                 limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
                 raise Warning(_('You can\'t enter odometer less than previous '
-                              'odometer %s !') % (vehicle_odometer.value))
+                                'odometer %s !') % (vehicle_odometer.value))
             if record.odometer:
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
