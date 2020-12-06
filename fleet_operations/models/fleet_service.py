@@ -1385,12 +1385,14 @@ class FleetServiceType(models.Model):
 
     _inherit = 'fleet.service.type'
 
-    category = fields.Selection([('contract', 'Contract'),
-                                 ('service', 'Service'), ('both', 'Both')],
-                                required=False,
-                                string='Category', help='Choose wheter the \
-                                                service refer to contracts, \
-                                                vehicle services or both')
+    category = fields.Selection(selection_add=[
+        ('contract', 'Contract'),
+        ('service', 'Service'),
+        ('both', 'Both')],
+        required=False,
+        string='Category',
+        help="Choose wheter the service refer to contracts, "
+        "vehicle services or both")
     repair_type_ids = fields.Many2many('repair.type',
                                        'fleet_service_repair_type_rel',
                                        'service_type_id', 'reapir_type_id',

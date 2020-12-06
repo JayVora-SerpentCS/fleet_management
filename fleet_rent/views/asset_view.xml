@@ -268,7 +268,7 @@
 									<field name="current_tenant_id" invisible="1" />
 								</group>
 							</group>
-							<group colspan="2">
+				<!-- 			<group colspan="2">
 								<separator string="Tenancy Property" colspan="4" />
 								<field name="tenancy_property_ids" colspan="4" readonly="1"
 									nolabel="1"
@@ -285,7 +285,7 @@
 										<field name="currency_id" invisible="1" />
 									</tree>
 								</field>
-							</group>
+							</group> -->
 						</page>
 
 						<page string="Maintenance"
