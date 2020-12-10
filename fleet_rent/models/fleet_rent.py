@@ -786,7 +786,7 @@ class TenancyRentSchedule(models.Model):
                               ('paid', 'Paid'), ('cancel', 'Cancel')], string="State", default="draft")
     invc_id = fields.Many2one('account.move', string='Invoice')
     inv = fields.Boolean(string='Is Invoice?')
-    pen_amt = fields.Float(string='Pending Amount', help='Pending Amount.')
+    pen_amt = fields.Float(string='Pending Amount',help='Pending Amount.')
 
     def create_invoice(self):
         """Create invoice for Rent Schedule."""

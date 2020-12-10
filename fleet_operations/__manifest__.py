@@ -43,6 +43,7 @@
               # 'views/fleet_service_view.xml',
               'views/update_pending_history_view.xml',
               'views/template.xml',
+              'views/mail_template.xml',
               'wizard/work_order_reports_view.xml',
               'wizard/xlsx_report_view.xml',
               'wizard/vehicle_change_history_view.xml',

@@ -39,6 +39,20 @@ class FleetOperations(models.Model):
                                 'because it is already write-off'))
         return super(FleetOperations, self).copy(default=default)
 
+    @api.model
+    def service_send_mail(self):
+        model_obj = self.env['ir.model.data']
+        send_obj = self.env['mail.template']
+        current_date = datetime.now().date()
+        fleet_vehicles = self.env['fleet.vehicle'].search([
+            ('next_service_date','=',current_date)])
+        for vehicle in fleet_vehicles:
+            if vehicle.driver_id and vehicle.driver_id.email:
+                res = self.env.ref('fleet_operations.fleet_email_template')
+                res.send_mail(vehicle.id, force_send=True) 
+            return True     
+
+
     def update_history(self):
         """Method use update color engine,battery and tire history."""
         mod_obj = self.env['ir.model.data']
@@ -807,6 +821,8 @@ class FleetWittenOff(models.Model):
                                        'write_off_id', 'damage_id', string="Damage Type")
     repair_type_ids = fields.Many2many('repair.type', 'fleet_wittenoff_repair_types_rel',
                                        'write_off_id', 'repair_id', string="Repair Type")
+    # damage_vehicle_ids = fields.Many2many('damage.type','vehicle_damage_rel',
+    #                                     'write_off_id','code',string="Damage")
     location_id = fields.Many2one('vehicle.location', string='Location')
     driver_id = fields.Many2one('res.partner', string='Driver')
     write_off_type = fields.Selection([
@@ -1228,22 +1244,6 @@ class NextServiceDays(models.Model):
             if duplicate_hist:
                 raise ValidationError('You can not add more than one next '
                                       'service days configuration for same vehicle.!!!')
-
-
-class DamageTypes(models.Model):
-    """Model Damage Types."""
-
-    _name = 'damage.types'
-    _description = 'Damage Types'
-
-    name = fields.Char(string='Name', traslate=True)
-    code = fields.Char(string='Code')
-
-    def copy(self, default=None):
-        """Copy method cannot duplicate record and overide method."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
 
 
 class VehicleFuelLog(models.Model):

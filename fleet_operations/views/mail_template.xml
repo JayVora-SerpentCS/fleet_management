@@ -1,0 +1,26 @@
+<odoo>
+	<record id="fleet_email_template" model="mail.template">
+		<field name="name">Expired service: Send by email</field>
+		<field name="model_id" ref="fleet_operations.model_fleet_vehicle"/>
+		<field name="email_from">${user.email}</field>
+		<field name="email_to">${object.driver_id.email}</field>
+		<!-- <field name="partner_to">${object.member_detail.email}</field> -->
+		<field name="subject">Today your vehicle service </field>
+		<field name="body_html" type="html">
+			<div style="margin: 0px; padding: 0px;">
+				<p style="margin: 0px; padding: 0px; font-size: 13px;">
+					Dear ${object.driver_id.name},<br/><br/>
+					We understand that you might have a busy schedule and we would like to kindly set a reminder for you.
+				</p>
+				<p>
+					We have would like to remind you that your vehicle service falls due on ${object.next_service_date}.
+					<br/>
+					Thank you.
+				</p>
+			</div>
+		</field>
+		<field name="lang">${object.name.lang}</field>
+		<field name="user_signature" eval="False"/>
+		<field name="auto_delete" eval="True"/>
+	</record>
+</odoo>

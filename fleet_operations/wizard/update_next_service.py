@@ -2,7 +2,7 @@
 """Repair Line Summary."""
 
 from odoo import api, fields, models
-
+from odoo.exceptions import ValidationError, Warning
 
 class UpdateNextServiceConfig(models.TransientModel):
     """Added Next Service and Odometer Increment."""
@@ -16,11 +16,12 @@ class UpdateNextServiceConfig(models.TransientModel):
 
     def action_done(self):
         """Method to set Next Service Day and Odometer Increment."""
-
         next_service_obj = self.env['next.service.days']
         service_obj = self.env['fleet.vehicle.log.services']
         incre_obj = self.env['next.increment.number']
         service_active_id = service_obj.browse(self._context['active_id'])
+        if self.days <= 0:
+            raise ValidationError('Next service days must be greater than zero !')
 
         next_days = {
             'vehicle_id': self.vehicle_id and self.vehicle_id.id or False,

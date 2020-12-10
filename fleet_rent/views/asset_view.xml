@@ -290,32 +290,32 @@
 
 						<page string="Maintenance"
 						    attrs="{'readonly':[('state','in',('sold','close'))]}">
-							<separator string="Maintenance &amp; Repairs" colspan="4" />
+							<separator string="Maintenance &amp; Repairs" colspan="4"/>
 							<field name="maintenance_ids" nolabel="1">
 								<tree>
-									<field name="type" />
-									<field name="date" />
-									<field name="name" />
-									<field name="state" />
+									<field name="type"/>
+									<field name="date"/>
+									<field name="name"/>
+									<field name="state"/>
 									<field name="renters_fault"
-									    attrs="{'invisible': [('invc_check','!=',False)]}" />
-									<field name="invc_check" invisible="1" />
+									    attrs="{'invisible': [('invc_check','!=',False)]}"/>
+									<field name="invc_check" invisible="1"/>
 									<button name="open_invoice" string="Open Invoice"
 										icon="fa-arrow-circle-o-right" type="object"
-										attrs="{'invisible': [('invc_check','!=',True)]}" />
+										attrs="{'invisible': [('invc_check','!=',True)]}"/>
 								</tree>
 								<form string="Documents">
 									<button name="open_invoice" string="Open Invoice"
 									    type="object"
 										attrs="{'invisible': [('invc_check','!=',True)]}" />
 									<group colspan="4" col="4">
-										<field name="type" />
-										<field name="date" />
-										<field name="name" />
+										<field name="type"/>
+										<field name="date"/>
+										<field name="name"/>
 										<field name="renters_fault"
-										    attrs="{'invisible': [('invc_check','!=',False)]}" />
+										    attrs="{'invisible': [('invc_check','!=',False)]}"/>
 										<field name="notes" string="Descriptions"/>
-										<field name="invc_check" invisible="1" />
+										<field name="invc_check" invisible="1"/>
 									</group>
 								</form>
 							</field>

@@ -82,16 +82,13 @@
                 </group>
                 <notebook colspan="4">
                     <page string="Damages and Repair">
-                        <group>
-                            <group>
+                            <group string="Damage Type">
                                 <!-- <separator string="Damages Checklist"/> -->
-                                <field name="damage_type_ids" widget="many2many_checkboxes"/>
+                                <field name="damage_type_ids" nolabel="1" colspan="4" col="4" />
                             </group>
-                            <group>
-                                <!-- <separator string="Repair Checklist"/> -->
-                                <field name="repair_type_ids" widget="many2many_checkboxes"/>
+                            <group string="Repair Type">
+                                <field name="repair_type_ids" nolabel="1" colspan="4" col="4"/>
                             </group>
-                        </group>
                     </page>
                     <page string="Write-off Pictures">
                         <field name="multi_images" widget="many2many_binary"/>
@@ -1339,7 +1336,7 @@
     <menuitem action="damage_type_action"
         string="Damage Types" parent="fleet.fleet_configuration"
         id="damage_type_menu" 
-        groups="fleet.fleet_group_manager" />
+        groups="fleet.fleet_group_manager" sequence="2"/>
 
 
     <!--  Change the sequence number of main menu Fleet to 3-->
