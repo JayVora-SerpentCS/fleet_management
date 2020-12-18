@@ -27,13 +27,19 @@ class UpdateNextServiceConfig(models.TransientModel):
             'vehicle_id': self.vehicle_id and self.vehicle_id.id or False,
             'days': self.days
         }
-        next_service_obj.create(next_days)
+        next_ser_configs = self.env['next.service.days'].search([('vehicle_id','=',self.vehicle_id.id)])
+        if not next_ser_configs:
+            next_service_obj.create(next_days)
+
 
         next_odometer = {
             'vehicle_id': self.vehicle_id and self.vehicle_id.id or False,
             'number': self.number
         }
-        incre_obj.create(next_odometer)
+        next_incree_configs = self.env['next.increment.number'].search([('vehicle_id','=',self.vehicle_id.id)])
+        if not next_incree_configs:
+            incre_obj.create(next_odometer)
+
         service_active_id.action_done()
 
     @api.model

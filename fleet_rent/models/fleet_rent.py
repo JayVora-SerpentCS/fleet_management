@@ -592,6 +592,7 @@ class FleetRent(models.Model):
                         rent_obj.create({
                             'start_date': date_st.strftime(DTF),
                             'amount': rent.rent_amt,
+                            'pen_amt':rent.rent_amt,
                             'vehicle_id': vehicle and vehicle.id or False,
                             'fleet_rent_id': rent.id,
                             'currency_id': currency and currency.id or False,

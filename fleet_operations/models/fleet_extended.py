@@ -40,18 +40,17 @@ class FleetOperations(models.Model):
         return super(FleetOperations, self).copy(default=default)
 
     @api.model
-    def service_send_mail(self):
+    def vehicle_service_reminder_send_mail(self):
+        """Method to Send Next Service Reminder to vehicle driver."""
         model_obj = self.env['ir.model.data']
         send_obj = self.env['mail.template']
-        current_date = datetime.now().date()
         fleet_vehicles = self.env['fleet.vehicle'].search([
-            ('next_service_date','=',current_date)])
+        ('next_service_date','=',datetime.now().date())])
         for vehicle in fleet_vehicles:
             if vehicle.driver_id and vehicle.driver_id.email:
                 res = self.env.ref('fleet_operations.fleet_email_template')
-                res.send_mail(vehicle.id, force_send=True) 
-            return True     
-
+                res.send_mail(vehicle.id, force_send=True)
+        return True  
 
     def update_history(self):
         """Method use update color engine,battery and tire history."""
@@ -896,9 +895,9 @@ class FleetWittenOff(models.Model):
                         vehicle.state == 'complete':
                     raise Warning(_("You can\'t write-off this vehicle "
                                     "which is in Progress or Complete state!"))
-                elif vehicle.state == 'inspection':
-                    raise Warning(_("You can\'t write-off this "
-                                    "vehicle which is in Inspection"))
+                # elif vehicle.state == 'inspection':
+                #     raise Warning(_("You can\'t write-off this "
+                #                     "vehicle which is in Inspection"))
                 elif vehicle.state == 'rent':
                     raise Warning(_("You can\'t write-off this "
                                     "vehicle which is On Rent."))
@@ -1215,8 +1214,7 @@ class NextIncrementNumber(models.Model):
             if duplicate_hist:
                 raise ValidationError('You can not add more than one odoometer '
                                       'increment configuration for same vehicle.!!!')
-
-
+        
 class NextServiceDays(models.Model):
     """Model Next Service Days."""
 

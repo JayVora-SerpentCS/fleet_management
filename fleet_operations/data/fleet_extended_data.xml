@@ -6,7 +6,7 @@
             <field name="name">Fleet Vehicle Service Reminder.</field>
             <field eval="True" name="active"/>
             <field name="state">code</field>
-            <field name="code">model.service_send_mail()</field>
+            <field name="code">model.vehicle_service_reminder_send_mail()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
