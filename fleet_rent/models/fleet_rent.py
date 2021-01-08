@@ -592,6 +592,7 @@ class FleetRent(models.Model):
                         rent_obj.create({
                             'start_date': date_st.strftime(DTF),
                             'amount': rent.rent_amt,
+                            'pen_amt':rent.rent_amt,
                             'vehicle_id': vehicle and vehicle.id or False,
                             'fleet_rent_id': rent.id,
                             'currency_id': currency and currency.id or False,
@@ -786,7 +787,7 @@ class TenancyRentSchedule(models.Model):
                               ('paid', 'Paid'), ('cancel', 'Cancel')], string="State", default="draft")
     invc_id = fields.Many2one('account.move', string='Invoice')
     inv = fields.Boolean(string='Is Invoice?')
-    pen_amt = fields.Float(string='Pending Amount', help='Pending Amount.')
+    pen_amt = fields.Float(string='Pending Amount',help='Pending Amount.')
 
     def create_invoice(self):
         """Create invoice for Rent Schedule."""

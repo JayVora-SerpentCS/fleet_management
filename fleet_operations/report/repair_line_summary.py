@@ -50,7 +50,6 @@ class RepairLineSmry(models.AbstractModel):
         if repair_line_data:
             repair_line_data = \
                 sorted(repair_line_data, key=lambda k: k['repair_type'])
-
         return repair_line_data
 
     @api.model

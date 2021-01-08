@@ -171,7 +171,7 @@
                          attrs="{'readonly':[('state','in',('draft','done'))]}"
                          context="{'default_issue_date':date}"
                          mode="tree,form">
-                         <tree>
+                         <tree editable="top">
                              <field name="repair_type_id" required="1"/>
                              <field name="categ_id" invisible="1"
                                  options="{'no_open': True, 'create': false, 'create_edit': false}" />
@@ -501,7 +501,7 @@
                 </group>
                 <separator string="Repair Types" colspan="4" />
                 <group>
-                    <field name="repair_type_ids" nolabel="1" colspan="4" />
+                    <field name="repair_type_ids" nolabel="1" colspan="4"/>
                 </group>
             </form>
         </field>

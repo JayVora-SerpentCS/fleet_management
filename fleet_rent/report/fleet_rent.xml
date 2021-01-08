@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="fleet_rent_paper_format" model="report.paperformat">
+        <field name="name">fleet rent paper format</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">45</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_spacing">45</field>
+        <field name="dpi">90</field>
+    </record>
+
     <!-- Fleet Rent Reports -->
     <report
         id="report_fleet_rent"
@@ -10,17 +25,21 @@
         file="fleet_rent.report_fleet_rent_pdf"
         />
 
+    <record id="report_fleet_rent" model="ir.actions.report">
+        <field name="paperformat_id" ref="fleet_rent.fleet_rent_paper_format"/>
+    </record>
 
     <template id="report_fleet_rent_pdf">
        <t t-call="web.html_container">
            <t t-foreach="docs" t-as="o">
                <t t-call="web.external_layout">
+                <div style="border: 1px solid black;">
                    <div class="page">
-                       <h2><center>Fleet Rent</center></h2>
+                       <h1><center>Fleet Rent</center></h1>
                    </div>
-                   <h2><b>Vehicle Information:</b></h2>
+                    <h2><b>Vehicle Information:</b></h2>
                     <div>
-                        <table width="100%"  border="1px solid black">
+                        <table width="100%"  border-style="1px solid black">
                             <tr style="background-color:darkgray">
                                 <th style="padding:5px;">Rental Number</th>
                                 <th style="padding:5px;">Vehicle</th>
@@ -37,27 +56,38 @@
                             </tr>
                         </table><br/>
                     </div>
+                    <t t-set="total_amount" t-value="0"/>
+                    <t t-set="due_amount" t-value="0"/>
                     <h2><b>Rent Schedule Details:</b></h2>
-                    <table width="100%"  border="1px solid black">
+                    <table width="100%"  border-style="1px solid black">
                         <tr style="background-color:darkgray">
-                            <th style="padding:5px;">Date</th>
-                            <th style="padding:5px;">Amount</th>
-                            <th style="padding:5px;">state</th>
-                            <th style="padding:5px;">Note</th>
-                            <th style="padding:5px;">Pending Amount</th>
+                            <th width="20%" style="padding:5px;">Date</th>
+                            <th width="20%" style="padding:5px;">State</th>
+                            <th width="20%" style="padding:5px;">Note</th>
+                            <th width="20%" style="padding:5px;">Amount</th>
+                            <th width="20%" style="padding:5px;">Due Amount</th>
                         </tr>
                         <t t-foreach="o.rent_schedule_ids" t-as="line">
                             <tr>
-                                <td style="padding:5px;"><span t-field="line.start_date"/></td>
-                                <td style="padding:5px;"><span t-field="line.amount"/></td>
-                                <td style="padding:5px;"><span t-field="line.state"/></td>
-                                <td style="padding:5px;"><span t-field="line.note"/></td>
-                                <td style="padding:5px;"><span t-field="line.pen_amt"/></td>
+                                <td style="padding:5px;border: 1px solid black" ><span t-field="line.start_date"/></td>
+                                <td style="padding:5px;border: 1px solid black" class="text-center"><span t-field="line.state"/></td>
+                                <td style="padding:5px;border: 1px solid black"><span t-field="line.note"/></td>
+                                <td style="padding:5px;border: 1px solid black" class="text-center"><span t-field="line.amount"/></td>
+                                <td style="padding:5px;border: 1px solid black"  class="text-center"><span t-field="line.pen_amt"/></td>
+                                <t t-set="total_amount" t-value="total_amount+line.amount"/>
+                                <t t-set="due_amount" t-value="total_amount+line.pen_amt"/>
                             </tr>
                         </t>
+                        <tr style="border: 1px solid black;">
+                            <th width="20%" style="padding:5px;"></th>
+                            <th width="20%" style="padding:5px;"></th>
+                            <th width="20%" style="padding:5px;"></th>
+                            <th width="20%" style="padding:5px;" class="text-center"><span t-esc="total_amount"/></th>
+                            <th width="20%" style="padding:5px;"  class="text-center"><span t-esc="due_amount"/></th>
+                        </tr>
                     </table>
-
-               </t>
+                    </div>
+                </t>
            </t>
        </t>
     </template>

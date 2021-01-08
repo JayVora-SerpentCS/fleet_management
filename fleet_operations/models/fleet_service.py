@@ -212,8 +212,8 @@ class FleetVehicleLogServices(models.Model):
             if work_order.amount > 0 and not service_inv:
                 raise ValidationError("Vehicle Service amount is greater"
                                       " than Zero So, "
-                                      "Without Service Invoice you can not done the Service !!"
-                                      "Please Generate Service Invoice first !!")
+                                      "Without Service Invoice you can not done the Service !!" "Please Generate Service Invoice first !!")
+            
             for repair_line in work_order.repair_line_ids:
                 if repair_line.complete is True:
                     continue
@@ -438,30 +438,30 @@ class FleetVehicleLogServices(models.Model):
             return location_id.ids[0]
         return False
 
-    @api.model
-    def service_send_mail(self):
-        """Method to send mail."""
-        model_obj = self.env['ir.model.data']
-        send_obj = self.env['mail.template']
-        server_obj = self.env['ir.mail_server']
-        res = model_obj.get_object_reference('fleet_operations',
-                                             'email_template_edi_fleet')
-        record_obj = model_obj.get_object_reference('fleet_operations',
-                                                    'ir_mail_server_service')
-        self._cr.execute("SELECT id FROM fleet_vehicle WHERE \
-                            next_service_date = DATE(NOW()) + 1")
-        vehicle_ids = [i[0] for i in self._cr.fetchall() if i]
-        email_from_brw = server_obj.browse(record_obj[1])
-        if res:
-            temp_rec = send_obj.browse(res[1])
-        for rec in self.browse(vehicle_ids):
-            email_from = email_from_brw.smtp_user
-            if not email_from:
-                raise Warning(_("May be Out Going Mail \
-                                    server is not configuration."))
-            if vehicle_ids:
-                temp_rec.send_mail(rec.id, force_send=True)
-        return True
+    # @api.model
+    # def service_send_mail(self):
+    #     """Method to send mail."""
+    #     model_obj = self.env['ir.model.data']
+    #     send_obj = self.env['mail.template']
+    #     server_obj = self.env['ir.mail_server']
+    #     res = model_obj.get_object_reference('fleet_operations',
+    #                                          'email_template_edi_fleet')
+    #     record_obj = model_obj.get_object_reference('fleet_operations',
+    #                                                 'ir_mail_server_service')
+    #     self._cr.execute("SELECT id FROM fleet_vehicle WHERE \
+    #                         next_service_date = DATE(NOW()) + 1")
+    #     vehicle_ids = [i[0] for i in self._cr.fetchall() if i]
+    #     email_from_brw = server_obj.browse(record_obj[1])
+    #     if res:
+    #         temp_rec = send_obj.browse(res[1])
+    #     for rec in self.browse(vehicle_ids):
+    #         email_from = email_from_brw.smtp_user
+    #         if not email_from:
+    #             raise Warning(_("May be Out Going Mail \
+    #                                 server is not configuration."))
+    #         if vehicle_ids:
+    #             temp_rec.send_mail(rec.id, force_send=True)
+    #     return True
 
     @api.model
     def default_get(self, fields):

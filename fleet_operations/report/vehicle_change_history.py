@@ -15,6 +15,7 @@ class VehicalChangeHistoryReport(models.AbstractModel):
 
     def get_vehicle_history(self, date_range):
         """Method to get vehicle history."""
+
         engine_obj = self.env['engine.history']
         color_obj = self.env['color.history']
         tire_obj = self.env['tire.history']

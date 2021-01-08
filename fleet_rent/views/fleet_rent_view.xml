@@ -62,12 +62,10 @@
                             string="Confirm" type="object" states="draft"
                             class="oe_highlight"
                             groups="fleet.fleet_group_manager"/>
-
                     <button name="create_rent_schedule"
                             string=" Schedule Rent" type="object"
                             class="oe_highlight"
                             attrs="{'invisible': ['|', ('state','!=','open'),('cr_rent_btn','=',True)]}"/>
-
                     <button name="action_deposite_receive"
                             string="Deposit Receive" type="object"
                             attrs="{'invisible':['|',
@@ -169,7 +167,7 @@
                             <field name="is_deposit_return"/>
                             <field name="contact_id"/>
                             <field name="maintenance_cost"
-                                attrs="{'readonly':[('state','!=','draft')]}"/>
+                                attrs="{'readonly':[('state','!=','draft')]}" />
                         </group>
                         <group colspan='4' col='4'>
                             <separator string="Contract Information"
@@ -234,7 +232,7 @@
                                 <tree>
                                     <field name="maint_type" required="1"
                                         domain="[('main_cost','=','true')]"/>
-                                    <field name="cost"/>
+                                    <field name="cost" sum="1"/>
                                 </tree>
                                 <form>
                                     <group>
