@@ -13,7 +13,7 @@ class ResPartner(models.Model):
 
     is_driver = fields.Boolean(string="Is Driver")
     is_tenant = fields.Boolean(string="Is Tenant")
-    tenant = fields.Boolean(string="Is Tenant?")
+    # tenant = fields.Boolean(string="Is Tenant?")
     tenancy_ids = fields.One2many('fleet.rent', 'fleet_tenant_id',
                                   string='Fleet Rental Details',
                                   help='Rental Details')
