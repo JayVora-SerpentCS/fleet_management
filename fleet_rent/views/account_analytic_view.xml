@@ -90,9 +90,9 @@
 							    placeholder="Vehicle Name"
 							    domain="[('state','!=','write-off'),('state','!=','in_progress')]"/>
 							<field name="tenant_id" options="{'no_quick_create': True}"
-							    context="{'default_tenant':True}"
+							    context="{'default_is_tenant':True}"
 							placeholder="Tenant Name" required="1"
-							domain="[('tenant','=',True)]"/>
+							domain="[('is_tenant','=',True)]"/>
 							<field name="manager_id" />
 							<field name="company_id" />
 							<field name="currency_id" />
@@ -395,7 +395,7 @@
 		<field name="arch" type="xml">
 			<field name='partner_id' position="attributes">
 				<attribute name="domain">['|',('customer', '=',
-					True),('tenant','=', True)]</attribute>
+					True),('is_tenant','=', True)]</attribute>
 			</field>
 		</field>
 	</record>

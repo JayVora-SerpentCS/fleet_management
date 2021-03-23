@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="base.view_partner_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='email']" position="after">
-                <field name="tenant" invisible="1"/>
+                <field name="is_tenant" invisible="1"/>
             </xpath>
             <xpath expr="//field[@name='website']" position="after">
                 <field name="id_attachment" filename="doc_name"/>
@@ -15,7 +15,7 @@
             <xpath expr="//notebook/page[@name='internal_notes']"
             		position="before">
                 <page string="Rental Vehicle Details"
-                        attrs="{'invisible': [('tenant','!=',True)]}">
+                        attrs="{'invisible': [('is_tenant','!=',True)]}">
                         <group colspan="1">
                             <separator string="Rental Vehicle Details" colspan="4"/>
                             <field name="tenancy_ids" readonly="1"
@@ -37,18 +37,25 @@
                             </field>
                         </group>
                 </page>
-                <page string="Maintenance Details">
-                    <group colspan="1">
-                        <separator string="Maintenance Details"
-                                colspan="4"/>
-                        <field name="maintanance_ids"
-                                readonly="1" nolabel="1">
+                <page string="Maintenance Details"
+                    attrs="{'invisible': [('is_tenant', '!=', True)]}">
+                    <group>
+                        <separator string="Maintenance Details" colspan="4"/>
+                        <field name="maintanance_ids" readonly="1" nolabel="1">
                             <tree string="Maintenance Details">
-                                <field name="cost"/>
+                                <field name="maint_type"/>
+                                <field name="cost" string="Cost"/>
+                                <field name="fleet_rent_id" invisible="1"/>
+                                <field name="tenant_id" invisible="1"/>
+                                <field name="fleet_tenant_id" invisible="1"/>
                             </tree>
                             <form string="Maintenance Details">
                                 <group colspan="4" col="4">
-                                    <field name="cost"/>
+                                    <field name="maint_type"/>
+                                    <field name="cost" string="Cost"/>
+                                    <field name="fleet_rent_id" invisible="1"/>
+                                    <field name="tenant_id" invisible="1"/>
+                                    <field name="fleet_tenant_id" invisible="1"/>
                                 </group>
                             </form>
                         </field>
