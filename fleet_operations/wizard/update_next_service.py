@@ -4,11 +4,12 @@
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError, Warning
 
+
 class UpdateNextServiceConfig(models.TransientModel):
     """Added Next Service and Odometer Increment."""
 
     _name = 'update.next.service.config'
-    _description = 'Update Next Service congiguration'
+    _description = 'Update Next Service configuration'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle Id")
     number = fields.Float(string="Odometer Increment")
@@ -30,7 +31,6 @@ class UpdateNextServiceConfig(models.TransientModel):
         next_ser_configs = self.env['next.service.days'].search([('vehicle_id','=',self.vehicle_id.id)])
         if not next_ser_configs:
             next_service_obj.create(next_days)
-
 
         next_odometer = {
             'vehicle_id': self.vehicle_id and self.vehicle_id.id or False,
