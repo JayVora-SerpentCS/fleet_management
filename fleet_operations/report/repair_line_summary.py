@@ -8,8 +8,8 @@ from odoo import _, api, models
 from odoo.exceptions import UserError
 
 
-class RepairLineSmry(models.AbstractModel):
-    """Repair Line Smry."""
+class RepairLineSummary(models.AbstractModel):
+    """Repair Line Summary."""
 
     _name = 'report.fleet_operations.repair_line_summary_qweb'
     _description = 'Repair Line Summary Report'
@@ -17,40 +17,36 @@ class RepairLineSmry(models.AbstractModel):
     def get_repair_line_detail(self, date_range):
         """Method to get repair line detail print report."""
         work_order_obj = self.env['fleet.vehicle.log.services']
-        start = datetime.strptime(date_range.get('date_from'), '%Y-%m-%d')
-        end = datetime.strptime(date_range.get('date_to'), '%Y-%m-%d')
+        start = date_range.get('date_from')
+        end = date_range.get('date_to')
         work_order_ids = \
-            work_order_obj.search([('date', '>=', start.date()),
-                                   ('date', '<=', end.date()),
+            work_order_obj.search([('date', '>=', start),
+                                   ('date', '<=', end),
                                    ('state', '=', 'done')])
         repair_line_data = []
         repair_l_dic = {}
         if not work_order_ids:
-            raise UserError("Warning! \n\
-                No Work order found between the selected date !!")
+            raise UserError(_("Warning! No Work order found between the selected date !!"))
         if work_order_ids:
             for work_rec in work_order_ids:
-                for repaire_l in work_rec.repair_line_ids:
-                    if repaire_l.complete is True:
-                        rep_type = repaire_l.repair_type_id
-                        if rep_type and rep_type.name:
-                            if repair_l_dic.get(rep_type.id, False):
-                                repair_l_dic[rep_type.id]['count'] += 1
-                            else:
-                                repair_l_dic[rep_type.id] = \
-                                    {
-                                        'repair_type':
-                                        repaire_l.repair_type_id.name or '',
-                                        'count': 1,
-                                        'vehicle_name': work_rec.fmp_id,
-                                        'issue_date': work_rec.date, }
-        for repair_data in repair_l_dic.items():
-            if repair_data and len(repair_data) >= 2:
-                repair_line_data.append(repair_data[1])
+                for repair_l in work_rec.repair_line_ids.filtered(lambda r: r.complete):
+                    rep_type = repair_l.repair_type_id
+                    if rep_type and rep_type.name:
+                        if repair_l_dic.get(rep_type.id, False):
+                            repair_l_dic[rep_type.id]['count'] += 1
+                        else:
+                            repair_l_dic[rep_type.id] = {
+                                'repair_type': repair_l.repair_type_id.name or '',
+                                'count': 1,
+                                'vehicle_name': work_rec.fmp_id,
+                                'issue_date': work_rec.date,
+                            }
+        for repair_data in repair_l_dic.keys():
+            if repair_data:
+                repair_line_data.append(repair_l_dic[repair_data])
         if repair_line_data:
-            repair_line_data = \
-                sorted(repair_line_data, key=lambda k: k['repair_type'])
-
+            repair_line_data = sorted(repair_line_data,
+                                      key=lambda k: k['repair_type'])
         return repair_line_data
 
     @api.model
@@ -70,4 +66,5 @@ class RepairLineSmry(models.AbstractModel):
             'data': data['form'],
             'docs': docs,
             'time': time,
-            'get_vehicle_history': result}
+            'get_vehicle_history': result
+        }

@@ -27,12 +27,12 @@ class WizardRentCloseReason(models.TransientModel):
             for rent in self.env[self._context['active_model']].browse(
                     self._context.get('active_id', False)):
                 tenancy_obj = self.env['tenancy.rent.schedule'].search(
-                    [('state', '=', ['draft', 'open']),
+                    [('state', 'in', ['draft', 'open']),
                      ('fleet_rent_id', '=', rent.id)])
                 tenancy_obj.write({'state': 'cancel',
                                    'note': notes})
                 rent.write({'state': 'close',
                             'close_reson': self.reason,
-                            'date_close': date.today(),
-                            'rent_close_by': self._uid})
+                            'date_close': fields.Date.today(),
+                            'rent_close_by': self.env.user.id})
         return True

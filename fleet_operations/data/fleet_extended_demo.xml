@@ -8,7 +8,7 @@
         <field name="vin_sn">5454541</field>
         <field name="color">Black</field>
         <field name="doors">5</field>
-        <field eval="time.strftime('%Y-%m-%d 2:00:00')" name="acquisition_date"/>
+        <field name="acquisition_date" eval="time.strftime('%Y-%m-%d 2:00:00')" />
         <field name="odometer_unit">kilometers</field>
         <field name="fuel_type">diesel</field>
         <field name="car_value">20000</field>
@@ -21,7 +21,7 @@
         <field name="model_id" ref="fleet.model_corsa"/>
         <field name="color">Red</field>
         <field name="doors">5</field>
-        <field eval="time.strftime('%Y-%m-%d 2:00:00')" name="acquisition_date"/>
+        <field name="acquisition_date" eval="time.strftime('%Y-%m-%d 2:00:00')" />
         <field name="odometer_unit">kilometers</field>
         <field name="fuel_type">diesel</field>
         <field name="car_value">16000</field>
@@ -34,7 +34,7 @@
         <field name="model_id" ref="fleet.model_serie1"/>
         <field name="color">Titanium Grey</field>
         <field name="doors">3</field>
-        <field eval="time.strftime('%Y-%m-%d 2:00:00')" name="acquisition_date"/>
+        <field name="acquisition_date" eval="time.strftime('%Y-%m-%d 2:00:00')" />
         <field name="odometer_unit">kilometers</field>
         <field name="fuel_type">diesel</field>
         <field name="car_value">20000</field>
@@ -47,7 +47,7 @@
         <field name="model_id" ref="fleet.model_a1"/>
         <field name="color">White</field>
         <field name="doors">3</field>
-        <field eval="time.strftime('%Y-%m-%d 2:00:00')" name="acquisition_date"/>
+        <field name="acquisition_date" eval="time.strftime('%Y-%m-%d 2:00:00')" />
         <field name="odometer_unit">kilometers</field>
         <field name="fuel_type">diesel</field>
         <field name="car_value">20000</field>
@@ -60,7 +60,7 @@
         <field name="model_id" ref="fleet.model_classa"/>
         <field name="color">Brown</field>
         <field name="doors">5</field>
-        <field eval="time.strftime('%Y-%m-%d 2:00:00')" name="acquisition_date"/>
+        <field name="acquisition_date" eval="time.strftime('%Y-%m-%d 2:00:00')" />
         <field name="odometer_unit">kilometers</field>
         <field name="fuel_type">diesel</field>
         <field name="car_value">18000</field>

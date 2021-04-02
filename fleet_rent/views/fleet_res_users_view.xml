@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_tenent_users_form" model="ir.ui.view">
-        <field name="name">res.users</field>
+    <record id="view_tenant_users_form_inherit" model="ir.ui.view">
+        <field name="name">tenant.res.users.form</field>
         <field name="model">res.users</field>
         <field name="inherit_id" ref="base.view_users_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//page[last()]" position="after">
+            <xpath expr="//page[@name='references']" position="after">
                 <page string="Rental Details" 
                       name="rental_details">
                     <group>
                         <field name="is_tenant"/>
-                        <field name="is_driver"/>
+<!--                        <field name="is_driver"/>-->
                     </group>
                     <separator string="Rent Schedule Details"
                                 colspan="4"/>
                     <field name="fleet_rent_ids"/>
                 </page>
-                <page string="Maintanance Details" 
-                      name="maintanance_details">
+                <page string="Maintenance Details"
+                      name="maintenance_details">
                         <field name="maintanance_ids">
                             <tree>
                                 <field name="maint_type"/>
@@ -28,4 +28,54 @@
             </xpath>
         </field>
     </record>
+    <record id="view_tenant_user_tree_inherit" model="ir.ui.view">
+        <field name="name">tenant.res.users.tree</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <tree string="Tenant">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="email"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_tenant_users_search_inherit" model="ir.ui.view">
+        <field name="name">tenant.res.users.search</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <search string="Tenant">
+                <field name="name"/>
+                <field name="email"/>
+                <filter string="Is Tenant" name="is_tenant"
+                    domain="[('is_tenant','=',True)]"/>
+            </search>
+        </field>
+    </record>
+    <record id="action_tenant_res_users" model="ir.actions.act_window">
+        <field name="name">Tenant</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.users</field>
+        <field name="context">{'default_is_tenant': True}</field>
+        <field name="domain">[('is_tenant','=',True)]</field>
+        <field name="search_view_id" ref="view_tenant_users_search_inherit"/>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_tree_res_users_view"
+            model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="fleet_rent.view_tenant_user_tree_inherit"/>
+        <field name="act_window_id" ref="fleet_rent.action_tenant_res_users"/>
+    </record>
+    <record id="action_form_res_users_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="fleet_rent.view_tenant_users_form_inherit"/>
+        <field name="act_window_id" ref="fleet_rent.action_tenant_res_users"/>
+    </record>
+    <menuitem id="tenant_menu_res_users"
+        name="Tenant"
+        parent="fleet_rent.menu_vehicle_rent"
+        action="action_tenant_res_users"
+        sequence="3"/>
 </odoo>

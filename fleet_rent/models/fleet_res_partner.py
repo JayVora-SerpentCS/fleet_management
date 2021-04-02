@@ -1,5 +1,5 @@
 # See LICENSE file for full copyright and licensing details.
-"""Fleet Tenent, Res Partner Model."""
+"""Fleet Tenant, Res Partner Model."""
 
 import re
 from odoo import _, api, fields, models
@@ -11,7 +11,7 @@ class ResPartner(models.Model):
 
     _inherit = "res.partner"
 
-    is_driver = fields.Boolean(string="Is Driver")
+    # is_driver = fields.Boolean(string="Is Driver")
     is_tenant = fields.Boolean(string="Is Tenant")
     # tenant = fields.Boolean(string="Is Tenant?")
     tenancy_ids = fields.One2many('fleet.rent', 'fleet_tenant_id',
@@ -23,20 +23,20 @@ class ResPartner(models.Model):
     id_attachment = fields.Binary(string='Identity Proof')
 
     @api.constrains('mobile')
-    def _check_tenent_mobile(self):
-        for tenent in self:
-            if tenent.mobile:
+    def _check_tenant_mobile(self):
+        for tenant in self:
+            if tenant.mobile:
                 if re.match("^\+|[1-9]{1}[0-9]{3,14}$",
-                            tenent.mobile) is None:
+                            tenant.mobile) is None:
                     raise ValidationError(
                         _('Please Enter Valid Mobile Number !!'))
 
     @api.constrains('email')
-    def _check_tenent_email(self):
+    def _check_tenant_email(self):
         expr = "^[a-zA-Z0-9._+-]+@[a-zA-Z0-9]+\.[a-zA-Z0-9.]*\.*[a-zA-Z]{2,4}$"
-        for tenent in self:
-            if tenent.email:
-                if re.match(expr, tenent.email) is None:
+        for tenant in self:
+            if tenant.email:
+                if re.match(expr, tenant.email) is None:
                     raise ValidationError(
                         _('Please enter valid email address !!'))
 

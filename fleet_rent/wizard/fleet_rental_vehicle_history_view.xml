@@ -4,7 +4,7 @@
         <field name="name">Rental Fleet History</field>
         <field name="model">rental.fleet.history</field>
         <field name="arch" type="xml">
-            <form string="Renatl Vehicle">
+            <form string="Rental Vehicle">
                 <group>
                     <field name="name" invisible="1"/>
                     <field name="file" filename="name" string="Download"/>
@@ -26,4 +26,5 @@
                 id="action_print_rental_fleet_history"
                 view_id="rental_fleet_wizard"
                 />
+
 </odoo>

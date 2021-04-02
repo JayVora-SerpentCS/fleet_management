@@ -6,8 +6,7 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import ustr, DEFAULT_SERVER_DATE_FORMAT as DF, \
-    DEFAULT_SERVER_DATETIME_FORMAT as DTF
+from odoo.tools import ustr, DEFAULT_SERVER_DATETIME_FORMAT as DTF
 
 
 class FleetRent(models.Model):
@@ -44,23 +43,19 @@ class FleetRent(models.Model):
     def _compute_total_credit_amt_calc(self):
         """Method to calculate Total credit amount."""
         for rent in self:
-            total_credit = 0.0
-            for acc_mov_line in rent.account_move_line_ids:
-                total_credit += acc_mov_line.credit or 0.0
-            rent.total_credit_amt = total_credit
+            rent.total_credit_amt = sum(acc_mov_line.credit or 0.0
+                                        for acc_mov_line in rent.account_move_line_ids)
 
-    @api.depends('account_move_line_ids', 'account_move_line_ids.debit')
+    # @api.depends('account_move_line_ids', 'account_move_line_ids.debit')
     def _compute_total_debit_amt_calc(self):
         """Method to calculate Total debit amount."""
         for rent in self:
-            total_debit = 0.0
-            for acc_mov_line in rent.account_move_line_ids:
-                total_debit += acc_mov_line.debit or 0.0
-            rent.total_debit_amt = total_debit
+            rent.total_debit_amt = sum(acc_mov_line.debit or 0.0
+                                       for acc_mov_line in rent.account_move_line_ids)
 
     @api.model
     def default_get(self, fields):
-        """Overriden method to update odometer in fleet rent."""
+        """Overridden method to update odometer in fleet rent."""
         context = (self._context or {})
         vehical_obj = self.env['fleet.vehicle']
         res = super(FleetRent, self).default_get(fields)
@@ -130,7 +125,7 @@ class FleetRent(models.Model):
                     rent.deposit_received = True
 
     @api.depends('amount_return')
-    def _compute_amount_return_compute(self):
+    def _compute_amount_return(self):
         """Method to set the deposit return value."""
         for rent in self:
             credit_inv_ids = self.env['account.move'].search([
@@ -155,37 +150,33 @@ class FleetRent(models.Model):
             if rent.rent_type_id and rent.date_start:
                 if rent.rent_type_id.renttype == 'Months':
                     rent.date_end = rent.date_start + \
-                        relativedelta(months=int(rent.rent_type_id.duration))
+                                    relativedelta(months=int(rent.rent_type_id.duration))
                 if rent.rent_type_id.renttype == 'Years':
                     rent.date_end = rent.date_start + \
-                        relativedelta(years=int(rent.rent_type_id.duration))
+                                    relativedelta(years=int(rent.rent_type_id.duration))
                 if rent.rent_type_id.renttype == 'Weeks':
                     rent.date_end = rent.date_start + \
-                        relativedelta(weeks=int(rent.rent_type_id.duration))
+                                    relativedelta(weeks=int(rent.rent_type_id.duration))
                 if rent.rent_type_id.renttype == 'Days':
                     rent.date_end = rent.date_start + \
-                        relativedelta(days=int(rent.rent_type_id.duration))
+                                    relativedelta(days=int(rent.rent_type_id.duration))
                 if rent.rent_type_id.renttype == 'Hours':
                     rent.date_end = rent.date_start + \
-                        relativedelta(hours=int(rent.rent_type_id.duration))
+                                    relativedelta(hours=int(rent.rent_type_id.duration))
 
     @api.depends('maintanance_ids', 'maintanance_ids.cost')
     def _compute_total_maintenance_cost(self):
         """Method to calculate total maintenance."""
         for rent in self:
-            total_amt = 0
-            for cost_line in rent.maintanance_ids:
-                total_amt += cost_line.cost or 0.0
-            rent.maintenance_cost = total_amt
+            rent.maintenance_cost = sum(cost_line.cost or 0.0
+                                        for cost_line in rent.maintanance_ids)
 
     @api.depends('rent_schedule_ids', 'rent_schedule_ids.amount')
     def _compute_total_amount_rent(self):
         """Method to calculate Total Rent of current Tenancy."""
-        tot_rent = 0.00
         for rent in self:
-            for rent_line in rent.rent_schedule_ids:
-                tot_rent += rent_line.amount or 0.0
-            rent.total_rent = tot_rent
+            rent.total_rent = sum(rent_line.amount or 0.0
+                                  for rent_line in rent.rent_schedule_ids)
 
     name = fields.Char(string="Name", translate=True,
                        copy=False, default="New")
@@ -226,38 +217,35 @@ class FleetRent(models.Model):
     company_id = fields.Many2one('res.company',
                                  default=lambda self: self.env.company,
                                  help="Name of Company.")
-    rent_amt = fields.Float(string='Rental Vehicle Rent',
-                            currency_field='currency_id',
-                            help="Rental vehicle rent for selected \
-                                vehicle per rent type.",
-                            copy=False)
-    deposit_amt = fields.Float(string='Deposit Amount',
-                               copy=False,
+    rent_amt = fields.Monetary(string='Rental Vehicle Rent',
                                currency_field='currency_id',
-                               help="Deposit amount for Rental Vehicle.")
+                               help="Rental vehicle rent for selected \
+                                vehicle per rent type.",
+                               copy=False)
+    deposit_amt = fields.Monetary(string='Deposit Amount',
+                                  copy=False,
+                                  currency_field='currency_id',
+                                  help="Deposit amount for Rental Vehicle.")
     deposit_received = fields.Boolean(compute='_compute_get_deposit',
                                       string='Deposit Received?',
                                       copy=False,
-                                      help="True if deposit amount received \
-                                      for current Rental Vehicle.")
+                                      help="True if deposit amount received for "
+                                           "current Rental Vehicle.")
     contact_id = fields.Many2one('res.partner',
                                  string='Contact',
                                  help="Contact person name.")
     contract_dt = fields.Datetime(string='Contract Creation',
                                   default=lambda *a: datetime.now(),
-                                  help="Rental Vehicle contract \
-                                  creation date.")
-    amount_return = fields.Float(string='Deposit Returned',
-                                 copy=False,
-                                 currency_field='currency_id',
-                                 help="Deposit Returned amount for \
-                                 Rental Vehicle.")
+                                  help="Rental Vehicle contract creation date.")
+    amount_return = fields.Monetary(string='Deposit Returned',
+                                    copy=False,
+                                    currency_field='currency_id',
+                                    help="Deposit Returned amount for Rental Vehicle.")
     is_deposit_return = fields.Boolean(
-        compute='_compute_amount_return_compute',
+        compute='_compute_amount_return',
         string='Deposit Returned?',
         copy=False,
-        help="True if deposit amount returned \
-                                       for current Rental Vehicle.")
+        help="True if deposit amount returned for current Rental Vehicle.")
     maintenance_cost = fields.Float(compute='_compute_total_maintenance_cost',
                                     string='Maintenance Cost',
                                     store=True,
@@ -271,11 +259,11 @@ class FleetRent(models.Model):
                                help="Rental Vehicle contract end date.")
     rent_type_id = fields.Many2one('rent.type',
                                    string='Rent Type')
-    total_rent = fields.Float(compute='_compute_total_amount_rent',
-                              string='Total Rent',
-                              currency_field='currency_id',
-                              store=True,
-                              help='Total rent of this Rental Vehicle.')
+    total_rent = fields.Monetary(compute='_compute_total_amount_rent',
+                                 string='Total Rent',
+                                 currency_field='currency_id',
+                                 store=True,
+                                 help='Total rent of this Rental Vehicle.')
     rent_close_by = fields.Many2one(
         'res.users', string="Rent Close By", copy=False)
     date_close = fields.Datetime(string="Rent Close Date", copy=False)
@@ -292,15 +280,15 @@ class FleetRent(models.Model):
                                             string='Account Move')
     account_payment_ids = fields.One2many(
         'account.payment', 'fleet_rent_id', string='Entries')
-    total_debit_amt = fields.Float(compute='_compute_total_debit_amt_calc',
-                                   string='Total Debit Amount',
-                                   currency_field='currency_id')
-    total_credit_amt = fields.Float(compute='_compute_total_credit_amt_calc',
-                                    string='Total Credit Amount',
-                                    currency_field='currency_id')
-    total_deb_cre_amt = fields.Float(compute='_compute_total_deb_cre_amt_calc',
-                                     string='Total Expenditure',
-                                     currency_field='currency_id')
+    total_debit_amt = fields.Monetary(compute='_compute_total_debit_amt_calc',
+                                      string='Total Debit Amount',
+                                      currency_field='currency_id')
+    total_credit_amt = fields.Monetary(compute='_compute_total_credit_amt_calc',
+                                       string='Total Credit Amount',
+                                       currency_field='currency_id')
+    total_deb_cre_amt = fields.Monetary(compute='_compute_total_deb_cre_amt_calc',
+                                        string='Total Expenditure',
+                                        currency_field='currency_id')
     invoice_id = fields.Many2one('account.move',
                                  string='Invoice')
     cr_rent_btn = fields.Boolean(string='Hide Rent Button', copy=False)
@@ -316,7 +304,7 @@ class FleetRent(models.Model):
     def _check_vehicle_id(self):
         for rec in self:
             duplicate_rent = self.env['fleet.rent'].search([
-                ('state', '=', ['open', 'pending', 'close']),
+                ('state', 'in', ['open', 'pending', 'close']),
                 ('id', '!=', rec.id), ('vehicle_id', '=', rec.vehicle_id.id)])
             if duplicate_rent:
                 raise ValidationError(
@@ -347,8 +335,8 @@ class FleetRent(models.Model):
         """Method to send mail."""
         rent_obj = self.env['fleet.rent']
         mail_temp_rec = self.env.ref('fleet_rent.email_template_edi_rent')
-        rent_ids = rent_obj.search([('date_end', '<=', datetime.now()),
-                                    ('date_end', '>=', datetime.now())])
+        rent_ids = rent_obj.search(['|', ('date_end', '<=', fields.Datetime.now()),
+                                    ('date_end', '>=', fields.Datetime.now())])
         if rent_ids and mail_temp_rec:
             for rent in rent_ids:
                 mail_temp_rec.send_mail(rent.id, force_send=True)
@@ -371,7 +359,7 @@ class FleetRent(models.Model):
                     "rent limit is over."
                     rent.write({'state': 'done',
                                 'close_reson': reason,
-                                'date_cancel': datetime.now(),
+                                'date_cancel': fields.Datetime.now(),
                                 'cancel_by_id': self._uid})
 
     @api.model
@@ -385,10 +373,12 @@ class FleetRent(models.Model):
             d_date = datetime.now()
             s_date = d_date.strftime("%Y-%m-%d 23:59:59")
             o_date = d_date.strftime("%Y-%m-%d 00:00:00")
-            rent_schedule_ids = rent_sched_obj.search([
+            rent_schedule_ids = rent_sched_obj.search(["|",
                 ('start_date', '>=', o_date),
                 ('start_date', '<=', s_date),
-                ('fleet_rent_id', '=', rent.id)])
+                ('fleet_rent_id', '=', rent.id),
+                ('state', '!=', 'paid')
+            ])
             if mail_temp_rec:
                 for rent_line in rent_schedule_ids:
                     mail_temp_rec.send_mail(rent_line.id, force_send=True)
@@ -424,7 +414,7 @@ class FleetRent(models.Model):
     def action_rent_close(self):
         """Method to Change rent state to close."""
         return {
-            'name': ('Rent Close Form'),
+            'name': _('Rent Close Form'),
             'res_model': 'rent.close.reason',
             'type': 'ir.actions.act_window',
             'view_id': False,
@@ -471,7 +461,7 @@ class FleetRent(models.Model):
             if rent.vehicle_id and rent.vehicle_id.state == 'write-off':
                 raise UserError(_('You can not renew rent for %s \
                                 because this vehicle is in \
-                                write-off.') % (rent.vehicle_id.name))
+                                write-off.') % rent.vehicle_id.name)
             tenancy_rent_ids = self.env['tenancy.rent.schedule'].search(
                 [('fleet_rent_id', '=', rent.id),
                  ('state', 'in', ['draft', 'open'])])
@@ -488,7 +478,7 @@ class FleetRent(models.Model):
                 'default_start_date': date
             })
             return {
-                'name': ('Tenancy Renew Wizard'),
+                'name': _('Tenancy Renew Wizard'),
                 'res_model': 'renew.tenancy',
                 'type': 'ir.actions.act_window',
                 'view_id': False,
@@ -531,9 +521,9 @@ class FleetRent(models.Model):
                 'invoice_origin': 'Deposit Return For ' + rent.name or "",
                 'move_type': 'out_refund',
                 'partner_id': rent.tenant_id and
-                rent.tenant_id.partner_id.id or False,
+                              rent.tenant_id.partner_id.id or False,
                 'invoice_line_ids': [(0, 0, inv_line_values)],
-                'invoice_date': datetime.now().strftime(DTF) or False,
+                'invoice_date': fields.Date.today() or False,
                 'fleet_rent_id': rent.id,
                 'is_deposit_return_inv': True,
                 'journal_id': purch_journal and purch_journal.id or False,
@@ -568,9 +558,9 @@ class FleetRent(models.Model):
             invoice_id = rent.env['account.move'].create({
                 'move_type': 'out_invoice',
                 'partner_id': rent.tenant_id and
-                rent.tenant_id.partner_id.id or False,
+                              rent.tenant_id.partner_id.id or False,
                 'invoice_line_ids': [(0, 0, inv_line_values)],
-                'invoice_date': datetime.now().strftime(DTF) or False,
+                'invoice_date': fields.Date.today() or False,
                 'fleet_rent_id': rent.id,
                 'is_deposit_inv': True,
             })
@@ -709,7 +699,7 @@ class RentType(models.Model):
 
 
 class MaintenanceType(models.Model):
-    """Maintenace Type Model."""
+    """Maintenance Type Model."""
 
     _name = 'maintenance.type'
     _description = 'Vehicle Maintenance Type'
@@ -720,14 +710,14 @@ class MaintenanceType(models.Model):
         required=True)
     main_cost = fields.Boolean(
         string='Recurring cost',
-        help='Check if the recuring cost involve')
+        help='Check if the recurring cost involve')
     cost = fields.Float(
         string='Maintenance Cost',
         help='insert the cost')
 
 
-class MaintenanaceCost(models.Model):
-    """Maintenace Cost Model."""
+class MaintenanceCost(models.Model):
+    """Maintenance Cost Model."""
 
     _name = 'maintenance.cost'
     _description = 'Vehicle Maintenance Cost'
@@ -764,19 +754,19 @@ class TenancyRentSchedule(models.Model):
     _order = 'start_date'
 
     @api.depends('move_id')
-    def _get_move_check(self):
+    def _compute_get_move_check(self):
         for rent_sched in self:
             rent_sched.move_check = bool(rent_sched.move_id)
 
     note = fields.Text(string='Notes', help='Additional Notes.')
     currency_id = fields.Many2one('res.currency',
                                   string='Currency')
-    amount = fields.Float(string='Amount', default=0.0,
-                          currency_field='currency_id', help="Rent Amount.")
+    amount = fields.Monetary(string='Amount', default=0.0,
+                             currency_field='currency_id', help="Rent Amount.")
     start_date = fields.Datetime(string='Date', help='Start Date.')
     end_date = fields.Date(string='End Date', help='End Date.')
-    cheque_detail = fields.Char(string='Cheque Detail', size=30)
-    move_check = fields.Boolean(compute='_get_move_check', string='Posted',
+    cheque_detail = fields.Char(string='Cheque Detail')
+    move_check = fields.Boolean(compute='_compute__get_move_check', string='Posted',
                                 store=True)
     rel_tenant_id = fields.Many2one('res.users',
                                     string="Tenant")
@@ -826,7 +816,7 @@ class TenancyRentSchedule(models.Model):
             rent.tenant_id.partner_id.id or False,
             'move_type': 'out_invoice',
             'vehicle_id': vehicle and vehicle.id or False,
-            'invoice_date': datetime.now().strftime(DF) or False,
+            'invoice_date': fields.Date.today() or False,
             'journal_id': journal_id and journal_id.id or False,
             'fleet_rent_id': rent and rent.id or False,
         }
@@ -839,8 +829,7 @@ class TenancyRentSchedule(models.Model):
         acc_id = self.env['account.move'].create(inv_values)
         self.write({'invc_id': acc_id.id, 'inv': True})
         context = dict(self._context or {})
-        wiz_form_id = self.env['ir.model.data'].get_object_reference(
-            'account', 'view_move_form')[1]
+        wiz_form_id = self.env.ref('account.view_move_form').id
 
         return {
             'view_type': 'form',
@@ -856,8 +845,7 @@ class TenancyRentSchedule(models.Model):
     def open_invoice(self):
         """Method Open Invoice."""
         context = dict(self._context or {})
-        wiz_form_id = self.env['ir.model.data'].get_object_reference(
-            'account', 'view_move_form')[1]
+        wiz_form_id = self.env.ref('account.view_move_form').id
         return {
             'view_type': 'form',
             'view_id': wiz_form_id,
@@ -880,7 +868,7 @@ class TenancyRentSchedule(models.Model):
         journal_ids = self.env['account.journal'].search(
             [('type', '=', 'sale')])
         for line in self:
-            depreciation_date = datetime.now()
+            depreciation_date = fields.Datetime.now()
             company_currency = line.tenancy_id.company_id.currency_id.id
             current_currency = line.tenancy_id.currency_id.id
             sign = -1

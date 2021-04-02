@@ -11,7 +11,7 @@ class WizardRenewTenancy(models.TransientModel):
     """Wizard Renew Tenancy."""
 
     _name = 'renew.tenancy'
-    _description = 'Vehicle Renew Tenacy'
+    _description = 'Vehicle Renew Tenancy'
 
     @api.depends('rent_type_id', 'start_date')
     def _create_date(self):
@@ -53,8 +53,7 @@ class WizardRenewTenancy(models.TransientModel):
 
     def renew_contract(self):
         """Button Method is used to Renew Tenancy."""
-        view_id = self.env['ir.model.data'].get_object_reference(
-            'fleet_rent', 'view_fleet_rent_form')
+        view_id = self.env.ref('fleet_rent.view_fleet_rent_form').id
         if self._context.get('active_id', False):
             for rec in self:
                 if rec.start_date > rec.end_date:
@@ -81,7 +80,8 @@ class WizardRenewTenancy(models.TransientModel):
                 })
 
         return {
-            'view_id': view_id and len(view_id) >= 2 and view_id[1] or False,
+            # 'view_id': view_id and len(view_id) >= 2 and view_id or False,
+            'view_id': view_id or False,
             'view_mode': 'form',
             'view_type': 'form',
             'res_model': 'fleet.rent',

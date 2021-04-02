@@ -1,5 +1,5 @@
 # See LICENSE file for full copyright and licensing details.
-"""Workorder monthly summary report."""
+"""WorkOrder monthly summary report."""
 
 import base64
 import io
@@ -10,14 +10,14 @@ from odoo.exceptions import UserError
 import xlwt
 
 
-class WorkorderMontltReportXlsx(models.AbstractModel):
+class WorkOrderMonthlyReportXlsx(models.AbstractModel):
     """Work Order Monthly Report Xlsx."""
 
     _name = 'report.fleet_operations.workorder.monthly.summary.xls'
     _description = 'Work Order Monthly Summary Report'
 
     def get_wo_mthly_smry(self, workorder_browse):
-        """Method get wo mthly smry."""
+        """Method get wo monthly summary."""
         wo_summary_data = []
         wo_check_dict = {}
         no = 0
@@ -107,7 +107,7 @@ class WorkorderMontltReportXlsx(models.AbstractModel):
         return wo_summary_data
 
     def generate_xlsx_report(self, workorder):
-        """Generate Xlsx Report."""
+        """Generate XlSX Report."""
 
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('invoice')
@@ -137,7 +137,7 @@ class WorkorderMontltReportXlsx(models.AbstractModel):
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; \
             align: horiz center')
         format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200; \
-            pattern: pattern solid; align: horiz center')
+            pattern: pattern solid, fore_colour yellow; align: horiz center')
         format2 = xlwt.easyxf('align: horiz center')
         format3 = xlwt.easyxf('align: horiz left')
 
@@ -184,5 +184,5 @@ class WorkorderMontltReportXlsx(models.AbstractModel):
         fp.seek(0)
         data = fp.read()
         fp.close()
-        res = base64.encodestring(data)
+        res = base64.encodebytes(data)
         return res
