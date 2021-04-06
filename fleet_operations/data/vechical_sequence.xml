@@ -13,17 +13,6 @@
             <field name="padding">4</field>
         </record>
 
-        <!-- Sequence for Transaction -->
-        <record id="seq_internal_daily_transaction_seq_id" model="ir.sequence">
-            <field name="name">daily_transc_id</field>
-            <field name="code">parts.daily.internal.transaction</field>
-            <field name="prefix">%(year)s-INT-D</field>
-            <field name="suffix"></field>
-            <field name="implementation">no_gap</field>
-            <field name="number_next">1</field>
-            <field name="padding">4</field>
-        </record>
-
         <!-- Sequence for Service Order. -->
         <record id="sequence_service_order" model="ir.sequence">
            <field name="name">Service Order Sequence</field>
@@ -33,24 +22,8 @@
            <field name="implementation">no_gap</field>
         </record>
 
-        <!-- Sequence for Job Card. -->
-        <record id="seq_seq_job_card" model="ir.sequence">
-           <field name="name">Job Card Sequence</field>
-           <field name="code">job.card.sequence</field>
-           <field name="prefix">JBC</field>
-           <field name="padding">6</field>
-        </record>
-
-        <!-- Sequence for Contract. -->
-        <record id="seq_seq_contract_card" model="ir.sequence">
-           <field name="name">Contract Sequence</field>
-           <field name="code">vehicle.contract.sequnce</field>
-           <field name="prefix">CON</field>
-           <field name="padding">6</field>
-        </record>
-
         <record id="seq_seq_write_off" model="ir.sequence">
-           <field name="name">Contract Sequence</field>
+           <field name="name">Vehicle write off</field>
            <field name="code">vehicle.writeoff.sequnce</field>
            <field name="prefix">WOFF</field>
            <field name="padding">5</field>

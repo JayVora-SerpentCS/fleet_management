@@ -6,9 +6,7 @@
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
-            <!-- <xpath expr="//sheet/notebook/page/field[@name='comment']"
-                position="before"> -->
-            <xpath expr="//field[@name='ref']" position="after">
+            <xpath expr="//field[@name='type']" position="after">
                 <group>
                     <field name="vehicle_id" invisible="1"/>
                     <field name="fleet_rent_id" invisible="1"/>

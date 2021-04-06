@@ -42,14 +42,12 @@ class FleetOperations(models.Model):
     @api.model
     def vehicle_service_reminder_send_mail(self):
         """Method to Send Next Service Reminder to vehicle driver."""
-        model_obj = self.env['ir.model.data']
-        send_obj = self.env['mail.template']
-        fleet_vehicles = self.env['fleet.vehicle'].search([
-        ('next_service_date','=',datetime.now().date())])
-        for vehicle in fleet_vehicles:
-            if vehicle.driver_id and vehicle.driver_id.email:
-                res = self.env.ref('fleet_operations.fleet_email_template')
-                res.send_mail(vehicle.id, force_send=True)
+        fleet_vehicles = self.search([
+            ('next_service_date', '=', fields.Date.today())
+        ])
+        for vehicle in fleet_vehicles.filtered(lambda v:v.driver_id and vehicle.driver_id.email):
+            res = self.env.ref('fleet_operations.fleet_email_template')
+            res.send_mail(vehicle.id, force_send=True)
         return True  
 
     def update_history(self):
@@ -58,7 +56,6 @@ class FleetOperations(models.Model):
         wizard_view = ""
         res_model = ""
         view_name = ""
-        # cr, uid, context = self.env.args
         context = self.env.context
         context = dict(context)
         if context.get('history', False):
@@ -87,7 +84,6 @@ class FleetOperations(models.Model):
                                          ('name', '=', wizard_view)])
         resource_id = model_data_ids.read(['res_id'])[0]['res_id']
         context.update({'vehicle_ids': self._ids})
-        # self.env.args = cr, uid, misc.frozendict(context)
         return {
             'name': view_name,
             'context': self._context,
@@ -103,12 +99,14 @@ class FleetOperations(models.Model):
         """Method to set released state."""
         for vehicle in self:
             if vehicle.state == 'complete':
-                vehicle.write({'state': 'released',
-                               'last_change_status_date': date.today(),
-                               'released_date': date.today()})
+                vehicle.write({
+                    'state': 'released',
+                    'last_change_status_date': fields.Date.today(),
+                    'released_date': fields.Date.today()
+                })
             else:
                 raise Warning(_('Vehicle status will only set to released '
-                                'if it is in compeleted state.'))
+                                'if it is in completed state.'))
         return True
 
     def name_get(self):
@@ -126,7 +124,7 @@ class FleetOperations(models.Model):
             vehical_unique_id += "-"
             vehical_unique_id += vehicle.model_id and \
                 vehicle.model_id.name or ""
-            vv_id = "%s" % (vehical_unique_id)
+            vv_id = "%s" % vehical_unique_id
             res.append((vehicle['id'], vv_id))
         return res
 
@@ -164,7 +162,8 @@ class FleetOperations(models.Model):
                     vehicle.acquisition_date and \
                         vehicle.tire_issuance_date < vehicle.acquisition_date:
                     raise ValidationError('Tire Issuance Date And Battery '
-                                          'Issuance Date Should Be Greater Than Registration Date.')
+                                          'Issuance Date Should Be Greater Than'
+                                          ' Registration Date.')
             if vehicle.tire_issuance_date:
                 if vehicle.tire_issuance_date < vehicle.acquisition_date:
                     raise ValidationError('Tire Issuance Date Should Be '
@@ -219,29 +218,29 @@ class FleetOperations(models.Model):
                     raise ValidationError('Insurance start date should be '
                                           'greater than registration date.')
 
-    def _get_odometer(self):
-        fleetvehicalodometer = self.env['fleet.vehicle.odometer']
+    def _compute_get_odometer(self):
+        fleet_vehicle_odometer_obj = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = fleetvehicalodometer.search([
+            vehicle_odometer = fleet_vehicle_odometer_obj.search([
                 ('vehicle_id', '=', record.id)], limit=1, order='value desc')
             if vehicle_odometer:
                 record.odometer = vehicle_odometer.value
             else:
                 record.odometer = 0
 
-    def _set_odometer(self):
-        fleetvehicalodometer = self.env['fleet.vehicle.odometer']
+    def _compute_set_odometer(self):
+        fleet_vehicle_odometer_obj = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = fleetvehicalodometer.search([
+            vehicle_odometer = fleet_vehicle_odometer_obj.search([
                 ('vehicle_id', '=', record.id)], limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
                 raise Warning(_('You can\'t enter odometer less than previous '
-                                'odometer %s !') % (vehicle_odometer.value))
+                                'odometer %s !') % vehicle_odometer.value)
             if record.odometer:
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
                         'vehicle_id': record.id}
-                fleetvehicalodometer.create(data)
+                fleet_vehicle_odometer_obj.create(data)
 
     @api.onchange('f_brand_id')
     def _onchange_brand(self):
@@ -280,14 +279,14 @@ class FleetOperations(models.Model):
     f_brand_id = fields.Many2one('fleet.vehicle.model.brand', string='Make')
     model_no = fields.Char(string='Model No', translate=True)
     license_plate = fields.Char(string='License Plate',
-                                translate=True, size=32,
+                                translate=True,
                                 help='License plate number of the vehicle.\
                                 (ie: plate number for a vehicle)')
     active = fields.Boolean(string='Active', default=True)
     dealer_id = fields.Many2one('res.partner', string='Dealer')
     mileage = fields.Integer(string='Mileage(K/H)')
     description = fields.Text(string='About Vehicle', translate=True)
-    engine_size = fields.Char(string='Engine Size', size=16)
+    engine_size = fields.Char(string='Engine Size')
     cylinders = fields.Integer(string='No of Cylinders')
     front_tire_size = fields.Float(string='Front Tire Size')
     front_tire_pressure = fields.Integer(string='Front Tire Pressure')
@@ -305,9 +304,9 @@ class FleetOperations(models.Model):
                                           ('miles', 'Miles')],
                                          string='Due Odometer Units',
                                          help='Unit of the odometer ')
-    left_wiper_blade = fields.Char(string='Wiper Blade(L)', size=8)
-    right_wiper_blade = fields.Char(string='Wiper Blade(R)', size=8)
-    rr_wiper_blade = fields.Char(string='Wiper Blade(RR)', size=8)
+    left_wiper_blade = fields.Char(string='Wiper Blade(L)')
+    right_wiper_blade = fields.Char(string='Wiper Blade(R)')
+    rr_wiper_blade = fields.Char(string='Wiper Blade(RR)')
     vehicle_length = fields.Integer(string='Length(mm)')
     vehicle_width = fields.Integer(string='Width(mm)')
     vehicle_height = fields.Integer(string='Height(mm)')
@@ -315,16 +314,16 @@ class FleetOperations(models.Model):
     date_sold = fields.Date(string='Date Sold')
     buyer_id = fields.Many2one('res.partner', string='Buyer')
     transfer_date = fields.Date(string='Transfer Date')
-    monthly_deprication = fields.Float(string='Deprication(Monthly)')
+    monthly_deprication = fields.Float(string='Deprecation(Monthly)')
     resale_value = fields.Float(string='Current value')
     salvage_value = fields.Float(string='Salvage Value')
-    warranty_period = fields.Date(string='Warranty Upto')
+    warranty_period = fields.Date(string='Warranty Up to')
     insurance_company_id = fields.Many2one('res.partner',
                                            string='Insurance Company',
                                            domain=[('insurance', '=', True)])
     insurance_type_id = fields.Many2one('insurance.type',
                                         string='Insurance Type')
-    policy_number = fields.Char(string='Policy Number', size=32)
+    policy_number = fields.Char(string='Policy Number')
     payment = fields.Float(string='Payment')
     start_date_insurance = fields.Date(string='Start Date')
     end_date_insurance = fields.Date(string='End Date')
@@ -334,7 +333,7 @@ class FleetOperations(models.Model):
     sale_purchase_attach_ids = fields.One2many('ir.attachment',
                                                'attachment_id_2',
                                                string='Attachments')
-    odometer = fields.Float(compute='_get_odometer', inverse='_set_odometer',
+    odometer = fields.Float(compute='_compute_get_odometer', inverse='_compute_set_odometer',
                             string='Last Odometer',
                             help='Odometer measure of the vehicle at the \
                                 moment of this log')
@@ -343,8 +342,8 @@ class FleetOperations(models.Model):
                                           string='Registration State')
     vehical_division_id = fields.Many2one('vehicle.divison', string='Division')
     driver_id = fields.Many2one('res.partner', 'Driver')
-    driver_identification_no = fields.Char(string='Driver ID', size=64)
-    driver_contact_no = fields.Char(string='Driver Contact Number', size=64)
+    driver_identification_no = fields.Char(string='Driver ID')
+    driver_contact_no = fields.Char(string='Driver Contact Number')
     main_type = fields.Selection([('vehicle', 'Vehicle'),
                                   ('non-vehicle', 'Non-Vehicle')],
                                  default='vehicle', string='Main Type')
@@ -438,9 +437,9 @@ class FleetOperations(models.Model):
         if self._uid:
             vals.update({'reg_id': self._uid})
         if not vals.get('acquisition_date', False):
-            vals.update({'acquisition_date': date.today()})
+            vals.update({'acquisition_date': fields.Date.today()})
         if not vals.get('last_change_status_date', False):
-            vals.update({'last_change_status_date': date.today()})
+            vals.update({'last_change_status_date': fields.Date.today()})
 
         # checking once vin, color and engine number will be set than field
         # automatically become readonly.
@@ -470,7 +469,7 @@ class FleetOperations(models.Model):
 
     def write(self, vals):
         """
-        Function write an entry in the openchatter whenever.
+        Function write an entry in the open chatter whenever.
 
         we change important information.
 
@@ -481,7 +480,7 @@ class FleetOperations(models.Model):
         vals.update({'fmp_id_editable': True})
         if self._uid:
             vals.update({'updated_by': self._uid})
-            vals.update({'updated_date': date.today()})
+            vals.update({'updated_date': fields.Date.today()})
 
         if vals.get('tire_size', False):
             vals.update({'is_tire_size_set': True})
@@ -525,13 +524,6 @@ class ColorHistory(models.Model):
     workorder_id = fields.Many2one('fleet.vehicle.log.services',
                                    string='Work Order')
 
-    def copy(self, default=None):
-        """Method copy."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(ColorHistory, self).copy(default=default)
-
 
 class EngineHistory(models.Model):
     """Model Engine History."""
@@ -547,13 +539,6 @@ class EngineHistory(models.Model):
     workorder_id = fields.Many2one('fleet.vehicle.log.services',
                                    string='Work Order')
 
-    def copy(self, default=None):
-        """Method to copy."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(EngineHistory, self).copy(default=default)
-
 
 class VinHistory(models.Model):
     """Model Vin History."""
@@ -568,13 +553,6 @@ class VinHistory(models.Model):
     note = fields.Text(string='Notes', translate=True)
     workorder_id = fields.Many2one('fleet.vehicle.log.services',
                                    string='Work Order')
-
-    def copy(self, default=None):
-        """Copy Method."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(VinHistory, self).copy(default=default)
 
 
 class TireHistory(models.Model):
@@ -599,13 +577,6 @@ class TireHistory(models.Model):
     workorder_id = fields.Many2one('fleet.vehicle.log.services',
                                    string='Work Order')
 
-    def copy(self, default=None):
-        """Method to copy."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(TireHistory, self).copy(default=default)
-
 
 class BatteryHistory(models.Model):
     """Model Battery History."""
@@ -628,19 +599,12 @@ class BatteryHistory(models.Model):
     workorder_id = fields.Many2one('fleet.vehicle.log.services',
                                    string='Work Order')
 
-    def copy(self, default=None):
-        """Method to copy."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(BatteryHistory, self).copy(default=default)
-
 
 class PendingRepairType(models.Model):
     """Model Pending Repair Type."""
 
     _name = 'pending.repair.type'
-    _description = 'Pending Repait Type'
+    _description = 'Pending Repair Type'
 
     vehicle_rep_type_id = fields.Many2one('fleet.vehicle', string="Vehicle")
     repair_type_id = fields.Many2one('repair.type', string="Repair Type")
@@ -651,16 +615,9 @@ class PendingRepairType(models.Model):
                               ('in-complete', 'Pending')], string="Status")
     user_id = fields.Many2one('res.users', string="By")
 
-    def copy(self, default=None):
-        """Copy Method."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(PendingRepairType, self).copy(default=default)
 
-
-class VehicalDivison(models.Model):
-    """Model Vehicle Divison."""
+class VehicleDivision(models.Model):
+    """Model Vehicle Division."""
 
     _name = 'vehicle.divison'
     _description = 'Vehicle Division'
@@ -669,14 +626,7 @@ class VehicalDivison(models.Model):
     name = fields.Char(string='Name', required=True, translate=True)
 
     _sql_constraints = [('vehicle.divison_uniq', 'unique(name)',
-                         'This divison is already exist!')]
-
-    def copy(self, default=None):
-        """Method to copy."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(VehicalDivison, self).copy(default=default)
+                         'This division is already exist!')]
 
 
 class VehicleType(models.Model):
@@ -685,26 +635,18 @@ class VehicleType(models.Model):
     _name = 'vehicle.type'
     _description = 'Vehicle Type'
 
-    @api.constrains('name')
-    def _check_unique_insesitive(self):
-        vehicle_type_ids = self.search([])
-        lst = [x.name.lower().strip()
-               for x in vehicle_type_ids if x.name and x.id not in self._ids]
-        for self_obj in self:
-            if self_obj.name and self_obj.name.lower().strip() in lst:
-                return Warning('Vehicle Type is already Exist in system.!')
-        return True
-
-    code = fields.Char(string='Code', size=10, translate=True)
-    name = fields.Char(string='Name', size=64, required=True,
+    code = fields.Char(string='Code', translate=True)
+    name = fields.Char(string='Name', required=True,
                        translate=True)
 
-    def copy(self, default=None):
-        """Method to copy."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(VehicleType, self).copy(default=default)
+    @api.constrains('name')
+    def _check_vehicle_type(self):
+        for vehicle in self:
+            if self.search_count([
+                ('id', '!=', vehicle.id),
+                ('name', 'ilike', vehicle.name.strip())
+            ]):
+                raise ValidationError(_("This vehicle type already exists!"))
 
 
 class VehicleLocation(models.Model):
@@ -717,13 +659,6 @@ class VehicleLocation(models.Model):
     name = fields.Char(string='Name', size=64, required=True,
                        translate=True)
 
-    def copy(self, default=None):
-        """Copy Method can not duplicate record and override."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(VehicleLocation, self).copy(default=default)
-
 
 class VehicleDepartment(models.Model):
     """Model Vehicle Department."""
@@ -734,13 +669,6 @@ class VehicleDepartment(models.Model):
     code = fields.Char(string='Code', size=10, translate=True)
     name = fields.Char(string='Name', size=132, required=True, translate=True)
 
-    def copy(self, default=None):
-        """Copy method can not duplicate records and override."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(VehicleDepartment, self).copy(default=default)
-
 
 class ColorColor(models.Model):
     """Model Color."""
@@ -748,27 +676,17 @@ class ColorColor(models.Model):
     _name = 'color.color'
     _description = 'Colors'
 
-    code = fields.Char(string='Code', size=12, translate=True)
-    name = fields.Char(string='Name', size=32, required=True, translate=True)
-
-    # _sql_constraints = [('color_uniq', 'unique(name)',
-    #                      'This color is already exist!')]
-
-    def copy(self, default=None):
-        """Copy method cannot duplicate record and overide method."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(ColorColor, self).copy(default=default)
+    code = fields.Char(string='Code', translate=True)
+    name = fields.Char(string='Name', required=True, translate=True)
 
     @api.constrains('name')
     def check_color(self):
         """Method to check duplicate value."""
         for rec in self:
-            count = self.env['color.color'].search_count(
-                [('name', 'in', [rec.name.upper(), rec.name.lower()]),
-                 ('id', '!=', rec.id)])
-            if count:
+            if self.search_count([
+                ('name', 'ilike', rec.name.strip()),
+                ('id', '!=', rec.id)
+            ]):
                 raise ValidationError("This color is already exist")
 
 
@@ -779,13 +697,6 @@ class IrAttachment(models.Model):
 
     attachment_id = fields.Many2one('fleet.vehicle')
     attachment_id_2 = fields.Many2one('fleet.vehicle')
-
-    def copy(self, default=None):
-        """Copy method cannot duplicate record and override method."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(IrAttachment, self).copy(default=default)
 
 
 class FleetWittenOff(models.Model):
@@ -874,13 +785,6 @@ class FleetWittenOff(models.Model):
                      })
         return super(FleetWittenOff, self).write(vals)
 
-    def copy(self, default=None):
-        """Copy method cannot duplicate record and overide method."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(FleetWittenOff, self).copy(default=default)
-
     @api.model
     def default_get(self, fields):
         """Default get method update in state changing record."""
@@ -895,9 +799,6 @@ class FleetWittenOff(models.Model):
                         vehicle.state == 'complete':
                     raise Warning(_("You can\'t write-off this vehicle "
                                     "which is in Progress or Complete state!"))
-                # elif vehicle.state == 'inspection':
-                #     raise Warning(_("You can\'t write-off this "
-                #                     "vehicle which is in Inspection"))
                 elif vehicle.state == 'rent':
                     raise Warning(_("You can\'t write-off this "
                                     "vehicle which is On Rent."))
@@ -927,7 +828,7 @@ class FleetWittenOff(models.Model):
     def cancel_writeoff(self):
         """Button method in cancle state in the writeoff."""
         return {
-            'name': ('Write Off Cancel Form'),
+            'name': _('Write Off Cancel Form'),
             'res_model': 'writeoff.cancel.reason',
             'type': 'ir.actions.act_window',
             'view_id': False,
@@ -942,7 +843,7 @@ class FleetWittenOff(models.Model):
             if wr_off.vehicle_id:
                 wr_off.vehicle_id.write(
                     {'state': 'write-off',
-                     'last_change_status_date': date.today(),
+                     'last_change_status_date': fields.Date.today(),
                      })
             wr_off.write({
                 'state': 'confirm',
@@ -974,16 +875,15 @@ class FleetVehicleModel(models.Model):
 
     _rec_name = 'name'
 
-    name = fields.Char(string='Model name', size=32,
+    name = fields.Char(string='Model name',
                        required=True, translate=True)
     brand_id = fields.Many2one('fleet.vehicle.model.brand', string='Make',
                                required=True, help='Brand of the vehicle')
+    image_128 = fields.Image(string="Image")
 
     _sql_constraints = [('model_brand_name_uniq', 'unique(name,brand_id)',
                          'Model with this brand Name and Make is '
                          'already exist!')]
-
-    image_128 = fields.Image(string="Image", readonly=False)
 
 
 class FleetVehicleModelBrand(models.Model):
@@ -991,25 +891,18 @@ class FleetVehicleModelBrand(models.Model):
 
     _inherit = 'fleet.vehicle.model.brand'
 
-    name = fields.Char(string='Make', size=64, required=True,
+    name = fields.Char(string='Make', required=True,
                        translate=True)
 
-    _sql_constraints = [('brandname_uniq', 'unique(name)',
-                         'This brand Name is already exist you '
-                         'can\'t duplicate it!')]
-
-    @api.model
-    def create(self, vals):
-        """Override create method."""
-        if vals.get('name', False):
-            vals['name'] = vals['name'].upper()
-        return super(FleetVehicleModelBrand, self).create(vals)
-
-    def write(self, vals):
-        """Override write method."""
-        if vals.get('name', False):
-            vals['name'] = vals['name'].upper()
-        return super(FleetVehicleModelBrand, self).write(vals)
+    @api.constrains('name')
+    def check_model_brand(self):
+        for brand in self:
+            if self.search_count([
+                ('id', '!=', brand.id),
+                ('name', 'ilike', brand.name.strip())
+            ]):
+                raise ValidationError(_('This vehicle model '
+                                        'brand already exists!'))
 
 
 class FleetVehicleAdvanceSearch(models.TransientModel):
@@ -1044,121 +937,121 @@ class FleetVehicleAdvanceSearch(models.TransientModel):
     make_id = fields.Many2one("fleet.vehicle.model.brand", string="Make")
     model_id = fields.Many2one("fleet.vehicle.model", string="Model")
 
-    @api.constrains('acquisition_date', 'acquisition_date_to')
-    def check_registration_date(self):
-        """Method to check registration date."""
-        for vehicle in self:
-            if vehicle.acquisition_date_to:
-                if vehicle.acquisition_date_to < vehicle.acquisition_date:
-                    raise ValidationError('Registration To Date Should Be '
-                                          'Greater Than Registration From Date.')
-
-    @api.constrains('last_service_date', 'last_service_date_to')
-    def check_last_service_date(self):
-        """Method to check last service date."""
-        for vehicle in self:
-            if vehicle.last_service_date_to:
-                if vehicle.last_service_date_to < vehicle.last_service_date:
-                    raise ValidationError('Last Service To Date Should Be '
-                                          'Greater Than Last Service From Date.')
-
-    @api.constrains('next_service_date', 'next_service_date_to')
-    def check_next_service_date(self):
-        """Method to check next service date."""
-        for vehicle in self:
-            if vehicle.next_service_date_to:
-                if vehicle.next_service_date_to < vehicle.next_service_date:
-                    raise ValidationError('Next Service To Date Should Be '
-                                          'Greater Than Next Service From Date.')
-
-    @api.constrains('release_date_from', 'release_date_to')
-    def check_released_date(self):
-        """Method to check released date."""
-        for vehicle in self:
-            if vehicle.release_date_to:
-                if vehicle.release_date_to < vehicle.release_date_from:
-                    raise ValidationError('Released To Date Should Be '
-                                          'Greater Than Released From Date.')
-
-    def get_vehicle_detail_by_advance_search(self):
-        """Method to get vehicle detail by advance search."""
-        domain = []
-        vehicle_obj = self.env['fleet.vehicle']
-        vehicle_ids = []
-        for vehicle in self:
-            if vehicle.make_id:
-                vehicle_ids = vehicle_obj.search([
-                    ('f_brand_id', '=', vehicle.make_id.id)])
-            if vehicle.model_id:
-                vehicle_ids = vehicle_obj.search([
-                    ('model_id', '=', vehicle.model_id.id)])
-
-            if vehicle.state:
-                domain += ('state', '=', vehicle.state),
-            if vehicle.fmp_id:
-                domain += ('id', '=', vehicle.fmp_id.id),
-            if vehicle.vehicle_location_id:
-                domain += [('vehicle_location_id', '=',
-                            vehicle.vehicle_location_id.id)]
-            if vehicle.division_id:
-                domain += [('vehical_division_id', '=',
-                            vehicle.division_id.id)]
-            if vehicle.vechical_type_id:
-                domain += [('vechical_type_id', '=',
-                                                vehicle.vechical_type_id.id)]
-            if vehicle.vehical_color_id:
-                domain += [('vehical_color_id', '=',
-                                                vehicle.vehical_color_id.id)]
-            if vehicle.vin_no:
-                domain += [('vin_sn', '=', vehicle.vin_no)]
-            if vehicle.engine_no:
-                domain += [('engine_no', '=', vehicle.engine_no)]
-            if vehicle.driver_identification_no:
-                domain += [('driver_identification_no', '=',
-                            vehicle.driver_identification_no)]
-            if vehicle.last_service_date and vehicle.last_service_date_to:
-                domain += [('last_service_date', '>=',
-                            vehicle.last_service_date)]
-                domain += [('last_service_date', '<=',
-                            vehicle.last_service_date_to)]
-            elif vehicle.last_service_date:
-                domain += [('last_service_date', '=',
-                            vehicle.last_service_date)]
-            if vehicle.next_service_date and vehicle.next_service_date_to:
-                domain += [('next_service_date', '>=',
-                            vehicle.next_service_date)]
-                domain += [('next_service_date', '<=',
-                            vehicle.next_service_date_to)]
-            elif vehicle.next_service_date:
-                domain += [('next_service_date', '=',
-                            vehicle.next_service_date)]
-            if vehicle.acquisition_date and vehicle.acquisition_date_to:
-                domain += [('acquisition_date', '>=',
-                            vehicle.acquisition_date)]
-                domain += [('acquisition_date', '<=',
-                            vehicle.acquisition_date_to)]
-            elif vehicle.acquisition_date:
-                domain += [('acquisition_date', '=', vehicle.acquisition_date)]
-            if vehicle.release_date_from and vehicle.release_date_to:
-                domain += [('released_date', '>=', vehicle.release_date_from)]
-                domain += [('released_date', '<=', vehicle.release_date_to)]
-            elif vehicle.release_date_from:
-                domain += [('released_date', '=', vehicle.release_date_from)]
-            if vehicle.make_id or vehicle.model_id:
-                vehicle_ids = sorted(set(vehicle_ids.ids))
-                domain += [('id', 'in', vehicle_ids)]
-            return {
-                'name': _('Vehicle Registration'),
-                'view_type': 'form',
-                "view_mode": 'tree,form',
-                'res_model': 'fleet.vehicle',
-                'type': 'ir.actions.act_window',
-                'nodestroy': True,
-                'domain': domain,
-                'context': self._context,
-                'target': 'current',
-            }
-        return True
+    # @api.constrains('acquisition_date', 'acquisition_date_to')
+    # def check_registration_date(self):
+    #     """Method to check registration date."""
+    #     for vehicle in self:
+    #         if vehicle.acquisition_date_to:
+    #             if vehicle.acquisition_date_to < vehicle.acquisition_date:
+    #                 raise ValidationError('Registration To Date Should Be '
+    #                                       'Greater Than Registration From Date.')
+    #
+    # @api.constrains('last_service_date', 'last_service_date_to')
+    # def check_last_service_date(self):
+    #     """Method to check last service date."""
+    #     for vehicle in self:
+    #         if vehicle.last_service_date_to:
+    #             if vehicle.last_service_date_to < vehicle.last_service_date:
+    #                 raise ValidationError('Last Service To Date Should Be '
+    #                                       'Greater Than Last Service From Date.')
+    #
+    # @api.constrains('next_service_date', 'next_service_date_to')
+    # def check_next_service_date(self):
+    #     """Method to check next service date."""
+    #     for vehicle in self:
+    #         if vehicle.next_service_date_to:
+    #             if vehicle.next_service_date_to < vehicle.next_service_date:
+    #                 raise ValidationError('Next Service To Date Should Be '
+    #                                       'Greater Than Next Service From Date.')
+    #
+    # @api.constrains('release_date_from', 'release_date_to')
+    # def check_released_date(self):
+    #     """Method to check released date."""
+    #     for vehicle in self:
+    #         if vehicle.release_date_to:
+    #             if vehicle.release_date_to < vehicle.release_date_from:
+    #                 raise ValidationError('Released To Date Should Be '
+    #                                       'Greater Than Released From Date.')
+    #
+    # def get_vehicle_detail_by_advance_search(self):
+    #     """Method to get vehicle detail by advance search."""
+    #     domain = []
+    #     vehicle_obj = self.env['fleet.vehicle']
+    #     vehicle_ids = []
+    #     for vehicle in self:
+    #         if vehicle.make_id:
+    #             vehicle_ids = vehicle_obj.search([
+    #                 ('f_brand_id', '=', vehicle.make_id.id)])
+    #         if vehicle.model_id:
+    #             vehicle_ids = vehicle_obj.search([
+    #                 ('model_id', '=', vehicle.model_id.id)])
+    #
+    #         if vehicle.state:
+    #             domain += ('state', '=', vehicle.state),
+    #         if vehicle.fmp_id:
+    #             domain += ('id', '=', vehicle.fmp_id.id),
+    #         if vehicle.vehicle_location_id:
+    #             domain += [('vehicle_location_id', '=',
+    #                         vehicle.vehicle_location_id.id)]
+    #         if vehicle.division_id:
+    #             domain += [('vehical_division_id', '=',
+    #                         vehicle.division_id.id)]
+    #         if vehicle.vechical_type_id:
+    #             domain += [('vechical_type_id', '=',
+    #                                             vehicle.vechical_type_id.id)]
+    #         if vehicle.vehical_color_id:
+    #             domain += [('vehical_color_id', '=',
+    #                                             vehicle.vehical_color_id.id)]
+    #         if vehicle.vin_no:
+    #             domain += [('vin_sn', '=', vehicle.vin_no)]
+    #         if vehicle.engine_no:
+    #             domain += [('engine_no', '=', vehicle.engine_no)]
+    #         if vehicle.driver_identification_no:
+    #             domain += [('driver_identification_no', '=',
+    #                         vehicle.driver_identification_no)]
+    #         if vehicle.last_service_date and vehicle.last_service_date_to:
+    #             domain += [('last_service_date', '>=',
+    #                         vehicle.last_service_date)]
+    #             domain += [('last_service_date', '<=',
+    #                         vehicle.last_service_date_to)]
+    #         elif vehicle.last_service_date:
+    #             domain += [('last_service_date', '=',
+    #                         vehicle.last_service_date)]
+    #         if vehicle.next_service_date and vehicle.next_service_date_to:
+    #             domain += [('next_service_date', '>=',
+    #                         vehicle.next_service_date)]
+    #             domain += [('next_service_date', '<=',
+    #                         vehicle.next_service_date_to)]
+    #         elif vehicle.next_service_date:
+    #             domain += [('next_service_date', '=',
+    #                         vehicle.next_service_date)]
+    #         if vehicle.acquisition_date and vehicle.acquisition_date_to:
+    #             domain += [('acquisition_date', '>=',
+    #                         vehicle.acquisition_date)]
+    #             domain += [('acquisition_date', '<=',
+    #                         vehicle.acquisition_date_to)]
+    #         elif vehicle.acquisition_date:
+    #             domain += [('acquisition_date', '=', vehicle.acquisition_date)]
+    #         if vehicle.release_date_from and vehicle.release_date_to:
+    #             domain += [('released_date', '>=', vehicle.release_date_from)]
+    #             domain += [('released_date', '<=', vehicle.release_date_to)]
+    #         elif vehicle.release_date_from:
+    #             domain += [('released_date', '=', vehicle.release_date_from)]
+    #         if vehicle.make_id or vehicle.model_id:
+    #             vehicle_ids = sorted(set(vehicle_ids.ids))
+    #             domain += [('id', 'in', vehicle_ids)]
+    #         return {
+    #             'name': _('Vehicle Registration'),
+    #             'view_type': 'form',
+    #             "view_mode": 'tree,form',
+    #             'res_model': 'fleet.vehicle',
+    #             'type': 'ir.actions.act_window',
+    #             'nodestroy': True,
+    #             'domain': domain,
+    #             'context': self._context,
+    #             'target': 'current',
+    #         }
+    #     return True
 
 
 class VehicleUniqueSequence(models.Model):
@@ -1180,12 +1073,6 @@ class VehicleUniqueSequence(models.Model):
                 uniqe for unique sequence!')
     ]
 
-    def copy(self, default=None):
-        """Copy method cannot duplicate record and overide method."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-
 
 class NextIncrementNumber(models.Model):
     """Model Next Increment NUmber."""
@@ -1193,28 +1080,22 @@ class NextIncrementNumber(models.Model):
     _name = 'next.increment.number'
     _description = 'Next Increment Number'
 
-    name = fields.Char(string='Name', size=64, translate=True)
+    name = fields.Char(string='Name', translate=True)
     vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle Id')
     number = fields.Float(string='Odometer Increment')
-
-    def copy(self, default=None):
-        """Copy method cannot duplicate record and overide method."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
 
     @api.constrains('vehicle_id')
     def _check_vehicle_id(self):
         """Method to check last service date."""
-        next_number = self.env['next.increment.number']
         for increment in self:
-            duplicate_hist = next_number.search([
+            if self.search_count([
                 ('vehicle_id', '=', increment.vehicle_id.id),
-                ('id', '!=', increment.id)])
-            if duplicate_hist:
-                raise ValidationError('You can not add more than one odoometer '
-                                      'increment configuration for same vehicle.!!!')
+                ('id', '!=', increment.id)
+            ]):
+                raise ValidationError('You can not add more than one odometer '
+                                      'increment configuration for same vehicle.!')
         
+
 class NextServiceDays(models.Model):
     """Model Next Service Days."""
 
@@ -1225,36 +1106,28 @@ class NextServiceDays(models.Model):
     vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle Id')
     days = fields.Integer(string='Days')
 
-    def copy(self, default=None):
-        """Copy method cannot duplicate record and overide method."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-
     @api.constrains('vehicle_id')
     def _check_vehicle_id(self):
         """Method to check last service date."""
-        next_service = self.env['next.service.days']
-        for service in self:
-            duplicate_hist = next_service.search([
-                ('vehicle_id', '=', service.vehicle_id.id),
-                ('id', '!=', service.id)])
-            if duplicate_hist:
+        for day in self:
+            if self.search_count([
+                ('vehicle_id', '=', day.vehicle_id.id),
+                ('id', '!=', day.id)
+            ]):
                 raise ValidationError('You can not add more than one next '
-                                      'service days configuration for same vehicle.!!!')
+                                      'service days configuration for same vehicle.!')
 
 
 class VehicleFuelLog(models.Model):
     """Model Vehicle Fuel Log."""
 
     _inherit = 'fleet.vehicle.log.fuel'
-
     _order = 'id desc'
 
-    def _get_odometer(self):
-        fleetvehicalodometer = self.env['fleet.vehicle.odometer']
+    def _compute_get_odometer(self):
+        fleet_vehical_odometer_obj = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = fleetvehicalodometer.search([
+            vehicle_odometer = fleet_vehical_odometer_obj.search([
                 ('vehicle_id', '=', record.vehicle_id.id)], limit=1,
                 order='value desc')
             if vehicle_odometer:
@@ -1262,20 +1135,20 @@ class VehicleFuelLog(models.Model):
             else:
                 record.odometer = 0
 
-    def _set_odometer(self):
-        fleetvehicalodometer = self.env['fleet.vehicle.odometer']
+    def _compute_set_odometer(self):
+        fleet_vehical_odometer_obj = self.env['fleet.vehicle.odometer']
         for record in self:
-            vehicle_odometer = fleetvehicalodometer.search(
+            vehicle_odometer = fleet_vehical_odometer_obj.search(
                 [('vehicle_id', '=', record.vehicle_id.id)],
                 limit=1, order='value desc')
             if record.odometer < vehicle_odometer.value:
                 raise Warning(_('You can\'t enter odometer less than previous '
-                                'odometer %s !') % (vehicle_odometer.value))
+                                'odometer %s !') % vehicle_odometer.value)
             if record.odometer:
                 date = fields.Date.context_today(record)
                 data = {'value': record.odometer, 'date': date,
                         'vehicle_id': record.vehicle_id.id}
-                fleetvehicalodometer.create(data)
+                fleet_vehical_odometer_obj.create(data)
 
     @api.onchange('vehicle_id')
     def _onchange_vehicle(self):
@@ -1287,8 +1160,8 @@ class VehicleFuelLog(models.Model):
             self.purchaser_id = self.vehicle_id.driver_id.id
 
     odometer = fields.Float(
-        compute='_get_odometer',
-        inverse='_set_odometer',
+        compute='_compute_get_odometer',
+        inverse='_compute_set_odometer',
         string='Last Odometer',
         help='Odometer measure of the vehicle at the moment of this log')
     odometer_unit = fields.Selection(
@@ -1298,7 +1171,7 @@ class VehicleFuelLog(models.Model):
                            string='Make', store=True)
     model = fields.Many2one(related='vehicle_id.model_id',
                             string='Model', store=True)
-    current_fuel = fields.Float(string='Current Fuel', size=64)
+    current_fuel = fields.Float(string='Current Fuel')
     fuel_type = fields.Selection(related='vehicle_id.fuel_type',
                                  store=True,
                                  help='Fuel Used by the vehicle')
@@ -1325,16 +1198,6 @@ class VehicleFuelLog(models.Model):
                     res.update({'vehicle_id': self._context['vehicle_id']})
         return res
 
-    def copy(self, default=None):
-        """
-        Method copy for can not duplicate records.
-
-        In the vehicle fuel log.
-        """
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-
 
 class FleetVehicleCost(models.Model):
     """Model Fleet Vehicle Cost."""
@@ -1343,7 +1206,7 @@ class FleetVehicleCost(models.Model):
 
     @api.model
     def default_get(self, fields):
-        """Default get method is set vehilce id."""
+        """Default get method is set vehicle id."""
         res = super(FleetVehicleCost, self).default_get(fields)
         fleet_obj = self.env['fleet.vehicle']
         if self._context.get('active_id', False):
@@ -1360,7 +1223,7 @@ class FleetVehicleOdometer(models.Model):
     _description = 'Odometer log for a vehicle'
     _order = 'date desc'
 
-    def _vehicle_log_name_get_fnc(self):
+    def _compute_vehicle_log_name_get_fnc(self):
         for record in self:
             name = record.vehicle_id and record.vehicle_id.name or False
             if record.date:
@@ -1378,9 +1241,9 @@ class FleetVehicleOdometer(models.Model):
             self.unit = odometer_unit
             self.value = value
 
-    name = fields.Char(compute="_vehicle_log_name_get_fnc", string='Name',
+    name = fields.Char(compute="_compute_vehicle_log_name_get_fnc", string='Name',
                        store=True)
-    date = fields.Date(string='Date', default=datetime.now().date())
+    date = fields.Date(string='Date', default=fields.Date.today())
     value = fields.Float(string='Odometer Value', group_operator="max")
     vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle',
                                  required=True)
@@ -1395,9 +1258,7 @@ class FleetVehicleOdometer(models.Model):
     def default_get(self, fields):
         """Method default get."""
         res = super(FleetVehicleOdometer, self).default_get(fields)
-        # cr, uid, context = self.env.args
         context = self.env.context
-        # context = dict(context)
         fleet_obj = self.env['fleet.vehicle']
         if self._context.get('active_id'):
             vehicle_id = fleet_obj.browse(context['active_id'])
@@ -1413,11 +1274,11 @@ class ReportHeading(models.Model):
     _description = 'Report Heading'
 
     @api.depends('image')
-    def _get_image(self):
+    def _compute_get_image(self):
         return dict((p.id, tools.image_get_resized_images(p.image))
                     for p in self)
 
-    def _set_image(self):
+    def _compute_set_image(self):
         if self.image_small:
             self.image = \
                 tools.image_resize_image_small(self.image_small,
@@ -1427,13 +1288,13 @@ class ReportHeading(models.Model):
                 tools.image_resize_image_small(self.image_medium,
                                                size=(102, 50))
 
-    name = fields.Char(string='Title', size=128, translate=True)
-    revision_no = fields.Char(string='Rev. No.', size=64, translate=True)
-    document_no = fields.Char(string='Document No.', size=64, translate=True)
+    name = fields.Char(string='Title', translate=True)
+    revision_no = fields.Char(string='Rev. No.', translate=True)
+    document_no = fields.Char(string='Document No.', translate=True)
     image = fields.Binary(string="Image",
                           help="This field holds the image used as image \
                             for the Report , limited to 1024x1024px.")
-    image_medium = fields.Binary(compute="_get_image", inverse='_set_image',
+    image_medium = fields.Binary(compute="_compute_get_image", inverse='_compute_set_image',
                                  string="Medium-sized image",
                                  help="Medium-sized image of the Report. \
                                  It is automatically resized as a 128x128px \
@@ -1441,7 +1302,7 @@ class ReportHeading(models.Model):
                                  "only when the image exceeds one of those \
                                  sizes. Use this field in form views or \
                                  some kanban views.")
-    image_small = fields.Binary(compute="_get_image", inverse='_set_image',
+    image_small = fields.Binary(compute="_compute_get_image", inverse='_compute_set_image',
                                 string="Report image",
                                 help="Small-sized image of the Report. \
                                 It is automatically "
@@ -1457,13 +1318,13 @@ class ResCompany(models.Model):
     _inherit = 'res.company'
 
     name = fields.Char(related='partner_id.name', string='Company Name',
-                       size=128, required=True, store=True, translate=True)
+                       required=True, store=True, translate=True)
 
 
 class InsuranceType(models.Model):
     """Model Insurance Type."""
 
     _name = 'insurance.type'
-    _description = 'Vehicle Insurence Type'
+    _description = 'Vehicle Insurance Type'
 
     name = fields.Char(string='Name')

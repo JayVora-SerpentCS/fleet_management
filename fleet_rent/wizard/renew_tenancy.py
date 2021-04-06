@@ -14,7 +14,7 @@ class WizardRenewTenancy(models.TransientModel):
     _description = 'Vehicle Renew Tenacy'
 
     @api.depends('rent_type_id', 'start_date')
-    def _create_date(self):
+    def _compute_create_date(self):
         for rec in self:
             if rec.rent_type_id and rec.start_date:
                 if rec.rent_type_id.renttype == 'Months':
@@ -35,7 +35,7 @@ class WizardRenewTenancy(models.TransientModel):
         return True
 
     start_date = fields.Datetime(string='Start Date')
-    end_date = fields.Datetime(compute='_create_date',
+    end_date = fields.Datetime(compute='_compute_create_date',
                                string='End Date', store=True)
     rent_type_id = fields.Many2one('rent.type',
                                    string='Rent Type', required=True)
@@ -53,8 +53,7 @@ class WizardRenewTenancy(models.TransientModel):
 
     def renew_contract(self):
         """Button Method is used to Renew Tenancy."""
-        view_id = self.env['ir.model.data'].get_object_reference(
-            'fleet_rent', 'view_fleet_rent_form')
+        view_id = self.env.ref('fleet_rent.view_fleet_rent_form').id
         if self._context.get('active_id', False):
             for rec in self:
                 if rec.start_date > rec.end_date:
@@ -75,7 +74,7 @@ class WizardRenewTenancy(models.TransientModel):
                 })
 
         return {
-            'view_id': view_id and len(view_id) >= 2 and view_id[1] or False,
+            'view_id': view_id or False,
             'view_mode': 'form',
             'view_type': 'form',
             'res_model': 'fleet.rent',

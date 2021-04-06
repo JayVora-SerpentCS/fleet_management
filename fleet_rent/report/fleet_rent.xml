@@ -79,9 +79,9 @@
                             </tr>
                         </t>
                         <tr style="border: 1px solid black;">
-                            <th width="20%" style="padding:5px;"></th>
-                            <th width="20%" style="padding:5px;"></th>
-                            <th width="20%" style="padding:5px;"></th>
+                            <th width="20%" style="padding:5px;"/>
+                            <th width="20%" style="padding:5px;"/>
+                            <th width="20%" style="padding:5px;"/>
                             <th width="20%" style="padding:5px;" class="text-center"><span t-esc="total_amount"/></th>
                             <th width="20%" style="padding:5px;"  class="text-center"><span t-esc="due_amount"/></th>
                         </tr>

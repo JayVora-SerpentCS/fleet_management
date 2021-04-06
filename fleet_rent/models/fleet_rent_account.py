@@ -57,21 +57,6 @@ class AccountMoveLine(models.Model):
                                     string='Rental Vehicle')
 
 
-class account_payment(models.AbstractModel):
-    """Account Abstract Model."""
-
-    _inherit = 'account.payment'
-
-    # def _compute_payment_amount(self, invoices=None, currency=None):
-    def _compute_payment_amount(self, invoices, currency, journal, date):
-        """Overridden Method to update deposit amount in payment wizard."""
-        rec = super(account_payment, self).\
-            _compute_payment_amount(invoices, currency, journal, date)
-        if self._context.get('active_model', False) == 'fleet.rent':
-            return self._context.get('default_amount' or 0.0)
-        return rec
-
-
 class AccountPayment(models.Model):
     """Account Payment Model."""
 
@@ -80,6 +65,14 @@ class AccountPayment(models.Model):
     fleet_rent_id = fields.Many2one('fleet.rent',
                                     string='Rental Vehicle',
                                     help='Rental Vehicle Name')
+
+    def _compute_payment_amount(self, invoices, currency, journal, date):
+        """Overridden Method to update deposit amount in payment wizard."""
+        rec = super(AccountPayment, self). \
+            _compute_payment_amount(invoices, currency, journal, date)
+        if self._context.get('active_model', False) == 'fleet.rent':
+            return self._context.get('default_amount' or 0.0)
+        return rec
 
     def _create_payment_entry(self, amount):
 

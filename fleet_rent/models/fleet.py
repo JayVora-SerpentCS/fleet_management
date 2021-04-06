@@ -12,7 +12,7 @@ class FleetVehicleExtend(models.Model):
 
     _inherit = 'fleet.vehicle'
 
-    def _count_rent(self):
+    def _compute_count_rent(self):
         """Count the total number of Rent for the current vehicle."""
         rent_obj = self.env['fleet.rent']
         for vehicle in self:
@@ -23,5 +23,5 @@ class FleetVehicleExtend(models.Model):
     #                                 string="Income Account")
     # expence_acc_id = fields.Many2one("account.account",
     #                                  string="Expense Account")
-    rent_count = fields.Integer(compute='_count_rent',
+    rent_count = fields.Integer(compute='_compute_count_rent',
                                 string="Rents")

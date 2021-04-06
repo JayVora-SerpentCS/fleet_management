@@ -46,10 +46,3 @@ class ResPartnerExtended(models.Model):
     d_id = fields.Char(string='ID-Card', size=64)
     is_driver = fields.Boolean(string='Is Driver')
     insurance = fields.Boolean(string='Insurance')
-
-    def copy(self, default=None):
-        """Copy method cannot duplicate record and overide method."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate record!'))
-        return super(ResPartnerExtended, self).copy(default=default)

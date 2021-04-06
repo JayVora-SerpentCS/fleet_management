@@ -141,7 +141,7 @@
                                 options="{'no_create': True, 'no_open': True}"/>
                             <field name="fleet_tenant_id" invisible="1"/>
                             <field name="manager_id" />
-                            <field name="vehicle_owner" required="1" string="Vehicle Owner"/>
+                            <field name="vehicle_owner" readonly="1" string="Vehicle Owner"/>
                             <field name="company_id" required="1"/>
                             <field name="currency_id" required="1" />
                             <label for="odometer" />
