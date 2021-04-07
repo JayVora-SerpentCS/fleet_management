@@ -84,7 +84,7 @@ class FleetRent(models.Model):
                 else:
                     rent.odometer = 0
 
-    def _set_odometer(self):
+    def _compute_set_odometer(self):
         odometer_obj = self.env['fleet.vehicle.odometer']
         for rent in self:
             if rent.vehicle_id:
@@ -207,7 +207,7 @@ class FleetRent(models.Model):
                                   help="The optional other currency \
                                   if it is a multi-currency entry.")
     odometer = fields.Float(compute='_compute_get_odometer',
-                            inverse='_set_odometer',
+                            inverse='_compute_set_odometer',
                             string='Last Odometer',
                             help='Odometer measure of the vehicle at \
                             the moment of this log')
@@ -330,73 +330,53 @@ class FleetRent(models.Model):
                 ('fleet_rent_id', '=', rent.id),
                 ('is_deposit_return_inv', '=', True)])
 
-    @api.model
-    def rent_send_mail(self):
-        """Method to send mail."""
-        rent_obj = self.env['fleet.rent']
-        mail_temp_rec = self.env.ref('fleet_rent.email_template_edi_rent')
-        rent_ids = rent_obj.search(['|', ('date_end', '<=', fields.Datetime.now()),
-                                    ('date_end', '>=', fields.Datetime.now())])
-        if rent_ids and mail_temp_rec:
-            for rent in rent_ids:
-                mail_temp_rec.send_mail(rent.id, force_send=True)
+    # @api.model
+    # def rent_send_mail(self):
+    #     """Method to send mail."""
+    #     rent_obj = self.env['fleet.rent']
+    #     mail_temp_rec = self.env.ref('fleet_rent.email_template_edi_rent')
+    #     rent_ids = rent_obj.search(['|', ('date_end', '<=', fields.Datetime.now()),
+    #                                 ('date_end', '>=', fields.Datetime.now())])
+    #     if rent_ids and mail_temp_rec:
+    #         for rent in rent_ids:
+    #             mail_temp_rec.send_mail(rent.id, force_send=True)
 
-    @api.model
-    def rent_done_cron(self):
-        """Method to rent done cron."""
-        rent_obj = self.env['fleet.rent']
-        rent_sched_obj = self.env['tenancy.rent.schedule']
-        for rent in rent_obj.search([('date_end', '!=', False),
-                                     ('state', 'in', ['done', 'close'])]):
-            records = []
-            if rent.rent_schedule_ids:
-                records = rent_sched_obj.search([
-                    ('paid', '=', False),
-                    ('id', 'in', rent.rent_schedule_ids.ids)])
-            if not records:
-                if datetime.now() >= rent.date_end:
-                    reason = "This Rent Order is auto completed due to your "
-                    "rent limit is over."
-                    rent.write({'state': 'done',
-                                'close_reson': reason,
-                                'date_cancel': fields.Datetime.now(),
-                                'cancel_by_id': self._uid})
+    # @api.model
+    # def rent_done_cron(self):
+    #     """Method to rent done cron."""
+    #     rent_obj = self.env['fleet.rent']
+    #     rent_sched_obj = self.env['tenancy.rent.schedule']
+    #     for rent in rent_obj.search([('date_end', '!=', False),
+    #                                  ('state', 'in', ['done', 'close'])]):
+    #         records = []
+    #         if rent.rent_schedule_ids:
+    #             records = rent_sched_obj.search([
+    #                 ('paid', '=', False),
+    #                 ('id', 'in', rent.rent_schedule_ids.ids)])
+    #         if not records:
+    #             if datetime.now() >= rent.date_end:
+    #                 reason = "This Rent Order is auto completed due to your "
+    #                 "rent limit is over."
+    #                 rent.write({'state': 'done',
+    #                             'close_reson': reason,
+    #                             'date_cancel': fields.Datetime.now(),
+    #                             'cancel_by_id': self._uid})
 
-    @api.model
-    def rent_remainder_cron(self):
-        """Method to remainder rent."""
-        rent_obj = self.env['fleet.rent']
-        rent_sched_obj = self.env['tenancy.rent.schedule']
-        mail_temp_rec = self.env.ref(
-            'fleet_rent.email_rent_remainder_template')
-        for rent in rent_obj.search([('state', '=', 'open')]):
-            d_date = datetime.now()
-            s_date = d_date.strftime("%Y-%m-%d 23:59:59")
-            o_date = d_date.strftime("%Y-%m-%d 00:00:00")
-            rent_schedule_ids = rent_sched_obj.search(["|",
-                ('start_date', '>=', o_date),
-                ('start_date', '<=', s_date),
-                ('fleet_rent_id', '=', rent.id),
-                ('state', '!=', 'paid')
-            ])
-            if mail_temp_rec:
-                for rent_line in rent_schedule_ids:
-                    mail_temp_rec.send_mail(rent_line.id, force_send=True)
 
-    @api.model
-    def rent_payment_done(self):
-        """Method to send notification of rent done."""
-        rent_obj = self.env['fleet.rent']
-        rent_sched_obj = self.env['tenancy.rent.schedule']
-        mail_temp_rec = self.env.ref('fleet_rent.email_rent_complete_template')
-        for rent in rent_obj.search([('state', '=', 'open')]):
-            records = []
-            if rent.rent_schedule_ids:
-                records = rent_sched_obj.search([
-                    ('paid', '=', False),
-                    ('fleet_rent_id', '=', rent.id)])
-            if not records:
-                mail_temp_rec.send_mail(rent.id, force_send=True)
+    # @api.model
+    # def rent_payment_done(self):
+    #     """Method to send notification of rent done."""
+    #     rent_obj = self.env['fleet.rent']
+    #     rent_sched_obj = self.env['tenancy.rent.schedule']
+    #     mail_temp_rec = self.env.ref('fleet_rent.email_rent_complete_template')
+    #     for rent in rent_obj.search([('state', '=', 'open')]):
+    #         records = []
+    #         if rent.rent_schedule_ids:
+    #             records = rent_sched_obj.search([
+    #                 ('paid', '=', False),
+    #                 ('fleet_rent_id', '=', rent.id)])
+    #         if not records:
+    #             mail_temp_rec.send_mail(rent.id, force_send=True)
 
     def action_rent_confirm(self):
         """Method to confirm rent status."""
@@ -766,7 +746,7 @@ class TenancyRentSchedule(models.Model):
     start_date = fields.Datetime(string='Date', help='Start Date.')
     end_date = fields.Date(string='End Date', help='End Date.')
     cheque_detail = fields.Char(string='Cheque Detail')
-    move_check = fields.Boolean(compute='_compute__get_move_check', string='Posted',
+    move_check = fields.Boolean(compute='_compute_get_move_check', string='Posted',
                                 store=True)
     rel_tenant_id = fields.Many2one('res.users',
                                     string="Tenant")
@@ -919,3 +899,16 @@ class TenancyRentSchedule(models.Model):
             created_move_ids.append(move_id.id)
             move_id.write({'ref': 'Tenancy Rent', 'state': 'posted'})
         return created_move_ids
+
+    @api.model
+    def rent_remainder_cron(self):
+        """Method to remainder rent."""
+        mail_temp_rec = self.env.ref(
+            'fleet_rent.email_rent_remainder_template')
+        tenancy_rent_recs = self.search([
+            ('state', '!=', 'paid'),
+            ('start_date', '<=', fields.Datetime.now())
+        ])
+        if tenancy_rent_recs and mail_temp_rec:
+            for pending_rent in tenancy_rent_recs:
+                mail_temp_rec.send_mail(pending_rent.id, force_send=True)

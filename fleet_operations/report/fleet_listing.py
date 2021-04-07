@@ -60,12 +60,12 @@ class FleetListing(models.AbstractModel):
         # tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
-            pattern: pattern solid')
+                    pattern: pattern solid, fore_colour yellow;')
 
         row = 0
         row += 1
         row += 1
-        worksheet.write(row, 1, 'Fleet Listing', tit)
+        worksheet.write(row, 1, 'Fleet Listing', format1)
         row = 1
         row += 3
         worksheet.write(row, 0, 'NO', format1)
@@ -121,5 +121,5 @@ class FleetListing(models.AbstractModel):
         fp.seek(0)
         data = fp.read()
         fp.close()
-        res = base64.encodestring(data)
+        res = base64.encodebytes(data)
         return res

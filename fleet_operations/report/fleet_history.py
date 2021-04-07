@@ -126,19 +126,17 @@ class PrintFleetHistory(models.TransientModel):
         font.bold = True
         font.name = 'Arial'
         font.height = 200
+        style1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200', num_format_str='DD/MM/YYYY')
         # pattern = xlwt.Pattern()
-        size = xlwt.easyxf('font: bold 1; font: name 1; font: height 220')
-        tit = xlwt.easyxf('font: name 1; font: height 220')
         # tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
-            pattern: pattern solid')
+            pattern: pattern solid, fore_colour yellow;')
 
         row = 0
         row += 1
-        worksheet.write(row, 1, 'Fleet History Report', tit)
+        worksheet.write(row, 1, 'Fleet History Report', format1)
         row = 2
-        print ("\n fleet_historyfleet_history", fleet_history)
         for obj in fleet_history:
             row += 3
             worksheet.write(row, 0, 'Identification :', format1)
@@ -178,15 +176,14 @@ class PrintFleetHistory(models.TransientModel):
                 worksheet.write(row, 3, order.odometer or '', border)
                 row += 1
                 worksheet.write(row, 0, 'Actual Date Issued :', format1)
-                worksheet.write(row, 1, order.date or '', border)
+                worksheet.write(row, 1, order.date or '', style1)
                 # worksheet.write(row, 2, 'Location :', format1)
                 # worksheet.write(row, 3, order.vechical_location_id and
                 #                 order.vechical_location_id.name or '', border)
-                row += 1
                 worksheet.write(row, 2, 'Notes :', format1)
-                worksheet.write(row, 3, order.notes or '', border)
+                worksheet.write(row, 3, order.note or '', border)
                 row += 2
-                worksheet.write(row, 0, 'REPAIRS PERFORMED', size)
+                worksheet.write(row, 1, 'REPAIRS PERFORMED', format1)
                 row += 2
                 worksheet.write(row, 0, 'No', format1)
                 worksheet.write(row, 1, 'Repair Type', format1)
@@ -214,24 +211,14 @@ class PrintFleetHistory(models.TransientModel):
                 worksheet.write(row, 0, '**************************')
                 worksheet.write(row, 1, '**************************')
                 worksheet.write(row, 2, '**************************')
-                worksheet.write(row, 3, '**************************')
-                worksheet.write(row, 4, '**************************')
-                worksheet.write(row, 5, '**************************')
-                worksheet.write(row, 6, '**************************')
-                worksheet.write(row, 7, '**************************')
                 row += 1
                 worksheet.write(row, 0, '**************************')
                 worksheet.write(row, 1, '**************************')
                 worksheet.write(row, 2, '**************************')
-                worksheet.write(row, 3, '**************************')
-                worksheet.write(row, 4, '**************************')
-                worksheet.write(row, 5, '**************************')
-                worksheet.write(row, 6, '**************************')
-                worksheet.write(row, 7, '**************************')
         fp = io.BytesIO()
         workbook.save(fp)
         fp.seek(0)
         data = fp.read()
         fp.close()
-        res = base64.encodestring(data)
+        res = base64.encodebytes(data)
         return res

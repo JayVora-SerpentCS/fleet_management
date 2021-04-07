@@ -9,7 +9,7 @@ from odoo import models
 import xlwt
 
 
-class FleetPendinRepair(models.AbstractModel):
+class FleetPendingRepair(models.AbstractModel):
     """Fleet pending repair."""
 
     _name = 'report.fleet_operations.fleet.pending.repairs.xls'
@@ -36,12 +36,12 @@ class FleetPendinRepair(models.AbstractModel):
         """Method generate pending repairs xlsx report."""
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('fleet_pending')
-        worksheet.col(0).width = 5000
-        worksheet.col(1).width = 7500
+        worksheet.col(0).width = 6000
+        worksheet.col(1).width = 6000
         worksheet.col(2).width = 7500
         worksheet.col(3).width = 12500
-        worksheet.col(4).width = 2500
-        worksheet.col(5).width = 5000
+        worksheet.col(4).width = 5500
+        worksheet.col(5).width = 6000
         worksheet.col(6).width = 7500
         worksheet.col(7).width = 5000
         worksheet.col(8).width = 2500
@@ -52,61 +52,61 @@ class FleetPendinRepair(models.AbstractModel):
         font.height = 200
         # pattern = xlwt.Pattern()
         tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
-        border = xlwt.easyxf('font: name 1; font: height 200')
-        # format1 = xlwt.easyxf('font: bold 1; font: name 1;\
-        #     font: height 200;')
+        style1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200', num_format_str='DD/MM/YYYY')
+        # border = xlwt.easyxf('font: name 1; font: height 200')
+        format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
+                    pattern: pattern solid, fore_colour yellow;')
 
         row = 0
         row += 1
-        row += 1
-        worksheet.write(row, 2, 'Fleet With Pending Repairs')
+        worksheet.write(row, 2, 'Fleet With Pending Repairs', format1)
         row += 2
         for obj in fleet_pending:
             if obj.pending_repair_type_ids:
                 row += 3
-                worksheet.write(row, 0, 'Vehicle Information :')
+                worksheet.write(row, 0, 'Vehicle Information :',format1)
                 row += 2
-                worksheet.write(row, 2, 'Kilometer :', tot)
-                worksheet.write(row, 3, obj.odometer or '', border)
+                worksheet.write(row, 2, 'Kilometer :', format1)
+                worksheet.write(row, 3, obj.odometer or '', tot)
                 row += 1
-                worksheet.write(row, 2, 'Vehicle ID :', tot)
-                worksheet.write(row, 3, obj.name or '', border)
+                worksheet.write(row, 2, 'Vehicle ID :', format1)
+                worksheet.write(row, 3, obj.name or '', tot)
                 row += 1
-                worksheet.write(row, 2, 'Type :', tot)
+                worksheet.write(row, 2, 'Type :', format1)
                 worksheet.write(row, 3, obj.vechical_type_id and
-                                obj.vechical_type_id.name or '', border)
+                                obj.vechical_type_id.name or '', tot)
                 row += 1
-                worksheet.write(row, 2, 'VIN :', tot)
-                worksheet.write(row, 3, obj.vin_sn or '', border)
+                worksheet.write(row, 2, 'VIN :', format1)
+                worksheet.write(row, 3, obj.vin_sn or '', tot)
                 row += 1
-                worksheet.write(row, 2, 'Color :', tot)
+                worksheet.write(row, 2, 'Color :', format1)
                 worksheet.write(row, 3, obj.vehical_color_id and
-                                obj.vehical_color_id.name or '', border)
+                                obj.vehical_color_id.name or '', tot)
                 row += 1
-                worksheet.write(row, 2, 'Driver :', tot)
+                worksheet.write(row, 2, 'Driver :', format1)
                 worksheet.write(row, 3, obj.driver_id and
-                                obj.driver_id.name or '', border)
+                                obj.driver_id.name or '', tot)
                 row += 1
-                worksheet.write(row, 2, 'Driver Contact :', tot)
-                worksheet.write(row, 3, obj.driver_contact_no or '', border)
+                worksheet.write(row, 2, 'Driver Contact :', format1)
+                worksheet.write(row, 3, obj.driver_contact_no or '', tot)
                 row += 4
-                worksheet.write(row, 0, 'Repair Types :')
-                row += 1
-                worksheet.write(row, 1, 'No. :', tot)
-                worksheet.write(row, 2, 'Ref. WO# :', tot)
-                worksheet.write(row, 3, 'Repair Type :', tot)
-                worksheet.write(row, 5, 'Category :', tot)
-                worksheet.write(row, 6, 'Actual Date Issued :', tot)
+                worksheet.write(row, 0, 'Repair Types :', format1)
+                row += 2
+                worksheet.write(row, 1, 'No. :', format1)
+                worksheet.write(row, 2, 'Ref. WO# :', format1)
+                worksheet.write(row, 3, 'Repair Type :', format1)
+                worksheet.write(row, 4, 'Category :', format1)
+                worksheet.write(row, 5, 'Actual Date Issued :', format1)
                 row += 1
                 counter = 1
                 for line in obj.pending_repair_type_ids:
-                    worksheet.write(row, 1, counter, border)
-                    worksheet.write(row, 2, line.name or '', border)
+                    worksheet.write(row, 1, counter, tot)
+                    worksheet.write(row, 2, line.name or '', tot)
                     worksheet.write(row, 3, line.repair_type_id and
-                                    line.repair_type_id.name or '', border)
-                    worksheet.write(row, 5, line.categ_id and
-                                    line.categ_id.name or '', border)
-                    worksheet.write(row, 6, line.issue_date or '', border)
+                                    line.repair_type_id.name or '', tot)
+                    worksheet.write(row, 4, line.categ_id and
+                                    line.categ_id.name or '', tot)
+                    worksheet.write(row, 5, line.issue_date or '', style1)
                     row += 1
                     counter += 1
                 row += 3
@@ -117,7 +117,6 @@ class FleetPendinRepair(models.AbstractModel):
                 worksheet.write(row, 4, '**************************')
                 worksheet.write(row, 5, '**************************')
                 worksheet.write(row, 6, '**************************')
-                worksheet.write(row, 7, '**************************')
                 row += 1
                 worksheet.write(row, 0, '**************************')
                 worksheet.write(row, 1, '**************************')
@@ -126,11 +125,10 @@ class FleetPendinRepair(models.AbstractModel):
                 worksheet.write(row, 4, '**************************')
                 worksheet.write(row, 5, '**************************')
                 worksheet.write(row, 6, '**************************')
-                worksheet.write(row, 7, '**************************')
         fp = io.BytesIO()
         workbook.save(fp)
         fp.seek(0)
         data = fp.read()
         fp.close()
-        res = base64.encodestring(data)
+        res = base64.encodebytes(data)
         return res

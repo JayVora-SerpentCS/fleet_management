@@ -22,7 +22,7 @@ class NextServiceDate(models.AbstractModel):
         worksheet = workbook.add_sheet('next_service_by_date')
         worksheet.col(0).width = 5000
         worksheet.col(1).width = 12500
-        worksheet.col(2).width = 4000
+        worksheet.col(2).width = 10000
         worksheet.col(3).width = 5000
         worksheet.col(4).width = 7500
         worksheet.col(5).width = 7500
@@ -34,19 +34,19 @@ class NextServiceDate(models.AbstractModel):
         font.name = 'Arial'
         font.height = 200
         # pattern = xlwt.Pattern()
-        tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
+        style1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200', num_format_str='DD/MM/YYYY')
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
-            pattern: pattern solid')
+                            pattern: pattern solid, fore_colour yellow;')
 
         row = 0
         row += 1
         row += 1
-        worksheet.write(row, 2, 'Scheduled Maintenance By Date')
+        worksheet.write(row, 2, 'Scheduled Maintenance By Date', format1)
         row += 3
-        worksheet.write(row, 6, 'Date :', tot)
-        worksheet.write(row, 7, time.strftime('%d-%B-%Y'), tot)
-        row += 1
+        worksheet.write(row, 6, 'Date :', format1)
+        worksheet.write(row, 7, time.strftime('%d-%B-%Y'), format1)
+        row += 2
         worksheet.write(row, 0, 'NO.', format1)
         worksheet.write(row, 1, 'VEHICLE ID', format1)
         worksheet.write(row, 2, 'VIN NO.', format1)
@@ -72,10 +72,10 @@ class NextServiceDate(models.AbstractModel):
                             obj.model_id.name or '', border)
             line_col += 1
             worksheet.write(line_row, line_col,
-                            obj.last_service_date or '', border)
+                            obj.last_service_date or '', style1)
             line_col += 1
             worksheet.write(line_row, line_col,
-                            obj.next_service_date or '', border)
+                            obj.next_service_date or '', style1)
             line_col += 1
             # worksheet.write(line_row, line_col,
             #                 obj.vechical_location_id and
@@ -89,5 +89,5 @@ class NextServiceDate(models.AbstractModel):
         fp.seek(0)
         data = fp.read()
         fp.close()
-        res = base64.encodestring(data)
+        res = base64.encodebytes(data)
         return res
