@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="base.view_users_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[last()]" position="after">
-                <page string="Rental Details" 
+                <page string="Rental Details"
                       name="rental_details">
                     <group>
                         <field name="is_tenant"/>
@@ -16,7 +16,7 @@
                                 colspan="4"/>
                     <field name="fleet_rent_ids"/>
                 </page>
-                <page string="Maintanance Details" 
+                <page string="Maintanance Details"
                       name="maintanance_details">
                         <field name="maintanance_ids">
                             <tree>

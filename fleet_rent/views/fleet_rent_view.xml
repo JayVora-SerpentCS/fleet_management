@@ -231,7 +231,7 @@
                         <page name="maintenance_lines" string="Maintenance">
                             <separator colspan="4" string="Maintenance"/>
                             <field name="maintanance_ids">
-                                <tree>
+                                <tree editable="bottom">
                                     <field name="maint_type" required="1"
                                         domain="[('main_cost','=','true')]"/>
                                     <field name="cost"/>

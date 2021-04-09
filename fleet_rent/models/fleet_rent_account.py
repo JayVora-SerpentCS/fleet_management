@@ -1,9 +1,8 @@
 # See LICENSE file for full copyright and licensing details.
 """Fleet Rent and Account related model."""
 
-from datetime import datetime
 from odoo import fields, models
-from odoo.tools import ustr
+from odoo.tools import ustr, format_date
 
 
 class AccountInvoice(models.Model):
@@ -95,7 +94,7 @@ class AccountPaymentRegister(models.TransientModel):
         return res
 
     def _create_payments(self):
-        """Overridden Method to update tenancy infromation."""
+        """Overridden Method to update tenancy information."""
         inv_obj = self.env['account.move']
         rent_sched_obj = self.env['tenancy.rent.schedule']
         if self._context.get('active_ids', False):
@@ -108,7 +107,8 @@ class AccountPaymentRegister(models.TransientModel):
         res = super(AccountPaymentRegister, self)._create_payments()
         user = self.env.user
         notes = 'Your Rent Payment is Registered by' + " " + user.name + \
-            " " + 'on' + " " + ustr(datetime.now().date())
+            " " + 'on' + " " + ustr(format_date(self.env, fields.Date.today(),
+                                    self.env.user.lang, date_format=False))
         if self._context.get('active_model', False) and\
                 self._context['active_model'] == 'account.move' and\
                 self._context.get('active_ids', False):

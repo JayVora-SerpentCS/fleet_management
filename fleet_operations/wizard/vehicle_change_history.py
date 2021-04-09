@@ -3,9 +3,8 @@
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-from datetime import datetime, date
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DSDF
-import calendar
+from datetime import datetime
+from odoo.tools import date_utils
 
 
 class VehicleChangeHistory(models.TransientModel):
@@ -15,25 +14,12 @@ class VehicleChangeHistory(models.TransientModel):
     _description = 'Vehicle Change History'
 
     fleet_id = fields.Many2one('fleet.vehicle', string='Vehicle-ID')
-    date_from = fields.Date(string='Date From')
-    date_to = fields.Date(string='Date To')
+    date_from = fields.Date(string='Date From', default=date_utils.start_of(datetime.now(), 'month'))
+    date_to = fields.Date(string='Date To', default=date_utils.end_of(datetime.now(), 'month'))
     report_type = fields.Selection([('engine_history', 'Engine History'),
                                     ('color_history',
                                      'Color History'), ('tire_history', 'Tire History'),
                                     ('battery_history', 'Battery History')], default='color_history')
-
-    @api.model
-    def default_get(self, default_fields):
-        """Method used to set default start and end date."""
-        res = super(VehicleChangeHistory, self).default_get(default_fields)
-        curr_month = datetime.today().month
-        curr_year = datetime.today().year
-        last_day = calendar.monthrange(curr_year, curr_month)[1]
-        start_date = date(curr_year, curr_month, 1)
-        end_date = date(curr_year, curr_month, last_day)
-        res.update({'date_from': datetime.strftime(start_date, DSDF),
-                    'date_to': datetime.strftime(end_date, DSDF)})
-        return res
 
     def print_report(self):
         """Method to print report."""

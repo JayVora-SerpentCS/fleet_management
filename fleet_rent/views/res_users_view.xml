@@ -50,7 +50,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Rental Details" 
+                        <page string="Rental Details"
                           name="rental_details">
                             <group>
                                 <field name="is_tenant"/>
@@ -59,7 +59,7 @@
                                     colspan="4"/>
                             <field name="fleet_rent_ids"/>
                         </page>
-                        <page string="Maintanance Details" 
+                        <page string="Maintanance Details"
                              name="maintanance_details">
                                 <field name="maintanance_ids">
                                     <tree>
@@ -105,7 +105,7 @@
         <field name="search_view_id" ref="view_tenant_users_search"/>
         <field name="view_mode">search,tree,form</field>
     </record>
-    <record id="action_res_users_tree_view" 
+    <record id="action_res_users_tree_view"
             model="ir.actions.act_window.view">
         <field name="sequence" eval="1"/>
         <field name="view_mode">tree</field>

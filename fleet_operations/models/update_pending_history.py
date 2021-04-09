@@ -10,8 +10,8 @@ class UpdatePendingRepairHistory(models.Model):
     _name = 'update.pending.repair.history'
     _description = 'Update Pending Repair History'
 
-    vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle ID", size=64)
-    fmp_id = fields.Char("Vehicle", char="128")
+    vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle ID")
+    fmp_id = fields.Char("Vehicle")
     pending_reapir_ids = fields.Many2many("pending.repair.type",
                                           "update_pending_history_rel",
                                           "pending_history_id",
@@ -31,7 +31,7 @@ class UpdatePendingRepairHistory(models.Model):
         """Onchange Method."""
         if self.vehicle_id:
             self.fmp_id = self.vehicle_id.name or ""
-            
+
     def remove_selected_pending(self):
         """Method use to remove pending repair line.
 
@@ -43,17 +43,17 @@ class UpdatePendingRepairHistory(models.Model):
                 applied_pending_obj.create({
                     'updated_pending_id': pending.id,
                     'vehicle_rep_type_id':
-                    applied_pending.vehicle_rep_type_id and
-                    applied_pending.vehicle_rep_type_id.id or False,
+                        applied_pending.vehicle_rep_type_id and
+                        applied_pending.vehicle_rep_type_id.id or False,
                     'repair_type_id': applied_pending.repair_type_id and
-                    applied_pending.repair_type_id.id or False,
+                                      applied_pending.repair_type_id.id or False,
                     'name': applied_pending.name or "",
                     'categ_id': applied_pending.categ_id and
-                    applied_pending.categ_id.id or False,
+                                applied_pending.categ_id.id or False,
                     'issue_date': applied_pending.issue_date,
                     'state': "complete",
                     "user_id": applied_pending.user_id and
-                    applied_pending.user_id.id or False})
+                               applied_pending.user_id.id or False})
                 applied_pending.unlink()
             pending.write({'state': 'confirm', 'user_id': self._uid})
         return True

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 	<!-- Scheduler to done the rent-->
-	<record id="rent_done_cron" model="ir.cron">
-		<field name="name">Rent Done</field>
-		<field name="state">code</field>
-		<field name="code">model.rent_done_cron()</field>
-		<field name="interval_number">1</field>
-		<field name="interval_type">minutes</field>
-		<field name="numbercall">-1</field>
-		<field name="nextcall"
-			eval="DateTime.now().strftime('%Y-%m-%d 12:00:00')"/>
-		<field name="doall" eval="False" />
-		<field name="model_id" ref="fleet_rent.model_fleet_rent"/>
-	</record>
+<!--	<record id="rent_done_cron" model="ir.cron">-->
+<!--		<field name="name">Rent Done</field>-->
+<!--		<field name="state">code</field>-->
+<!--		<field name="code">model.rent_done_cron()</field>-->
+<!--		<field name="interval_number">1</field>-->
+<!--		<field name="interval_type">minutes</field>-->
+<!--		<field name="numbercall">-1</field>-->
+<!--		<field name="nextcall"-->
+<!--			eval="DateTime.now().strftime('%Y-%m-%d 12:00:00')"/>-->
+<!--		<field name="doall" eval="False" />-->
+<!--		<field name="model_id" ref="fleet_rent.model_fleet_rent"/>-->
+<!--	</record>-->
 
 	<record id="send_vehicle_rent_recurring_email_notification" model="ir.cron">
 		<field name="name">Send Vehicle Rent Recurring Email Notification</field>
@@ -24,20 +24,20 @@
 		<field name="nextcall"
 			eval="DateTime.now().strftime('%Y-%m-%d 12:00:00')"/>
 		<field name="doall" eval="False" />
-		<field name="model_id" ref="fleet_rent.model_fleet_rent"/>
+		<field name="model_id" ref="fleet_rent.model_tenancy_rent_schedule"/>
 	</record>
 
-	<record id="send_vehicle_rent_complete_email_notification" model="ir.cron">
-		<field name="name">Send Vehicle Rent complete Email Notification</field>
-		<field name="state">code</field>
-		<field name="code">model.rent_payment_done()</field>
-		<field name="interval_number">1</field>
-		<field name="interval_type">days</field>
-		<field name="numbercall">-1</field>
-		<field name="nextcall"
-			eval="DateTime.now().strftime('%Y-%m-%d 12:00:00')"/>
-		<field name="doall" eval="False" />
-		<field name="model_id" ref="fleet_rent.model_fleet_rent"/>
-	</record>
+<!--	<record id="send_vehicle_rent_complete_email_notification" model="ir.cron">-->
+<!--		<field name="name">Send Vehicle Rent complete Email Notification</field>-->
+<!--		<field name="state">code</field>-->
+<!--		<field name="code">model.rent_payment_done()</field>-->
+<!--		<field name="interval_number">1</field>-->
+<!--		<field name="interval_type">days</field>-->
+<!--		<field name="numbercall">-1</field>-->
+<!--		<field name="nextcall"-->
+<!--			eval="DateTime.now().strftime('%Y-%m-%d 12:00:00')"/>-->
+<!--		<field name="doall" eval="False" />-->
+<!--		<field name="model_id" ref="fleet_rent.model_fleet_rent"/>-->
+<!--	</record>-->
 
 </odoo>

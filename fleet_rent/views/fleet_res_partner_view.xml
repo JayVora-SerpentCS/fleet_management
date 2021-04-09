@@ -6,8 +6,8 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='email']" position="after">
-                <field name="is_tenant" invisible="1"/>
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="is_tenant"/>
             </xpath>
             <xpath expr="//field[@name='website']" position="after">
                 <field name="id_attachment" filename="doc_name"/>

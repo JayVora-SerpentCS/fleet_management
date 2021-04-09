@@ -22,8 +22,8 @@ class NextServiceByOdometer(models.AbstractModel):
         worksheet = workbook.add_sheet('next_service_by_odometer')
         worksheet.col(0).width = 5000
         worksheet.col(1).width = 12500
-        worksheet.col(2).width = 4000
-        worksheet.col(3).width = 5000
+        worksheet.col(2).width = 10000
+        worksheet.col(3).width = 6000
         worksheet.col(4).width = 7500
         worksheet.col(5).width = 7500
         worksheet.col(6).width = 7500
@@ -35,20 +35,18 @@ class NextServiceByOdometer(models.AbstractModel):
         font.name = 'Arial'
         font.height = 200
         # pattern = xlwt.Pattern()
-        tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
-            pattern: pattern solid')
+                    pattern: pattern solid, fore_colour yellow;')
 
         row = 0
         row += 1
         row += 1
-        worksheet.write(row, 2,
-                        'Scheduled Maintenance By Mileage')
+        worksheet.write(row, 2, 'Scheduled Maintenance By Mileage', format1)
         row += 3
-        worksheet.write(row, 7, 'Date :', tot)
-        worksheet.write(row, 8, time.strftime('%d-%B-%Y'), tot)
-        row += 1
+        worksheet.write(row, 7, 'Date :', format1)
+        worksheet.write(row, 8, time.strftime('%d-%B-%Y'), format1)
+        row += 2
         worksheet.write(row, 0, 'NO.', format1)
         worksheet.write(row, 1, 'VEHICLE ID', format1)
         worksheet.write(row, 2, 'VIN NO.', format1)
@@ -95,5 +93,5 @@ class NextServiceByOdometer(models.AbstractModel):
         fp.seek(0)
         data = fp.read()
         fp.close()
-        res = base64.encodestring(data)
+        res = base64.encodebytes(data)
         return res

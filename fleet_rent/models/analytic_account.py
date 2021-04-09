@@ -20,7 +20,6 @@ class AccountAnalyticAccount(models.Model):
     _inherit = "account.analytic.account"
     _order = 'ref'
 
-    @api.multi
     @api.depends('account_move_line_ids')
     def _total_deb_cre_amt_calc(self):
         """
@@ -28,12 +27,10 @@ class AccountAnalyticAccount(models.Model):
 
         @param self: The object pointer.
         """
-        total = 0.0
         for tenancy_brw in self:
-            total = tenancy_brw.total_debit_amt - tenancy_brw.total_credit_amt
+            total = tenancy_brw.total_debit_amt - tenancy_brw.total_credit_amt or 0.0
             tenancy_brw.total_deb_cre_amt = total
 
-    @api.multi
     @api.depends('account_move_line_ids')
     def _total_credit_amt_calc(self):
         """
@@ -45,11 +42,10 @@ class AccountAnalyticAccount(models.Model):
         for tenancy_brw in self:
             if tenancy_brw.account_move_line_ids and \
                     tenancy_brw.account_move_line_ids.ids:
-                for debit_amt in tenancy_brw.account_move_line_ids:
-                    total += debit_amt.credit
+                total = sum(debit_amt.credit
+                            for debit_amt in tenancy_brw.account_move_line_ids)
             tenancy_brw.total_credit_amt = total
 
-    @api.multi
     @api.depends('account_move_line_ids')
     def _total_debit_amt_calc(self):
         """
@@ -61,11 +57,10 @@ class AccountAnalyticAccount(models.Model):
         for tenancy_brw in self:
             if tenancy_brw.account_move_line_ids and \
                     tenancy_brw.account_move_line_ids.ids:
-                for debit_amt in tenancy_brw.account_move_line_ids:
-                    total += debit_amt.debit
+                total = sum(debit_amt.debit
+                            for debit_amt in tenancy_brw.account_move_line_ids)
             tenancy_brw.total_debit_amt = total
 
-    @api.one
     @api.depends('rent_schedule_ids', 'rent_schedule_ids.amount')
     def _total_amount_rent(self):
         """
@@ -77,11 +72,10 @@ class AccountAnalyticAccount(models.Model):
         """
         tot = 0.00
         if self.rent_schedule_ids and self.rent_schedule_ids.ids:
-            for propety_brw in self.rent_schedule_ids:
-                tot += propety_brw.amount
+            tot = sum(propety_brw.amount
+                      for propety_brw in self.rent_schedule_ids)
         self.total_rent = tot
 
-    @api.multi
     @api.depends('deposit')
     def _get_deposit(self):
         """
@@ -98,7 +92,6 @@ class AccountAnalyticAccount(models.Model):
                 for payment in payment_ids:
                     tennancy.deposit_received = True
 
-    @api.multi
     @api.depends('cost_id')
     def _total_cost_maint(self):
         """
@@ -109,7 +102,7 @@ class AccountAnalyticAccount(models.Model):
         @param self: The object pointer.
         """
         for data in self:
-            total = 0
+            total = 0.0
             for data_1 in data.cost_id:
                 total += data_1.cost
             data.main_cost = total
@@ -142,7 +135,6 @@ class AccountAnalyticAccount(models.Model):
                 temp_rec.send_mail(rec.id, force_send=True)
         return True
 
-    @api.one
     @api.depends('prop_id', 'multi_prop')
     def _total_prop_rent(self):
         tot = 0.00
@@ -196,7 +188,6 @@ class AccountAnalyticAccount(models.Model):
                 rec.odometer = vehicle_odometer.value
 #                 rec.odometer_unit = vehicle_odometer.unit
 
-    @api.multi
     def change_color(self):
         """Method to change color."""
         for color in self:
@@ -490,7 +481,6 @@ class AccountAnalyticAccount(models.Model):
                             rent for this vehicle on same rent date.')
         return res
 
-    @api.multi
     def write(self, vals):
         """
         Method is used to overrides orm write method.
@@ -540,7 +530,6 @@ class AccountAnalyticAccount(models.Model):
                                 rent for this vehicle on same rent date.')
         return rec
 
-    @api.multi
     def unlink(self):
         """
         Override orm unlink method.
@@ -592,7 +581,6 @@ class AccountAnalyticAccount(models.Model):
             if rec.amount_return > 0.00:
                 rec.deposit_return = True
 
-    @api.multi
     def button_receive(self):
         """
         Button method is used to open the related.
@@ -668,7 +656,6 @@ class AccountAnalyticAccount(models.Model):
                 }
             }
 
-    @api.multi
     def button_return(self):
         """Method button return."""
         account_jrnl_obj = self.env['account.journal'].search(
@@ -721,7 +708,6 @@ class AccountAnalyticAccount(models.Model):
             'context': self._context,
         }
 
-    @api.multi
     def button_start(self):
         """
         Button method is used to Change Tenancy state to Open.
@@ -733,7 +719,6 @@ class AccountAnalyticAccount(models.Model):
                                     Less Than One(1).")
         return self.write({'state': 'open', 'rent_entry_chck': False})
 
-    @api.multi
     def button_close(self):
         """
         Button method is used to Change Tenancy state to close.
@@ -750,7 +735,6 @@ class AccountAnalyticAccount(models.Model):
             'target': 'new'
         }
 
-    @api.multi
     def button_set_to_draft(self):
         """
         Button method is used to Change Tenancy state to close.
@@ -765,7 +749,6 @@ class AccountAnalyticAccount(models.Model):
                         rent schedule is created.'))
             rec.state = 'draft'
 
-    @api.multi
     def button_set_to_renew(self):
         """
         Method is used to open Tenancy renew wizard.
@@ -856,7 +839,6 @@ class AccountAnalyticAccount(models.Model):
                 tenancy, force_send=True, raise_exception=False)
         return True
 
-    @api.multi
     @api.depends('rent_type_id', 'date_start')
     def _create_date(self):
         for rec in self:
@@ -879,7 +861,6 @@ class AccountAnalyticAccount(models.Model):
                         relativedelta(hours=int(rec.rent_type_id.duration))
         return True
 
-    @api.multi
     def create_rent_schedule(self):
         """
         Button method is used to create rent schedule Lines.

@@ -16,7 +16,6 @@
     <record model='ir.actions.act_window' id='service_category_tree_act'>
         <field name="name">Service Category</field>
         <field name="res_model">service.category</field>
-        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">form,tree</field>
     </record>
 
@@ -376,46 +375,22 @@
         sequence="5" groups="fleet.fleet_group_user" 
         name="Vehicle Services"/>
 
-     <!-- Vehicle Work order advance search view -->
+    <!-- Vehicle Work order advance search view -->
     <record model='ir.ui.view' id='fleet_work_order_advance_search_form_view'>
         <field name="name">fleet.work_order.advance.search.form</field>
         <field name="model">fleet.work.order.search</field>
         <field name="arch" type="xml">
             <form string="Work Order Advance Search">
                 <sheet>
-                    <separator string="By Status and Priority" col="4" />
-                    <group colspan="4" col="4">
-                        <field name="state" />
-                        <field name="priority" />
-                    </group>
-                    <separator string="By Responsible and Division" col="4" />
-                    <group colspan="4" col="4" >
-                        <field name="work_order_id"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <field name="fmp_id"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <field name="make_id"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <field name="model_id" domain="[('brand_id','=',make_id)]"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <field name="vehical_division_id" invisible="1"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <field name="part_id"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <field name="service_type_id"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <field name="repair_type_id"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <!-- <field name="open_days"/> -->
-                    </group>
-                    <separator string="By Date Range" colspan="4" />
-                    <group colspan="4" col="4">
-                        <field name="issue_date_from" />
-                        <field name="issue_date_to" />
-                        <field name="open_date_from" />
-                        <field name="open_date_to" />
-                        <field name="close_date_form" />
-                        <field name="close_date_to" />
+                    <group>
+                        <group>
+                            <field name="fmp_id" required="1"
+                                options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                        </group>
+                        <group>
+                            <field name="work_order_id" force_save="1" required="1"
+                                options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                        </group>
                     </group>
                 </sheet>
                 <footer>
@@ -428,14 +403,14 @@
 
     <!-- Work Order Search Action. -->
     <record model='ir.actions.act_window' id='fleet_work_order_advance_search_act'>
-        <field name="name">Services Search</field>
+        <field name="name">Check Services Status</field>
         <field name="res_model">fleet.work.order.search</field>
         <!-- <field name="view_type">form</field> -->
         <field name="view_mode">form</field>
     </record>
 
     <!-- Work Order Search Menu. -->
-    <menuitem action="fleet_work_order_advance_search_act" name="Services Search"
+    <menuitem action="fleet_work_order_advance_search_act" name="Check Service Status"
               parent="fleet.menu_fleet_reporting" id="work_order_advance_search_sub_menu"
               sequence="2" groups="fleet.fleet_group_manager,fleet.fleet_group_user"/>
 
@@ -505,7 +480,7 @@
         </field>
     </record>
 
-    <!-- Fleet Service Type Menuitem -->
+    <!-- Fleet Service Type Menu item -->
     <menuitem action="fleet.fleet_vehicle_service_types_action"
             parent="fleet.fleet_configuration" groups="fleet.fleet_group_manager"
             id="fleet.fleet_vehicle_service_types_menu" sequence="1"/>

@@ -16,7 +16,7 @@
     'author': 'Serpent Consulting Services Pvt. Ltd.',
     'website': 'http://www.serpentcs.com',
 
-    # Dependenices
+    # Dependencies
     'depends': ['fleet', 'sale_management', 'stock', 'purchase'],
 
     # Data

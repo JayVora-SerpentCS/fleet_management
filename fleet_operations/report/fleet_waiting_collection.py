@@ -9,8 +9,8 @@ from odoo import models
 import xlwt
 
 
-class FleetWaitingColletion(models.AbstractModel):
-    """Fleet waiting colletion."""
+class FleetWaitingCollection(models.AbstractModel):
+    """Fleet waiting collection."""
 
     _name = 'report.fleet_operations.fleet.wait.collection.xls'
     _description = 'Fleet Waiting Collection Report'
@@ -21,13 +21,13 @@ class FleetWaitingColletion(models.AbstractModel):
         worksheet = workbook.add_sheet('fleet_waiting_collection')
         worksheet.col(0).width = 5000
         worksheet.col(1).width = 12500
-        worksheet.col(2).width = 4000
+        worksheet.col(2).width = 7000
         worksheet.col(3).width = 5000
-        worksheet.col(4).width = 4000
-        worksheet.col(5).width = 4000
+        worksheet.col(4).width = 5000
+        worksheet.col(5).width = 5000
         worksheet.col(6).width = 7500
         worksheet.col(7).width = 8000
-        worksheet.col(8).width = 5000
+        worksheet.col(8).width = 7000
         worksheet.col(9).width = 7500
         worksheet.col(10).width = 7500
         worksheet.col(11).width = 10000
@@ -42,13 +42,13 @@ class FleetWaitingColletion(models.AbstractModel):
         # pattern = xlwt.Pattern()
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
-            pattern: pattern solid')
+                    pattern: pattern solid, fore_colour yellow;')
 
         row = 0
         row += 1
 
         row += 1
-        worksheet.write(row, 2, 'Fleet In Complete Stage')
+        worksheet.write(row, 2, 'Fleet In Complete Stage', format1)
         row += 4
         worksheet.write(row, 0, 'No', format1)
         worksheet.write(row, 1, 'Vehicle ID', format1)
@@ -100,5 +100,5 @@ class FleetWaitingColletion(models.AbstractModel):
         fp.seek(0)
         data = fp.read()
         fp.close()
-        res = base64.encodestring(data)
+        res = base64.encodebytes(data)
         return res
