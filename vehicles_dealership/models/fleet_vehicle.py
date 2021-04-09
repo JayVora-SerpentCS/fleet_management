@@ -19,7 +19,7 @@ class FleetVehicle(models.Model):
 
     @api.model
     def create(self, vals):
-        """Overrridden method to update the product information."""
+        """Overridden method to update the product information."""
         ctx = dict(self.env.context)
         new_vehicle = super(FleetVehicle, self.with_context(
             create_fleet_vehicle=True)).create(vals)
@@ -32,7 +32,7 @@ class FleetVehicle(models.Model):
         return new_vehicle
 
     def write(self, vals):
-        """Overrridden method to update the product information."""
+        """Overridden method to update the product information."""
         ctx = dict(self.env.context)
         res = super(FleetVehicle, self).write(vals)
         update_prod_vals = {}
@@ -68,7 +68,7 @@ class ProductProduct(models.Model):
 
     @api.model
     def create(self, vals):
-        """Overrridden method to update the product information."""
+        """Overridden method to update the product information."""
         if not vals.get('name', False) and \
                 self._context.get('create_fleet_vehicle', False):
             vals.update({'name': 'NEW VEHICLE',
@@ -77,7 +77,7 @@ class ProductProduct(models.Model):
         return super(ProductProduct, self).create(vals)
 
     def write(self, vals):
-        """Overrridden method to update the vehicle information."""
+        """Overridden method to update the vehicle information."""
         ctx = dict(self.env.context)
         res = super(ProductProduct, self).write(vals)
         for product in self:

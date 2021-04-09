@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
+    <data noupdate="1">
         <!-- fleet vehicle service reminder -->
         <record id="fleet_mail_service" model="ir.cron">
             <field name="name">Fleet Vehicle Service Reminder.</field>
@@ -13,9 +13,6 @@
             <field name="doall" eval="False" />
             <field name="model_id" ref="fleet.model_fleet_vehicle"/>
         </record>
-
-
-
 
         <!-- Out going Email configuration -->
         <record id="ir_mail_server_service" model="ir.mail_server">
@@ -173,6 +170,80 @@
         <record id="damage_type_14" model="damage.types">
             <field name="name"> ​TRANSMISSION</field>
             <field name="code">DT00014</field>
+        </record>
+
+        <!--color records-->
+        <record id="color_red_1" model="color.color">
+            <field name="name">RED</field>
+        </record>
+
+        <record id="color_black_2" model="color.color">
+            <field name="name">BLACK</field>
+        </record>
+
+        <record id="color_dark_red_3" model="color.color">
+            <field name="name">DARK RED</field>
+        </record>
+
+        <record id="color_silver_4" model="color.color">
+            <field name="name">SILVER</field>
+        </record>
+
+        <record id="color_yellow_5" model="color.color">
+            <field name="name">YELLOW</field>
+        </record>
+
+        <record id="color_white_6" model="color.color">
+            <field name="name">WHITE</field>
+        </record>
+
+        <record id="color_gold_7" model="color.color">
+            <field name="name">GOLD</field>
+        </record>
+
+        <record id="color_gray_8" model="color.color">
+            <field name="name">GRAY</field>
+        </record>
+
+        <record id="color_blue_9" model="color.color">
+            <field name="name">BLUE</field>
+        </record>
+
+        <record id="color_green_10" model="color.color">
+            <field name="name">GREEN</field>
+        </record>
+
+        <record id="color_purple_11" model="color.color">
+            <field name="name">PURPLE</field>
+        </record>
+
+        <record id="color_dark_green_12" model="color.color">
+            <field name="name">DARK GREEN</field>
+        </record>
+
+        <record id="color_brown_13" model="color.color">
+            <field name="name">BROWN</field>
+        </record>
+
+        <!-- vehicle type records -->
+        <record id="vehicle_type_ambulance_1" model="vehicle.type">
+            <field name="name">Ambulance</field>
+        </record>
+
+        <record id="vehicle_type_bus_2" model="vehicle.type">
+            <field name="name">Bus</field>
+        </record>
+
+        <record id="vehicle_type_motorbike_3" model="vehicle.type">
+            <field name="name">Motorbike</field>
+        </record>
+
+        <record id="vehicle_type_truck_4" model="vehicle.type">
+            <field name="name">Truck</field>
+        </record>
+
+        <record id="vehicle_type_car_5" model="vehicle.type">
+            <field name="name">Car</field>
         </record>
 
     </data>

@@ -23,8 +23,6 @@
     'data': [
               'security/fleet_security.xml',
               'security/ir.model.access.csv',
-              'data/color.color.csv',
-              'data/vehicle.type.csv',
               'data/fleet_extended_data.xml',
               'data/vechical_sequence.xml',
               'wizard/pending_repair_confirm_view.xml',
@@ -38,6 +36,7 @@
               'report/repair_line_summary_qweb.xml',
               'views/fleet_operation_account.xml',
               'views/fleet_service_view.xml',
+              'views/fleet_driver_views.xml',
               'views/fleet_extended_view.xml',
               # 'views/fleet_operation_account.xml',
               # 'views/fleet_service_view.xml',

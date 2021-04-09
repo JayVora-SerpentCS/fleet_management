@@ -16,7 +16,7 @@
                                 colspan="4"/>
                     <field name="fleet_rent_ids"/>
                 </page>
-                <page string="Maintanance Details" 
+                <page string="Maintanance Details"
                       name="maintanance_details">
                         <field name="maintanance_ids">
                             <tree>

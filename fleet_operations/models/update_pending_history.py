@@ -55,7 +55,7 @@ class UpdatePendingRepairHistory(models.Model):
                     "user_id": applied_pending.user_id and
                     applied_pending.user_id.id or False})
                 applied_pending.unlink()
-            pending.write({'state': 'confirm', 'user_id': self._uid})
+            pending.write({'state': 'confirm', 'user_id': self.env.user.id})
         return True
 
 

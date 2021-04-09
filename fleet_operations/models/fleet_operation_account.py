@@ -1,5 +1,5 @@
 # See LICENSE file for full copyright and licensing details.
-"""Fleet Tenent, Res Partner Model."""
+"""Fleet Tenant, Res Partner Model."""
 
 from odoo import api, fields, models
 

@@ -82,13 +82,16 @@
                 </group>
                 <notebook colspan="4">
                     <page string="Damages and Repair">
-                            <group string="Damage Type">
+                        <group>
+                            <group>
                                 <!-- <separator string="Damages Checklist"/> -->
-                                <field name="damage_type_ids" nolabel="1" colspan="4" col="4" />
+                                <field name="damage_type_ids" widget="many2many_checkboxes"/>
                             </group>
-                            <group string="Repair Type">
-                                <field name="repair_type_ids" nolabel="1" colspan="4" col="4"/>
+                            <group>
+                                <!-- <separator string="Repair Checklist"/> -->
+                                <field name="repair_type_ids" widget="many2many_checkboxes"/>
                             </group>
+                        </group>
                     </page>
                     <page string="Write-off Pictures">
                         <field name="multi_images" widget="many2many_binary"/>
@@ -1127,71 +1130,71 @@
         domain="[('state','in',('inspection','released'))]"
         context="{'default_vehicle_id': active_id}"/> -->
 
-      <!-- Advance search view of fleet vehicle -->
-      <record model='ir.ui.view' id='fleet_vehicle_advance_search_form_view'>
-        <field name="name">fleet.vehicle.advance.search.form</field>
-        <field name="model">fleet.vehicle.advance.search</field>
-        <field name="arch" type="xml">
-            <form string="Vehicle Advance Search">
-                <sheet>
-                    <separator string="General Search" colspan="4" />
-                    <group colspan="4" col="4">
-                        <field name="fmp_id"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <field name="make_id"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <field name="model_id"
-                            domain="[('brand_id','=',make_id)]"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <field name="state" />
-                        <field name="vehical_color_id"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <field name="vechical_type_id"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <field name="division_id" invisible="1"
-                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
-                        <field name="vin_no" />
-                        <field name="engine_no" />
-                        <field name="driver_identification_no" />
-                    </group>
-                    <separator string="By Date Range" colspan="4" />
-                    <group colspan="4" col="4">
-                        <field name="acquisition_date" />
-                        <field name="acquisition_date_to" />
-                        <field name="last_service_date" />
-                        <field name="last_service_date_to" />
-                        <field name="next_service_date" />
-                        <field name="next_service_date_to" />
-                        <field name="release_date_from" />
-                        <field name="release_date_to" />
-                    </group>
-                <footer>
-                    <button name="get_vehicle_detail_by_advance_search"
-                        type="object" string="Search" class="oe_highlight" />
-                </footer>
-                </sheet>
-            </form>
-        </field>
-    </record>
+<!--      &lt;!&ndash; Advance search view of fleet vehicle &ndash;&gt;-->
+<!--      <record model='ir.ui.view' id='fleet_vehicle_advance_search_form_view'>-->
+<!--        <field name="name">fleet.vehicle.advance.search.form</field>-->
+<!--        <field name="model">fleet.vehicle.advance.search</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <form string="Vehicle Advance Search">-->
+<!--                <sheet>-->
+<!--                    <separator string="General Search" colspan="4" />-->
+<!--                    <group colspan="4" col="4">-->
+<!--                        <field name="fmp_id"-->
+<!--                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>-->
+<!--                        <field name="make_id"-->
+<!--                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>-->
+<!--                        <field name="model_id"-->
+<!--                            domain="[('brand_id','=',make_id)]"-->
+<!--                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>-->
+<!--                        <field name="state" />-->
+<!--                        <field name="vehical_color_id"-->
+<!--                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>-->
+<!--                        <field name="vechical_type_id"-->
+<!--                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>-->
+<!--                        <field name="division_id" invisible="1"-->
+<!--                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>-->
+<!--                        <field name="vin_no" />-->
+<!--                        <field name="engine_no" />-->
+<!--                        <field name="driver_identification_no" />-->
+<!--                    </group>-->
+<!--                    <separator string="By Date Range" colspan="4" />-->
+<!--                    <group colspan="4" col="4">-->
+<!--                        <field name="acquisition_date" />-->
+<!--                        <field name="acquisition_date_to" />-->
+<!--                        <field name="last_service_date" />-->
+<!--                        <field name="last_service_date_to" />-->
+<!--                        <field name="next_service_date" />-->
+<!--                        <field name="next_service_date_to" />-->
+<!--                        <field name="release_date_from" />-->
+<!--                        <field name="release_date_to" />-->
+<!--                    </group>-->
+<!--                <footer>-->
+<!--                    <button name="get_vehicle_detail_by_advance_search"-->
+<!--                        type="object" string="Search" class="oe_highlight" />-->
+<!--                </footer>-->
+<!--                </sheet>-->
+<!--            </form>-->
+<!--        </field>-->
+<!--    </record>-->
 
     <!-- Action for advance search of vehicle -->
-    <record model='ir.actions.act_window' id='fleet_vehicle_advance_search_act'>
-        <field name="name">Vehicles Search</field>
-        <field name="res_model">fleet.vehicle.advance.search</field>
-        <!-- <field name="view_type">form</field> -->
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-    </record>
+<!--    <record model='ir.actions.act_window' id='fleet_vehicle_advance_search_act'>-->
+<!--        <field name="name">Vehicles Search</field>-->
+<!--        <field name="res_model">fleet.vehicle.advance.search</field>-->
+<!--        &lt;!&ndash; <field name="view_type">form</field> &ndash;&gt;-->
+<!--        <field name="view_mode">form</field>-->
+<!--        <field name="target">new</field>-->
+<!--    </record>-->
 
     <!-- Menuitem Reports Menu -->
     <menuitem name="Reports" parent="fleet.menu_root" id="fleet.menu_fleet_reporting"
         sequence="3" groups="fleet.fleet_group_manager"/>
 
     <!-- Menuitem for vehicle advance search views -->
-    <menuitem action="fleet_vehicle_advance_search_act"
-        string="Vehicles Search" parent="fleet.menu_fleet_reporting"
-        id="fleet_advance_search_menu" sequence="3"
-        groups="fleet.fleet_group_manager,fleet.fleet_group_user" />
+<!--    <menuitem action="fleet_vehicle_advance_search_act"-->
+<!--        string="Vehicles Search" parent="fleet.menu_fleet_reporting"-->
+<!--        id="fleet_advance_search_menu" sequence="3"-->
+<!--        groups="fleet.fleet_group_manager,fleet.fleet_group_user" />-->
 
     <!-- Form view of vehicle unique sequence -->
     <record model='ir.ui.view' id='fleet_unique_vehicle_sequence_form_view'>

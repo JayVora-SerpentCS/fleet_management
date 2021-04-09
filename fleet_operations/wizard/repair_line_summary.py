@@ -3,9 +3,8 @@
 
 from odoo import _, api, fields, models
 from odoo.exceptions import Warning
-from datetime import datetime, date
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DSDF
-import calendar
+from datetime import datetime
+from odoo.tools import date_utils
 
 
 class RepairLineSummary(models.TransientModel):
@@ -14,21 +13,8 @@ class RepairLineSummary(models.TransientModel):
     _name = 'repair.line.summary'
     _description = 'Repair Line Summary'
 
-    date_from = fields.Date(string='Date From')
-    date_to = fields.Date(string='Date To')
-
-    @api.model
-    def default_get(self, default_fields):
-        """Method used to set default start and end date."""
-        res = super(RepairLineSummary, self).default_get(default_fields)
-        curr_month = datetime.today().month
-        curr_year = datetime.today().year
-        last_day = calendar.monthrange(curr_year, curr_month)[1]
-        start_date = date(curr_year, curr_month, 1)
-        end_date = date(curr_year, curr_month, last_day)
-        res.update({'date_from': datetime.strftime(start_date, DSDF),
-                    'date_to': datetime.strftime(end_date, DSDF)})
-        return res
+    date_from = fields.Date(string='Date From', default=date_utils.start_of(datetime.now(), 'month'))
+    date_to = fields.Date(string='Date To', default=date_utils.end_of(datetime.now(), 'month'))
 
     def print_report(self):
         """Print Report."""

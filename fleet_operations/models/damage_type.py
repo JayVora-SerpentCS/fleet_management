@@ -2,6 +2,7 @@
 """Damage Type models."""
 
 from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class DamageTypes(models.Model):
@@ -13,9 +14,13 @@ class DamageTypes(models.Model):
     name = fields.Char(string='Name', traslate=True)
     code = fields.Char(string='Code')
 
-    def copy(self, default=None):
-        """Copy method cannot duplicate record and overide method."""
-        if not default:
-            default = {}
-        raise Warning(_('You can\'t duplicate damage types!'))
-	
+    @api.constrains('name')
+    def _check_duplicate_damage_type(self):
+        """Method to check duplicate damage type."""
+        for damage in self:
+            if self.search_count([
+                ('name', 'ilike', damage.name.strip()),
+                ('id', '!=', damage.id)
+            ]):
+                raise ValidationError(_("Damage types with this name "
+                                        "already exists!"))
