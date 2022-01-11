@@ -9,4 +9,4 @@ class TestVehicleServiceType(TransactionCase):
     def test(self):
         service_type_obj = self.env['fleet.service.type']
         self.service_type = service_type_obj.create({
-                                'name':'Repair And Maintenance'})
+                                'name':'Test Repair And Maintenance'})

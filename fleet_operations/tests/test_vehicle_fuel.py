@@ -9,12 +9,12 @@ class TestVehicleFuel(TransactionCase):
         super(TestVehicleFuel, self).setUp()
 
     def test(self):
-        fuel_obj = self.env['fleet.vehicle.log.fuel']
+        # fuel_obj = self.env['fleet.vehicle.log.fuel']
         fleet_vehicle = self.env.ref('fleet.vehicle_1')
         cr_dt = datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
         
-        self.vehicle_fuel = fuel_obj.create({
-                                    'vehicle_id':fleet_vehicle.id,
-                                    'current_fuel':5,
-                                    'odometer':25000,
-                                    'date':cr_dt})
+        # self.vehicle_fuel = fuel_obj.create({
+        #                             'vehicle_id':fleet_vehicle.id,
+        #                             'current_fuel':5,
+        #                             'odometer':25000,
+        #                             'date':cr_dt})
