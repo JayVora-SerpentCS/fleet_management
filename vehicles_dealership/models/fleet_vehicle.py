@@ -27,8 +27,9 @@ class FleetVehicle(models.Model):
         if new_vehicle.product_id:
             new_vehicle.product_id.with_context(ctx).write({
                 'name': new_vehicle.name,
-                'image_1920': new_vehicle.image_1920,
-                'is_vehicle': True})
+                'image_1920': new_vehicle.image_128,
+                'is_vehicle': True,
+                'company_id':new_vehicle.company_id})
         return new_vehicle
 
     def write(self, vals):
@@ -51,6 +52,23 @@ class FleetVehicle(models.Model):
         return res
 
 
+    @api.model
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        """
+           This method is called when pass context 'remove_inprogeress'
+           This method will remove in rent car state in_progress records
+        """
+        if self._context.get('remove_inprogeress'):
+            inprograce_recs = self.env['fleet.rent'].with_context(is_updated=True).search([
+                ('state','=','open'),
+            ])
+            inprogress_ids=inprograce_recs.mapped('vehicle_id.id')
+            args=[
+                ('state','not in',['write-off','in_progress']),
+                ('id','not in',inprogress_ids)
+            ]
+        return super().name_search(name, args, operator, limit=limit)
+
 class ProductTemplate(models.Model):
     """Product Template model."""
 
@@ -64,15 +82,13 @@ class ProductProduct(models.Model):
 
     _inherit = 'product.product'
 
-    is_vehicle = fields.Boolean(string="Vehicle")
-
     @api.model
     def create(self, vals):
         """Overridden method to update the product information."""
         if not vals.get('name', False) and \
                 self._context.get('create_fleet_vehicle', False):
             vals.update({'name': 'NEW VEHICLE',
-                         'type': 'product',
+                         'detailed_type': 'product',
                          'is_vehicle': True})
         return super(ProductProduct, self).create(vals)
 

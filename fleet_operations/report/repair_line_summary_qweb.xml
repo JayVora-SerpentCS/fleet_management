@@ -37,6 +37,7 @@
         </field>
     </record>
     
+    <!--This is XLSX report show in fleet vehicle and providing so many type of print formate  -->
    <record id="action_print_fleet_history" model="ir.actions.act_window">
         <field name="name">Fleet xlsx Report</field>
         <field name="res_model">print.fleet.history</field>

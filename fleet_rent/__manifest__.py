@@ -31,13 +31,17 @@
             'views/fleet_res_partner_view.xml',
             'views/fleet_res_users_view.xml',
             'views/res_users_view.xml',
-            # 'views/driver_res_users_view.xml',
             'views/fleet_view.xml',
-            'views/template.xml',
             'wizard/renew_tenancy_view.xml',
             'wizard/rent_close_reason_view.xml',
             'report/fleet_rent.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+                "fleet_rent/static/src/css/fleet_rent.scss",
+                "fleet_rent/static/src/css/rent_order.css",
+            ],
+    },
     # Technical
     'auto_install': False,
     'installable': True,

@@ -38,16 +38,18 @@
         'views/fleet_service_view.xml',
         'views/fleet_driver_views.xml',
         'views/fleet_extended_view.xml',
-        # 'views/fleet_operation_account.xml',
-        # 'views/fleet_service_view.xml',
         'views/update_pending_history_view.xml',
-        'views/template.xml',
         'views/mail_template.xml',
         'wizard/work_order_reports_view.xml',
         'wizard/xlsx_report_view.xml',
         'wizard/vehicle_change_history_view.xml',
         'wizard/repair_line_summary_view.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+                "fleet_operations/static/src/js/web_disable_drag_drop_kanban.js",
+            ],
+    },
     # Technical
     'demo': ['data/fleet_extended_demo.xml'],
     'installable': True,
