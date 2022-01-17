@@ -16,3 +16,4 @@ from . import test_damage_type
 from . import test_next_service_day
 from . import test_vehicle_color
 from . import test_vehicle_tag
+from . import test_operation

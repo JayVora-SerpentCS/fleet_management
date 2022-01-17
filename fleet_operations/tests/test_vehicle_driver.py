@@ -11,6 +11,6 @@ class TestVehicleDriver(TransactionCase):
         self.driver = driver_obj.create({
                                 'name':'Shivam',
                                 'email':'shivam@gmail.com',
-                                'phone': 9898981213})
+            'phone': 9898981213})
         
 

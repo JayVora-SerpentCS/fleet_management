@@ -419,8 +419,8 @@ class FleetVehicleLogServices(models.Model):
 
     def write(self, vals):
         """Method Write."""
-        if not self._context:
-            self._context = {}
+        # if not self._context:
+        #     self._context = {}
         for work_order in self:
             if work_order.vehicle_id:
                 vals.update(

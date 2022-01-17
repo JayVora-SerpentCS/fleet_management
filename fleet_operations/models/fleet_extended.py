@@ -113,6 +113,7 @@ class FleetOperations(models.Model):
 
         And return name whatever we want to search.
         """
+        print("this is name get --------------- ",self)
         if not len(self._ids):
             return []
         res = []
@@ -124,6 +125,7 @@ class FleetOperations(models.Model):
                                  vehicle.model_id.name or ""
             vv_id = "%s" % vehical_unique_id
             res.append((vehicle['id'], vv_id))
+        print("resssssssss-----",res)
         return res
 
     @api.model

@@ -4,8 +4,9 @@
 from odoo.tests.common import TransactionCase
 from datetime import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT,DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.tests import tagged
 
-
+@tagged("post_install", "test_rj", "-at_install")
 class TestWorkOrder(TransactionCase):
 
     def setUp(self):
