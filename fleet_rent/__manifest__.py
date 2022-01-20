@@ -4,8 +4,7 @@
     # Module Information
     'name': 'Fleet Rental Vehicle',
     'category': 'Fleet Rent',
-    'sequence': 1,
-    'version': '14.0.1.0.0',
+    'version': '15.0.1.0.0',
     'license': 'LGPL-3',
     'summary': """Rental Vehicle Management System
         This module provides fleet rent features.""",
@@ -15,7 +14,7 @@
      """,
     # Website
     'author': 'Serpent Consulting Services Pvt. Ltd.',
-    'website': 'http://www.serpentcs.com',
+    'website': 'https://www.serpentcs.com',
 
     # Dependencies
     'depends': ['fleet_operations'],

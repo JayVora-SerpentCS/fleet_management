@@ -6,7 +6,7 @@ from datetime import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT,DEFAULT_SERVER_DATETIME_FORMAT
 from odoo.tests import tagged
 
-@tagged("post_install", "rj_check_rent", "-at_install")
+@tagged("post_install", "fleet_rent", "-at_install")
 class TestRent(TransactionCase):
 
     def setUp(self):

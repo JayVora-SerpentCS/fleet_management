@@ -4,7 +4,7 @@ from datetime import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 
-@tagged("post_install", "rj", "-at_install")
+@tagged("post_install", "fleet_operation", "-at_install")
 class TestOperation(TransactionCase):
 
     def setUp(self):
