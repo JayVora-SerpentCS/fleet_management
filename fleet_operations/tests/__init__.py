@@ -8,7 +8,6 @@ from . import test_vehicle_model
 from . import test_vehicle_driver
 from . import test_vehicle_odometer
 from . import test_vehicle_cost
-# from . import test_vehicle_fuel
 from . import test_repair_type
 from . import test_service_type
 from . import test_vehicle_status
