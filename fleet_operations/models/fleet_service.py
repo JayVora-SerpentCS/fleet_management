@@ -419,8 +419,8 @@ class FleetVehicleLogServices(models.Model):
 
     def write(self, vals):
         """Method Write."""
-        if not self._context:
-            self._context = {}
+        # if not self._context:
+        #     self._context = {}
         for work_order in self:
             if work_order.vehicle_id:
                 vals.update(
@@ -543,7 +543,6 @@ class FleetVehicleLogServices(models.Model):
 
     wono_id = fields.Integer(string='WONo',
                              help="Take this field for data migration")
-    id = fields.Integer(string='ID')
     purchaser_id = fields.Many2one(
         'res.partner', string='Purchaser', related='vehicle_id.driver_id')
     name = fields.Char(string='Work Order', size=32, readonly=True,

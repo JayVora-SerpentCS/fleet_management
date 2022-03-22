@@ -93,6 +93,7 @@ class AccountPaymentRegister(models.TransientModel):
                     self.fleet_rent_id.id or False, })
         return res
 
+    """ This method is use for the create payment of the rent and also set the payment status and due amount in fleet rent form"""
     def _create_payments(self):
         """Overridden Method to update tenancy information."""
         inv_obj = self.env['account.move']
@@ -120,12 +121,18 @@ class AccountPaymentRegister(models.TransientModel):
                         tenancy_vals.update({
                             'pen_amt': rent_line.invc_id.amount_residual or 0.0
                         })
-                        if rent_line.invc_id.state == 'posted':
+                        if rent_line.invc_id.payment_state == 'paid':
                             tenancy_vals.update({
                                 'paid': True,
                                 'move_check': True,
                                 'state': 'paid',
                                 'note': notes,
+                            })
+                        if rent_line.invc_id.payment_state == 'partial':
+                            tenancy_vals.update({
+                                'move_check': True,
+                                'state': 'open',
+                                'note': 'Partial Paid',
                             })
                     rent_line.write(tenancy_vals)
                 if move.fleet_rent_id and move.is_deposit_return_inv:

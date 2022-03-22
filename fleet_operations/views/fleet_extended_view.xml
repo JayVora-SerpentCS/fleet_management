@@ -270,7 +270,7 @@
             <xpath expr="//field[@name='next_assignation_date']" position="after">
                 <field name="active"/>
             </xpath>
-            <xpath expr="//form/sheet/group/group/field[@name='car_value']" position="after">
+            <xpath expr="//notebook/page/group/group/field[@name='car_value']" position="after">
                 <field name="income_acc_id" string="Income Account" required="1"/>
                 <field name="expence_acc_id" string="Expense Account" required="1" />
             </xpath>
@@ -363,12 +363,13 @@
             </xpath>
 
             <!-- hide engine,contract and model. -->
-            <xpath expr="//form/sheet/group/group[5]" position="replace">
+
+            <!-- <xpath expr="//form/sheet/group/group[5]" position="replace">
             </xpath>
             <xpath expr="//form/sheet/group/group[4]" position="replace">
             </xpath>
             <xpath expr="//form/sheet/group/group[3]" position="replace">
-            </xpath>
+            </xpath> -->
 
             <xpath expr="//form/sheet/group[@col='2']" position="after">
                 <notebook colspan="4">
@@ -1500,7 +1501,7 @@
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
-            <field name="lst_price" position="after">
+            <field name="list_price" position="after">
                 <field name="in_active_part"/>
                 <field name="vehicle_make_id" options="{'no_open': True, 'create': false, 'create_edit': false}"/>
             </field>

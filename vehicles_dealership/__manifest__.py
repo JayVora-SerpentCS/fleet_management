@@ -4,8 +4,7 @@
     # Module Information
     'name': 'Vehicles Dealership',
     'category': 'vehicles',
-    'sequence': 1,
-    'version': '14.0.1.0.0',
+    'version': '15.0.1.0.0',
     'license': 'LGPL-3',
     'summary': """Vehicles Dealership Management System""",
     'description': """
@@ -14,7 +13,7 @@
 
     # Website
     'author': 'Serpent Consulting Services Pvt. Ltd.',
-    'website': 'http://www.serpentcs.com',
+    'website': 'https://www.serpentcs.com',
 
     # Dependencies
     'depends': ['fleet', 'sale_management', 'stock', 'purchase'],

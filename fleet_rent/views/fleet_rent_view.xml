@@ -133,8 +133,7 @@
                                 colspan="4"/>
                             <field name="vehicle_id" required="1"
                                 placeholder="Vehicle Name"
-                                domain="[('state','!=','write-off'),
-                                ('state','!=','in_progress')]"/>
+                                context="{'remove_inprogeress':True}"/>
                             <field name="tenant_id" 
                                 context="{'default_is_tenant':True, 'tree_view_ref': 'fleet_rent.view_tenant_users_tree',
                                 'form_view_ref': 'fleet_rent.view_tenant_users_form'}"
@@ -198,7 +197,7 @@
                                     limit="12">
                                     <field name="start_date" />
                                     <field name="amount" sum="Total Amount"/>
-                                    <field name="pen_amt" />
+                                    <field name="pen_amt" sum="Total Amount"/>
                                     <field name="cheque_detail" />
                                     <field name="paid" />
                                     <field name="move_check" />

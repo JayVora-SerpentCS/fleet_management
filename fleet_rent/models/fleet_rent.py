@@ -570,6 +570,8 @@ class FleetRent(models.Model):
                         rent_obj.create({
                             'start_date': date_st.strftime(DTF),
                             'amount': rent.rent_amt,
+                            # at create time aslo set pan_amt (Pending Amount)
+                            'pen_amt': rent.rent_amt,
                             'vehicle_id': vehicle and vehicle.id or False,
                             'fleet_rent_id': rent.id,
                             'currency_id': currency and currency.id or False,
@@ -581,6 +583,8 @@ class FleetRent(models.Model):
                         rent_obj.create({
                             'start_date': date_st.strftime(DTF),
                             'amount': rent.rent_amt,
+                            # at create time aslo set pan_amt (Pending Amount)
+                            'pen_amt': rent.rent_amt,
                             'vehicle_id': vehicle and vehicle.id or False,
                             'fleet_rent_id': rent.id,
                             'currency_id': currency and currency.id or False,
@@ -592,6 +596,8 @@ class FleetRent(models.Model):
                         rent_obj.create({
                             'start_date': date_st.strftime(DTF),
                             'amount': rent.rent_amt,
+                            # at create time aslo set pan_amt (Pending Amount)
+                            'pen_amt': rent.rent_amt,
                             'vehicle_id': vehicle and vehicle.id or False,
                             'fleet_rent_id': rent.id,
                             'currency_id': currency and currency.id or False,
@@ -601,6 +607,8 @@ class FleetRent(models.Model):
                     rent_obj.create({
                         'start_date': date_st.strftime(DTF),
                         'amount': rent.rent_amt * interval,
+                        # at create time aslo set pan_amt (Pending Amount)
+                        'pen_amt': rent.rent_amt * interval,
                         'vehicle_id': vehicle and vehicle.id or False,
                         'fleet_rent_id': rent.id,
                         'currency_id': currency and currency.id or False,
@@ -610,6 +618,8 @@ class FleetRent(models.Model):
                     rent_obj.create({
                         'start_date': date_st.strftime(DTF),
                         'amount': rent.rent_amt * interval,
+                        # at create time aslo set pan_amt (Pending Amount)
+                        'pen_amt': rent.rent_amt * interval,
                         'vehicle_id': vehicle and vehicle.id or False,
                         'fleet_rent_id': rent.id,
                         'currency_id': currency and currency.id or False,
@@ -900,6 +910,7 @@ class TenancyRentSchedule(models.Model):
             move_id.write({'ref': 'Tenancy Rent', 'state': 'posted'})
         return created_move_ids
 
+    """ This is rent remainder cron job method """
     @api.model
     def rent_remainder_cron(self):
         """Method to remainder rent."""

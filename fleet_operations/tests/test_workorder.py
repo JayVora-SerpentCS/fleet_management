@@ -4,8 +4,9 @@
 from odoo.tests.common import TransactionCase
 from datetime import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT,DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.tests import tagged
 
-
+@tagged("post_install", "test_rj", "-at_install")
 class TestWorkOrder(TransactionCase):
 
     def setUp(self):
@@ -29,7 +30,7 @@ class TestWorkOrder(TransactionCase):
                                 'fuel_type': 'diesel'})
         self.workorder = self.service_obj.create({
                                 'vehicle_id': self.vehicle.id,
-                                'cost_subtype_id': service_cost_id.id,
+                                # 'cost_subtype_id': service_cost_id.id,
                                 'amount': 2000,
                                 'priority': 'normal',
                                 'date_complete': cr_dt,

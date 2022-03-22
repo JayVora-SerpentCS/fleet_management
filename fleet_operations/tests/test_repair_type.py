@@ -9,4 +9,4 @@ class TestVehicleRepairType(TransactionCase):
     def test(self):
         repair_type_obj = self.env['repair.type']
         self.repair_type = repair_type_obj.create({
-                                'name':'Engine Repair'})
+                                'name':'Test Engine Repair'})
