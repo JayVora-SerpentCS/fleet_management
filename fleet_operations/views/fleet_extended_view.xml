@@ -526,6 +526,7 @@
                     filter_domain="[('name','ilike',self)]" />
                 <field name="vin_sn" string="Chassis Number"
                     filter_domain="[('vin_sn','ilike',self)]" />
+                <field name="driver_id" string="Current Driver"/>
                 <field name="driver_contact_no" string="Driver Contact"
                     filter_domain="[('driver_contact_no','ilike',self)]" />
                 <field name="license_plate" string="License Plate"
