@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <!-- Form View for Update Pending History. -->
-    <record model="ir.ui.view" id="update_pending_reapir_history_form_view">
+    <record id="update_pending_reapir_history_form_view" model="ir.ui.view">
         <field name="name">update.pending.reapir.history.form</field>
         <field name="model">update.pending.repair.history</field>
         <field name="type">form</field>
@@ -67,7 +67,7 @@
     </record>
 
     <!-- Tree View for Update Pending History. -->
-    <record model="ir.ui.view" id="update_pending_reapir_history_tree_view">
+    <record id="update_pending_reapir_history_tree_view" model="ir.ui.view">
         <field name="name">update.pending.reapir.history.tree</field>
         <field name="model">update.pending.repair.history</field>
         <field name="type">tree</field>
@@ -83,7 +83,7 @@
     </record>
 
     <!-- Search View for Update Pending History. -->
-     <record model="ir.ui.view" id="update_pending_reapir_history_search_view">
+     <record id="update_pending_reapir_history_search_view" model="ir.ui.view">
         <field name="name">update.pending.reapir.history.search</field>
         <field name="model">update.pending.repair.history</field>
         <field name="type">search</field>

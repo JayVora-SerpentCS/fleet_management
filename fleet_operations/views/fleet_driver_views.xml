@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-
-<!--  Inherited partner view and added Driver ID field -->
-    <record model='ir.ui.view' id='view_partner_form_extended'>
+    <!--  Inherited partner view and added Driver ID field -->
+    <record id='view_partner_form_extended' model='ir.ui.view'>
         <field name="name">view.partner.form.extended</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form" />
@@ -18,13 +17,9 @@
             <xpath expr="//field[@name='website']" position="after">
                 <field name="d_id" attrs="{'invisible':[('is_driver','=',False)]}" />
             </xpath>
-         <!--    <xpath expr="//page[@name='sales_purchases']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath> -->
             <xpath expr="//field[@name='category_id']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-
         </field>
     </record>
     <record id="view_fleet_driver_tree" model="ir.ui.view">

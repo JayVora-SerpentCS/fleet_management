@@ -1,6 +1,6 @@
 <odoo>
     <!-- Inherited vehicle registration form view added extra fields on fleet vehicle -->
-    <record model='ir.ui.view' id='fleet_vehicle_rent_form'>
+    <record id='fleet_vehicle_rent_form' model='ir.ui.view'>
         <field name="name">fleet.vehicle.rent.form</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id"

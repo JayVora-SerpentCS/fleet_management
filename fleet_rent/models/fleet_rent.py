@@ -22,8 +22,7 @@ class FleetRent(models.Model):
         for rent in self:
             rent.vehicle_owner = False
             if rent.vehicle_id:
-                # we added sudo in below code to fix the access issue with rent
-                # user
+                # we added sudo in below code to fix the access issue with rent user.
                 rent.vehicle_owner = rent.vehicle_id.sudo().vehicle_owner.name
 
     @api.onchange('vehicle_id')
@@ -46,7 +45,6 @@ class FleetRent(models.Model):
             rent.total_credit_amt = sum(acc_mov_line.credit or 0.0
                                         for acc_mov_line in rent.account_move_line_ids)
 
-    # @api.depends('account_move_line_ids', 'account_move_line_ids.debit')
     def _compute_total_debit_amt_calc(self):
         """Method to calculate Total debit amount."""
         for rent in self:
@@ -81,8 +79,6 @@ class FleetRent(models.Model):
                     order='value desc')
                 if odometer:
                     rent.odometer = odometer.value
-                else:
-                    rent.odometer = 0
 
     def _compute_set_odometer(self):
         odometer_obj = self.env['fleet.vehicle.odometer']
@@ -329,54 +325,6 @@ class FleetRent(models.Model):
                 ('move_type', '=', 'out_refund'),
                 ('fleet_rent_id', '=', rent.id),
                 ('is_deposit_return_inv', '=', True)])
-
-    # @api.model
-    # def rent_send_mail(self):
-    #     """Method to send mail."""
-    #     rent_obj = self.env['fleet.rent']
-    #     mail_temp_rec = self.env.ref('fleet_rent.email_template_edi_rent')
-    #     rent_ids = rent_obj.search(['|', ('date_end', '<=', fields.Datetime.now()),
-    #                                 ('date_end', '>=', fields.Datetime.now())])
-    #     if rent_ids and mail_temp_rec:
-    #         for rent in rent_ids:
-    #             mail_temp_rec.send_mail(rent.id, force_send=True)
-
-    # @api.model
-    # def rent_done_cron(self):
-    #     """Method to rent done cron."""
-    #     rent_obj = self.env['fleet.rent']
-    #     rent_sched_obj = self.env['tenancy.rent.schedule']
-    #     for rent in rent_obj.search([('date_end', '!=', False),
-    #                                  ('state', 'in', ['done', 'close'])]):
-    #         records = []
-    #         if rent.rent_schedule_ids:
-    #             records = rent_sched_obj.search([
-    #                 ('paid', '=', False),
-    #                 ('id', 'in', rent.rent_schedule_ids.ids)])
-    #         if not records:
-    #             if datetime.now() >= rent.date_end:
-    #                 reason = "This Rent Order is auto completed due to your "
-    #                 "rent limit is over."
-    #                 rent.write({'state': 'done',
-    #                             'close_reson': reason,
-    #                             'date_cancel': fields.Datetime.now(),
-    #                             'cancel_by_id': self._uid})
-
-
-    # @api.model
-    # def rent_payment_done(self):
-    #     """Method to send notification of rent done."""
-    #     rent_obj = self.env['fleet.rent']
-    #     rent_sched_obj = self.env['tenancy.rent.schedule']
-    #     mail_temp_rec = self.env.ref('fleet_rent.email_rent_complete_template')
-    #     for rent in rent_obj.search([('state', '=', 'open')]):
-    #         records = []
-    #         if rent.rent_schedule_ids:
-    #             records = rent_sched_obj.search([
-    #                 ('paid', '=', False),
-    #                 ('fleet_rent_id', '=', rent.id)])
-    #         if not records:
-    #             mail_temp_rec.send_mail(rent.id, force_send=True)
 
     def action_rent_confirm(self):
         """Method to confirm rent status."""
@@ -767,7 +715,6 @@ class TenancyRentSchedule(models.Model):
     fleet_rent_id = fields.Many2one('fleet.rent',
                                     string='Rental Vehicle',
                                     help='Rental Vehicle Name.')
-    # state = fields.Selection(related='fleet_rent_id.state', string='Status')
     paid = fields.Boolean(string='Paid',
                           help="True if this rent is paid by tenant")
     state = fields.Selection([('draft', 'Draft'), ('open', 'Open'),

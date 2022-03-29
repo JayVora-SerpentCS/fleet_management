@@ -47,7 +47,6 @@
 	<record id="action_fleet_service_out_refund_invoice_view" model="ir.actions.act_window">
         <field name="name">Invoices</field>
         <field name="res_model">account.move</field>
-        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">tree,form</field>
         <field name="domain">[('vehicle_service_id','=',active_id),('move_type','=','out_refund')]</field>
         <field name="context">{'default_vehicle_service_id':active_id,'default_move_type':'out_refund','move_type':'out_refund', 'journal_type': 'sale'}</field>

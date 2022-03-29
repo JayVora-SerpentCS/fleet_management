@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Form View for Continue Pendig Repair Type. -->
-    <record model="ir.ui.view" id="continue_pending_repair_form_view">
+    <!-- Form View for Continue Pending Repair Type. -->
+    <record id="continue_pending_repair_form_view" model="ir.ui.view">
         <field name="name">continue.pending.repair.form</field>
         <field name="model">continue.pending.repair</field>
         <field name="type">form</field>

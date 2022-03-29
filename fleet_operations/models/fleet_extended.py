@@ -54,7 +54,6 @@ class FleetOperations(models.Model):
         wizard_view = ""
         res_model = ""
         view_name = ""
-        # cr, uid, context = self.env.args
         context = self.env.context
         context = dict(context)
         if context.get('history', False):
@@ -116,14 +115,12 @@ class FleetOperations(models.Model):
         if not len(self._ids):
             return []
         res = []
-        vehical_unique_id = ""
         for vehicle in self:
-            vehical_unique_id = vehicle.name or ""
-            vehical_unique_id += "-"
-            vehical_unique_id += vehicle.model_id and \
+            vehicle_unique_id = vehicle.name or ""
+            vehicle_unique_id += "-"
+            vehicle_unique_id += vehicle.model_id and \
                                  vehicle.model_id.name or ""
-            vv_id = "%s" % vehical_unique_id
-            res.append((vehicle['id'], vv_id))
+            res.append((vehicle['id'], vehicle_unique_id))
         return res
 
     @api.model
@@ -263,13 +260,6 @@ class FleetOperations(models.Model):
                        store=True)
     odometer_check = fields.Boolean('Odometer Change', default=True)
     fuel_qty = fields.Char(string='Fuel Quality')
-    # fuel_type = fields.Selection([('gasoline', 'Gasoline'),
-    #                               ('diesel', 'Diesel'),
-    #                               ('petrol', 'Petrol'),
-    #                               ('electric', 'Electric'),
-    #                               ('hybrid', 'Hybrid')], 'Fuel Type',
-    #                              default='diesel',
-    #                              help='Fuel Used by the vehicle')
     oil_name = fields.Char(string='Oil Name')
     oil_capacity = fields.Char(string='Oil Capacity')
     fleet_id = fields.Integer(string='Fleet ID',
@@ -347,8 +337,6 @@ class FleetOperations(models.Model):
                                  default='vehicle', string='Main Type')
     vechical_type_id = fields.Many2one('vehicle.type', string='Vechical Type')
     engine_no = fields.Char(string='Engine No', size=64)
-    # multi_images = fields.One2many('multi.images', 'vehicle_template_id',
-    #                                'Multi Images')
     multi_images = fields.Many2many('ir.attachment',
                                     'fleet_vehicle_attachment_rel',
                                     'vehicle_id',
@@ -506,6 +494,7 @@ class FleetOperations(models.Model):
             self.driver_contact_no = driver.mobile
         else:
             self.driver_identification_no = ''
+            self.driver_contact_no = ''
 
 
 class ColorHistory(models.Model):

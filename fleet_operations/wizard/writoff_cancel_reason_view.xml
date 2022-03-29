@@ -21,7 +21,6 @@
     <record model="ir.actions.act_window" id="action_writeoff_cancel_reason_wizard">
         <field name="name">Write Off Cancel Reason Wizard</field>
         <field name="res_model">writeoff.cancel.reason</field>
-        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>

@@ -19,5 +19,7 @@ class FleetVehicleExtend(models.Model):
             vehicle.rent_count = \
                 rent_obj.search_count([('vehicle_id', '=', vehicle.id)])
 
-    rent_count = fields.Integer(compute='_compute_count_rent',
-                                string="Rents")
+    rent_count = fields.Integer(
+        compute='_compute_count_rent',
+        string="Rents"
+    )

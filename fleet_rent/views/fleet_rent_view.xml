@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record model="ir.ui.view" id="view_fleet_rent_kanban">
+    <record id="view_fleet_rent_kanban" model="ir.ui.view">
         <field name="name">view.fleet.rent.kanban</field>
         <field name="model">fleet.rent</field>
         <field name="arch" type="xml">
@@ -36,7 +36,7 @@
         </field>
     </record>
     <!--  Fleet Rent Tree View -->
-    <record model='ir.ui.view' id='view_fleet_rent_tree'>
+    <record id='view_fleet_rent_tree' model='ir.ui.view'>
         <field name="name">view.fleet.rent.tree</field>
         <field name="model">fleet.rent</field>
         <field name="arch" type="xml">
@@ -52,7 +52,7 @@
     </record>
 
     <!--  Fleet Rent Form View -->
-    <record model='ir.ui.view' id='view_fleet_rent_form'>
+    <record id='view_fleet_rent_form' model='ir.ui.view'>
         <field name="name">view.fleet.rent.form</field>
         <field name="model">fleet.rent</field>
         <field name="arch" type="xml">
@@ -377,7 +377,6 @@
         <field name="name">Rent Type</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">rent.type</field>
-        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -424,7 +423,7 @@
     </record>
 
     <!-- Maintenance Type Search View -->
-    <record model="ir.ui.view" id="maintenance_type_view_search">
+    <record id="maintenance_type_view_search" model="ir.ui.view">
         <field name="name">maintenance.type.search</field>
         <field name="model">maintenance.type</field>
         <field name="arch" type="xml">
@@ -439,7 +438,6 @@
         <field name="name">Maintenance Type</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">maintenance.type</field>
-        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -543,7 +541,6 @@
         <field name="name">Tenancy Rent Schedule</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">tenancy.rent.schedule</field>
-        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">calendar,tree,form</field>
     </record>
 

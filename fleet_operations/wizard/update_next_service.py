@@ -21,18 +21,14 @@ class UpdateNextServiceConfig(models.TransientModel):
         service_obj = self.env['fleet.vehicle.log.services']
         incre_obj = self.env['next.increment.number']
         service_active_id = service_obj.browse(self._context['active_id'])
-
-        next_days = {
+        next_service_obj.create({
             'vehicle_id': self.vehicle_id and self.vehicle_id.id or False,
             'days': self.days
-        }
-        next_service_obj.create(next_days)
-
-        next_odometer = {
+        })
+        incre_obj.create({
             'vehicle_id': self.vehicle_id and self.vehicle_id.id or False,
             'number': self.number
-        }
-        incre_obj.create(next_odometer)
+        })
         service_active_id.action_done()
 
     @api.model

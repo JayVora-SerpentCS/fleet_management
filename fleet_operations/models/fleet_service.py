@@ -35,27 +35,25 @@ class FleetVehicleLogServices(models.Model):
     _order = 'id desc'
     _rec_name = 'name'
 
-    def unlink(self):
-        """Unlink Method."""
-        for rec in self:
-            if rec.state != 'draft':
-                raise UserError(_('You can\'t delete Work Order which '
-                                  'in Confirmed or Done state!'))
-        return super(FleetVehicleLogServices, self).unlink()
+    @api.ondelete(at_uninstall=False)
+    def _unlink_if_state_draft(self):
+        if any(state not in 'draft ' for state in self.mapped('state')):
+            raise UserError(_(
+                'You can\'t delete Work Order which '
+                'in Confirmed or Done state!'
+            ))
 
     @api.onchange('vehicle_id')
     def _onchange_get_vehicle_info(self):
         """Onchange Method."""
         if self.vehicle_id:
             vehicle = self.vehicle_id
-            self.vechical_type_id = vehicle.vechical_type_id and \
-                                    vehicle.vechical_type_id.id or False,
-            self.purchaser_id = vehicle.driver_id and \
-                                vehicle.driver_id.id or False,
-            self.f_brand_id = vehicle.f_brand_id and \
-                              vehicle.f_brand_id.id or False,
-            self.vehical_division_id = vehicle.vehical_division_id and \
-                                       vehicle.vehical_division_id.id or False,
+            self.update({
+                "vechical_type_id": vehicle.vechical_type_id.id or False,
+                "purchaser_id": vehicle.driver_id.id or False,
+                "f_brand_id": vehicle.f_brand_id.id or False,
+                "vehical_division_id": vehicle.vehical_division_id.id or False
+            })
 
     def action_create_invoice(self):
         """Invoice for Deposit Receive."""
@@ -133,43 +131,10 @@ class FleetVehicleLogServices(models.Model):
             })
             move_reversal.reverse_moves()
 
-            # inv_ser_line = [(0, 0, {
-            #     'product_id': service.service_type_id and
-            #     service.service_type_id.id or False,
-            #     'name': 'Service Cost',
-            #     'price_unit': service.amount or 0.0,
-            #     'account_id': service.vehicle_id and
-            #     service.vehicle_id.income_acc_id and
-            #     service.vehicle_id.income_acc_id.id or False,
-            # })]
-            # for line in service.parts_ids:
-            #     inv_line_values = {
-            #         'product_id': line.product_id.id or False,
-            #         'name': 'Service Cost',
-            #         'price_unit': line.price_unit or 0.00,
-            #         'quantity': line.qty,
-            #         'account_id': service.vehicle_id and
-            #         service.vehicle_id.income_acc_id and
-            #         service.vehicle_id.income_acc_id.id or False
-            #     }
-            #     inv_ser_line.append((0, 0, inv_line_values))
-            # inv_values = {
-            #     'partner_id': service.purchaser_id and
-            #     service.purchaser_id.id or False,
-            #     'move_type': 'out_refund',
-            #     'invoice_date': service.date_open,
-            #     'invoice_date_due': service.date_complete,
-            #     'invoice_line_ids': inv_ser_line,
-            #     'vehicle_service_id': service.id,
-            #     'is_invoice_return': True,
-            # }
-            # self.env['account.move'].create(inv_values)
-
     def action_confirm(self):
         """Action Confirm Of Button."""
         sequence = self.env['ir.sequence'].next_by_code(
             'service.order.sequence')
-        mod_obj = self.env['ir.model.data']
         context = self.env.context.copy()
         for work_order in self:
             if work_order.vehicle_id:
@@ -193,10 +158,9 @@ class FleetVehicleLogServices(models.Model):
             work_order.write({'state': 'confirm', 'name': sequence,
                               'date_open':
                                   time.strftime(DEFAULT_SERVER_DATE_FORMAT)})
-            model_data_ids = mod_obj.search([
-                ('model', '=', 'ir.ui.view'),
-                ('name', '=', 'continue_pending_repair_form_view')])
-            resource_id = model_data_ids.read(['res_id'])[0]['res_id']
+            pending_repair_resource_id = self.env.ref(
+                'fleet_operations.continue_pending_repair_form_view'
+            ).id
             context.update({'work_order_id': work_order.id,
                             'vehicle_id': work_order.vehicle_id and
                                           work_order.vehicle_id.id or False})
@@ -210,7 +174,7 @@ class FleetVehicleLogServices(models.Model):
                             'view_type': 'form',
                             'view_mode': 'form',
                             'res_model': 'continue.pending.repair',
-                            'views': [(resource_id, 'form')],
+                            'views': [(pending_repair_resource_id, 'form')],
                             'type': 'ir.actions.act_window',
                             'target': 'new',
                         }
@@ -222,7 +186,6 @@ class FleetVehicleLogServices(models.Model):
         odometer_increment = 0.0
         increment_obj = self.env['next.increment.number']
         next_service_day_obj = self.env['next.service.days']
-        mod_obj = self.env['ir.model.data']
         for work_order in self:
             service_inv = self.env['account.move'].search([
                 ('move_type', '=', 'out_invoice'),
@@ -237,10 +200,9 @@ class FleetVehicleLogServices(models.Model):
                 if repair_line.complete is True:
                     continue
                 elif repair_line.complete is False:
-                    model_data_ids = mod_obj.search([
-                        ('model', '=', 'ir.ui.view'),
-                        ('name', '=', 'pending_repair_confirm_form_view')])
-                    resource_id = model_data_ids.read(['res_id'])[0]['res_id']
+                    pending_repair_resource_id = self.env.ref(
+                        "fleet_operations.pending_repair_confirm_form_view"
+                    )
                     context.update({'work_order_id': work_order.id})
                     return {
                         'name': _('WO Close Forcefully'),
@@ -248,7 +210,7 @@ class FleetVehicleLogServices(models.Model):
                         'view_type': 'form',
                         'view_mode': 'form',
                         'res_model': 'pending.repair.confirm',
-                        'views': [(resource_id, 'form')],
+                        'views': [(pending_repair_resource_id.id, 'form')],
                         'type': 'ir.actions.act_window',
                         'target': 'new',
                     }
@@ -324,25 +286,23 @@ class FleetVehicleLogServices(models.Model):
             parts = self.env['task.line'].search([
                 ('fleet_service_id', '=', work_order.id),
                 ('is_deliver', '=', False)])
-            if parts:
-                for part in parts:
-                    part.write({'is_deliver': True})
-                    source_location = self.env.ref(
-                        'stock.picking_type_out').default_location_src_id
-                    dest_location, loc = self.env[
-                        'stock.warehouse']._get_partner_locations()
-                    move = self.env['stock.move'].create({
-                        'name': 'Used in Work Order',
-                        'product_id': part.product_id.id or False,
-                        'location_id': source_location.id or False,
-                        'location_dest_id': dest_location.id or False,
-                        'product_uom': part.product_uom.id or False,
-                        'product_uom_qty': part.qty or 0.0
-                    })
-                    move._action_confirm()
-                    move._action_assign()
-                    move.move_line_ids.write({'qty_done': part.qty})
-                    move._action_done()
+            for part in parts:
+                part.write({'is_deliver': True})
+                source_location = self.env.ref(
+                    'stock.picking_type_out').default_location_src_id
+                dest_location, loc = self.env['stock.warehouse']._get_partner_locations()
+                move = self.env['stock.move'].create({
+                    'name': 'Used in Work Order',
+                    'product_id': part.product_id.id or False,
+                    'location_id': source_location.id or False,
+                    'location_dest_id': dest_location.id or False,
+                    'product_uom': part.product_uom.id or False,
+                    'product_uom_qty': part.qty or 0.0
+                })
+                move._action_confirm()
+                move._action_assign()
+                move.move_line_ids.write({'qty_done': part.qty})
+                move._action_done()
         return True
 
     def encode_history(self):
@@ -389,7 +349,21 @@ class FleetVehicleLogServices(models.Model):
     def action_reopen(self):
         """Method Action Reopen."""
         for order in self:
-            service_type_id = self.env.ref('fleet.type_service_service_8')
+            service_type_id = False
+            try:
+                service_type_id = self.env.ref('fleet.type_service_service_8')
+            except ValueError:
+                pass
+            if not service_type_id:
+                service_type_obj = self.env['fleet.service.type']
+                service_type_id = service_type_obj.search([
+                    ('name', '=', 'Repair and maintenance'),
+                ])
+                if not service_type_id:
+                    service_type_id = service_type_obj.create({
+                        "name": "Repair and maintenance",
+                        "category":"service"
+                    })
             order.write({'state': 'done'})
             new_reopen_service = order.copy()
             new_reopen_service.write({
@@ -490,23 +464,6 @@ class FleetVehicleLogServices(models.Model):
                 repair_lines.append((0, 0, {'repair_type_id': repair_type.id}))
             self.repair_line_ids = repair_lines
 
-    # def _get_open_days(self):
-    #     for work_order in self:
-    #         diff = 0
-    #         if work_order.state == 'confirm':
-    #             diff = (datetime.today() -
-    #                     datetime.strptime(str(work_order.date_open),
-    #                                       DEFAULT_SERVER_DATE_FORMAT)).days
-    #             work_order.open_days = str(diff)
-    #         elif work_order.state == 'done':
-    #             diff = (datetime.strptime(str(work_order.date_close),
-    #                                       DEFAULT_SERVER_DATE_FORMAT) -
-    #                     datetime.strptime(str(work_order.date_open),
-    #                                       DEFAULT_SERVER_DATE_FORMAT)).days
-    #             work_order.open_days = str(diff)
-    #         else:
-    #             work_order.open_days = str(diff)
-
     def _compute_get_total_parts_line(self):
         """Method to used to compute Parts count."""
         for work_order in self:
@@ -514,19 +471,8 @@ class FleetVehicleLogServices(models.Model):
                                                for parts_line in work_order.parts_ids
                                                if parts_line])
 
-    @api.model
-    def get_warehouse(self):
-        """Method Get Warehouse."""
-        warehouse_ids = self.env['stock.warehouse'].search([])
-        if warehouse_ids:
-            return warehouse_ids.ids[0]
-        else:
-            return False
-
     @api.onchange('vehicle_id')
     def _onchange_vehicle(self):
-        if not self.vehicle_id:
-            return {}
         if self.vehicle_id:
             self.odometer = self.vehicle_id.odometer
             self.odometer_unit = self.vehicle_id.odometer_unit
@@ -602,7 +548,6 @@ class FleetVehicleLogServices(models.Model):
     out_going_ids = fields.One2many('stock.picking', 'work_order_out_id',
                                     string='Out Going', readonly=True)
     vechical_type_id = fields.Many2one('vehicle.type', string='Vechical Type')
-    # open_days = fields.Char(compute="_get_open_days", string="Open Days")
     already_closed = fields.Boolean("Already Closed?")
     total_parts_line = fields.Integer(compute="_compute_get_total_parts_line",
                                       string='Total Parts')
@@ -642,12 +587,12 @@ class FleetVehicleLogServices(models.Model):
     def _compute_invoice_receive(self):
         """Method used to check amount received."""
         for rec in self:
-            inv_obj = self.env['account.move'].search(
+            invoice_rec = self.env['account.move'].search(
                 [('move_type', '=', 'out_invoice'),
                  ('vehicle_service_id', '=', rec.id), ('state', 'in', [
                     'draft', 'paid']),
                  ('is_invoice_receive', '=', True)])
-            if inv_obj:
+            if invoice_rec:
                 rec.amount_receive = True
             else:
                 rec.amount_receive = False
@@ -677,10 +622,7 @@ class FleetVehicleLogServices(models.Model):
             vehicle_odometer = fleet_vehicle_odometer_obj.search([
                 ('vehicle_id', '=', record.vehicle_id.id)], limit=1,
                 order='value desc')
-            if vehicle_odometer:
-                record.odometer = vehicle_odometer.value
-            else:
-                record.odometer = 0
+            record.odometer = vehicle_odometer.value if vehicle_odometer else 0.0
 
     def _compute_set_odometer(self):
         fleet_vehicle_odometer_obj = self.env['fleet.vehicle.odometer']
@@ -739,7 +681,7 @@ class TripPartsHistoryDetails(models.Model):
         res = {}
         for parts_load in self:
             res[parts_load.id] = 0.0
-            total__encode_qty = 0.0
+            total_encoded_qty = 0.0
             if parts_load.team_id and parts_load.team_id.wo_parts_ids:
                 query = "select sum(used_qty) from \
                             workorder_parts_history_details where \
@@ -747,10 +689,10 @@ class TripPartsHistoryDetails(models.Model):
                         " and team_id=" + str(parts_load.team_id.id)
                 self._cr.execute(query)
                 result = self._cr.fetchone()
-                total__encode_qty = result and result[0] or 0.0
-                parts_load.write({'encoded_qty': total__encode_qty})
-            if total__encode_qty:
-                res[parts_load.id] = total__encode_qty
+                total_encoded_qty = result and result[0] or 0.0
+                parts_load.write({'encoded_qty': total_encoded_qty})
+            if total_encoded_qty:
+                res[parts_load.id] = total_encoded_qty
         return res
 
     def _get_available_qty(self):
@@ -823,119 +765,6 @@ class StockPicking(models.Model):
             vals.update({'origin': vals['origin'][:-1]})
         return super(StockPicking, self).write(vals)
 
-    def do_partial_from_migration_script(self):
-        """Do partial from migration script method."""
-        assert len(self._ids) == 1, 'Partial picking processing \
-                                    may only be done one at a time.'
-        stock_move = self.env['stock.move']
-        uom_obj = self.env['uom.uom']
-        partial = self and self[0]
-        partial_data = {
-            'delivery_date': partial and partial.date or False
-        }
-        picking_type = ''
-        if partial and partial.picking_type_id and \
-                partial.picking_type_id.code == 'incoming':
-            picking_type = 'in'
-        elif partial and partial.picking_type_id and \
-                partial.picking_type_id.code == 'outgoing':
-            picking_type = 'out'
-        elif partial and partial.picking_type_id and \
-                partial.picking_type_id.code == 'internal':
-            picking_type = 'int'
-        for wizard_line in partial.move_lines:
-            line_uom = wizard_line.product_uom
-            move_id = wizard_line.id
-
-            # Compute the quantity for respective wizard_line in
-            # the line uom (this just do the rounding if necessary)
-            qty_in_line_uom = uom_obj._compute_qty(line_uom.id,
-                                                   wizard_line.product_qty,
-                                                   line_uom.id)
-
-            if line_uom.factor and line_uom.factor != 0:
-                if float_compare(qty_in_line_uom, wizard_line.product_qty,
-                                 precision_rounding=line_uom.rounding) != 0:
-                    raise UserError(_('The unit of measure \
-                            rounding does not allow you to ship "%s %s", \
-                            only rounding of "%s %s" is accepted by the \
-                            Unit of Measure.') % (wizard_line.product_qty,
-                                                  line_uom.name,
-                                                  line_uom.rounding,
-                                                  line_uom.name))
-            if move_id:
-                # Check rounding Quantity.ex.
-                # picking: 1kg, uom kg rounding = 0.01 (rounding to 10g),
-                # partial delivery: 253g
-                # => result= refused, as the qty left on picking
-                # would be 0.747kg and only 0.75 is accepted by the uom.
-                initial_uom = wizard_line.product_uom
-                # Compute the quantity for respective
-                # wizard_line in the initial uom
-                qty_in_initial_uom = \
-                    uom_obj._compute_qty(line_uom.id,
-                                         wizard_line.product_qty,
-                                         initial_uom.id)
-                without_rounding_qty = (wizard_line.product_qty /
-                                        line_uom.factor) * initial_uom.factor
-                if float_compare(qty_in_initial_uom, without_rounding_qty,
-                                 precision_rounding=initial_uom.rounding) != 0:
-                    raise UserError(_('The rounding of the \
-                        initial uom does not allow you to ship "%s %s", \
-                        as it would let a quantity of "%s %s" to ship and \
-                        only rounding of "%s %s" is accepted \
-                        by the uom.') % (wizard_line.product_qty,
-                                         line_uom.name,
-                                         wizard_line.product_qty -
-                                         without_rounding_qty,
-                                         initial_uom.name,
-                                         initial_uom.rounding,
-                                         initial_uom.name))
-            else:
-                seq_obj_name = 'stock.picking.' + picking_type
-                move_id = stock_move.create({
-                    'name': self.env['ir.sequence'].next_by_code(
-                        seq_obj_name),
-                    'product_id': wizard_line.product_id and
-                                  wizard_line.product_id.id or False,
-                    'product_qty': wizard_line.product_qty,
-                    'product_uom': wizard_line.product_uom and
-                                   wizard_line.product_uom.id or False,
-                    'prodlot_id': wizard_line.prodlot_id and
-                                  wizard_line.prodlot_id.id or False,
-                    'location_id': wizard_line.location_id and
-                                   wizard_line.location_id.id or False,
-                    'location_dest_id': wizard_line.location_dest_id and
-                                        wizard_line.location_dest_id.id or False,
-                    'picking_id': partial and partial.id or False
-                })
-                move_id.action_confirm()
-            partial_data['move%s' % (move_id.id)] = {
-                'product_id': wizard_line.product_id and
-                              wizard_line.product_id.id or False,
-                'product_qty': wizard_line.product_qty,
-                'product_uom': wizard_line.product_uom and
-                               wizard_line.product_uom.id or False,
-                'prodlot_id': wizard_line.prodlot_id and
-                              wizard_line.prodlot_id.id or False,
-            }
-            product_currency_id = \
-                wizard_line.product_id.company_id.currency_id and \
-                wizard_line.product_id.company_id.currency_id.id or False
-            picking_currency_id = \
-                partial.company_id.currency_id and \
-                partial.company_id.currency_id.id or False
-            if (picking_type == 'in') and \
-                    (wizard_line.product_id.cost_method == 'average'):
-                partial_data['move%s' % (wizard_line.id)].update(
-                    product_price=wizard_line.product_id.standard_price,
-                    product_currency=product_currency_id or
-                                     picking_currency_id or False)
-        partial.do_partial(partial_data)
-        if partial.purchase_id:
-            partial.purchase_id.write({'state': 'done'})
-        return True
-
 
 class StockMove(models.Model):
     """Stock Move."""
@@ -950,7 +779,7 @@ class StockMove(models.Model):
 
     @api.onchange('picking_type_id', 'location_id', 'location_dest_id')
     def onchange_move_type(self):
-        """On change of move type gives sorce and destination location."""
+        """On change of move type gives source and destination location."""
         if not self.location_id and not self.location_dest_id:
             mod_obj = self.env['ir.model.data']
             location_source_id = 'stock_location_stock'
@@ -963,10 +792,8 @@ class StockMove(models.Model):
                     self.picking_type_id.code == 'outgoing':
                 location_source_id = 'stock_location_stock'
                 location_dest_id = 'stock_location_customers'
-            source_location = mod_obj.get_object_reference('stock',
-                                                           location_source_id)
-            dest_location = mod_obj.get_object_reference('stock',
-                                                         location_dest_id)
+            source_location = self.env.ref("stock.%s" % location_source_id)
+            dest_location = self.env.ref("stock.%s" % location_dest_id)
             self.location_id = source_location and source_location[1] or False
             self.location_dest_id = dest_location and dest_location[1] or False
 
@@ -1007,37 +834,19 @@ class FleetWorkOrderSearch(models.TransientModel):
                                     string='Service Order')
     fmp_id = fields.Many2one('fleet.vehicle', string='Vehicle ID')
 
-    @api.onchange('fmp_id')
-    def _onchange_vehicle_id(self):
-        if self.fmp_id:
-            return {'domain': {'work_order_id': [
-                ('vehicle_id', '=', self.fmp_id.id)
-            ]}}
-        else:
-            return {'domain': {'work_order_id': []}}
-
     def get_work_order_detail_by_advance_search(self):
         """Method to get work order detail by advance search."""
-        domain = []
-        order_ids = []
-        for order in self:
-            if order.work_order_id:
-                order_ids.append(order.work_order_id.id)
-            if order.work_order_id:
-                domain += [('id', 'in', order_ids)]
-
-            return {
-                'name': _('Work Order'),
-                'view_type': 'form',
-                "view_mode": 'tree,form',
-                'res_model': 'fleet.vehicle.log.services',
-                'type': 'ir.actions.act_window',
-                # 'nodestroy': True,
-                'domain': domain,
-                'context': self._context,
-                'target': 'current',
-            }
-        return True
+        self.ensure_one()
+        return {
+            'name': _('Work Order'),
+            'view_type': 'form',
+            "view_mode": 'tree,form',
+            'res_model': 'fleet.vehicle.log.services',
+            'type': 'ir.actions.act_window',
+            'domain': [('id', '=', self.work_order_id.id)] if self.work_order_id else [],
+            'context': self._context,
+            'target': 'current',
+        }
 
 
 class ResUsers(models.Model):
@@ -1141,9 +950,9 @@ class TaskLine(models.Model):
                 ('fleet_service_id', '=', vals['fleet_service_id']),
                 ('product_id', '=', vals['product_id'])])
             if task_line_ids:
-                warrnig = 'You can not have duplicate '
-                'parts assigned !!!'
-                raise UserError(_(warrnig))
+                raise UserError(_(
+                    'You can not have duplicate parts assigned !!!'
+                ))
         return super(TaskLine, self).create(vals)
 
     def write(self, vals):

@@ -23,7 +23,7 @@ class TestRent(TransactionCase):
         self.vehicle_owner = self.rent_obj._compute_change_vehicle_owner()
         self.vehicle_odometer = self.rent_obj.change_odometer()
 
-    def test(self):
+    def test_create_fleet_rent(self):
 
         self.vehicle = self.vehicle_obj.create({
             'f_brand_id': self.fleet_brand.id,
@@ -48,7 +48,8 @@ class TestRent(TransactionCase):
             'date_end': self.date_end,
         })
 
-        self.rent_type_obj = self.rent_type_obj.create({
-            							'duration': 3,
-            							'renttype': 'Months'
-        								})
+        self.rent_type_obj = self.rent_type_obj.create(
+            {
+                'duration': 3,
+                'renttype': 'Months'
+            })

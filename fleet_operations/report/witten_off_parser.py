@@ -12,14 +12,13 @@ class ReportQwebWriteOff (models. AbstractModel):
 
     def _get_last_work_order(self, vehicle_id):
         work_order_obj = self.env['fleet.vehicle.log.services']
-        work_order_ids = \
-            work_order_obj.search([('vehicle_id', '=', vehicle_id),
-                                   ('state', '=', 'done')], order='id')
+        work_order_rec = work_order_obj.search([
+            ('vehicle_id', '=', vehicle_id),
+            ('state', '=', 'done')
+        ], order='id desc', limit=1)
         work_order_name = ''
-        if work_order_ids:
-            work_order_id = work_order_ids[-1]
-            if work_order_id:
-                work_order_name = work_order_id.name or ''
+        if work_order_rec:
+            work_order_name = work_order_rec.name or ''
         return work_order_name
 
     @api.model

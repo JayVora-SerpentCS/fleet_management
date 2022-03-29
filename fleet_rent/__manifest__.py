@@ -30,7 +30,6 @@
             'views/fleet_res_partner_view.xml',
             'views/fleet_res_users_view.xml',
             'views/res_users_view.xml',
-            # 'views/driver_res_users_view.xml',
             'views/fleet_view.xml',
             'wizard/renew_tenancy_view.xml',
             'wizard/rent_close_reason_view.xml',
@@ -43,7 +42,6 @@
             ],
     },
     # Technical
-    'auto_install': False,
     'installable': True,
     'application': True,
 }

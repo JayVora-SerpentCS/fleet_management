@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <!-- Form View for Pending Repair Confirm. -->
-    <record model="ir.ui.view" id="pending_repair_confirm_form_view">
+    <record id="pending_repair_confirm_form_view" model="ir.ui.view">
         <field name="name">pending.repair.confirm.form</field>
         <field name="model">pending.repair.confirm</field>
         <field name="type">form</field>

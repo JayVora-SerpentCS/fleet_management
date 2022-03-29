@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record model='ir.ui.view' id='fleet_vehicle_dashboard1'>
+    <record id='fleet_vehicle_dashboard1' model='ir.ui.view'>
         <field name="name">fleet.vehicle.dashboard</field>
         <field name="model">fleet.vehicle</field>
         <field name="arch" type="xml">
@@ -64,11 +64,9 @@
         </field>
     </record>
 
-
-    <record model='ir.actions.act_window' id='fleet_vehicle_dashboard_action' >
+    <record id='fleet_vehicle_dashboard_action' model='ir.actions.act_window'>
         <field name="name">Vehicles Dashboard</field>
         <field name="res_model">fleet.vehicle</field>
-        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">kanban,tree,form</field>
         <field name="help" type="html">
           <p class="oe_view_nocontent_create">

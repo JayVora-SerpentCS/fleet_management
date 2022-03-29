@@ -39,12 +39,14 @@ class UpdateEngineInfo(models.TransientModel):
     @api.model
     def default_get(self, fields):
         """Method Default Get."""
-        vehical_obj = self.env['fleet.vehicle']
+        vehicle_obj = self.env['fleet.vehicle']
         res = super(UpdateEngineInfo, self).default_get(fields)
         if self._context.get('active_id', False):
-            vehicle = vehical_obj.browse(self._context['active_id'])
-            res.update({'previous_engine_no': vehicle.engine_no or "",
-                        'vehicle_id': self._context['active_id'] or False})
+            vehicle = vehicle_obj.browse(self._context['active_id'])
+            res.update({
+                'previous_engine_no': vehicle.engine_no or "",
+                'vehicle_id': vehicle.id or False
+            })
         return res
 
     def set_new_engine_info(self):
@@ -62,7 +64,8 @@ class UpdateEngineInfo(models.TransientModel):
                     'changed_date': wiz_data.changed_date,
                     'workorder_id': wiz_data.workorder_id and
                                     wiz_data.workorder_id.id or False,
-                    'vehicle_id': vehicle.id})
+                    'vehicle_id': vehicle.id
+                })
         return True
 
 
@@ -96,13 +99,14 @@ class UpdateColorInfo(models.TransientModel):
     @api.model
     def default_get(self, fields):
         """Method default Get."""
-        vehical_obj = self.env['fleet.vehicle']
+        vehicle_obj = self.env['fleet.vehicle']
         res = super(UpdateColorInfo, self).default_get(fields)
         if self._context.get('active_id', False):
-            vehicle = vehical_obj.browse(self._context['active_id'])
-            res.update({'previous_color_id': vehicle.vehical_color_id and
-                                             vehicle.vehical_color_id.id or False,
-                        'vehicle_id': self._context['active_id'] or False})
+            vehicle = vehicle_obj.browse(self._context['active_id'])
+            res.update({
+                'previous_color_id': vehicle.vehical_color_id.id or False,
+                'vehicle_id': vehicle.id or False
+            })
         return res
 
     def set_new_color_info(self):
@@ -113,19 +117,16 @@ class UpdateColorInfo(models.TransientModel):
             vehicle = vehicle_obj.browse(self._context['active_id'])
             for wiz_data in self:
                 vehicle.write({
-                    'vehical_color_id': wiz_data.current_color_id and
-                                        wiz_data.current_color_id.id or False
+                    'vehical_color_id': wiz_data.current_color_id.id or False
                 })
                 color_history_obj.create({
-                    'previous_color_id': wiz_data.previous_color_id and
-                                         wiz_data.previous_color_id.id or False,
-                    'current_color_id': wiz_data.current_color_id and
-                                        wiz_data.current_color_id.id or False,
+                    'previous_color_id': wiz_data.previous_color_id.id or False,
+                    'current_color_id': wiz_data.current_color_id.id or False,
                     'note': wiz_data.note or '',
                     'changed_date': wiz_data.changed_date,
-                    'workorder_id': wiz_data.workorder_id and
-                                    wiz_data.workorder_id.id or False,
-                    'vehicle_id': vehicle.id})
+                    'workorder_id': wiz_data.workorder_id.id or False,
+                    'vehicle_id': vehicle.id
+                })
         return True
 
 
@@ -150,12 +151,14 @@ class UpdateVinInfo(models.TransientModel):
     @api.model
     def default_get(self, fields):
         """Method default get."""
-        vehical_obj = self.env['fleet.vehicle']
+        vehicle_obj = self.env['fleet.vehicle']
         res = super(UpdateVinInfo, self).default_get(fields)
         if self._context.get('active_id', False):
-            vehicle = vehical_obj.browse(self._context['active_id'])
-            res.update({'previous_vin_no': vehicle.vin_sn or "",
-                        'vehicle_id': self._context['active_id'] or False})
+            vehicle = vehicle_obj.browse(self._context['active_id'])
+            res.update({
+                'previous_vin_no': vehicle.vin_sn or "",
+                'vehicle_id': vehicle.id
+            })
         return res
 
     def set_new_vin_info(self):
@@ -171,9 +174,9 @@ class UpdateVinInfo(models.TransientModel):
                     'new_vin_no': wiz_data.new_vin_no or "",
                     'note': wiz_data.note or '',
                     'changed_date': wiz_data.changed_date,
-                    'workorder_id': wiz_data.workorder_id and
-                                    wiz_data.workorder_id.id or False,
-                    'vehicle_id': vehicle.id})
+                    'workorder_id': wiz_data.workorder_id.id or False,
+                    'vehicle_id': vehicle.id
+                })
         return True
 
 
@@ -220,15 +223,16 @@ class UpdateTireInfo(models.TransientModel):
     @api.model
     def default_get(self, fields):
         """Method to default get."""
-        vehical_obj = self.env['fleet.vehicle']
+        vehicle_obj = self.env['fleet.vehicle']
         res = super(UpdateTireInfo, self).default_get(fields)
         if self._context.get('active_id', False):
-            vehicle = vehical_obj.browse(self._context['active_id'])
+            vehicle = vehicle_obj.browse(self._context['active_id'])
             res.update({
                 'previous_tire_size': vehicle.tire_size or "",
                 'previous_tire_sn': vehicle.tire_srno or "",
                 "previous_tire_issue_date": vehicle.tire_issuance_date,
-                'vehicle_id': self._context['active_id'] or False})
+                'vehicle_id': vehicle.id
+            })
         return res
 
     def set_new_tire_info(self):
@@ -241,7 +245,8 @@ class UpdateTireInfo(models.TransientModel):
                 vehicle.write({
                     'tire_size': wiz_data.new_tire_size or "",
                     'tire_srno': wiz_data.new_tire_sn or "",
-                    'tire_issuance_date': wiz_data.new_tire_issue_date})
+                    'tire_issuance_date': wiz_data.new_tire_issue_date
+                })
                 tire_history_obj.create({
                     'previous_tire_size': wiz_data.previous_tire_size or "",
                     'new_tire_size': wiz_data.new_tire_size or "",
@@ -253,9 +258,9 @@ class UpdateTireInfo(models.TransientModel):
                         wiz_data.new_tire_issue_date or False,
                     'note': wiz_data.note or '',
                     'changed_date': wiz_data.changed_date,
-                    'workorder_id': wiz_data.workorder_id and
-                                    wiz_data.workorder_id.id or False,
-                    'vehicle_id': vehicle.id})
+                    'workorder_id': wiz_data.workorder_id.id or False,
+                    'vehicle_id': vehicle.id
+                })
         return True
 
 
@@ -303,15 +308,16 @@ class UpdateBatteryInfo(models.TransientModel):
     @api.model
     def default_get(self, fields):
         """Method to default get."""
-        vehical_obj = self.env['fleet.vehicle']
+        vehicle_obj = self.env['fleet.vehicle']
         res = super(UpdateBatteryInfo, self).default_get(fields)
         if self._context.get('active_id', False):
-            vehicle = vehical_obj.browse(self._context['active_id'])
+            vehicle = vehicle_obj.browse(self._context['active_id'])
             res.update({
                 'previous_battery_size': vehicle.battery_size or "",
                 'previous_battery_sn': vehicle.battery_srno or "",
                 "previous_battery_issue_date": vehicle.battery_issuance_date,
-                'vehicle_id': self._context['active_id'] or False})
+                'vehicle_id': vehicle.id
+            })
         return res
 
     def set_new_battery_info(self):
@@ -324,7 +330,8 @@ class UpdateBatteryInfo(models.TransientModel):
                 vehicle.write({
                     'battery_size': wiz_data.new_battery_size or "",
                     'battery_srno': wiz_data.new_battery_sn or "",
-                    'battery_issuance_date': wiz_data.new_battery_issue_date})
+                    'battery_issuance_date': wiz_data.new_battery_issue_date
+                })
                 battery_history_obj.create({
                     'previous_battery_size':
                         wiz_data.previous_battery_size or "",
@@ -337,7 +344,7 @@ class UpdateBatteryInfo(models.TransientModel):
                         wiz_data.new_battery_issue_date or False,
                     'note': wiz_data.note or '',
                     'changed_date': wiz_data.changed_date,
-                    'workorder_id': wiz_data.workorder_id and
-                                    wiz_data.workorder_id.id or False,
-                    'vehicle_id': vehicle.id})
+                    'workorder_id': wiz_data.workorder_id.id or False,
+                    'vehicle_id': vehicle.id
+                })
         return True

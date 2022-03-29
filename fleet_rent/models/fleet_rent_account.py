@@ -22,8 +22,7 @@ class AccountInvoice(models.Model):
         refund_vals = super(AccountInvoice, self)._prepare_refund(
             invoice, invoice_date, date, description, journal_id)
         refund_vals.update({
-            'fleet_rent_id': self.fleet_rent_id and
-            self.fleet_rent_id.id or False,
+            'fleet_rent_id': self.fleet_rent_id.id or False,
         })
         return refund_vals
 
@@ -87,10 +86,10 @@ class AccountPaymentRegister(models.TransientModel):
                                     help='Rental Vehicle Name')
 
     def _create_payment_vals_from_wizard(self):
-        res = super(AccountPaymentRegister,
-                    self)._create_payment_vals_from_wizard()
-        res.update({'fleet_rent_id': self.fleet_rent_id and
-                    self.fleet_rent_id.id or False, })
+        res = super(AccountPaymentRegister,self)._create_payment_vals_from_wizard()
+        res.update({
+            'fleet_rent_id': self.fleet_rent_id.id or False
+        })
         return res
 
     """ This method is use for the create payment of the rent and also set the payment status and due amount in fleet rent form"""
