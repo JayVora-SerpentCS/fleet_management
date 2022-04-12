@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Form View for Pending Repair Confirm. -->
+    <record id="pending_repair_confirm_form_view" model="ir.ui.view">
+        <field name="name">pending.repair.confirm.form</field>
+        <field name="model">pending.repair.confirm</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Confirm WO Forcefully" width="150" height="150">
+                <separator string="Do you Forcefully want to close the WO because there is some repair types which are selected for repair but not completed" colspan="4" />
+                <footer>
+                    <button name="confirm_wo_forcefully" string="Confirm" type="object" default_focus="1" class="oe_highlight"/>
+                     or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

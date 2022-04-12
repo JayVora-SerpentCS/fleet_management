@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Form View for Repair Line Summary. -->
+    <record id="view_repair_line_summary_wiz" model="ir.ui.view">
+        <field name="name">repair.line.summary.wiz</field>
+        <field name="model">repair.line.summary</field>
+        <field name="arch" type="xml">
+            <form string="Repair Line Summary">
+                <separator string="Repair Line Summary" colspan="4" />
+                <group col="4" colspan="4">
+                    <field name="date_from" required="1"/>
+                    <field name="date_to" required="1"/>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Repair Line Summary. -->
+    <record id="action_repair_line_summary" model="ir.actions.act_window">
+        <field name="name">Repair Line Summary</field>
+        <field name="res_model">repair.line.summary</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="view_repair_line_summary_wiz"/>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+   </record>
+
+   <!-- Menuitem for Repair Line Summary. -->
+   <menuitem action="action_repair_line_summary"
+             name="Repair Line Summary"
+             id="repair_line_summary_menu"
+             parent="fleet.menu_fleet_reporting"
+             sequence="4"
+             groups="fleet.fleet_group_manager,fleet.fleet_group_user"/>
+</odoo>

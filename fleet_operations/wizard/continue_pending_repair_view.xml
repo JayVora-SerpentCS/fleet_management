@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Form View for Continue Pending Repair Type. -->
+    <record id="continue_pending_repair_form_view" model="ir.ui.view">
+        <field name="name">continue.pending.repair.form</field>
+        <field name="model">continue.pending.repair</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Confirm WO Forcefully" width="150" height="150">
+                <separator string="Warning!! There is some previous repairs are remains to be repair for this vehicle" colspan="4" />
+                <footer>
+                    <button special="cancel"  string="Okay" type="object" default_focus="1" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

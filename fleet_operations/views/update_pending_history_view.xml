@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Form View for Update Pending History. -->
+    <record id="update_pending_reapir_history_form_view" model="ir.ui.view">
+        <field name="name">update.pending.reapir.history.form</field>
+        <field name="model">update.pending.repair.history</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Update Pending History">
+                <header>
+                    <button name="remove_selected_pending" class="oe_highlight"  states="draft" string="Apply" type="object" default_focus="1" />
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <group colspan="2" col="2">
+                        <field name="vehicle_id" attrs="{'readonly':[('state','in',('confirm'))]}" options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+                        <field name="fmp_id" invisible="1"/>
+                    </group>
+                    <separator string="Vehicle Pending Repairs" colspan="4" attrs="{'invisible':[('state','in',('confirm'))]}"/>
+                    <field name="pending_reapir_ids" colspan="4" attrs="{'invisible':[('state','in',('confirm'))]}" domain="[('vehicle_rep_type_id','=',vehicle_id)]" nolabel="1">
+                        <tree>
+                            <field name="vehicle_rep_type_id" invisible="1"/>
+                            <field name="name" />
+                            <field name="repair_type_id" />
+                            <field name="state" />
+                            <field name="user_id"/>
+                        </tree>
+                         <form>
+                            <field name="vehicle_rep_type_id" invisible="1"/>
+                            <field name="name" />
+                            <field name="repair_type_id" options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+                            <field name="state" />
+                            <field name="user_id" options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+                        </form>
+                    </field>
+                    <separator string="Applied Pending" colspan="4" attrs="{'invisible':[('state','in',('draft'))]}"/>
+                    <field name="pending_reapir_history_ids" colspan="4" attrs="{'invisible':[('state','in',('draft'))]}" >
+                        <tree>
+                            <field name="vehicle_rep_type_id" invisible="1"/>
+                            <field name="name" />
+                            <field name="repair_type_id" />
+                            <field name="categ_id"/>
+                            <field name="issue_date" />
+                            <field name="state" />
+                            <field name="user_id"/>
+                        </tree>
+                        <form>
+                            <group colspan="4" col="4">
+                                <field name="vehicle_rep_type_id" invisible="1"/>
+                                <field name="name" />
+                                <field name="repair_type_id" options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+                                <field name="categ_id" options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+                                <field name="issue_date" />
+                                <field name="state" />
+                                <field name="user_id" options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+                            </group>
+                        </form>
+                    </field>
+                    <separator string="Note"/>
+                    <field name="note" colspan="4"  attrs="{'readonly':[('state','in',('confirm'))]}"/>
+                    <group colspan="2" col="2">
+                        <field name="user_id" options="{'no_open': True, 'create': false, 'create_edit': false}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View for Update Pending History. -->
+    <record id="update_pending_reapir_history_tree_view" model="ir.ui.view">
+        <field name="name">update.pending.reapir.history.tree</field>
+        <field name="model">update.pending.repair.history</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Update Pending History" >
+                <field name="vehicle_id"/>
+                <field name="fmp_id" invisible="1"/>
+                <field name="user_id"/>
+                <field name="note" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search View for Update Pending History. -->
+     <record id="update_pending_reapir_history_search_view" model="ir.ui.view">
+        <field name="name">update.pending.reapir.history.search</field>
+        <field name="model">update.pending.repair.history</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Update Pending History" >
+                <field name="fmp_id" filter_domain="[('fmp_id','ilike',self)]"/>
+                <group expand="0" string="Filter By Status ...">
+                    <filter string="New" domain="[('state','=','draft')]" help="List of new pending history " icon="terp-personal" name="vehicle_new_pending_filter"/>
+                    <filter string="Applied" domain="[('state','=','confirm')]" help="List of applied pending history" icon="terp-personal" name="vehicle_appied_pending_filter"/>
+                </group>
+                <group expand="0" string="Group By...">
+                    <filter name="groupby_vehicle" string="Vehicle ID" domain="[]" context="{'group_by':'vehicle_id'}" />
+                    <filter name="groupby_status" string="Status" domain="[]" context="{'group_by':'state'}" />
+                    <filter name="groupby_applied_by" string="Applied By" domain="[]" context="{'group_by':'user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

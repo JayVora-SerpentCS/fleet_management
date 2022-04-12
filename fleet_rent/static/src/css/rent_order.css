@@ -1,0 +1,82 @@
+.id_in_progress{
+    background :  #62e6d3 !important;
+}
+
+.id_done{
+    background : #c6f6c6 !important;
+}
+
+.id_draft{
+    background:white;
+}
+.check_state button{
+    color: white;
+    font-size: 11px;
+    border-color: transparent
+}
+
+.check_state .reset_orderline{
+    background :#34abbf;
+}
+.check_state .confirm_it{
+    background :#7CBC9C;
+}
+
+.oe_kanban_color_9{
+        background-color: red;
+        color: #639B89;
+    }
+.oe_kanban_color_1{
+    background-color: #b7f9b7 !important;
+    color: #639B89;
+}
+.oe_kanban_color_2{
+    background-color: #e5d8e3 !important;
+    color: #61608a !important;
+}
+.oe_kanban_color_5{
+    background-color: #f3f0c9   !important;
+    color: #639B89;
+}
+.oe_event_time{
+    border-bottom-left-radius:3px;
+    border-bottom-right-radius:3px;
+    font-size: 14px;
+    border-collapse: separate;
+    text-align: center;
+    font-weight: bold;
+    color: #8A89BA;
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    background-color: #FFFFFF;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    padding: 5px;
+}
+
+.oe_event_date{
+  border-top-left-radius:3px;
+  border-top-right-radius:3px;
+  font-size: 36px;
+  height: auto;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom:-7px;
+  color: #FFFFFF;
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  background-color: #8A89BA;
+  padding: 2px;
+}
+
+.oe_event_month_year{
+  border-bottom-left-radius:3px;
+  border-bottom-right-radius:3px;
+  font-size: 15px;
+  text-align: center;
+  font-weight: bold;
+  color: #FFFFFF;
+  background-color: #8A89BA;
+  padding: 5px;
+}
+
+.btn_visible_in_tree{
+  background: #7C7BAD;
+}

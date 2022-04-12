@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id='fleet_vehicle_dashboard1' model='ir.ui.view'>
+        <field name="name">fleet.vehicle.dashboard</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="license_plate" />
+                <field name="model_id" />
+                <field name="driver_id" />
+                <field name="location" />
+                <field name="state_id" />
+
+                <field name="image" />
+                <field name="tag_ids" />
+                <field name="contract_renewal_due_soon" />
+                <field name="contract_renewal_overdue" />
+                <field name="contract_renewal_name" />
+                <field name="contract_renewal_total" />
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_vignette oe_semantic_html_override">
+                            <a type="open" href="#" class="oe_kanban_action oe_kanban_action_a">
+                                <img t-att-src="kanban_image('fleet.vehicle', 'image_small', record.id.value)"/>
+                            </a>
+                            <div class="oe_kanban_details">
+                                <h4 class="oe_partner_heading">
+                                    <a type="open">
+                                        <field name="license_plate"/><br/>
+                                        <field name="model_id" />
+                                    </a>
+                                </h4>
+                                <t t-if="record.contract_renewal_due_soon.raw_value and !record.contract_renewal_overdue.raw_value">
+                                    <a data-type="object" data-name="return_action_to_open" href="#" class="oe_kanban_action oe_kanban_action_a" data-context='{"xml_id":"fleet_vehicle_log_contract_act"}'>
+                                        <span class="oe_tag oe_kanban_color_3"><field name="contract_renewal_name" />
+                                           <t t-if="record.contract_renewal_total.raw_value > 0"> and <field name="contract_renewal_total" /> other(s) </t>
+                                        </span>
+                                    </a>
+                                </t>
+
+                                <t t-if="record.contract_renewal_overdue.raw_value">
+                                    <a data-type="object" data-name="return_action_to_open" href="#" class="oe_kanban_action oe_kanban_action_a" data-context='{"xml_id":"fleet_vehicle_log_contract_act"}'>
+                                        <span class="oe_tag oe_kanban_color_2"><field name="contract_renewal_name" />
+                                            <t t-if="record.contract_renewal_total.raw_value > 0"> and <field name="contract_renewal_total" /> other(s) </t>
+                                        </span>
+                                    </a>
+                                </t>
+
+                                <ul>
+                                    <li>
+                                        <t t-if="record.driver_id.raw_value"><field name="driver_id"/></t>
+                                    </li>
+                                    <li>
+                                        <t t-if="record.location.raw_value"><field name="location"/></t>
+                                    </li>
+                                </ul>
+                                <field name="tag_ids"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id='fleet_vehicle_dashboard_action' model='ir.actions.act_window'>
+        <field name="name">Vehicles Dashboard</field>
+        <field name="res_model">fleet.vehicle</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to create a new vehicle.
+          </p><p>
+            You will be able to manage your fleet by keeping track of the
+            contracts, services, fixed and recurring costs, odometers and
+            fuel logs associated to each vehicle.
+        </p><p>
+            Odoo will warn you when services or contract have to be
+            renewed.
+          </p>
+        </field>
+    </record>
+
+    <!-- *********** Menuitem Dashboard ***********-->
+    <menuitem id="menu_fleet_vehicle_dashboard" parent="fleet.menu_root" name="Dashboard" sequence="1" />
+    <menuitem id="menu_fleet_vehicle_mydashboard" name="My Dashboard"
+      parent="menu_fleet_vehicle_dashboard" action="fleet_vehicle_dashboard_action" />
+</odoo>

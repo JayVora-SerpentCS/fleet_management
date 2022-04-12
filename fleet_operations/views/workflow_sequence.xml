@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   <!-- Sequence for Work Order. -->
+   <record id="seq_seq_work_order" model="ir.sequence">
+       <field name="name">Work Order Sequence</field>
+       <field name="code">work.order.sequence</field>
+       <field name="prefix">WO-</field>
+       <field name="padding">5</field>
+       <field name="implementation">no_gap</field>
+   </record>
+
+   <!-- Sequence for Job Card. -->
+   <record id="seq_seq_job_card" model="ir.sequence">
+       <field name="name">Job Card Sequence</field>
+       <field name="code">job.card.sequence</field>
+       <field name="prefix">JBC</field>
+       <field name="padding">6</field>
+   </record>
+
+   <!-- Sequence for Contract. -->
+   <record id="seq_seq_contract_card" model="ir.sequence">
+       <field name="name">Contract Sequence</field>
+       <field name="code">vehicle.contract.sequnce</field>
+       <field name="prefix">CON</field>
+       <field name="padding">6</field>
+   </record>
+</odoo>

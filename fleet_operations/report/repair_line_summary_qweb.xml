@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="excel_sg_leave_summary_report_wiz" model="ir.ui.view">
+        <field name="name">excel.fleet.report.wizard</field>
+        <field name="model">excel.fleet.report</field>
+        <field name="arch" type="xml">
+            <form string="Excel Export">
+                <group>
+                    <field name="name" invisible="1"/>    
+                    <field name="file" filename="name"/>
+                </group>
+                <footer>
+                    <button special="cancel" string="Cancel" colspan="2"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="fleet_print" model="ir.ui.view">
+        <field name="name">Fleet History</field>
+        <field name="model">print.fleet.history</field>
+        <field name="arch" type="xml">
+            <form string="Invoice Sales Order">
+                <p class="oe_grey">
+                    Vehicle xlsx Report.<br/>
+                    Select Option and print xlsx report for that
+                </p>
+                <group>
+                    <field name="sel_report"/>
+                </group>
+                <footer>
+                    <button name="print_xlsx_report" string="Print" type="object"
+                        class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <!--This is XLSX report show in fleet vehicle and providing so many type of print formate  -->
+   <record id="action_print_fleet_history" model="ir.actions.act_window">
+        <field name="name">Fleet xlsx Report</field>
+        <field name="res_model">print.fleet.history</field>
+        <field name="binding_model_id" ref="fleet.model_fleet_vehicle"/>
+        <field name="view_id" ref="fleet_operations.fleet_print"/>
+        <field name="type">ir.actions.act_window</field>
+        <field name="binding_type">report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+ 
+    <template id="repair_line_summary_qweb">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <br/><br/><br/>
+                        <h3 style="text-align:center;">VEHICLE REPAIR HISTORY</h3>
+                        <table class="table table-bordered table-condensed">
+                            <thead>
+                            <tr>
+                                <td style="text-align:center;background-color: #E0EBEB;">No.</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">VEHICLE NAME</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">REPAIR TYPE</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">DATE</td>
+                        <!--         <td style="text-align:center;background-color: #E0EBEB;">COUNT</td> -->
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <t t-set="counter" t-value="1"/>
+                            <tr t-foreach="get_vehicle_history" t-as="line">
+                                <t t-if="line">
+                                    <td style="text-align:center;"><span t-esc="counter"/><t t-set="counter" t-value="counter+1"/></td>
+                                    <td style="text-align:center"><span t-esc="line.get('vehicle_name')"/></td>
+                                    <td style="text-align:left;"><span t-esc="line.get('repair_type')"/></td>
+                                    <td style="text-align:center"><span t-esc="line.get('issue_date')"/></td>
+                           <!--          <td style="text-align:center;"><span t-esc="line.get('count')"/></td> -->
+                                </t>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

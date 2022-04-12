@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Paper Format For Write-off -->
+    <record id="wittenoff_format" model="report.paperformat">
+        <field name="name">Invoice and write-off paperformat</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">45</field>
+        <field name="margin_bottom">15</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_spacing">45</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Export Qweb Report For Write-off -->
+    <record id="write_off_report_qweb" model="ir.actions.report">
+        <field name="name">Write-Off</field>
+        <field name="model">fleet.wittenoff</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fleet_operations.write_off_qweb</field>
+        <field name="report_file">fleet_operations.write_off_qweb</field>
+        <field name="print_report_name">'Write-Off'</field>
+        <field name="binding_model_id" ref="fleet_operations.model_fleet_wittenoff"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <record id="write_off_report_qweb" model="ir.actions.report">
+        <field name="paperformat_id" ref="fleet_operations.wittenoff_format"/>
+    </record>
+
+    <record id="account.account_invoices" model="ir.actions.report">
+        <field name="paperformat_id" ref="fleet_operations.wittenoff_format"/>
+    </record>
+
+    <record id="account.account_invoices_without_payment" model="ir.actions.report">
+        <field name="paperformat_id" ref="fleet_operations.wittenoff_format"/>
+    </record>
+
+    <!-- QWEB Report For Repair Line Summary Report -->
+    <record id="action_report_repair_line_summary" model="ir.actions.report">
+        <field name="name">Repair Line Summary</field>
+        <field name="model">repair.line.summary</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fleet_operations.repair_line_summary_qweb</field>
+        <field name="report_file">fleet_operations.repair_line_summary_qweb</field>
+        <field name="print_report_name">'Repair Line Summary'</field>
+        <field name="binding_model_id" ref=""/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- QWEB Report For Vehicle Change History Report -->
+    <record id="action_report_vehicle_change_history" model="ir.actions.report">
+        <field name="name">Vehicle Change History</field>
+        <field name="model">vehicle.change.history</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fleet_operations.vehicle_change_history_qweb</field>
+        <field name="report_file">fleet_operations.vehicle_change_history_qweb</field>
+        <field name="print_report_name">'Vehicle Change History'</field>
+        <field name="binding_model_id" ref=""/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

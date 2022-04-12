@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Form View for Work Order Reports of vehicle -->
+    <record id="wo_report_form_view" model="ir.ui.view">
+        <field name="name">wo.report.form.view</field>
+        <field name="model">work.order.reports</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="select_report" required="1"/>
+                    <field name="file" filename="name" string="Download" attrs="{'invisible':[('file', '=', False)]}"/>
+                    <field name="name" invisible="1"/>
+                </group>
+                <notebook>
+                    <page string="Vehicle">
+                        <field name="vehicle_ids">
+                        <tree editable="bottom">
+                            <field name="name"/>
+                            <field name="f_brand_id"/>
+                            <field name="model_id"/>
+                            <field name="license_plate"/>
+                        </tree>
+                    </field>
+                    </page>
+                </notebook>
+                <footer>
+                    <button name="print_wo_xlsx_report" string="Print" type="object"
+                        class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Action for Work Order Reports of vehicle -->
+    <record id='fleet_vehicle_work_order' model='ir.actions.act_window'>
+        <field name="name">Services Report</field>
+        <field name="res_model">work.order.reports</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    
+    <!-- Menuitem for Work Order Reports views -->
+    <menuitem action="fleet_vehicle_work_order"
+        name="Services Search" parent="fleet.menu_fleet_reporting"
+        id="fleet_work_order_report_menu" sequence="4"/>
+</odoo>

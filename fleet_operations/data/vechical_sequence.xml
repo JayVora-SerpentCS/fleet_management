@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <!-- Sequence for Vehicle -->
+    <record id="seq_subject_book" model="ir.sequence">
+        <field name="name">vechical_id</field>
+        <field name="code">fleet.vehicle</field>
+        <field name="prefix">%(year)s-</field>
+        <field name="suffix"/>
+        <field name="implementation">no_gap</field>
+        <field name="number_next">1</field>
+        <field name="padding">4</field>
+    </record>
+
+    <!-- Sequence for Service Order. -->
+    <record id="sequence_service_order" model="ir.sequence">
+        <field name="name">Service Order Sequence</field>
+        <field name="code">service.order.sequence</field>
+        <field name="prefix">SER/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="implementation">no_gap</field>
+    </record>
+
+    <!-- Sequence for vehicle Write-Off. -->
+    <record id="seq_seq_write_off" model="ir.sequence">
+        <field name="name">Write-Off Sequence</field>
+        <field name="code">vehicle.writeoff.sequnce</field>
+        <field name="prefix">WOFF</field>
+        <field name="padding">5</field>
+    </record>
+
+</odoo>

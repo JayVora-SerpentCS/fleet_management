@@ -1,0 +1,27 @@
+<odoo>
+    <!--Renew Tenancy Wizard Form View  -->
+    <record model="ir.ui.view" id="view_writeoff_cancel_reason_wizard">
+        <field name="name">writeoff.cancel.reason.form</field>
+        <field name="model">writeoff.cancel.reason</field>
+        <field name="arch" type="xml">
+            <form>
+                <separator string="Reason To Cancel" />
+                <group>
+                    <field name="reason" />
+                </group>
+                <footer>
+                    <button name="cancel_writoff" type="object" string="OK" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!--  Action for Renew Tenancy Wizard -->
+    <record model="ir.actions.act_window" id="action_writeoff_cancel_reason_wizard">
+        <field name="name">Write Off Cancel Reason Wizard</field>
+        <field name="res_model">writeoff.cancel.reason</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

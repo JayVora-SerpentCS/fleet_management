@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_fleet_rent_kanban" model="ir.ui.view">
+        <field name="name">view.fleet.rent.kanban</field>
+        <field name="model">fleet.rent</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state"> 
+                <field name="name" string="Rental Number"/>
+                <field name="vehicle_id"/>
+                <field name="rent_type_id"/>
+                <field name="tenant_id"/>
+                <field name="date_start"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <table width="100%" t-attf-class="oe_kanban_global_click">
+                            <tr>
+                                <td><b>Rental Number : </b><field name="name"/></td>
+                            </tr>
+                            <tr>
+                                <td><b>Vehicle : </b><field name="vehicle_id"/></td>
+                            </tr>
+                            <tr>
+                                <td><b>Tenant Name : </b><field name="tenant_id"/></td>
+                            </tr>
+                            <tr>
+                                <td><b>Rent Type : </b><field name="rent_type_id"/></td>
+                            </tr>
+                             <tr>
+                                <td><b>Start Date : </b><field name="date_start"/></td>
+                            </tr>
+                        </table>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <!--  Fleet Rent Tree View -->
+    <record id='view_fleet_rent_tree' model='ir.ui.view'>
+        <field name="name">view.fleet.rent.tree</field>
+        <field name="model">fleet.rent</field>
+        <field name="arch" type="xml">
+            <tree string="Vehicles Rent">
+                <field name="name" string="Rental Number" placeholder="Rental Name.."
+                    required="1"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="rent_type_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--  Fleet Rent Form View -->
+    <record id='view_fleet_rent_form' model='ir.ui.view'>
+        <field name="name">view.fleet.rent.form</field>
+        <field name="model">fleet.rent</field>
+        <field name="arch" type="xml">
+            <form string="Vehicles Rent">
+                <header>
+                    <button name="action_rent_confirm"
+                            string="Confirm" type="object" states="draft"
+                            class="oe_highlight"
+                            groups="fleet.fleet_group_manager"/>
+
+                    <button name="create_rent_schedule"
+                            string=" Schedule Rent" type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': ['|', ('state','!=','open'),('cr_rent_btn','=',True)]}"/>
+
+                    <button name="action_deposite_receive"
+                            string="Deposit Receive" type="object"
+                            attrs="{'invisible':['|',
+                            ('deposit_received','=',True), ('state', '=', 'draft')]}"
+                            class="oe_highlight"
+                            groups="fleet_rent.group_vehicle_rent_manager"/>
+                    <button name="action_deposite_return"
+                            string="Deposit Return"
+                            type="object" attrs="{'invisible':['|',
+                            ('is_deposit_return','=',True),
+                            ('deposit_received','=',False)]}"
+                            class="oe_highlight" context="{'return':1}"
+                            groups="fleet_rent.group_vehicle_rent_manager"/>
+                    <button name="action_set_to_renew" string="Renew"
+                        type="object" states="close,done" class="oe_highlight"
+                        groups="fleet.fleet_group_manager"/>
+                    <button name="action_set_to_draft"
+                        string="Set To Draft" type="object" states="open"
+                        class="oe_highlight" groups="fleet_rent.group_vehicle_rent_manager"/>
+                    <button name="action_rent_close" string="Close"
+                        type="object" states="open" class="oe_highlight"
+                        groups="fleet_rent.group_vehicle_rent_manager"/>
+                    <button name="action_rent_done" string="Done"
+                        type="object" states="open" class="oe_highlight" 
+                        groups="fleet_rent.group_vehicle_rent_manager"/>
+                    <field name="cr_rent_btn" invisible="1"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,open,close"
+                        statusbar_colors='{"draft":"red", "open":"blue", "close":"red"}'
+                        select="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button icon="fa-pencil-square-o" class="oe_stat_button" 
+                            name="%(action_fleet_out_invoice_view)d" 
+                            type="action" 
+                            help="We can see all the deposit receive invoices here">
+                            <field name="invoice_count" string="Deposit Receive"
+                                widget="statinfo"/>
+                        </button>
+                        <button icon="fa-pencil-square-o" class="oe_stat_button" 
+                            name="%(action_fleet_out_refund_invoice_view)d" 
+                            type="action" 
+                            help="We can see all the deposit return invoices here">
+                            <field name="refund_inv_count" string="Deposit Return"
+                                widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title oe_left">
+                        <label for="name" class="oe_edit_only"
+                            string="Rental Number"/>
+                        <h1>
+                            <field name="name" default_focus="1"
+                                readonly="1"
+                                placeholder="Rental Number"
+                                class="oe_inline" />
+                        </h1>
+                    </div>
+                    <group colspan="2"
+                            attrs="{'readonly':[('state','=','close')]}">
+                        <group colspan='4' col='4'>
+                            <separator string="Vehicle Information"
+                                colspan="4"/>
+                            <field name="vehicle_id" required="1"
+                                placeholder="Vehicle Name"
+                                context="{'remove_inprogeress':True}"/>
+                            <field name="tenant_id" 
+                                context="{'default_is_tenant':True, 'tree_view_ref': 'fleet_rent.view_tenant_users_tree',
+                                'form_view_ref': 'fleet_rent.view_tenant_users_form'}"
+                                placeholder="Tenant Name" required="1"
+                                domain="[('is_tenant','=',True)]"
+                                options="{'no_create': True, 'no_open': True}"/>
+                            <field name="fleet_tenant_id" invisible="1"/>
+                            <field name="manager_id" />
+                            <field name="vehicle_owner" required="1" string="Vehicle Owner"/>
+                            <field name="company_id" required="1"/>
+                            <field name="currency_id" required="1" />
+                            <label for="odometer" />
+                            <div>
+                                <field name="odometer" class="oe_inline"/>
+                                <field name="odometer_unit" class="oe_inline"
+                                    readonly="1" required="1"/>
+                            </div>
+                        </group>
+                        <group colspan="4" col="4"
+                            attrs="{'readonly':[('state','=','close')]}">
+                            <separator string="Rental Vehicle Information"
+                                colspan="4" />
+                            <field name="rent_amt" widget="monetary"
+                                attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="contract_dt" required="1"
+                                readonly="1"/>
+                            <field name="deposit_amt" widget="monetary"
+                                string="Amount Deposit" attrs="{'readonly':[('deposit_received','=',True)]}"/>
+                            <field name="amount_return"
+                                widget="monetary" readonly="1"/>
+                            <field name="deposit_received"/>
+                            <field name="is_deposit_return"/>
+                            <field name="contact_id"/>
+                            <field name="maintenance_cost"
+                                attrs="{'readonly':[('state','!=','draft')]}"/>
+                        </group>
+                        <group colspan='4' col='4'>
+                            <separator string="Contract Information"
+                                colspan="4"/>
+                            <field name="date_start"
+                                colspan="2"
+                                required="True"
+                                attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="date_end"
+                                placeholder="End Date" colspan="2"
+                                readonly="True"
+                                attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="rent_type_id" required="True"/>
+                            <field name="total_rent" widget="monetary"/>
+                            <field name="rent_close_by" readonly="1"/>
+                            <field name="date_close" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Rent Schedule" name="rent_schedule">
+                            <separator string="Rent Schedule Details"
+                                colspan="4"/>
+                            <field name="rent_schedule_ids" nolabel="1"
+                                    readonly="1">
+                                <tree string="Rent Schedule" editable="bottom"
+                                    limit="12">
+                                    <field name="start_date" />
+                                    <field name="amount" sum="Total Amount"/>
+                                    <field name="pen_amt" sum="Total Amount"/>
+                                    <field name="cheque_detail" />
+                                    <field name="paid" />
+                                    <field name="move_check" />
+                                    <field name="state"/>
+                                    <field name="note" />
+                                    <field name="inv" invisible="1" />
+                                    <field name="state" invisible="1"/>
+                                    <field name="currency_id" invisible="1" />
+                                    <button name="create_invoice"
+                                        icon="fa-arrow-circle-o-right fa-lg"
+                                        attrs="{'invisible':['|',
+                                        ('inv','=',True),
+                                        ('state','=','close')]}"
+                                        class="oe_highlight
+                                        btn_visible_in_tree"
+                                        string="Create Invoice"
+                                        type="object" context="{'asset':1}" />
+                                    <button name="open_invoice"
+                                        icon="fa-arrow-circle-o-right fa-lg"
+                                        attrs="{'invisible':[
+                                        ('inv','=',False)]}"
+                                        class="oe_highlight
+                                        btn_visible_in_tree"
+                                        string="Open Invoice"
+                                        type="object"
+                                        context="{'openinvoice':1}"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="maintenance_lines" string="Maintenance">
+                            <separator colspan="4" string="Maintenance"/>
+                            <field name="maintanance_ids">
+                                <tree editable="bottom">
+                                    <field name="maint_type" required="1"
+                                        domain="[('main_cost','=','true')]"/>
+                                    <field name="cost"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="maint_type" required="1"
+                                            domain="[('main_cost','=','true')]"/>
+                                        <field name="cost"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Payment History">
+                             <field name="account_move_line_ids" readonly="1">
+                                <tree string="Journal Items" create="false">
+                                    <field name="date" />
+                                    <field name="name" />
+                                    <field name="ref" string="Reference" />
+                                    <field name="move_id" required="0" />
+                                    <field name="journal_id"
+                                        options="{&quot;no_open&quot;:True}" />
+                                    <field name="account_id"
+                                        options="{&quot;no_open&quot;:True}"
+                                        domain="[('company_id', '=', parent.company_id)]" />
+                                    <field name="debit" sum="Total Debit" widget='monetary' />
+                                    <field name="credit" sum="Total Credit" />
+                                    <field name="currency_id" invisible="1"
+                                        options="{'no_create': True}" />
+                                </tree>
+                            </field>
+                            <group></group>
+                        </page>
+                        <page string="Rental Close Reason"
+                                name="rental_close_reason">
+                            <separator string="Rental Close Reason" colspan="4"/>
+                            <field name="close_reson" readonly="1"
+                                attrs="{'invisible':[('state','in',['draft','open'])]}" nolabel="1" colspan="4"/>
+                        </page>
+                        <page string="Terms &amp; Conditions" name="contract_page">
+                            <separator string="Terms and Conditions"
+                                name="description" />
+                            <field name="description"
+                                placeholder="Enter Terms and Conditions..." />
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Action view for Vehicles Rent -->
+    <record id="action_fleet_rent_view" model="ir.actions.act_window">
+        <field name="name">Vehicles Rent</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fleet.rent</field>
+        <field name="view_mode">tree,form,kanban</field>
+    </record>
+
+    <!-- Main Menuitem for Vehicles Rent -->
+    <menuitem id="menu_vehicle_rent"
+        name="Vehicles Rent" parent="fleet.menu_root" 
+        sequence="2"/>
+    <menuitem id="sub_menu_vehicles_rent"
+        name="Vehicle Rent"
+        parent="fleet_rent.menu_vehicle_rent"
+        action="action_fleet_rent_view"
+        sequence="1"/>
+        
+    <menuitem name="Fleet" id="fleet.menu_root" 
+        sequence="115" groups="fleet.fleet_group_user,fleet_rent.group_vehicle_rent_user" 
+        web_icon="fleet,static/description/icon.png"/>
+
+
+    <!-- Action view for Vehicles Rent to open from the Vehicle -->
+    <record id="action_fleet_vehicle_rent_view"
+            model="ir.actions.act_window">
+        <field name="name">Vehicles Rent</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fleet.rent</field>
+        <field name="context">{'default_vehicle_id': active_id,'from_rent_smartbutton': True}</field>
+        <field name="domain">[('vehicle_id','=',active_id)]</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+<!--    ###################################################################
+                            RENT TYPE VIEW
+    ###################################################################                         -->
+
+    <!--Rent Type Form View-->
+    <record id="rent_type_form" model="ir.ui.view">
+        <field name="name">rent.type.form</field>
+        <field name="model">rent.type</field>
+        <field name="arch" type="xml">
+            <form string="Rent Type" >
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="duration" required="1"/>
+                        <field name="renttype" required="1"/>
+                        <!-- <field name="sequence_in_view"/> -->
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Rent Type Tree View-->
+    <record id="rent_type_tree" model="ir.ui.view">
+        <field name="name">rent.type.tree</field>
+        <field name="model">rent.type</field>
+        <field name="arch" type="xml">
+            <tree string="Rent Type">
+                <field name="name"/>
+                <field name="duration" />
+                <field name="renttype"/>
+                <!-- <field name="sequence_in_view"/> -->
+            </tree>
+        </field>
+    </record>
+
+    <!--Rent Type Search View-->
+    <record model="ir.ui.view" id="rent_type_view_search">
+        <field name="name">rent.type.search</field>
+        <field name="model">rent.type</field>
+        <field name="arch" type="xml">
+            <search string="Search Property">
+                <field name="name"/>
+                <field name="duration"/>
+                <field name="renttype"/>
+            </search>
+        </field>
+    </record>
+
+    <!--Action for Rent Type Views -->
+    <record id="action_rent_type_view" model="ir.actions.act_window">
+        <field name="name">Rent Type</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">rent.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Rent Type" id="menu_rent_type"
+        parent="fleet.fleet_configuration"
+        groups="fleet_rent.group_vehicle_rent_manager"
+        action="action_rent_type_view" />
+
+
+<!--    ###################################################################
+                           MAINTENANCE TYPE VIEW
+    ###################################################################                          -->
+
+    <!-- Maintenance Type Form View -->
+    <record id="maintenance_type_form" model="ir.ui.view">
+        <field name="name">maintenance.type.form</field>
+        <field name="model">maintenance.type</field>
+        <field name="arch" type="xml">
+            <form string="Maintenance Type" >
+                <sheet>
+                    <group colspan="4" col="4">
+                        <field name="name"/><newline/>
+                        <field name="main_cost"/>
+                        <field name="cost"
+                            attrs="{'invisible': [('main_cost','!=',True)]}"
+                            required="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Maintenance Type Tree View -->
+    <record id="maintenance_type_tree" model="ir.ui.view">
+        <field name="name">maintenance.type.tree</field>
+        <field name="model">maintenance.type</field>
+        <field name="arch" type="xml">
+            <tree string="Maintenance Type">
+                <field name="name"/>
+                <field name="main_cost"/>
+                <field name="cost"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Maintenance Type Search View -->
+    <record id="maintenance_type_view_search" model="ir.ui.view">
+        <field name="name">maintenance.type.search</field>
+        <field name="model">maintenance.type</field>
+        <field name="arch" type="xml">
+            <search string="Search Property">
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Maintenance Type Views -->
+    <record id="action_maintenance_type_view" model="ir.actions.act_window">
+        <field name="name">Maintenance Type</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">maintenance.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- <menuitem name="Maintenance Type" id="menu_maintenance_type"   parent="menu_types_main" action="action_maintenance_type_view"/> -->
+
+<!--    ###################################################################
+                        TENANCY RENT SCHEDULE VIEW
+    ###################################################################                         -->
+
+    <!--Tenancy Rent Schedule Form view-->
+    <record id="tenancy_rent_form" model="ir.ui.view">
+        <field name="name">tenancy.rent.schedule.form</field>
+        <field name="model">tenancy.rent.schedule</field>
+        <field name="arch" type="xml">
+            <form string="Rent Schedule" >
+                <sheet>
+                    <group colspan='4' col='4'>
+                        <field name="cheque_detail"/>
+                        <field name="start_date"/>
+                        <field name="fleet_rent_id"/>
+                        <field name="rel_tenant_id"/>
+                        <field name="amount" widget="monetary"/>
+                        <field name="move_check"/>
+                        <field name="invc_id" invisible="1"/>
+                        <field name="inv" invisible="1"/>
+                        <field name="state" invisible="1"/>
+                    </group>
+                    <newline/>
+                    <separator string="Notes" colspan="4"/>
+                    <field name="note" colspan="4" nolabel="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--Tenancy Rent Schedule Tree view-->
+    <record id="tenancy_rent_tree" model="ir.ui.view">
+        <field name="name">tenancy.rent.schedule.tree</field>
+        <field name="model">tenancy.rent.schedule</field>
+        <field name="arch" type="xml">
+            <tree string="Rent Schedule">
+                <field name="start_date"/>
+                <field name="cheque_detail"/>
+                <field name="fleet_rent_id"/>
+                <field name="rel_tenant_id"/>
+                <field name="amount"/>
+                <field name="move_check"/>
+                <field name="note"/>
+                <field name="state" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--Tenancy Rent Schedule Search view-->
+    <record id="tenancy_rent_schedule_search" model="ir.ui.view">
+        <field name="name">tenancy.rent.schedule.search</field>
+        <field name="model">tenancy.rent.schedule</field>
+        <field name="arch" type="xml">
+            <search string="Search Tenant Rent">
+                <filter string="This Month" name="this_month"
+                    domain="[('start_date','&lt;=',(datetime.date.today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),('start_date','&gt;=',(datetime.date.today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"
+                    help="Tenant Rent in this month"/>
+                <filter string="Paid" name="paid"
+                    domain="[('move_check','=',True)]" help="Paid Tenant Rent"/>
+                <filter string="Pending" domain="[('move_check','=',False)]"
+                    name="pending" help="Unpaid Tenant Rent"/>
+                <field name="fleet_rent_id"/>
+                <field name="cheque_detail"/>
+                <field name="rel_tenant_id"/>
+                <field name="start_date"/>
+                <field name="amount"/>
+                <newline/>
+                <group expand="0" string="Group by..."
+                    colspan="4" col="10">
+                    <!-- <filter icon="terp-personal" string="Rental Vehicle"
+                        name="rental_vehicle" context="{'group_by':'tenancy_id'}"/> -->
+                    <filter icon="terp-personal" string="Tenant"
+                        name="tenant" context="{'group_by':'rel_tenant_id'}"/>
+                    <filter icon="terp-go-today" string="Date"
+                        name="date" context="{'group_by':'start_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--Tenancy Rent Schedule Calendar view-->
+    <record id="tenancy_rent_calendar" model="ir.ui.view">
+        <field name="name">tenancy.rent.schedule.calendar</field>
+        <field name="model">tenancy.rent.schedule</field>
+        <field name="arch" type="xml">
+            <calendar string="Rent" color="fleet_rent_id"
+                    date_start="start_date">
+                <field name="rel_tenant_id"/>
+                <field name="amount"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Action for Tenancy Rent Schedule view-->
+    <record id="action_tenancy_rent" model="ir.actions.act_window">
+        <field name="name">Tenancy Rent Schedule</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">tenancy.rent.schedule</field>
+        <field name="view_mode">calendar,tree,form</field>
+    </record>
+
+    <!--Rent Schedule menu-->
+    <!-- <menuitem name="Tenancy Rent Schedule" id="menu_tenancy_rent"
+            parent="menu_property_sub" action="action_tenancy_rent" sequence="5"/> -->
+</odoo>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Form View for Change History. -->
+    <record id="view_vehicle_change_history_wiz" model="ir.ui.view">
+        <field name="name">vehicle.change.history.wiz</field>
+        <field name="model">vehicle.change.history</field>
+        <field name="arch" type="xml">
+            <form string="Vehicle Change History">
+                <separator string="Vehicle Change History" colspan="4" />
+                <group col="4" colspan="4">
+                    <field name="fleet_id" options="{'no_open': True, 'create': false, 'create_edit': false}" required="1"/>
+                    <field name="report_type" string="Report Type"/>
+                    <newline/>
+                    <field name="date_from" />
+                    <field name="date_to" />
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Change History. -->
+    <record id="action_vehicle_change_history" model="ir.actions.act_window">
+        <field name="name">Vehicle Change History</field>
+        <field name="res_model">vehicle.change.history</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="view_vehicle_change_history_wiz"/>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+   </record>
+
+   <!-- Menu View for Change History. -->
+   <menuitem action="action_vehicle_change_history"
+             name="Vehicle Change History"
+             id="vehicle_change_history_menu"
+             parent="fleet.menu_fleet_reporting"
+             sequence="5"
+             groups="fleet.fleet_group_manager,fleet.fleet_group_user"/>
+</odoo>

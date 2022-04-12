@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!--Scheduler of Email for Vehicle Service -->
+    <record id="fleet_mail_service" model="ir.cron">
+            <field name="name">Fleet Vehicle Service Reminder.</field>
+            <field name="active" eval="True" />
+            <field name="state">code</field>
+            <field name="code">model.vehicle_service_reminder_send_mail()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model_id" ref="fleet.model_fleet_vehicle"/>
+    </record>
+
+    <!-- Out going Email configuration -->
+    <record id="ir_mail_server_service" model="ir.mail_server">
+        <field name="name">Vehicle Service</field>
+        <field name="smtp_host">smtp.gmail.com</field>
+        <field name="smtp_port" eval="465" />
+        <field name="sequence" eval="11" />
+        <field name="smtp_encryption">ssl</field>
+    </record>
+
+    <record id="work_order_vehicle_location" model="stock.location">
+        <field name="name">Vehicle</field>
+        <field name="location_id" ref="stock.stock_location_company"/>
+        <field name="usage">internal</field>
+    </record>
+
+    <!-- NDS Repair Types -->
+    <record id="nds_repair_type01" model="repair.type">
+        <field name="name">Inspection</field>
+    </record>
+    <record id="nds_repair_type02" model="repair.type">
+        <field name="name">AC Repair</field>
+    </record>
+    <record id="nds_repair_type03" model="repair.type">
+        <field name="name">AC Gas</field>
+    </record>
+    <record id="nds_repair_type04" model="repair.type">
+        <field name="name">Beyond Economical Repair</field>
+    </record>
+    <record id="nds_repair_type05" model="repair.type">
+        <field name="name">Body Repair</field>
+    </record>
+    <record id="nds_repair_type06" model="repair.type">
+        <field name="name">Body Repaint</field>
+    </record>
+    <record id="nds_repair_type07" model="repair.type">
+        <field name="name">Break System</field>
+    </record>
+    <record id="nds_repair_type08" model="repair.type">
+        <field name="name">Cooling System</field>
+    </record>
+    <record id="nds_repair_type09" model="repair.type">
+        <field name="name">Drive Train</field>
+    </record>
+    <record id="nds_repair_type10" model="repair.type">
+        <field name="name">Electrical System</field>
+    </record>
+    <record id="nds_repair_type11" model="repair.type">
+        <field name="name">Engine Overhaul</field>
+    </record>
+    <record id="nds_repair_type12" model="repair.type">
+        <field name="name">Engine Repair</field>
+    </record>
+    <record id="nds_repair_type13" model="repair.type">
+        <field name="name">Exhaust System</field>
+    </record>
+    <record id="nds_repair_type14" model="repair.type">
+        <field name="name">Fuel System</field>
+    </record>
+    <record id="nds_repair_type15" model="repair.type">
+        <field name="name">Insurgent Attack</field>
+    </record>
+    <record id="nds_repair_type16" model="repair.type">
+        <field name="name">Road Wheel and Tire</field>
+    </record>
+    <record id="nds_repair_type17" model="repair.type">
+        <field name="name">Routine Service and Inspection</field>
+    </record>
+    <record id="nds_repair_type18" model="repair.type">
+        <field name="name">Steering System</field>
+    </record>
+    <record id="nds_repair_type19" model="repair.type">
+        <field name="name">Suspension System</field>
+    </record>
+    <record id="nds_repair_type20" model="repair.type">
+        <field name="name">Vehicle Roll Over</field>
+    </record>
+    <!-- Damage Type data files -->
+    <record id="damage_type_01" model="damage.types">
+        <field name="name">LEFT HAND FRONT</field>
+        <field name="code">DT0001</field>
+    </record>
+    <record id="damage_type_02" model="damage.types">
+        <field name="name">LEFT HAND MIDDLE</field>
+        <field name="code">DT0002</field>
+    </record>
+    <record id="damage_type_03" model="damage.types">
+        <field name="name">INTERIOR</field>
+        <field name="code">DT0003</field>
+    </record>
+    <record id="damage_type_04" model="damage.types">
+        <field name="name">LEFT HAND REAR</field>
+        <field name="code">DT0004</field>
+    </record>
+    <record id="damage_type_05" model="damage.types">
+        <field name="name">LEFT HAND FRONT SUSPENSION</field>
+        <field name="code">DT0005</field>
+    </record>
+    <record id="damage_type_06" model="damage.types">
+        <field name="name">LEFT HAND REAR SUSPENSION</field>
+        <field name="code">DT0006</field>
+    </record>
+    <record id="damage_type_07" model="damage.types">
+        <field name="name">CHASSIS</field>
+        <field name="code">DT0007</field>
+    </record>
+    <record id="damage_type_08" model="damage.types">
+        <field name="name">RIGHT HAND FRONT</field>
+        <field name="code">DT0008</field>
+    </record>
+    <record id="damage_type_09" model="damage.types">
+        <field name="name">ROOF PANEL</field>
+        <field name="code">DT0009</field>
+    </record>
+    <record id="damage_type_10" model="damage.types">
+        <field name="name">RIGHT HAND REAR</field>
+        <field name="code">DT00010</field>
+    </record>
+    <record id="damage_type_11" model="damage.types">
+        <field name="name">​RIGHT HAND FRONT SUSPENSION</field>
+        <field name="code">DT00011</field>
+    </record>
+    <record id="damage_type_12" model="damage.types">
+        <field name="name">RIGHT HAND REAR SUSPENSION</field>
+        <field name="code">DT00012</field>
+    </record>
+    <record id="damage_type_13" model="damage.types">
+        <field name="name">UNDER BONNET</field>
+        <field name="code">DT00013</field>
+    </record>
+    <record id="damage_type_14" model="damage.types">
+        <field name="name">​TRANSMISSION</field>
+        <field name="code">DT00014</field>
+    </record>
+
+    <!--color records-->
+    <record id="color_red_1" model="color.color">
+        <field name="name">RED</field>
+    </record>
+
+    <record id="color_black_2" model="color.color">
+        <field name="name">BLACK</field>
+    </record>
+
+    <record id="color_dark_red_3" model="color.color">
+        <field name="name">DARK RED</field>
+    </record>
+
+    <record id="color_silver_4" model="color.color">
+        <field name="name">SILVER</field>
+    </record>
+
+    <record id="color_yellow_5" model="color.color">
+        <field name="name">YELLOW</field>
+    </record>
+
+    <record id="color_white_6" model="color.color">
+        <field name="name">WHITE</field>
+    </record>
+
+    <record id="color_gold_7" model="color.color">
+        <field name="name">GOLD</field>
+    </record>
+
+    <record id="color_gray_8" model="color.color">
+        <field name="name">GRAY</field>
+    </record>
+
+    <record id="color_blue_9" model="color.color">
+        <field name="name">BLUE</field>
+    </record>
+
+    <record id="color_green_10" model="color.color">
+        <field name="name">GREEN</field>
+    </record>
+
+    <record id="color_purple_11" model="color.color">
+        <field name="name">PURPLE</field>
+    </record>
+
+    <record id="color_dark_green_12" model="color.color">
+        <field name="name">DARK GREEN</field>
+    </record>
+
+    <record id="color_brown_13" model="color.color">
+        <field name="name">BROWN</field>
+    </record>
+
+    <!-- vehicle type records -->
+    <record id="vehicle_type_ambulance_1" model="vehicle.type">
+        <field name="name">Ambulance</field>
+    </record>
+
+    <record id="vehicle_type_bus_2" model="vehicle.type">
+        <field name="name">Bus</field>
+    </record>
+
+    <record id="vehicle_type_motorbike_3" model="vehicle.type">
+        <field name="name">Motorbike</field>
+    </record>
+
+    <record id="vehicle_type_truck_4" model="vehicle.type">
+        <field name="name">Truck</field>
+    </record>
+
+    <record id="vehicle_type_car_5" model="vehicle.type">
+        <field name="name">Car</field>
+    </record>
+
+</odoo>

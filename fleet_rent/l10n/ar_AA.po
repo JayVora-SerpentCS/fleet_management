@@ -1,0 +1,1545 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* fleet_rent
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-10-24 06:54+0000\n"
+"PO-Revision-Date: 2019-10-24 06:54+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Typeho: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: fleet_rent
+#: model:mail.template,body_html:fleet_rent.email_template_edi_rent
+msgid "\n"
+"            <div style=\"font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; \">\n"
+"	           <p>Hello ${object.tenant_id.name}</p>\n"
+"	           <p>We are remind you that your rental vehicle ${object.vehicle_id.name  or ''} 's rent end date is ${object.date or ''}.\n"
+"               </p>\n"
+"	           <div style=\"width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;\">\n"
+"		            <span style=\"color: #222; margin-bottom: 5px; display: block;\">\n"
+"		            <p>Thank you,</p>\n"
+"		            <p>Regards,</p>\n"
+"		            <p>Fleet Manager</p>\n"
+"                    </span>\n"
+"		      </div>\n"
+"		</div>\n"
+"        "
+msgstr ""
+
+#. module: fleet_rent
+#: model:mail.template,body_html:fleet_rent.email_rent_remainder_template
+msgid "\n"
+"            <div style=\"font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; \">\n"
+"               <p>Hello ${object.fleet_rent_id.tenant_id.name}</p>\n"
+"               <p>We are remind you that your rental vehicle ${object.vehicle_id.name  or ''} 's rent end date is ${object.date or ''}.\n"
+"               </p>\n"
+"               <div style=\"width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;\">\n"
+"                    <span style=\"color: #222; margin-bottom: 5px; display: block;\">\n"
+"                    <p>Thank you,</p>\n"
+"                    <p>Regards,</p>\n"
+"                    <p>Fleet Manager</p>\n"
+"                    </span>\n"
+"              </div>\n"
+"        </div>\n"
+"        "
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+msgid "<b>Company Address:</b>"
+msgstr "<b>عنوان المؤسسة:</b>"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.report_fleet_rent_pdf
+msgid "<b>Rent Schedule Details:</b>"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_kanban
+msgid "<b>Rent Type : </b>"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_kanban
+msgid "<b>Rental Number : </b>"
+msgstr "رقم الايجار"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_kanban
+msgid "<b>Start Date : </b>"
+msgstr "تاريخ البدء"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_kanban
+msgid "<b>Tenant Name : </b>"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_kanban
+msgid "<b>Vehicle : </b>"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.report_fleet_rent_pdf
+msgid "<b>Vehicle Information:</b>"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+msgid "<span class=\"fa fa-plus-square\"/>\n"
+"                                       Create company"
+msgstr "<span class=\"fa fa-plus-square\"/>\n"
+"                                       إنشاء مؤسسة"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__manager_id
+msgid "Account Manager"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__message_needaction
+msgid "Action Needed"
+msgstr "إجراء مطلوب"
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__maintenance_cost
+msgid "Add Maintenance Cost."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_tenancy_rent_schedule__note
+msgid "Additional Notes."
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+msgid "Address"
+msgstr "العنوان"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__amount
+#: model_terms:ir.ui.view,arch_db:fleet_rent.report_fleet_rent_pdf
+msgid "Amount"
+msgstr "المبلغ"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Amount Deposit"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__message_attachment_count
+msgid "Attachment Count"
+msgstr "عدد المرفقات"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.rental_fleet_wizard
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_renew_tenancy_wizard
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_rent_close_reason_wizard
+#: selection:tenancy.rent.schedule,state:0
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. module: fleet_rent
+#: selection:fleet.rent,state:0
+msgid "Cancelled"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_maintenance_type__main_cost
+msgid "Check if the recuring cost involve"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__cheque_detail
+msgid "Cheque Detail"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+msgid "City"
+msgstr "المدينة"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_rent_close_reason_wizard
+msgid "Close"
+msgstr "إقفال"
+
+#. module: fleet_rent
+#: selection:fleet.rent,state:0
+msgid "Closed"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__company_id
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+msgid "Company"
+msgstr "المؤسسة"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Confirm"
+msgstr "تأكيد"
+
+#. module: fleet_rent
+#: model:ir.model,name:fleet_rent.model_res_partner
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__contact_id
+msgid "Contact"
+msgstr "جهة الاتصال"
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__contact_id
+msgid "Contact person name."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model,name:fleet_rent.model_account_abstract_payment
+msgid "Contains the logic shared between models which allows to register payments"
+msgstr "يحتوي علي المنطق المشترك بين النماذج مما يسمح بتسجيل المدفوعات"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__contract_dt
+msgid "Contract Creation"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Contract Information"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+msgid "Country"
+msgstr "دولة"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Create Invoice"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.actions.act_window,help:fleet_rent.action_fleet_out_invoice_view
+#: model_terms:ir.actions.act_window,help:fleet_rent.action_fleet_out_refund_invoice_view
+msgid "Create a customer invoice"
+msgstr "إنشاء فاتورة عميل"
+
+#. module: fleet_rent
+#: model_terms:ir.actions.act_window,help:fleet_rent.action_fleet_out_invoice_view
+#: model_terms:ir.actions.act_window,help:fleet_rent.action_fleet_out_refund_invoice_view
+msgid "Create invoices, register payments and keep track of the discussions with your customers."
+msgstr "إنشاء الفواتير، وإثبات المدفوعات ومتابعة المحادثات مع عملاءك."
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__create_uid
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_cost__create_uid
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_type__create_uid
+#: model:ir.model.fields,field_description:fleet_rent.field_renew_tenancy__create_uid
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_close_reason__create_uid
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_type__create_uid
+#: model:ir.model.fields,field_description:fleet_rent.field_rental_fleet_history__create_uid
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__create_uid
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__create_date
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_cost__create_date
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_type__create_date
+#: model:ir.model.fields,field_description:fleet_rent.field_renew_tenancy__create_date
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_close_reason__create_date
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_type__create_date
+#: model:ir.model.fields,field_description:fleet_rent.field_rental_fleet_history__create_date
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__create_date
+msgid "Created on"
+msgstr "أنشئ في"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__currency_id
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__currency_id
+msgid "Currency"
+msgstr "العملة"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__start_date
+#: model_terms:ir.ui.view,arch_db:fleet_rent.report_fleet_rent_pdf
+#: model_terms:ir.ui.view,arch_db:fleet_rent.tenancy_rent_schedule_search
+msgid "Date"
+msgstr "التاريخ"
+
+#. module: fleet_rent
+#: selection:rent.type,renttype:0
+msgid "Days"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__deposit_amt
+msgid "Deposit Amount"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Deposit Receive"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__deposit_received
+msgid "Deposit Received?"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Deposit Return"
+msgstr ""
+
+#. module: fleet_rent
+#: code:addons/fleet_rent/models/fleet_rent.py:475
+#, python-format
+msgid "Deposit Return invoice is already Pending\n"
+"Please proceed that Return invoice first"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__amount_return
+msgid "Deposit Returned"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__amount_return
+msgid "Deposit Returned amount for                                  Rental Vehicle."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__is_deposit_return
+msgid "Deposit Returned?"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__deposit_amt
+msgid "Deposit amount for Rental Vehicle."
+msgstr ""
+
+#. module: fleet_rent
+#: code:addons/fleet_rent/models/fleet_rent.py:521
+#, python-format
+msgid "Deposit invoice is already Pending\n"
+"Please proceed that deposit invoice first"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__move_id
+msgid "Depreciation Entry"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__description
+msgid "Description"
+msgstr "الوصف"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__display_name
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_cost__display_name
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_type__display_name
+#: model:ir.model.fields,field_description:fleet_rent.field_renew_tenancy__display_name
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_close_reason__display_name
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_type__display_name
+#: model:ir.model.fields,field_description:fleet_rent.field_rental_fleet_history__display_name
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__display_name
+msgid "Display Name"
+msgstr "الاسم المعروض"
+
+#. module: fleet_rent
+#: selection:fleet.rent,state:0
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Done"
+msgstr "تم"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.rental_fleet_wizard
+msgid "Download"
+msgstr "تحميل"
+
+#. module: fleet_rent
+#: selection:tenancy.rent.schedule,state:0
+msgid "Draft"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_type__duration
+msgid "Duration"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+msgid "Email Address"
+msgstr "عنوان البريد الإلكتروني"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_renew_tenancy__end_date
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__end_date
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "End Date"
+msgstr "تاريخ الانتهاء"
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_tenancy_rent_schedule__end_date
+msgid "End Date."
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_rent_close_reason_wizard
+msgid "Enter Reason to close rent contract..."
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Enter Terms and Conditions..."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__account_move_line_ids
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__account_payment_ids
+msgid "Entries"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.fleet_vehicle_rent_form
+msgid "Expence Account"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_vehicle__expence_acc_id
+msgid "Expense Account"
+msgstr "حساب المصروفات"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__date_end
+msgid "Expiration Date"
+msgstr "تاريخ الإنتهاء"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_rental_fleet_history__file
+msgid "File"
+msgstr "الملف"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_rental_fleet_history__name
+msgid "File Name"
+msgstr "اسم الملف"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_res_partner__doc_name
+#: model:ir.model.fields,field_description:fleet_rent.field_res_users__doc_name
+msgid "Filename"
+msgstr "اسم الملف"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_renew_tenancy_wizard
+msgid "Fill up Start date, End date and Periods\n"
+"					To Renew Tenancy."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.actions.act_window,name:fleet_rent.action_res_partner
+#: model:ir.ui.menu,name:fleet_rent.sub_menu_res_partner
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_search
+msgid "Fleet Driver"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.actions.report,name:fleet_rent.report_fleet_rent
+#: model:ir.model,name:fleet_rent.model_fleet_rent
+#: model:ir.module.category,name:fleet_rent.fleet_rent_access_categ
+#: model_terms:ir.ui.view,arch_db:fleet_rent.report_fleet_rent_pdf
+msgid "Fleet Rent"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.actions.server,name:fleet_rent.fleet_mail_rent_ir_actions_server
+#: model:ir.cron,cron_name:fleet_rent.fleet_mail_rent
+#: model:ir.cron,name:fleet_rent.fleet_mail_rent
+msgid "Fleet Rent Alert"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__fleet_tenant_id
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_cost__fleet_tenant_id
+msgid "Fleet Tenant"
+msgstr ""
+
+#. module: fleet_rent
+#: model:mail.template,subject:fleet_rent.email_rent_remainder_template
+#: model:mail.template,subject:fleet_rent.email_template_edi_rent
+msgid "Fleet Vehicle Rent Expire Date"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_tree
+msgid "Fleet driver"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__message_follower_ids
+msgid "Followers"
+msgstr "المتابعون"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__message_channel_ids
+msgid "Followers (Channels)"
+msgstr "المتابعون (القنوات)"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "المتابعون (الشركاء)"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.tenancy_rent_schedule_search
+msgid "Group by..."
+msgstr "تجميع حسب..."
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__cr_rent_btn
+msgid "Hide Rent Button"
+msgstr ""
+
+#. module: fleet_rent
+#: selection:rent.type,renttype:0
+msgid "Hours"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__id
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_cost__id
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_type__id
+#: model:ir.model.fields,field_description:fleet_rent.field_renew_tenancy__id
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_close_reason__id
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_type__id
+#: model:ir.model.fields,field_description:fleet_rent.field_rental_fleet_history__id
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__id
+msgid "ID"
+msgstr "المعرف"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_res_partner__id_attachment
+#: model:ir.model.fields,field_description:fleet_rent.field_res_users__id_attachment
+msgid "Identity Proof"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__message_unread
+msgid "If checked new messages require your attention."
+msgstr "إذا كان محددًا، فهناك رسائل جديدة تحتاج لرؤيتها."
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "إذا كان محددًا، فهناك رسائل جديدة تحتاج لرؤيتها."
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr "إذا كان محددًا، فقد حدث خطأ في تسليم بعض الرسائل."
+
+#. module: fleet_rent
+#: selection:fleet.rent,state:0
+msgid "In Progress"
+msgstr ""
+
+#. module: fleet_rent
+#: code:addons/fleet_rent/models/fleet_rent.py:448
+#, python-format
+msgid "In order to Renew a Tenancy,                     Please make all related Rent Schedule entries posted !!"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_vehicle__income_acc_id
+#: model_terms:ir.ui.view,arch_db:fleet_rent.fleet_vehicle_rent_form
+msgid "Income Account"
+msgstr "حساب الدخل"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+msgid "Internal Notes"
+msgstr "ملاحظات داخلية"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+msgid "Internal note..."
+msgstr "مذكرة داخلية..."
+
+#. module: fleet_rent
+#: model:ir.model,name:fleet_rent.model_account_invoice
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__invoice_count
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__invoice_id
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__invc_id
+msgid "Invoice"
+msgstr "الفاتورة"
+
+#. module: fleet_rent
+#: model:ir.actions.act_window,name:fleet_rent.action_fleet_out_invoice_view
+#: model:ir.actions.act_window,name:fleet_rent.action_fleet_out_refund_invoice_view
+msgid "Invoices"
+msgstr "الفواتير"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_account_invoice__is_deposit_inv
+msgid "Is Deposit Invoice"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_account_invoice__is_deposit_return_inv
+msgid "Is Deposit Return Invoice"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_res_partner__is_driver
+#: model:ir.model.fields,field_description:fleet_rent.field_res_users__is_driver
+msgid "Is Driver"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__message_is_follower
+msgid "Is Follower"
+msgstr "متابع"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__inv
+msgid "Is Invoice?"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_res_partner__is_tenant
+#: model:ir.model.fields,field_description:fleet_rent.field_res_users__is_tenant
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_search
+msgid "Is Tenant"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_res_partner__tenant
+#: model:ir.model.fields,field_description:fleet_rent.field_res_users__tenant
+msgid "Is Tenant?"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model,name:fleet_rent.model_account_move_line
+msgid "Journal Item"
+msgstr "عنصر يومية"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Journal Items"
+msgstr "عناصر اليومية"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent____last_update
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_cost____last_update
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_type____last_update
+#: model:ir.model.fields,field_description:fleet_rent.field_renew_tenancy____last_update
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_close_reason____last_update
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_type____last_update
+#: model:ir.model.fields,field_description:fleet_rent.field_rental_fleet_history____last_update
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__odometer
+msgid "Last Odometer"
+msgstr "آخر قيمة لعداد المسافات"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__write_uid
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_cost__write_uid
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_type__write_uid
+#: model:ir.model.fields,field_description:fleet_rent.field_renew_tenancy__write_uid
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_close_reason__write_uid
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_type__write_uid
+#: model:ir.model.fields,field_description:fleet_rent.field_rental_fleet_history__write_uid
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__write_date
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_cost__write_date
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_type__write_date
+#: model:ir.model.fields,field_description:fleet_rent.field_renew_tenancy__write_date
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_close_reason__write_date
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_type__write_date
+#: model:ir.model.fields,field_description:fleet_rent.field_rental_fleet_history__write_date
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "المرفق الرئيسي"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenent_users_form
+msgid "Maintanance Details"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Maintenance"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__maintenance_cost
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_cost__cost
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_type__cost
+msgid "Maintenance Cost"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__maintanance_ids
+msgid "Maintenance Costs"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_res_partner__maintanance_ids
+#: model:ir.model.fields,field_description:fleet_rent.field_res_users__maintanance_ids
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenent_partner_form
+msgid "Maintenance Details"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.actions.act_window,name:fleet_rent.action_maintenance_type_view
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_cost__maint_type
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_type__name
+#: model_terms:ir.ui.view,arch_db:fleet_rent.maintenance_type_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.maintenance_type_tree
+msgid "Maintenance Type"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__acc_pay_dep_rec_id
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__manager_id
+msgid "Manager of Rental Vehicle."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__message_has_error
+msgid "Message Delivery error"
+msgstr "خطأ في تسليم الرسائل"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__message_ids
+msgid "Messages"
+msgstr "الرسائل"
+
+#. module: fleet_rent
+#: selection:rent.type,renttype:0
+msgid "Months"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__name
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_type__name
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+msgid "Name"
+msgstr "الاسم"
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__company_id
+msgid "Name of Company."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__vehicle_id
+msgid "Name of Vehicle."
+msgstr ""
+
+#. module: fleet_rent
+#: selection:fleet.rent,state:0
+msgid "New"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.report_fleet_rent_pdf
+msgid "Note"
+msgstr "ملاحظة"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__note
+#: model_terms:ir.ui.view,arch_db:fleet_rent.tenancy_rent_form
+msgid "Notes"
+msgstr "ملاحظات"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__message_needaction_counter
+msgid "Number of Actions"
+msgstr "عدد الإجراءات"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__message_has_error_counter
+msgid "Number of error"
+msgstr "عدد الأخطاء"
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__message_needaction_counter
+msgid "Number of messages which requires an action"
+msgstr "عدد الرسائل التي تتطلب إجراء"
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "عدد الرسائل الحادث بها خطأ في التسليم"
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__message_unread_counter
+msgid "Number of unread messages"
+msgstr "عدد الرسائل الجديدة"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.report_fleet_rent_pdf
+msgid "Odometer"
+msgstr "عداد المسافات"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__odometer_unit
+msgid "Odometer Unit"
+msgstr "وحدة عداد المسافات"
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__odometer
+msgid "Odometer measure of the vehicle at                             the moment of this log"
+msgstr ""
+
+#. module: fleet_rent
+#: selection:tenancy.rent.schedule,state:0
+msgid "Open"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Open Invoice"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__paid
+#: model_terms:ir.ui.view,arch_db:fleet_rent.tenancy_rent_schedule_search
+#: selection:tenancy.rent.schedule,state:0
+msgid "Paid"
+msgstr "مدفوع"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.tenancy_rent_schedule_search
+msgid "Paid Tenant Rent"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Payment History"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model,name:fleet_rent.model_account_payment
+msgid "Payments"
+msgstr "المدفوعات"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.tenancy_rent_schedule_search
+msgid "Pending"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__pen_amt
+#: model_terms:ir.ui.view,arch_db:fleet_rent.report_fleet_rent_pdf
+msgid "Pending Amount"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_tenancy_rent_schedule__pen_amt
+msgid "Pending Amount."
+msgstr ""
+
+#. module: fleet_rent
+#: code:addons/fleet_rent/models/fleet_rent.py:483
+#, python-format
+msgid "Please Configure Expense Account in                     Vehicle Registration form !!"
+msgstr ""
+
+#. module: fleet_rent
+#: code:addons/fleet_rent/models/fleet_rent.py:868
+#, python-format
+msgid "Please Configure Income Account from Property."
+msgstr ""
+
+#. module: fleet_rent
+#: code:addons/fleet_rent/models/fleet_rent.py:773
+#, python-format
+msgid "Please Configure Income Account from Vehicle !!"
+msgstr ""
+
+#. module: fleet_rent
+#: code:addons/fleet_rent/models/fleet_res_partner.py:32
+#, python-format
+msgid "Please Enter Valid Mobile Number !!"
+msgstr ""
+
+#. module: fleet_rent
+#: code:addons/fleet_rent/wizard/renew_tenancy.py:62
+#, python-format
+msgid "Please Insert End Date                         Greater Than Start Date !!"
+msgstr ""
+
+#. module: fleet_rent
+#: code:addons/fleet_rent/models/fleet_res_partner.py:41
+#, python-format
+msgid "Please enter valid email address !!"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__move_check
+msgid "Posted"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.rental_fleet_wizard
+msgid "Print"
+msgstr "طباعة"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__vehicle_property_id
+msgid "Property"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_close_reason__reason
+msgid "Reason"
+msgstr "السبب"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_rent_close_reason_wizard
+msgid "Reason To close Rent"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_type__main_cost
+msgid "Recurring cost"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Reference"
+msgstr "المرجع"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__refund_inv_count
+msgid "Refund"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.rental_fleet_wizard
+msgid "Renatl Vehicle"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_renew_tenancy_wizard
+msgid "Renew"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.actions.act_window,name:fleet_rent.action_renew_tenancy_wizz_wizz
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_renew_tenancy_wizard
+msgid "Renew Tenancy Wizard"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.fleet_vehicle_rent_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.tenancy_rent_calendar
+msgid "Rent"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_tenancy_rent_schedule__amount
+msgid "Rent Amount."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.actions.act_window,name:fleet_rent.action_rent_close_reason_wizard
+msgid "Rent Close"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__rent_close_by
+msgid "Rent Close By"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__date_close
+msgid "Rent Close Date"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__close_reson
+msgid "Rent Close Reason"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__close_reson
+msgid "Rent Close Reason."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model,name:fleet_rent.model_rent_close_reason
+msgid "Rent Closing Reason"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.actions.server,name:fleet_rent.rent_done_cron_ir_actions_server
+#: model:ir.cron,cron_name:fleet_rent.rent_done_cron
+#: model:ir.cron,name:fleet_rent.rent_done_cron
+msgid "Rent Done"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__rent_schedule_ids
+#: model_terms:ir.ui.view,arch_db:fleet_rent.tenancy_rent_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.tenancy_rent_tree
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Rent Schedule"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenent_users_form
+msgid "Rent Schedule Details"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.actions.act_window,name:fleet_rent.action_rent_type_view
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__rent_type_id
+#: model:ir.model.fields,field_description:fleet_rent.field_renew_tenancy__rent_type_id
+#: model:ir.model.fields,field_description:fleet_rent.field_rent_type__renttype
+#: model:ir.ui.menu,name:fleet_rent.menu_rent_type
+#: model_terms:ir.ui.view,arch_db:fleet_rent.rent_type_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.rent_type_tree
+#: model_terms:ir.ui.view,arch_db:fleet_rent.report_fleet_rent_pdf
+msgid "Rent Type"
+msgstr "نوع الإيجار"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__acc_pay_dep_rec_id
+msgid "Rental Account Manager"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Rental Close Reason"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_res_partner__tenancy_ids
+#: model:ir.model.fields,field_description:fleet_rent.field_res_users__fleet_rent_ids
+#: model:ir.model.fields,field_description:fleet_rent.field_res_users__tenancy_ids
+#: model:ir.model.fields,help:fleet_rent.field_res_partner__tenancy_ids
+#: model:ir.model.fields,help:fleet_rent.field_res_users__fleet_rent_ids
+#: model:ir.model.fields,help:fleet_rent.field_res_users__tenancy_ids
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenent_users_form
+msgid "Rental Details"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model,name:fleet_rent.model_rental_fleet_history
+msgid "Rental Fleet History Report"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_tree
+msgid "Rental Name.."
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.report_fleet_rent_pdf
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_kanban
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_tree
+msgid "Rental Number"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_account_invoice__fleet_rent_id
+#: model:ir.model.fields,field_description:fleet_rent.field_account_move_line__fleet_rent_id
+#: model:ir.model.fields,field_description:fleet_rent.field_account_payment__fleet_rent_id
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_cost__fleet_rent_id
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__fleet_rent_id
+#: model_terms:ir.ui.view,arch_db:fleet_rent.tenancy_rent_schedule_search
+msgid "Rental Vehicle"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenent_partner_form
+msgid "Rental Vehicle Details"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.actions.act_window,name:fleet_rent.action_print_rental_fleet_history
+msgid "Rental Vehicle History"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Rental Vehicle Information"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_account_payment__fleet_rent_id
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenent_partner_form
+msgid "Rental Vehicle Name"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_tenancy_rent_schedule__fleet_rent_id
+msgid "Rental Vehicle Name."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__rent_amt
+msgid "Rental Vehicle Rent"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__contract_dt
+msgid "Rental Vehicle contract                                   creation date."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__date_end
+msgid "Rental Vehicle contract end date."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__date_start
+msgid "Rental Vehicle contract start date."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__rent_amt
+msgid "Rental vehicle rent for selected                                 vehicle per rent type."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_vehicle__rent_count
+msgid "Rents"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Schedule Rent"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.maintenance_type_view_search
+#: model_terms:ir.ui.view,arch_db:fleet_rent.rent_type_view_search
+msgid "Search Property"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.tenancy_rent_schedule_search
+msgid "Search Tenant Rent"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.actions.server,name:fleet_rent.send_vehicle_rent_recurring_email_notification_ir_actions_server
+#: model:ir.cron,cron_name:fleet_rent.send_vehicle_rent_recurring_email_notification
+#: model:ir.cron,name:fleet_rent.send_vehicle_rent_recurring_email_notification
+msgid "Send Vehicle Rent Recurring Email Notification"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Set To Draft"
+msgstr "وضع كمسودة"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__date_start
+#: model:ir.model.fields,field_description:fleet_rent.field_renew_tenancy__start_date
+msgid "Start Date"
+msgstr "تاريخ البدء"
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_tenancy_rent_schedule__start_date
+msgid "Start Date."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__state
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+msgid "State"
+msgstr "الحالة"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__state
+msgid "Status"
+msgstr "الحالة"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+msgid "Street 2..."
+msgstr "الشارع 2..."
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+msgid "Street..."
+msgstr "الشارع..."
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+msgid "Tags..."
+msgstr "العلامات..."
+
+#. module: fleet_rent
+#: model:ir.actions.act_window,name:fleet_rent.action_tenancy_rent
+#: model:ir.model,name:fleet_rent.model_tenancy_rent_schedule
+msgid "Tenancy Rent Schedule"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.actions.act_window,name:fleet_rent.action_res_users
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__tenant_id
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__rel_tenant_id
+#: model:ir.ui.menu,name:fleet_rent.sub_menu_res_users
+#: model_terms:ir.ui.view,arch_db:fleet_rent.report_fleet_rent_pdf
+#: model_terms:ir.ui.view,arch_db:fleet_rent.tenancy_rent_schedule_search
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_search
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_tree
+msgid "Tenant"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Tenant Name"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__fleet_tenant_id
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__tenant_id
+#: model:ir.model.fields,help:fleet_rent.field_maintenance_cost__fleet_tenant_id
+#: model:ir.model.fields,help:fleet_rent.field_maintenance_cost__tenant_id
+msgid "Tenant Name of Rental Vehicle."
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.tenancy_rent_schedule_search
+msgid "Tenant Rent in this month"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_maintenance_cost__tenant_id
+msgid "Tenant User"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Terms & Conditions"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Terms and Conditions"
+msgstr "الشروط و الأحكام"
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__currency_id
+msgid "The optional other currency                                   if it is a multi-currency entry."
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.tenancy_rent_schedule_search
+msgid "This Month"
+msgstr ""
+
+#. module: fleet_rent
+#: selection:fleet.rent,state:0
+msgid "To Renew"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Total Amount"
+msgstr "إجمالي المبلغ"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Total Credit"
+msgstr "إجمالي الائتمان"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__total_credit_amt
+msgid "Total Credit Amount"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Total Debit"
+msgstr "إجمالي الدين"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__total_debit_amt
+msgid "Total Debit Amount"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__total_deb_cre_amt
+msgid "Total Expenditure"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__total_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenent_partner_form
+msgid "Total Rent"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__total_rent
+msgid "Total rent of this Rental Vehicle."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__deposit_received
+msgid "True if deposit amount received                                       for current Rental Vehicle."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__is_deposit_return
+msgid "True if deposit amount returned                                        for current Rental Vehicle."
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_tenancy_rent_schedule__paid
+msgid "True if this rent is paid by tenant"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__odometer_unit
+msgid "Unit of the vehicle odometer."
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.tenancy_rent_schedule_search
+msgid "Unpaid Tenant Rent"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__message_unread
+msgid "Unread Messages"
+msgstr "الرسائل الجديدة"
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr "عدد الرسائل الجديدة"
+
+#. module: fleet_rent
+#: model:ir.model,name:fleet_rent.model_res_users
+msgid "Users"
+msgstr "المستخدمون"
+
+#. module: fleet_rent
+#: model:ir.model,name:fleet_rent.model_fleet_vehicle
+#: model:ir.model.fields,field_description:fleet_rent.field_account_invoice__vehicle_id
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__vehicle_id
+#: model:ir.model.fields,field_description:fleet_rent.field_tenancy_rent_schedule__vehicle_id
+#: model_terms:ir.ui.view,arch_db:fleet_rent.report_fleet_rent_pdf
+msgid "Vehicle"
+msgstr "المركبة"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Vehicle Information"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model,name:fleet_rent.model_maintenance_cost
+msgid "Vehicle Maintenance Cost"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model,name:fleet_rent.model_maintenance_type
+msgid "Vehicle Maintenance Type"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Vehicle Name"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_account_invoice__vehicle_id
+#: model:ir.model.fields,help:fleet_rent.field_tenancy_rent_schedule__vehicle_id
+msgid "Vehicle Name."
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "Vehicle Owner"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model,name:fleet_rent.model_renew_tenancy
+msgid "Vehicle Renew Tenacy"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.ui.menu,name:fleet_rent.menu_vehicle_rent
+msgid "Vehicle Rent"
+msgstr "استئجار سيارة"
+
+#. module: fleet_rent
+#: model:ir.ui.menu,name:fleet_rent.sub_menu_vehicles_rent
+msgid "Vehicle Rent"
+msgstr "استئجار سيارة"
+
+#. module: fleet_rent
+#: model:res.groups,name:fleet_rent.group_vehicle_rent_manager
+msgid "Vehicle Rent Manager"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model,name:fleet_rent.model_rent_type
+msgid "Vehicle Rent Type"
+msgstr ""
+
+#. module: fleet_rent
+#: model:res.groups,name:fleet_rent.group_vehicle_rent_user
+msgid "Vehicle Tenant (User)"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.actions.act_window,name:fleet_rent.action_fleet_rent_view
+#: model:ir.actions.act_window,name:fleet_rent.action_fleet_vehicle_rent_view
+#: model:ir.ui.menu,name:fleet_rent.menu_vehicle_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_tree
+msgid "Vehicles Rent"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "We can see all the deposit receive invoices here"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_rent_form
+msgid "We can see all the deposit return invoices here"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__website_message_ids
+msgid "Website Messages"
+msgstr "رسائل الموقع"
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_fleet_rent__website_message_ids
+msgid "Website communication history"
+msgstr "سجل تواصل الموقع"
+
+#. module: fleet_rent
+#: selection:rent.type,renttype:0
+msgid "Weeks"
+msgstr ""
+
+#. module: fleet_rent
+#: selection:rent.type,renttype:0
+msgid "Years"
+msgstr ""
+
+#. module: fleet_rent
+#: code:addons/fleet_rent/models/fleet_rent.py:428
+#, python-format
+msgid "You can not move rent to draft                         stage because rent schedule is already created !!"
+msgstr ""
+
+#. module: fleet_rent
+#: code:addons/fleet_rent/models/fleet_rent.py:442
+#, python-format
+msgid "You can not renew rent for %s                                 because this vehicle is in                                 write-off."
+msgstr ""
+
+#. module: fleet_rent
+#: code:addons/fleet_rent/models/fleet_rent.py:550
+#, python-format
+msgid "You can't create new rent                         schedule Please make all related Rent Schedule                         entries paid."
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+msgid "ZIP"
+msgstr "الرمز البريدي"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenent_users_form
+msgid "cost"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+msgid "e.g. BE0477472701"
+msgstr "مثال: BE0477472701"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+msgid "e.g. Sales Director"
+msgstr "مثلًا مدير مبيعات"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_fleet_driver_form
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_tenant_users_form
+msgid "e.g. https://www.odoo.com"
+msgstr "مثل https://www.odoo.com"
+
+#. module: fleet_rent
+#: model:ir.model.fields,help:fleet_rent.field_maintenance_cost__cost
+#: model:ir.model.fields,help:fleet_rent.field_maintenance_type__cost
+msgid "insert the cost"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.view_renew_tenancy_wizard
+msgid "or"
+msgstr "أو"
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.fleet_vehicle_rent_form
+msgid "show the rent detail for this vehicle"
+msgstr ""
+
+#. module: fleet_rent
+#: model_terms:ir.ui.view,arch_db:fleet_rent.report_fleet_rent_pdf
+msgid "state"
+msgstr ""
+
+#. module: fleet_rent
+#: model:ir.model.fields,field_description:fleet_rent.field_fleet_rent__vehicle_owner
+msgid "vehicle_owner"
+msgstr ""
+

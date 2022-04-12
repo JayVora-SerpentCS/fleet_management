@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Form View for Repair Line Summary. -->
+    <record id="view_update_next_service_view" model="ir.ui.view">
+        <field name="name">view.update.next.service.view</field>
+        <field name="model">update.next.service.config</field>
+        <field name="arch" type="xml">
+            <form string="Update Next Service Day">
+                <separator string="Update Next Service Day" colspan="4" />
+                <group col="4" colspan="4">
+                    <field name="vehicle_id" readonly="1"/>
+                    <field name="number" required="1"/>
+                    <field name="days" required="1"/>
+                </group>
+                <footer>
+                    <button name="action_done" string="Done" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Repair Line Summary. -->
+    <record id="action_update_next_service_day" model="ir.actions.act_window">
+        <field name="name">Update Next Service Day</field>
+        <field name="res_model">update.next.service.config</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="view_update_next_service_view"/>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+   </record>
+
+   <!-- Menuitem for Repair Line Summary. -->
+   <!-- <menuitem action="action_update_next_service_day"
+             name="Update Next Service Day"
+             id="next_service_day_menu"
+             parent="fleet.menu_fleet_reporting"/> -->
+</odoo>

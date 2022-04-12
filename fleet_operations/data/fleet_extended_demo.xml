@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vehicle Registration-1 -->
+    <record id="fleet.vehicle_1" model="fleet.vehicle">
+        <field name="f_brand_id" ref="fleet.brand_opel"/>
+        <field name="model_id" ref="fleet.model_astra"/>
+        <field name="license_plate">1-ACK-205</field>
+        <field name="vin_sn">5454541</field>
+        <field name="color">Black</field>
+        <field name="doors">5</field>
+        <field name="acquisition_date" eval="time.strftime('%Y-%m-%d 2:00:00')" />
+        <field name="odometer_unit">kilometers</field>
+        <field name="fuel_type">diesel</field>
+        <field name="car_value">20000</field>
+    </record>
+    <!-- Vehicle Registration-2 -->
+    <record id="fleet.vehicle_2" model="fleet.vehicle">
+        <field name="f_brand_id" ref="fleet.brand_opel"/>
+        <field name="license_plate">1-SYN-404</field>
+        <field name="vin_sn">1337</field>
+        <field name="model_id" ref="fleet.model_corsa"/>
+        <field name="color">Red</field>
+        <field name="doors">5</field>
+        <field name="acquisition_date" eval="time.strftime('%Y-%m-%d 2:00:00')" />
+        <field name="odometer_unit">kilometers</field>
+        <field name="fuel_type">diesel</field>
+        <field name="car_value">16000</field>
+    </record>
+    <!-- Vehicle Registration-3 -->
+    <record id="fleet.vehicle_3" model="fleet.vehicle">
+        <field name="f_brand_id" ref="fleet.brand_bmw"/>
+        <field name="license_plate">1-BMW-001</field>
+        <field name="vin_sn">54818</field>
+        <field name="model_id" ref="fleet.model_serie1"/>
+        <field name="color">Titanium Grey</field>
+        <field name="doors">3</field>
+        <field name="acquisition_date" eval="time.strftime('%Y-%m-%d 2:00:00')" />
+        <field name="odometer_unit">kilometers</field>
+        <field name="fuel_type">diesel</field>
+        <field name="car_value">20000</field>
+    </record>
+    <!-- Vehicle Registration-4 -->
+    <record id="fleet.vehicle_4" model="fleet.vehicle">
+        <field name="f_brand_id" ref="fleet.brand_audi"/>
+        <field name="license_plate">1-AUD-001</field>
+        <field name="vin_sn">455257985</field>
+        <field name="model_id" ref="fleet.model_a1"/>
+        <field name="color">White</field>
+        <field name="doors">3</field>
+        <field name="acquisition_date" eval="time.strftime('%Y-%m-%d 2:00:00')" />
+        <field name="odometer_unit">kilometers</field>
+        <field name="fuel_type">diesel</field>
+        <field name="car_value">20000</field>
+    </record>
+    <!-- Vehicle Registration-5 -->
+    <record id="fleet.vehicle_5" model="fleet.vehicle">
+        <field name="f_brand_id" ref="fleet.brand_mercedes"/>
+        <field name="license_plate">1-MER-001</field>
+        <field name="vin_sn">789546128</field>
+        <field name="model_id" ref="fleet.model_classa"/>
+        <field name="color">Brown</field>
+        <field name="doors">5</field>
+        <field name="acquisition_date" eval="time.strftime('%Y-%m-%d 2:00:00')" />
+        <field name="odometer_unit">kilometers</field>
+        <field name="fuel_type">diesel</field>
+        <field name="car_value">18000</field>
+    </record>
+</odoo>

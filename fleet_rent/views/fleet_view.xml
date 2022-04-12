@@ -1,0 +1,21 @@
+<odoo>
+    <!-- Inherited vehicle registration form view added extra fields on fleet vehicle -->
+    <record id='fleet_vehicle_rent_form' model='ir.ui.view'>
+        <field name="name">fleet.vehicle.rent.form</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id"
+              ref="fleet.fleet_vehicle_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='return_action_to_open']" position="after">
+                <button icon="fa-adn"
+                   class="oe_stat_button"
+                   name="%(action_fleet_vehicle_rent_view)d"
+                   type="action"
+                   help="show the rent detail for this vehicle">
+                   <field name="rent_count" widget="statinfo"
+                        string="Rent" />
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

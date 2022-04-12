@@ -1,0 +1,77 @@
+<odoo>
+
+     <record id="view_account_invoice_prop_form_inherit1" model="ir.ui.view">
+        <field name="name">view.account.invoice.prop.form.inherit1</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ref']"
+                position="after">
+                    <field name="vehicle_service_id" invisible="1"/>
+                    <field name="is_invoice_receive" invisible="1"/>
+                    <field name="is_invoice_return" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+    
+	<record id="action_fleet_service_out_invoice_view" model="ir.actions.act_window">
+        <field name="name">Invoices</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('vehicle_service_id','=',active_id),('move_type','=','out_invoice')]</field>
+        <field name="context">{'default_vehicle_service_id':active_id,'default_move_type':'out_invoice','move_type':'out_invoice', 'journal_type': 'sale'}</field>
+        <field name="search_view_id" ref="account.view_invoice_tree"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create a customer invoice
+          </p><p>
+            Create invoices, register payments and keep track of the discussions with your customers.
+          </p>
+        </field>
+	</record>
+
+    <record id="action_fleet_out_invoice_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="account.view_invoice_tree"/>
+        <field name="act_window_id" ref="action_fleet_service_out_invoice_view"/>
+    </record>
+
+	<record id="action_fleet_out_invoice_form" model="ir.actions.act_window.view">
+        <field eval="2" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="account.view_move_form"/>
+        <field name="act_window_id" ref="action_fleet_service_out_invoice_view"/>
+    </record>
+
+	<record id="action_fleet_service_out_refund_invoice_view" model="ir.actions.act_window">
+        <field name="name">Invoices</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('vehicle_service_id','=',active_id),('move_type','=','out_refund')]</field>
+        <field name="context">{'default_vehicle_service_id':active_id,'default_move_type':'out_refund','move_type':'out_refund', 'journal_type': 'sale'}</field>
+        <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create a customer invoice
+          </p><p>
+            Create invoices, register payments and keep track of the discussions with your customers.
+          </p>
+        </field>
+    </record>
+
+    <record id="action_fleet_refund_invoice_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="account.view_invoice_tree"/>
+        <field name="act_window_id" ref="action_fleet_service_out_refund_invoice_view"/>
+    </record>
+
+    <record id="action_fleet_refund_invoice_form" model="ir.actions.act_window.view">
+        <field eval="2" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="account.view_move_form"/>
+        <field name="act_window_id" ref="action_fleet_service_out_refund_invoice_view"/>
+    </record>
+
+</odoo>

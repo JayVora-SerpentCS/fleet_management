@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Form View for Update Color. -->
+    <record model="ir.ui.view" id="update_color_info_form_view">
+        <field name="name">update.color.info.form</field>
+        <field name="model">update.color.info</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Update Color Info" width="150" height="150">
+                <group colspan="4" col="6">
+                    <field name="workorder_id" required="1" domain="[('vehicle_id','=',vehicle_id)]"
+                            options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" />
+                    <field name="previous_color_id" attrs="{'readonly':[('temp_bool','=',True)]}"/>
+                    <field name="current_color_id" options="{'no_open': True, 'create': false, 'create_edit': false}" domain="[('id','!=',previous_color_id)]" required="1"/>
+                    <field name="changed_date"/>
+                    <field name="vehicle_id" invisible="1"/>
+                </group>
+                <field name="temp_bool" invisible="1"/>
+                <separator string="Notes" colspan="4" />
+                <field name="note" colspan="4" nolabel="1"/>
+                <footer>
+                    <button name="set_new_color_info"  string="Update" type="object" default_focus="1" class="oe_highlight"/>
+                     or
+                    <button string="Cancel" special="cancel" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Form View for Update Engine. -->
+    <record model="ir.ui.view" id="update_engine_info_form_view">
+        <field name="name">update.engine.info.form</field>
+        <field name="model">update.engine.info</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Update Engine Info" width="150" height="150">
+                <group colspan="4" col="6">
+                    <field name="workorder_id" required="1" domain="[('vehicle_id','=',vehicle_id)]"
+                    options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                    <field name="previous_engine_no" attrs="{'readonly':[('temp_bool','=',True)]}"/>
+                    <field name="new_engine_no" required="1"/>
+                    <field name="changed_date"/>
+                    <field name="vehicle_id" invisible="1"/>
+                </group>
+                <field name="temp_bool" invisible="1"/>
+                <separator string="Notes" colspan="4" />
+                <field name="note" colspan="4" nolabel="1"/>
+                <footer>
+                    <button name="set_new_engine_info"  string="Update" type="object" default_focus="1" class="oe_highlight"/>
+                     or
+                    <button string="Cancel" special="cancel" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Form View for Update Vin. -->
+    <record model="ir.ui.view" id="update_vin_info_form_view">
+        <field name="name">update.engine.vin.form</field>
+        <field name="model">update.vin.info</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Update Vin Info" width="150" height="150">
+                <group colspan="4" col="6">
+                    <field name="workorder_id" required="1" domain="[('vehicle_id','=',vehicle_id)]"
+                    options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                    <field name="previous_vin_no" attrs="{'readonly':[('temp_bool','=',True)]}"/>
+                    <field name="new_vin_no" required="1"/>
+                    <field name="changed_date"/>
+                    <field name="vehicle_id" invisible="1"/>
+                </group>
+                <field name="temp_bool" invisible="1"/>
+                <separator string="Notes" colspan="4" />
+                <field name="note" colspan="4" nolabel="1"/>
+                <footer>
+                    <button name="set_new_vin_info"  string="Update" type="object" default_focus="1" class="oe_highlight"/>
+                     or
+                    <button string="Cancel" special="cancel" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Form View for Update Tire. -->
+    <record model="ir.ui.view" id="update_tire_info_form_view">
+        <field name="name">update.engine.tire.form</field>
+        <field name="model">update.tire.info</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Update Tire Info" width="150" height="150">
+                <group>
+                    <group>
+                        <field name="workorder_id" required="1" domain="[('vehicle_id','=',vehicle_id)]"
+                        options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                        <field name="previous_tire_size" attrs="{'readonly':[('temp_bool','=',True)]}"/>
+                        <field name="previous_tire_sn" attrs="{'readonly':[('temp_bool','=',True)]}"/>
+                        <field name="previous_tire_issue_date" attrs="{'readonly':[('temp_bool','=',True)]}"/>
+                    </group>
+                    <group>
+                        <field name="new_tire_size" required="1"/>
+                        <field name="new_tire_sn" required="1"/>
+                        <field name="new_tire_issue_date" required="1"/>
+                        <field name="changed_date"/>
+                        <field name="vehicle_id" invisible="1"/>
+                    </group>
+                </group>
+                <field name="temp_bool" invisible="1"/>
+                <separator string="Notes" colspan="4" />
+                <field name="note" colspan="4" nolabel="1"/>
+                <footer>
+                    <button name="set_new_tire_info"  string="Update" type="object" default_focus="1" class="oe_highlight"/>
+                     or
+                    <button string="Cancel" special="cancel" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Form View for Update Battery. -->
+    <record model="ir.ui.view" id="update_battery_info_form_view">
+        <field name="name">update.battery.form</field>
+        <field name="model">update.battery.info</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Update Battery Info" width="150" height="150">
+                <group>
+                    <group>
+                        <field name="workorder_id" required="1" domain="[('vehicle_id','=',vehicle_id)]"
+                        options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                        <field name="previous_battery_size" attrs="{'readonly':[('temp_bool','=',True)]}"/>
+                        <field name="previous_battery_sn" attrs="{'readonly':[('temp_bool','=',True)]}"/>
+                        <field name="previous_battery_issue_date" attrs="{'readonly':[('temp_bool','=',True)]}"/>
+                    </group>
+                    <group>
+                        <field name="new_battery_size" required="1"/>
+                        <field name="new_battery_sn" required="1"/>
+                        <field name="new_battery_issue_date" required="1"/>
+                        <field name="changed_date"/>
+                        <field name="vehicle_id" invisible="1"/>
+                    </group>
+                </group>
+                <field name="temp_bool" invisible="1"/>
+                <separator string="Notes" colspan="4" />
+                <field name="note" colspan="4" nolabel="1"/>
+                <footer>
+                    <button name="set_new_battery_info"  string="Update" type="object" default_focus="1" class="oe_highlight"/>
+                     or
+                    <button string="Cancel" special="cancel" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

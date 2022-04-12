@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="vehicle_change_history_qweb">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <br/><br/><br/>
+                        <t t-if="data.get('report') == 'color_history'">
+                        <table class="table table-bordered table-condensed">
+                            <h3 style="text-align:center;"><b>Color History</b></h3>
+                            <thead>
+                            <tr>
+                                <td style="text-align:center;background-color: #E0EBEB;">No.</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Description</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Type of Vehicle</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Old Vehicle Color</td>
+                                <!-- <td style="text-align:center;background-color: #E0EBEB;">Vehicle VIN #</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Plate #</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">New Engine #</td> -->
+                                <td style="text-align:center;background-color: #E0EBEB;">New color</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Change Date</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Service Order No</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Work Order Closed Date</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <t t-set="counter" t-value="1"/>
+                            <tr t-foreach="get_vehicle_history" t-as="line">
+                                <t t-if="line">
+                                    <td style="text-align:center;"><span t-esc="counter"/><t t-set="counter" t-value="counter+1"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('description', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('vehicle_type', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('old_color', '')"/></td>
+                                    <!-- <td style="text-align:center;"><span t-esc="line.get('vin', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('plate', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('new_engine', '')"/></td> -->
+                                    <td style="text-align:center;"><span t-esc="line.get('new_color', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('change_date', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('work_order', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('wo_close_date', '')"/></td>
+                                </t>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                    <t t-if="data.get('report') == 'engine_history'">
+                        <table class="table table-bordered table-condensed">
+                            <h3 style="text-align:center;"><b>Engine History</b></h3>
+                            <thead>
+                            <tr>
+                                <td style="text-align:center;background-color: #E0EBEB;">No</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Description</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Type of Vehicle</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">New Engine #</td> 
+                                <td style="text-align:center;background-color: #E0EBEB;">Change Date</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Service Order</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Service Order Closed Date</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <t t-set="counter" t-value="1"/>
+                            <tr t-foreach="get_vehicle_history" t-as="line">
+                                <t t-if="line">
+                                    <td style="text-align:center;"><span t-esc="counter"/><t t-set="counter" t-value="counter+1"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('description', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('vehicle_type', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('new_engine', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('change_date', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('work_order', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('wo_close_date', '')"/></td>
+                                </t>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                    <t t-if="data.get('report') == 'tire_history'">
+                        <table class="table table-bordered table-condensed">
+                            <h3 style="text-align:center;"><b>Tire History</b></h3>
+                            <thead>
+                            <tr>
+                                <td style="text-align:center;background-color: #E0EBEB;">No</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Description</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Type of Vehicle</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Old 
+                                Tire Size</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">New 
+                                Tire Size</td> 
+                                <td style="text-align:center;background-color: #E0EBEB;">Change Date</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Service Order No</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Service Order Closed Date</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <t t-set="counter" t-value="1"/>
+                            <tr t-foreach="get_vehicle_history" t-as="line">
+                                <t t-if="line">
+                                    <td style="text-align:center;"><span t-esc="counter"/><t t-set="counter" t-value="counter+1"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('description', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('vehicle_type', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('old_tire', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('new_tire', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('change_date', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('work_order', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('wo_close_date', '')"/></td>
+                                </t>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                    <t t-if="data.get('report') == 'battery_history'">
+                        <table class="table table-bordered table-condensed">
+                            <h3 style="text-align:center;"><b>Battery History</b></h3>
+                            <thead>
+                            <tr>
+                                <td style="text-align:center;background-color: #E0EBEB;">No</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Description</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Type of Vehicle</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Old 
+                                Battery Size</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">New 
+                                Battery Size</td> 
+                                <td style="text-align:center;background-color: #E0EBEB;">Change Date</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Service Order No</td>
+                                <td style="text-align:center;background-color: #E0EBEB;">Service Order Closed Date</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <t t-set="counter" t-value="1"/>
+                            <tr t-foreach="get_vehicle_history" t-as="line">
+                                <t t-if="line">
+                                    <td style="text-align:center;"><span t-esc="counter"/><t t-set="counter" t-value="counter+1"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('description', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('vehicle_type', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('old_battery', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('new_battery', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('change_date', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('work_order', '')"/></td>
+                                    <td style="text-align:center;"><span t-esc="line.get('wo_close_date', '')"/></td>
+                                </t>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
