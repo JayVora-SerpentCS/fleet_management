@@ -27,7 +27,7 @@
                                 </tr>
                                 <tr>
                                     <td style="font-size:12px;font-weight: bold;" width="50%">
-                                        <span>Write-Off Type :</span>
+                                        <span>Write-Off:</span><span t-field="o.name"/>
                                     </td>
                                     <td width="25%">
                                         <span style="font-size:12px;font-weight: bold;">General Accident </span>
@@ -55,7 +55,7 @@
                                 </tr>
                                 <tr>
                                     <td style="font-size:12px;font-weight: bold;" width="50%">
-                                        <span>Write-Off Type :</span>
+                                        <span>Write-Off:</span> <span t-field="o.name"/>
                                     </td>
                                     <td width="25%">
                                         <span style="font-size:12px;font-weight: bold;">General Accident </span>
@@ -83,7 +83,7 @@
                                 </tr>
                                 <tr>
                                     <td style="font-size:12px;font-weight: bold;" width="50%">
-                                        <span>Write-Off Type :</span>
+                                        <span>Write-Off:</span> <span t-field="o.name"/>
                                     </td>
                                     <td width="25%">
                                         <span style="font-size:12px;font-weight: bold;">General Accident </span>
@@ -141,10 +141,10 @@
                                     <span t-field="o.vehicle_id and o.vehicle_id.vechical_type_id and o.vehicle_id.vechical_type_id.name"/>
                                 </td>
                                 <td style="font-size:12px;font-weight: bold;">
-                                    <span>Police Division :</span>
+                                    <span>Registration State :</span>
                                 </td>
                                 <td>
-                                    <span t-field="o.division_id and o.division_id.name"/>
+                                    <span t-field="o.province_id and o.province_id.name"/>
                                 </td>
                             </tr>
                             <tr>
@@ -154,26 +154,18 @@
                                 <td>
                                     <span t-field="o.color_id and o.color_id.name"/>
                                 </td>
-                                <td style="font-size:12px;font-weight: bold;">
-                                    <span>REGISTRATION STATE :</span>
-                                </td>
-                                <td>
-                                    <span t-field="o.province_id and o.province_id.name"/>
-                                </td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td style="font-size:12px;font-weight: bold;">
                                     <span>Date :</span>
                                 </td>
                                 <td>
-                                    <span t-field="o.date_cancel"/>
+                                    <span t-field="o.report_date"/>
                                 </td>
-                                <td style="font-size:12px;font-weight: bold;">
-                                    <span>Commanding Officer :</span>
-                                </td>
-                                <td>
-                                    <span/>
-                                </td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td style="font-size:12px;font-weight: bold;">
@@ -182,12 +174,8 @@
                                 <td>
                                     <span t-field="o.vin_no"/>
                                 </td>
-                                <td style="font-size:12px;font-weight: bold;">
-                                    <span>Contact No. :</span>
-                                </td>
-                                <td>
-                                    <span/>
-                                </td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td style="font-size:12px;font-weight: bold;">
@@ -253,7 +241,7 @@
                                     <span>Total Amount :</span>
                                 </td>
                                 <td>
-                                    <span t-field="o.cost_esitmation"/>
+                                    <span t-field="o.cost_esitmation" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                 </td>
                             </tr>
                         </table>

@@ -167,8 +167,7 @@
                             <field name="deposit_received"/>
                             <field name="is_deposit_return"/>
                             <field name="contact_id"/>
-                            <field name="maintenance_cost"
-                                attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="maintenance_cost" widget="monetary" readonly="1"/>
                         </group>
                         <group colspan='4' col='4'>
                             <separator string="Contract Information"

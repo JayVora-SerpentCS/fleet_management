@@ -48,6 +48,7 @@
                         <field name="vehicle_id" readonly="1"/>
                         <field name="vehicle_fmp_id" readonly="1"/>
                         <field name="vehicle_plate" readonly="1"/>
+                        <field name="currency_id" />
                         <field name="color_id" readonly="1" string="Vehicle Color"
                             options="{'no_open': True, 'create': false, 'create_edit': false}"/>
                         <field name="province_id" readonly="1"
@@ -74,7 +75,7 @@
                             attrs="{'readonly': [('state','in',('confirm','cancel'))]}"/>
                         <field name="write_off_type"
                             attrs="{'readonly': [('state','in',('confirm','cancel'))]}"/>
-                       <field name="cost_esitmation" string="Expense To Repair"
+                       <field name="cost_esitmation" widget="monetary" string="Expense To Repair"
                            attrs="{'readonly': [('state','in',('confirm','cancel'))]}"/>
                     </group>
                 </group>
@@ -780,6 +781,28 @@
                     <filter name="groupby_maintype" string="Main Type" domain="[]" />
                 </group>
             </xpath>
+        </field>
+    </record>
+
+    <record id='fleet_vehicle_model_form_extended_view' model='ir.ui.view'>
+        <field name="name">fleet.vehicle.model.form.inherit.extended</field>
+        <field name="model">fleet.vehicle.model</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_model_view_form"/>
+        <field name="arch" type="xml">
+            <field name="vehicle_type" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id='fleet_vehicle_model_tree_extended_view' model='ir.ui.view'>
+        <field name="name">fleet.vehicle.model.tree.inherit.extended</field>
+        <field name="model">fleet.vehicle.model</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_model_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="vehicle_type" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
         </field>
     </record>
 

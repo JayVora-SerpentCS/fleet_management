@@ -3,7 +3,7 @@
 
 import base64
 import io
-
+from odoo.tools import format_date
 from odoo import models
 
 import xlwt
@@ -106,7 +106,14 @@ class FleetPendingRepair(models.AbstractModel):
                                     line.repair_type_id.name or '', tot)
                     worksheet.write(row, 4, line.categ_id and
                                     line.categ_id.name or '', tot)
-                    worksheet.write(row, 5, line.issue_date or '', style1)
+
+                    date = ''
+                    if line.issue_date:
+                        date = format_date(
+                            self.env, line.issue_date, self._context.get('lang'),
+                            date_format=False
+                        )
+                    worksheet.write(row, 5, date or '', style1)
                     row += 1
                     counter += 1
                 row += 3

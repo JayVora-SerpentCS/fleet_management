@@ -4,7 +4,7 @@
 import base64
 import io
 import time
-
+from odoo.tools import format_date
 from odoo import models
 
 import xlwt
@@ -34,7 +34,7 @@ class NextServiceDate(models.AbstractModel):
         font.name = 'Arial'
         font.height = 200
         # pattern = xlwt.Pattern()
-        style1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200', num_format_str='DD/MM/YYYY')
+        style1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
                             pattern: pattern solid, fore_colour yellow;')
@@ -71,15 +71,29 @@ class NextServiceDate(models.AbstractModel):
             worksheet.write(line_row, line_col, obj.model_id and
                             obj.model_id.name or '', border)
             line_col += 1
+            ser_date=''
+            if obj.last_service_date:
+                ser_date = format_date(
+                    self.env, obj.last_service_date,
+                    self._context.get('lang'),
+                    date_format=False
+                )
             worksheet.write(line_row, line_col,
-                            obj.last_service_date or '', style1)
+                            ser_date or '', style1)
+            line_col += 1
+            next_date=''
+            if obj.next_service_date:
+                next_date = format_date(
+                    self.env, obj.next_service_date,
+                    self._context.get('lang'),
+                    date_format=False
+                )
+            worksheet.write(line_row, line_col,
+                            next_date or '', style1)
             line_col += 1
             worksheet.write(line_row, line_col,
-                            obj.next_service_date or '', style1)
-            line_col += 1
-            # worksheet.write(line_row, line_col,
-            #                 obj.vechical_location_id and
-            #                 obj.vechical_location_id.name or '', border)
+                            obj.vehicle_location_id and
+                            obj.vehicle_location_id.name or '', border)
             line_col = 0
             line_row += 1
             counter += 1

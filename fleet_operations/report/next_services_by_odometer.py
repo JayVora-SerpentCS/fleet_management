@@ -4,7 +4,7 @@
 import base64
 import io
 import time
-
+from odoo.tools import format_date
 from odoo import models
 
 import xlwt
@@ -38,6 +38,7 @@ class NextServiceByOdometer(models.AbstractModel):
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         format1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200;\
                     pattern: pattern solid, fore_colour yellow;')
+        date_format = xlwt.easyxf('font: bold 1; font: name 1; font: height 200',num_format_str = 'DD/MM/YYYY')
 
         row = 0
         row += 1
@@ -72,8 +73,11 @@ class NextServiceByOdometer(models.AbstractModel):
             worksheet.write(line_row, line_col, obj.model_id and
                             obj.model_id.name or '', border)
             line_col += 1
+            date = ''
+            if obj.last_service_date:
+                date = format_date(self.env, obj.last_service_date, self._context.get('lang'), date_format=False)
             worksheet.write(line_row, line_col,
-                            obj.last_service_date or '', border)
+                            date or '', border)
             line_col += 1
             worksheet.write(line_row, line_col,
                             obj.odometer or '', border)

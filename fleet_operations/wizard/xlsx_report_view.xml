@@ -11,7 +11,7 @@
                     <field name="file" filename="name" string="Download"/>
                 </group>
                 <footer>
-                    <button name="print_recived_part_xlsx_report" string="Print" type="object"
+                    <button name="print_received_part_xlsx_report" string="Print" type="object"
                         class="btn-primary" attrs="{'invisible': [('file', '!=', False)]}"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
@@ -20,7 +20,7 @@
     </record>
     
     <record id="action_print_recived_parts" model="ir.actions.act_window">
-        <field name="name">Recived Parts xlsx</field>
+        <field name="name">Received Parts xlsx</field>
         <field name="res_model">stock.picking.xls.report</field>
         <field name="binding_model_id" ref="stock.model_stock_picking"/>
         <field name="view_id" ref="fleet_operations.recieved_part_wizard_form"/>
