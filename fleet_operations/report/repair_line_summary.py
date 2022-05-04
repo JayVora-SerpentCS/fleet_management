@@ -3,7 +3,7 @@
 
 import time
 from datetime import datetime
-
+from odoo.tools import format_date
 from odoo import _, api, models
 from odoo.exceptions import UserError
 
@@ -35,11 +35,12 @@ class RepairLineSummary(models.AbstractModel):
                         if repair_l_dic.get(rep_type.id, False):
                             repair_l_dic[rep_type.id]['count'] += 1
                         else:
+                            date = format_date(self.env, work_rec.date, self._context.get('lang'), date_format=False)
                             repair_l_dic[rep_type.id] = {
                                 'repair_type': repair_l.repair_type_id.name or '',
                                 'count': 1,
                                 'vehicle_name': work_rec.fmp_id,
-                                'issue_date': work_rec.date,
+                                'issue_date': date if date else False,
                             }
         for repair_data in repair_l_dic.keys():
             if repair_data:

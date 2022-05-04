@@ -124,10 +124,10 @@
             <xpath expr="//field[@name='amount']" position="attributes">
                 <attribute name="string">Service Amount</attribute>
                 <attribute name="required">1</attribute>
-                <attribute name="attrs">{'readonly':[('state','in',('draft','done'))]}</attribute>
+                <attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
             </xpath>
             <xpath expr="//field[@name='amount']" position="after">
-                <field name="service_amount"/>
+                <field name="service_amount" widget="monetary"/>
             </xpath>
              <xpath expr="//sheet/group[1]" position="after">
                 
@@ -316,7 +316,6 @@
                         <filter string="Vehicle Type" name="vehicle_type" domain="[]" context="{'group_by':'vechical_type_id'}"/>
                         <filter string="Make" domain="[]" name="make" context="{'group_by':'f_brand_id'}"/>
                         <filter string="Registration State" name="registration_state" domain="[]" context="{'group_by':'vechical_location_id'}"/>
-                        <filter string="Repair Type" name="repair_type" domain="[]" context="{'group_by':'repair_line_ids'}"/>
                     </group>
                 </search>
            </field>

@@ -48,34 +48,55 @@ class FleetWorkOrder(models.AbstractModel):
                                     repaire_line.repair_type_id.name:
                                 repair_line_data += \
                                     repaire_line.repair_type_id.name + ', '
-
+                    date_open = ''
+                    date_close = ''
                     if wo_smry_dict.get(work_rec.team_id.id, False):
+                        if work_rec.date_open:
+                            date_open = format_date(
+                                self.env,  work_rec.date_open, self._context.get('lang'),
+                                date_format=False
+                            )
+                        if work_rec.date_close:
+                            date_close = format_date(
+                                self.env, work_rec.date_close, self._context.get('lang'),
+                                date_format=False
+                            )
                         wo_data = {
                             'name': work_rec.name or '',
                             'identification': identification or '',
                             'vin': work_rec.vehicle_id and
                             work_rec.vehicle_id.vin_sn or '',
-                            'date_open': work_rec.date_open or '',
+                            'date_open': date_open if date_open else '',
                             'state': self.get_wo_status(work_rec.state),
                             'etic': work_rec.etic and
                             work_rec.date_complete or '',
-                            'date_close': work_rec.date_close or '',
+                            'date_close': date_close if date_close else '',
                             'work_performed': repair_line_data and
                             repair_line_data[:-2] or '',
                         }
                         wo_smry_dict[work_rec.team_id.id]['value'] += [wo_data]
                     else:
+                        if work_rec.date_open:
+                            date_open = format_date(
+                                self.env,  work_rec.date_open, self._context.get('lang'),
+                                date_format=False
+                            )
+                        if work_rec.date_close:
+                            date_close = format_date(
+                                self.env, work_rec.date_close, self._context.get('lang'),
+                                date_format=False
+                            )
                         wo_data = \
                             {
                                 'name': work_rec.name or '',
                                 'identification': identification or '',
                                 'vin': work_rec.vehicle_id and
                                 work_rec.vehicle_id.vin_sn or '',
-                                'date_open': work_rec.date_open or '',
+                                'date_open': date_open if date_open else '',
                                 'state': self.get_wo_status(work_rec.state),
                                 'etic': work_rec.etic and
                                 work_rec.date_complete or '',
-                                'date_close': work_rec.date_close or '',
+                                'date_close': date_close if date_close else '',
                                 'work_performed': repair_line_data and
                                 repair_line_data[:-2] or '',
                             }

@@ -296,6 +296,24 @@ class FleetRent(models.Model):
     refund_inv_count = fields.Integer(compute='_compute_count_refund_invoice',
                                       string="Refund")
 
+    @api.constrains('deposit_amt', 'rent_amt', 'maintenance_cost')
+    def check_amt(self):
+        for amount in self:
+            if amount.rent_amt < 0.0:
+                raise ValidationError(_(
+                    "Rental Vehicle Rent amount should be greater than zero."
+                    " Please add 'Rental Vehicle Rent' amount !!"
+                ))
+            if amount.deposit_amt < 0.0:
+                raise ValidationError(_(
+                    "Deposit amount should be greater than zero."
+                    " Please add 'Amount Deposit'!"
+                ))
+            if amount.maintenance_cost < 0.0:
+                raise ValidationError(_(
+                    "Maintenance cost should be greater than zero."
+                ))
+
     @api.constrains('vehicle_id')
     def _check_vehicle_id(self):
         for rec in self:
@@ -330,10 +348,6 @@ class FleetRent(models.Model):
         """Method to confirm rent status."""
         for rent in self:
             rent_vals = {'state': 'open'}
-            if rent.rent_amt < 1:
-                raise ValidationError(
-                    _("Rental Vehicle Rent amount should be greater than zero."
-                      " Please add 'Rental Vehicle Rent' amount !!"))
             if not rent.name or rent.name == 'New':
                 seq = self.env['ir.sequence'].next_by_code('fleet.rent')
                 rent_vals.update({'name': seq})
@@ -387,9 +401,10 @@ class FleetRent(models.Model):
         for rent in self:
             rent.cr_rent_btn = False
             if rent.vehicle_id and rent.vehicle_id.state == 'write-off':
-                raise UserError(_('You can not renew rent for %s \
-                                because this vehicle is in \
-                                write-off.') % rent.vehicle_id.name)
+                raise UserError(_(
+                    'You can not renew rent for %s because this'
+                    ' vehicle is in write-off.'
+                ) % rent.vehicle_id.name)
             tenancy_rent_ids = self.env['tenancy.rent.schedule'].search(
                 [('fleet_rent_id', '=', rent.id),
                  ('state', 'in', ['draft', 'open'])])
@@ -463,11 +478,6 @@ class FleetRent(models.Model):
     def action_deposite_receive(self):
         """Method to open the related payment form view."""
         for rent in self:
-
-            if rent.deposit_amt < 1:
-                raise UserError(_("Deposit amount should not be zero.\n"
-                                  "Please Enter Deposit Amount."))
-
             deposit_inv_ids = self.env['account.move'].search([
                 ('fleet_rent_id', '=', rent.id),
                 ('move_type', '=', 'out_invoice'),

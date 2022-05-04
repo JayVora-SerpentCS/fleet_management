@@ -177,6 +177,18 @@ class FleetOperations(models.Model):
                 raise ValidationError(_('Warranty Period Should Be '
                                         'Greater Than Registration Date.'))
 
+    @api.constrains('driver_id')
+    def check_duplicate_driver(self):
+        for vehicle in self:
+            if vehicle.driver_id and self.search_count([
+                ('driver_id', '=', vehicle.driver_id.id),
+                ('id', '!=',vehicle.id),
+                ('state', '!=', 'write-off')
+            ]) > 1:
+                raise ValidationError(_(
+                    "Driver can be allocated to one vehicle only!"
+                ))
+
     @api.constrains('date_sold', 'acquisition_date')
     def check_sold_date(self):
         """Method to check sold date."""
@@ -244,6 +256,25 @@ class FleetOperations(models.Model):
             self.image_128 = self.f_brand_id.image_128
         else:
             self.image_128 = False
+
+    @api.onchange('model_id')
+    def _onchange_model_id(self):
+        for model in self:
+            if model.model_id:
+                model.model_year = model.model_id.model_year or 0
+                model.transmission = model.model_id.transmission or False
+                model.seats = model.model_id.seats or 0
+                model.doors = model.model_id.doors or 0
+                model.color = model.model_id.color or ""
+                model.trailer_hook = model.model_id.trailer_hook or 0
+                model.fuel_type = model.model_id.default_fuel_type or False
+                model.co2 = model.model_id.default_co2 or 0.0
+                model.co2_standard = model.model_id.co2_standard or ""
+                model.power = model.model_id.power or 0
+                model.horsepower = model.model_id.horsepower or 0
+                model.horsepower_tax = model.horsepower_tax or 0.0
+
+
 
     @api.depends('model_id', 'license_plate')
     def _compute_vehicle_name(self):
@@ -699,6 +730,12 @@ class FleetWittenOff(models.Model):
                               help="Take this field for data migration")
     vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle',
                                  required=True)
+    currency_id = fields.Many2one(
+        'res.currency',
+        default=lambda self: self.env['res.company']._default_currency_id(),
+        string='Currency',
+        help="The optional other currency if it is a multi-currency entry."
+    )
     vehicle_fmp_id = fields.Char(string='Vehicle ID', size=64)
     vin_no = fields.Char(string='Vin No', size=64, translate=True)
     color_id = fields.Many2one('color.color', string='Color')
@@ -706,7 +743,7 @@ class FleetWittenOff(models.Model):
     report_date = fields.Date(string='Report Date')
     odometer = fields.Float(string='Odometer')
     cost_esitmation = fields.Float(string='Cost Estimation')
-    note_for_cause_damage = fields.Text(string='Cuause of Damage',
+    note_for_cause_damage = fields.Text(string='Cause of Damage',
                                         translate=True)
     note = fields.Text(string='Note', translate=True)
     cancel_note = fields.Text(string='Cancel Note', translate=True)
@@ -740,6 +777,14 @@ class FleetWittenOff(models.Model):
                              string='State', default='draft')
     date_cancel = fields.Date(string='Date Cancelled')
     cancel_by_id = fields.Many2one('res.users', string="Cancelled By")
+
+    @api.constrains('cost_esitmation')
+    def check_estimation_cost(self):
+        for cost in self:
+            if cost.cost_esitmation < 0:
+                raise ValidationError(_(
+                    "Expense to repair cost should not be negative!"
+                ))
 
     def write(self, vals):
         """Override write method and update values."""
@@ -1078,6 +1123,15 @@ class NextIncrementNumber(models.Model):
     vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle Id')
     number = fields.Float(string='Odometer Increment')
 
+    @api.constrains('number')
+    def check_odometer_number(self):
+        for rec in self:
+            if rec.number < 0.0:
+                raise ValidationError(_(
+                    'You can not add negative value '
+                    'for odometer number of vehicle!'
+                ))
+
     @api.constrains('vehicle_id')
     def _check_vehicle_id(self):
         """Method to check last service date."""
@@ -1101,6 +1155,15 @@ class NextServiceDays(models.Model):
     name = fields.Char(string='Name', translate=True)
     vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle Id')
     days = fields.Integer(string='Days')
+
+    @api.constrains('days')
+    def check_service_days(self):
+        for rec in self:
+            if rec.days < 0:
+                raise ValidationError(_(
+                    'You can not add negative value '
+                    'next service days!'
+                ))
 
     @api.constrains('vehicle_id')
     def _check_vehicle_id(self):

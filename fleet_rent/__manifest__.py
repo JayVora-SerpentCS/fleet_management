@@ -35,6 +35,7 @@
             'wizard/rent_close_reason_view.xml',
             'report/fleet_rent.xml',
     ],
+    'images': ['static/description/fleet_rental_vehicle_banner.png'],
     'assets': {
         'web.assets_backend': [
                 "fleet_rent/static/src/css/fleet_rent.scss",

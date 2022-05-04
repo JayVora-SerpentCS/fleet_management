@@ -139,8 +139,8 @@ class FleetVehicleLogServices(models.Model):
         for work_order in self:
             if work_order.vehicle_id:
                 if work_order.vehicle_id.state == 'write-off':
-                    raise UserError(_("You can\'t confirm this \
-                            work order which vehicle is in write-off state!"))
+                    raise UserError(_("You can\'t confirm this work order"
+                                      " as vehicle is in write-off state!"))
                 elif work_order.vehicle_id.state == 'in_progress':
                     raise UserError(
                         _("Previous work order is not "
@@ -390,6 +390,12 @@ class FleetVehicleLogServices(models.Model):
     def _compute_get_total(self):
         for rec in self:
             rec.sub_total = sum(line.total or 0.0 for line in rec.parts_ids)
+
+    @api.constrains('amount')
+    def _check_service_amount(self):
+        for rec in self:
+            if rec.amount < 0:
+                raise ValidationError(_("Service amount value must be positive!"))
 
     def write(self, vals):
         """Method Write."""

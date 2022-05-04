@@ -2,7 +2,7 @@
 
 import base64
 import io
-
+from odoo.tools import format_date
 from odoo import _, api, fields, models
 
 import xlwt
@@ -126,7 +126,7 @@ class PrintFleetHistory(models.TransientModel):
         font.bold = True
         font.name = 'Arial'
         font.height = 200
-        style1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200', num_format_str='DD/MM/YYYY')
+        style1 = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         # pattern = xlwt.Pattern()
         # tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         border = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
@@ -175,8 +175,11 @@ class PrintFleetHistory(models.TransientModel):
                 worksheet.write(row, 2, 'Kilometer :', format1)
                 worksheet.write(row, 3, order.odometer or '', border)
                 row += 1
+                date=''
+                if order.date:
+                    date = format_date(self.env, order.date, self._context.get('lang'), date_format=False)
                 worksheet.write(row, 0, 'Actual Date Issued :', format1)
-                worksheet.write(row, 1, order.date or '', style1)
+                worksheet.write(row, 1, date or '', style1)
                 # worksheet.write(row, 2, 'Location :', format1)
                 # worksheet.write(row, 3, order.vechical_location_id and
                 #                 order.vechical_location_id.name or '', border)
