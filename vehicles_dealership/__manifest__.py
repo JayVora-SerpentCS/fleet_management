@@ -24,7 +24,9 @@
         "views/product_views.xml",
         "views/res_company_views.xml",
     ],
-
+    
+    'images': ['static/description/vehicles_dealership_banner.png'],	
+    
     # Technical
     'auto_install': False,
     'installable': True,
