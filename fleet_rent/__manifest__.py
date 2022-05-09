@@ -38,6 +38,8 @@
             'wizard/rent_close_reason_view.xml',
             'report/fleet_rent.xml',
     ],
+    'images': ['static/description/fleet_rental_vehicle_banner.png'],
+    
     # Technical
     'auto_install': False,
     'installable': True,
