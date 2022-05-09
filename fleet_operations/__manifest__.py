@@ -42,6 +42,9 @@
               'wizard/vehicle_change_history_view.xml',
               'wizard/repair_line_summary_view.xml',
     ],
+
+    'images': ['static/description/fleet_operations_banner.png'],
+
     'demo': ['data/fleet_extended_demo.xml'],
     'installable': True,
     'application': True,
