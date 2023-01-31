@@ -7,10 +7,15 @@
             <form>
                 <separator string="Reason To Cancel" />
                 <group>
-                    <field name="reason" />
+                    <field name="reason" string="Reason" />
                 </group>
                 <footer>
-                    <button name="cancel_writoff" type="object" string="OK" class="oe_highlight"/>
+                    <button
+                        name="cancel_writoff"
+                        type="object"
+                        string="OK"
+                        class="oe_highlight"
+                    />
                     <button string="Cancel" class="oe_link" special="cancel" />
                 </footer>
             </form>

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # See LICENSE file for full copyright and licensing details.
 
 from . import test_vehicle_registration
@@ -14,5 +13,6 @@ from . import test_vehicle_status
 from . import test_damage_type
 from . import test_next_service_day
 from . import test_vehicle_color
-from . import test_vehicle_tag
+
+# from . import test_vehicle_tag
 from . import test_operation

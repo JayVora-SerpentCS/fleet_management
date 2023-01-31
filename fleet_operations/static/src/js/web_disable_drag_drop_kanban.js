@@ -1,8 +1,8 @@
-odoo.define("fleet_operations.disable_drag_drop_kanban",function(require){
-
-    var KanbanView = require('web.KanbanView');
-    var KanbanColumn = require('web.KanbanColumn');
-    var quick_create = require('web.kanban_quick_create');
+odoo.define("fleet_operations.disable_drag_drop_kanban", function (require) {
+    "use strict";
+    var KanbanView = require("web.KanbanView");
+    var KanbanColumn = require("web.KanbanColumn");
+    var quick_create = require("web.kanban_quick_create");
     var ColumnQuickCreate = quick_create.ColumnQuickCreate;
 
     KanbanView.include({
@@ -17,15 +17,20 @@ odoo.define("fleet_operations.disable_drag_drop_kanban",function(require){
             // - field is readonly
             var draggable = true;
             if (group_by_field_attrs) {
-                if (group_by_field_attrs.type === "date" || group_by_field_attrs.type === "datetime") {
-                    var draggable = false;
-                }
-                else if (group_by_field_attrs.readonly !== undefined) {
-                    var draggable = !(group_by_field_attrs.readonly);
+                if (
+                    group_by_field_attrs.type === "date" ||
+                    group_by_field_attrs.type === "datetime"
+                ) {
+                    draggable = false;
+                } else if (group_by_field_attrs.readonly !== undefined) {
+                    draggable = !group_by_field_attrs.readonly;
                 }
             }
-            if(self.model == "fleet.vehicle" || self.model == "account.analytic.account"){
-                draggable = false
+            if (
+                self.model === "fleet.vehicle" ||
+                self.model === "account.analytic.account"
+            ) {
+                draggable = false;
             }
             var record_options = _.extend(this.record_options, {
                 draggable: draggable,
@@ -34,33 +39,37 @@ odoo.define("fleet_operations.disable_drag_drop_kanban",function(require){
             var column_options = this.get_column_options();
 
             _.each(this.data.groups, function (group) {
-                var column = new KanbanColumn(self, group, column_options, record_options);
+                var column = new KanbanColumn(
+                    self,
+                    group,
+                    column_options,
+                    record_options
+                );
                 column.appendTo(fragment);
                 self.widgets.push(column);
             });
             this.$el.sortable({
-                axis: 'x',
-                items: '> .o_kanban_group',
-                handle: '.o_kanban_header',
-                cursor: 'move',
+                axis: "x",
+                items: "> .o_kanban_group",
+                handle: ".o_kanban_header",
+                cursor: "move",
                 revert: 150,
                 delay: 100,
-                tolerance: 'pointer',
+                tolerance: "pointer",
                 forcePlaceholderSize: true,
                 stop: function () {
                     var ids = [];
-                    self.$('.o_kanban_group').each(function (index, u) {
-                        ids.push($(u).data('id'));
+                    self.$(".o_kanban_group").each(function (index, u) {
+                        ids.push($(u).data("id"));
                     });
                     self.resequence(ids);
                 },
             });
-            if (this.is_action_enabled('group_create') && this.grouped_by_m2o) {
+            if (this.is_action_enabled("group_create") && this.grouped_by_m2o) {
                 this.column_quick_create = new ColumnQuickCreate(this);
                 this.column_quick_create.appendTo(fragment);
             }
             this.postprocess_m2m_tags();
         },
     });
-
 });

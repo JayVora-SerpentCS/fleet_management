@@ -7,6 +7,6 @@ from odoo import fields, models
 class ResCompany(models.Model):
     """Res Company."""
 
-    _inherit = 'res.company'
+    _inherit = "res.company"
 
-    din_number = fields.Char(string="DIN", help="Dealer Identification Number")
+    din_number = fields.Char("DIN", help="Dealer Identification Number")

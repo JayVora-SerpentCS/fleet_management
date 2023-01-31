@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template id="write_off_qweb">
         <t t-call="web.html_container">
@@ -7,7 +7,10 @@
                     <div class="page">
                         <table class="table table-bordered" width="100%">
                             <tr>
-                                <td style="font-size:12px;font-weight: bold;" width="6.5%">
+                                <td
+                                    style="font-size:12px;font-weight: bold;"
+                                    width="6.5%"
+                                >
                                     <span>WRITE-OFF REPORT</span>
                                 </td>
                             </tr>
@@ -15,27 +18,50 @@
                         <t t-if="o.write_off_type=='general_accident'">
                             <table class="table table-bordered" width="100%">
                                 <tr>
-                                    <td style="font-size:12px;font-weight: bold;" width="50%">
+                                    <td
+                                        style="font-size:12px;font-weight: bold;"
+                                        width="50%"
+                                    >
                                         <span>Site Location :</span>
                                     </td>
-                                    <td style="font-size:12px;font-weight: bold;" width="25%">
-                                        <span/>
+                                    <td
+                                        style="font-size:12px;font-weight: bold;"
+                                        width="25%"
+                                    >
+                                        <span />
                                     </td>
-                                    <td style="font-size:12px;font-weight: bold;" width="25%">
-                                        <span/>
+                                    <td
+                                        style="font-size:12px;font-weight: bold;"
+                                        width="25%"
+                                    >
+                                        <span />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="font-size:12px;font-weight: bold;" width="50%">
-                                        <span>Write-Off:</span><span t-field="o.name"/>
+                                    <td
+                                        style="font-size:12px;font-weight: bold;"
+                                        width="50%"
+                                    >
+                                        <span>Write-Off:</span><span t-field="o.name" />
                                     </td>
                                     <td width="25%">
-                                        <span style="font-size:12px;font-weight: bold;">General Accident </span>
-                                        <input checked="True" style="margin-left:30px;" type="checkbox"/>
+                                        <span
+                                            style="font-size:12px;font-weight: bold;"
+                                        >General Accident </span>
+                                        <input
+                                            checked="True"
+                                            style="margin-left:30px;"
+                                            type="checkbox"
+                                        />
                                     </td>
                                     <td width="25%">
-                                        <span style="font-size:12px;font-weight: bold;">Insurgent Attack </span>
-                                        <input style="margin-left:30px;" type="checkbox"/>
+                                        <span
+                                            style="font-size:12px;font-weight: bold;"
+                                        >Insurgent Attack </span>
+                                        <input
+                                            style="margin-left:30px;"
+                                            type="checkbox"
+                                        />
                                     </td>
                                 </tr>
                             </table>
@@ -43,27 +69,52 @@
                         <t t-if="o.write_off_type=='insurgent_attack'">
                             <table class="table table-bordered" width="100%">
                                 <tr>
-                                    <td style="font-size:12px;font-weight: bold;" width="50%">
+                                    <td
+                                        style="font-size:12px;font-weight: bold;"
+                                        width="50%"
+                                    >
                                         <span>Site Location :</span>
                                     </td>
-                                    <td style="font-size:12px;font-weight: bold;" width="25%">
-                                        <span/>
+                                    <td
+                                        style="font-size:12px;font-weight: bold;"
+                                        width="25%"
+                                    >
+                                        <span />
                                     </td>
-                                    <td style="font-size:12px;font-weight: bold;" width="25%">
-                                        <span/>
+                                    <td
+                                        style="font-size:12px;font-weight: bold;"
+                                        width="25%"
+                                    >
+                                        <span />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="font-size:12px;font-weight: bold;" width="50%">
-                                        <span>Write-Off:</span> <span t-field="o.name"/>
+                                    <td
+                                        style="font-size:12px;font-weight: bold;"
+                                        width="50%"
+                                    >
+                                        <span>Write-Off:</span> <span
+                                            t-field="o.name"
+                                        />
                                     </td>
                                     <td width="25%">
-                                        <span style="font-size:12px;font-weight: bold;">General Accident </span>
-                                        <input style="margin-left:30px;" type="checkbox"/>
+                                        <span
+                                            style="font-size:12px;font-weight: bold;"
+                                        >General Accident </span>
+                                        <input
+                                            style="margin-left:30px;"
+                                            type="checkbox"
+                                        />
                                     </td>
                                     <td width="25%">
-                                        <span style="font-size:12px;font-weight: bold;">Insurgent Attack </span>
-                                        <input checked="True" style="margin-left:30px;" type="checkbox"/>
+                                        <span
+                                            style="font-size:12px;font-weight: bold;"
+                                        >Insurgent Attack </span>
+                                        <input
+                                            checked="True"
+                                            style="margin-left:30px;"
+                                            type="checkbox"
+                                        />
                                     </td>
                                 </tr>
                             </table>
@@ -71,37 +122,67 @@
                         <t t-if="o.write_off_type==False">
                             <table class="table table-bordered" width="100%">
                                 <tr>
-                                    <td style="font-size:12px;font-weight: bold;" width="50%">
+                                    <td
+                                        style="font-size:12px;font-weight: bold;"
+                                        width="50%"
+                                    >
                                         <span>Site Location :</span>
                                     </td>
-                                    <td style="font-size:12px;font-weight: bold;" width="25%">
-                                        <span/>
+                                    <td
+                                        style="font-size:12px;font-weight: bold;"
+                                        width="25%"
+                                    >
+                                        <span />
                                     </td>
-                                    <td style="font-size:12px;font-weight: bold;" width="25%">
-                                        <span/>
+                                    <td
+                                        style="font-size:12px;font-weight: bold;"
+                                        width="25%"
+                                    >
+                                        <span />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="font-size:12px;font-weight: bold;" width="50%">
-                                        <span>Write-Off:</span> <span t-field="o.name"/>
+                                    <td
+                                        style="font-size:12px;font-weight: bold;"
+                                        width="50%"
+                                    >
+                                        <span>Write-Off:</span> <span
+                                            t-field="o.name"
+                                        />
                                     </td>
                                     <td width="25%">
-                                        <span style="font-size:12px;font-weight: bold;">General Accident </span>
-                                        <input style="margin-left:30px;" type="checkbox"/>
+                                        <span
+                                            style="font-size:12px;font-weight: bold;"
+                                        >General Accident </span>
+                                        <input
+                                            style="margin-left:30px;"
+                                            type="checkbox"
+                                        />
                                     </td>
                                     <td width="25%">
-                                        <span style="font-size:12px;font-weight: bold;">Insurgent Attack </span>
-                                        <input style="margin-left:30px;" type="checkbox"/>
+                                        <span
+                                            style="font-size:12px;font-weight: bold;"
+                                        >Insurgent Attack </span>
+                                        <input
+                                            style="margin-left:30px;"
+                                            type="checkbox"
+                                        />
                                     </td>
                                 </tr>
                             </table>
                         </t>
                         <table class="table table-bordered" width="100%">
                             <tr>
-                                <td colspan="2" style="font-size:14px;font-weight: bold;">
+                                <td
+                                    colspan="2"
+                                    style="font-size:14px;font-weight: bold;"
+                                >
                                     <span>Vehicle Information : </span>
                                 </td>
-                                <td colspan="2" style="font-size:14px;font-weight: bold;">
+                                <td
+                                    colspan="2"
+                                    style="font-size:14px;font-weight: bold;"
+                                >
                                     <span>Police Information : </span>
                                 </td>
                             </tr>
@@ -110,13 +191,13 @@
                                     <span>Kilometers</span>
                                 </td>
                                 <td>
-                                    <span t-field="o.odometer"/>
+                                    <span t-field="o.odometer" />
                                 </td>
                                 <td style="font-size:12px;font-weight: bold;">
                                     <span>Driver :</span>
                                 </td>
                                 <td>
-                                    <span t-field="o.driver_id and o.driver_id.name"/>
+                                    <span t-field="o.driver_id and o.driver_id.name" />
                                 </td>
                             </tr>
                             <tr>
@@ -124,13 +205,15 @@
                                     <span>Vehicle No. :</span>
                                 </td>
                                 <td>
-                                    <span t-field="o.vehicle_id and o.vehicle_id.name"/>
+                                    <span
+                                        t-field="o.vehicle_id and o.vehicle_id.name"
+                                    />
                                 </td>
                                 <td style="font-size:12px;font-weight: bold;">
                                     <span>Contact No. :</span>
                                 </td>
                                 <td>
-                                    <span t-field="o.contact_no"/>
+                                    <span t-field="o.contact_no" />
                                 </td>
                             </tr>
                             <tr>
@@ -138,13 +221,17 @@
                                     <span>Type :</span>
                                 </td>
                                 <td>
-                                    <span t-field="o.vehicle_id and o.vehicle_id.vechical_type_id and o.vehicle_id.vechical_type_id.name"/>
+                                    <span
+                                        t-field="o.vehicle_id and o.vehicle_id.vechical_type_id and o.vehicle_id.vechical_type_id.name"
+                                    />
                                 </td>
                                 <td style="font-size:12px;font-weight: bold;">
                                     <span>Registration State :</span>
                                 </td>
                                 <td>
-                                    <span t-field="o.province_id and o.province_id.name"/>
+                                    <span
+                                        t-field="o.province_id and o.province_id.name"
+                                    />
                                 </td>
                             </tr>
                             <tr>
@@ -152,43 +239,45 @@
                                     <span>Color :</span>
                                 </td>
                                 <td>
-                                    <span t-field="o.color_id and o.color_id.name"/>
+                                    <span t-field="o.color_id and o.color_id.name" />
                                 </td>
-                                <td></td>
-                                <td></td>
+                                <td />
+                                <td />
                             </tr>
                             <tr>
                                 <td style="font-size:12px;font-weight: bold;">
                                     <span>Date :</span>
                                 </td>
                                 <td>
-                                    <span t-field="o.report_date"/>
+                                    <span t-field="o.report_date" />
                                 </td>
-                                <td></td>
-                                <td></td>
+                                <td />
+                                <td />
                             </tr>
                             <tr>
                                 <td style="font-size:12px;font-weight: bold;">
                                     <span>VIN No. :</span>
                                 </td>
                                 <td>
-                                    <span t-field="o.vin_no"/>
+                                    <span t-field="o.vin_no" />
                                 </td>
-                                <td></td>
-                                <td></td>
+                                <td />
+                                <td />
                             </tr>
                             <tr>
                                 <td style="font-size:12px;font-weight: bold;">
                                     <span>Service Order No. :</span>
                                 </td>
                                 <td t-if="get_last_work_order(o.vehicle_id.id)">
-                                    <span t-esc="get_last_work_order(o.vehicle_id.id)"/>
+                                    <span
+                                        t-esc="get_last_work_order(o.vehicle_id.id)"
+                                    />
                                 </td>
                                 <td>
-                                    <span/>
+                                    <span />
                                 </td>
                                 <td>
-                                    <span/>
+                                    <span />
                                 </td>
                             </tr>
                         </table>
@@ -198,50 +287,65 @@
                                     <span>Cause of Damage :</span>
                                 </td>
                                 <td>
-                                    <span t-esc="o.note_for_cause_damage"/>
+                                    <span t-esc="o.note_for_cause_damage" />
                                 </td>
                             </tr>
                         </table>
                         <table class="table table-bordered" width="100%">
                             <tr>
-                                <span style="font-size:14px;font-weight: bold;">Please indicate Major Damage Information : </span>
+                                <span
+                                    style="font-size:14px;font-weight: bold;"
+                                >Please indicate Major Damage Information : </span>
                             </tr>
                             <t t-as="line" t-foreach="o.damage_type_ids">
                                 <tr>
-                                    <td style="font-size:12px;font-weight: bold;" width="50%">
-                                        <span t-field="line.name"/>
+                                    <td
+                                        style="font-size:12px;font-weight: bold;"
+                                        width="50%"
+                                    >
+                                        <span t-field="line.name" />
                                     </td>
                                     <td align="center">
-                                        <input checked="True" type="checkbox"/>
+                                        <input checked="True" type="checkbox" />
                                     </td>
                                 </tr>
                             </t>
                         </table>
                         <table class="table table-bordered" width="100%">
                             <tr>
-                                <span style="font-size:14px;font-weight: bold;">Required Repairs :</span>
+                                <span
+                                    style="font-size:14px;font-weight: bold;"
+                                >Required Repairs :</span>
                             </tr>
                             <t t-as="line" t-foreach="o.repair_type_ids">
                                 <tr>
-                                    <td style="font-size:12px;font-weight: bold;" width="50%">
-                                        <span t-field="line.name"/>
+                                    <td
+                                        style="font-size:12px;font-weight: bold;"
+                                        width="50%"
+                                    >
+                                        <span t-field="line.name" />
                                     </td>
                                     <td align="center">
-                                        <input checked="True" type="checkbox"/>
+                                        <input checked="True" type="checkbox" />
                                     </td>
                                 </tr>
                             </t>
                         </table>
                         <table class="table table-bordered" width="100%">
                             <tr>
-                                <span style="font-size:14px;font-weight: bold;">Estimated Cost :</span>
+                                <span
+                                    style="font-size:14px;font-weight: bold;"
+                                >Estimated Cost :</span>
                             </tr>
                             <tr>
                                 <td style="font-size:12px;font-weight: bold;">
                                     <span>Total Amount :</span>
                                 </td>
                                 <td>
-                                    <span t-field="o.cost_esitmation" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    <span
+                                        t-field="o.cost_esitmation"
+                                        t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                                    />
                                 </td>
                             </tr>
                         </table>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <!-- Form View for Repair Line Summary. -->
     <record id="view_update_next_service_view" model="ir.ui.view">
@@ -8,13 +8,18 @@
             <form string="Update Next Service Day">
                 <separator string="Update Next Service Day" colspan="4" />
                 <group col="4" colspan="4">
-                    <field name="vehicle_id" readonly="1"/>
-                    <field name="number" required="1"/>
-                    <field name="days" required="1"/>
+                    <field name="vehicle_id" readonly="1" string="Vehicle Id" />
+                    <field name="number" required="1" />
+                    <field name="days" required="1" string="Days" />
                 </group>
                 <footer>
-                    <button name="action_done" string="Done" type="object" class="oe_highlight"/>
-                    <button string="Cancel" class="oe_link" special="cancel"/>
+                    <button
+                        name="action_done"
+                        string="Done"
+                        type="object"
+                        class="oe_highlight"
+                    />
+                    <button string="Cancel" class="oe_link" special="cancel" />
                 </footer>
             </form>
         </field>
@@ -25,7 +30,7 @@
         <field name="name">Update Next Service Day</field>
         <field name="res_model">update.next.service.config</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="view_id" ref="view_update_next_service_view"/>
+        <field name="view_id" ref="view_update_next_service_view" />
         <field name="view_mode">form</field>
         <field name="target">new</field>
    </record>
