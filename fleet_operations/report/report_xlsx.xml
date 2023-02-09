@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <!-- Paper Format For Write-off -->
     <record id="wittenoff_format" model="report.paperformat">
@@ -24,21 +24,19 @@
         <field name="report_name">fleet_operations.write_off_qweb</field>
         <field name="report_file">fleet_operations.write_off_qweb</field>
         <field name="print_report_name">'Write-Off'</field>
-        <field name="binding_model_id" ref="fleet_operations.model_fleet_wittenoff"/>
+        <field name="binding_model_id" ref="fleet_operations.model_fleet_wittenoff" />
         <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="fleet_operations.wittenoff_format" />
     </record>
 
 
-    <record id="write_off_report_qweb" model="ir.actions.report">
-        <field name="paperformat_id" ref="fleet_operations.wittenoff_format"/>
-    </record>
 
     <record id="account.account_invoices" model="ir.actions.report">
-        <field name="paperformat_id" ref="fleet_operations.wittenoff_format"/>
+        <field name="paperformat_id" ref="fleet_operations.wittenoff_format" />
     </record>
 
     <record id="account.account_invoices_without_payment" model="ir.actions.report">
-        <field name="paperformat_id" ref="fleet_operations.wittenoff_format"/>
+        <field name="paperformat_id" ref="fleet_operations.wittenoff_format" />
     </record>
 
     <!-- QWEB Report For Repair Line Summary Report -->
@@ -49,7 +47,7 @@
         <field name="report_name">fleet_operations.repair_line_summary_qweb</field>
         <field name="report_file">fleet_operations.repair_line_summary_qweb</field>
         <field name="print_report_name">'Repair Line Summary'</field>
-        <field name="binding_model_id" ref=""/>
+        <field name="binding_model_id" ref="" />
         <field name="binding_type">report</field>
     </record>
 
@@ -61,7 +59,7 @@
         <field name="report_name">fleet_operations.vehicle_change_history_qweb</field>
         <field name="report_file">fleet_operations.vehicle_change_history_qweb</field>
         <field name="print_report_name">'Vehicle Change History'</field>
-        <field name="binding_model_id" ref=""/>
+        <field name="binding_model_id" ref="" />
         <field name="binding_type">report</field>
     </record>
 </odoo>

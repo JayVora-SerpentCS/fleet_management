@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
    <!-- Sequence for Work Order. -->
    <record id="seq_seq_work_order" model="ir.sequence">

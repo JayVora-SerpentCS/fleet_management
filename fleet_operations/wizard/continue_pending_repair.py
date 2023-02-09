@@ -7,5 +7,5 @@ from odoo import models
 class ContinuePendingRepair(models.TransientModel):
     """Continue Pending Repair."""
 
-    _name = 'continue.pending.repair'
-    _description = 'Vehicle Continue Pending Repair'
+    _name = "continue.pending.repair"
+    _description = "Vehicle Continue Pending Repair"

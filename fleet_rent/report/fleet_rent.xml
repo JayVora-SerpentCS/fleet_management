@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <!-- Fleet Rent Reports -->
     <record id="report_fleet_rent" model="ir.actions.report">
@@ -8,7 +8,7 @@
         <field name="report_name">fleet_rent.report_fleet_rent_pdf</field>
         <field name="report_file">fleet_rent.report_fleet_rent_pdf</field>
         <field name="print_report_name">'Fleet Rent'</field>
-        <field name="binding_model_id" ref="fleet_rent.model_fleet_rent"/>
+        <field name="binding_model_id" ref="fleet_rent.model_fleet_rent" />
         <field name="binding_type">report</field>
     </record>
     <template id="report_fleet_rent_pdf">
@@ -34,23 +34,23 @@
                             </tr>
                             <tr>
                                 <td style="padding:5px;">
-                                    <span t-field="o.name"/>
+                                    <span t-field="o.name" />
                                 </td>
                                 <td style="padding:5px;">
-                                    <span t-field="o.vehicle_id"/>
+                                    <span t-field="o.vehicle_id" />
                                 </td>
                                 <td style="padding:5px;">
-                                    <span t-field="o.rent_type_id"/>
+                                    <span t-field="o.rent_type_id" />
                                 </td>
                                 <td style="padding:5px;">
-                                    <span t-field="o.tenant_id"/>
+                                    <span t-field="o.tenant_id" />
                                 </td>
                                 <td style="padding:5px;">
-                                    <span t-field="o.odometer"/>
+                                    <span t-field="o.odometer" />
                                 </td>
                             </tr>
                         </table>
-                        <br/>
+                        <br />
                     </div>
                     <h2>
                         <b>Rent Schedule Details:</b>
@@ -66,19 +66,19 @@
                         <t t-as="line" t-foreach="o.rent_schedule_ids">
                             <tr>
                                 <td style="padding:5px;">
-                                    <span t-field="line.start_date"/>
+                                    <span t-field="line.start_date" />
                                 </td>
                                 <td style="padding:5px;">
-                                    <span t-field="line.amount"/>
+                                    <span t-field="line.amount" />
                                 </td>
                                 <td style="padding:5px;">
-                                    <span t-field="line.state"/>
+                                    <span t-field="line.state" />
                                 </td>
                                 <td style="padding:5px;">
-                                    <span t-field="line.note"/>
+                                    <span t-field="line.note" />
                                 </td>
                                 <td style="padding:5px;">
-                                    <span t-field="line.pen_amt"/>
+                                    <span t-field="line.pen_amt" />
                                 </td>
                             </tr>
                         </t>

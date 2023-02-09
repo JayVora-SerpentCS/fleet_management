@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <!-- Close Rent Wizard Form View  -->
     <record id="view_rent_close_reason_wizard" model="ir.ui.view">
@@ -8,14 +8,21 @@
             <form>
                 <separator string="Reason To close Rent" />
                 <group>
-                    <field name="reason" required="1"
-                        placeholder="Enter Reason to close rent contract..."/>
+                    <field
+                        name="reason"
+                        string="Reason"
+                        required="1"
+                        placeholder="Enter Reason to close rent contract..."
+                    />
                 </group>
                 <footer>
-                    <button name="close_rent" type="object"
-                        string="Close" class="oe_highlight"/>
-                    <button string="Cancel" class="oe_link"
-                        special="cancel"/>
+                    <button
+                        name="close_rent"
+                        type="object"
+                        string="Close"
+                        class="oe_highlight"
+                    />
+                    <button string="Cancel" class="oe_link" special="cancel" />
                 </footer>
             </form>
         </field>

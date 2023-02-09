@@ -1,15 +1,14 @@
 # See LICENSE file for full copyright and licensing details.
 """Res Users Models."""
 
-from odoo import _, fields, api, models
-from odoo.exceptions import UserError
+from odoo import fields, models
 
 
 class ResPartner(models.Model):
     """Model res partner extended."""
 
-    _inherit = 'res.partner'
+    _inherit = "res.partner"
 
-    d_id = fields.Char(string='ID-Card')
-    is_driver = fields.Boolean(string='Is Driver')
-    insurance = fields.Boolean(string='Insurance')
+    d_id = fields.Char()
+    is_driver = fields.Boolean()
+    insurance = fields.Boolean()
