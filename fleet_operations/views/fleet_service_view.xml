@@ -602,7 +602,7 @@
     <record model='ir.actions.act_window' id='fleet.fleet_vehicle_log_services_action'>
         <field name="name">Services</field>
         <field name="res_model">fleet.vehicle.log.services</field>
-        <field name="view_mode">tree,form,graph</field>
+        <field name="view_mode">tree,kanban,form,graph,pivot,activity</field>
         <field name="context">{"search_default_groupby_vehicle" : True}</field>
         <field name="help" type="html">
           <p class="oe_view_nocontent_create">
