@@ -16,8 +16,9 @@
                         string="Print"
                         type="object"
                         class="btn-primary"
-                        attrs="{'invisible': [('file', '!=', False)]}"
+                        invisible="file != 'False'"
                     />
+                        <!-- attrs="{'invisible': [('file', '!=', False)]}" -->
                     <button string="Cancel" class="btn-secondary" special="cancel" />
                 </footer>
             </form>

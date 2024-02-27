@@ -377,7 +377,7 @@ class FleetRent(models.Model):
         for rec in self:
             duplicate_rent = self.env["fleet.rent"].search(
                 [
-                    ("state", "in", ["open", "pending", "close"]),
+                    ("state", "in", ["open", "pending"]),
                     ("id", "!=", rec.id),
                     ("vehicle_id", "=", rec.vehicle_id.id),
                 ]
@@ -425,6 +425,10 @@ class FleetRent(models.Model):
 
     def action_rent_close(self):
         """Method to Change rent state to close."""
+        print('self======================',self.rent_schedule_ids.invc_id.payment_state)
+        if not self.rent_schedule_ids.invc_id.payment_state == 'paid':
+            raise UserError(_("Can't close the vehicle rent without Payment!"))
+        # 9/0
         return {
             "name": _("Rent Close Form"),
             "res_model": "rent.close.reason",
@@ -813,10 +817,10 @@ class TenancyRentSchedule(models.Model):
     _rec_name = "fleet_rent_id"
     _order = "start_date"
 
-    @api.depends("move_id")
+    @api.depends("invc_id")
     def _compute_get_move_check(self):
         for rent_sched in self:
-            rent_sched.move_check = bool(rent_sched.move_id)
+            rent_sched.move_check = bool(rent_sched.invc_id)
 
     note = fields.Text("Notes", help="Additional Notes.")
     currency_id = fields.Many2one("res.currency", "Currency")

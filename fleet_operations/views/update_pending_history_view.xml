@@ -11,34 +11,38 @@
                     <button
                         name="remove_selected_pending"
                         class="oe_highlight"
-                        states="draft"
+                        invisible="state != 'draft'"
                         string="Apply"
                         type="object"
                         default_focus="1"
                     />
+                        <!-- states="draft" -->
                     <field name="state" widget="statusbar" />
                 </header>
                 <sheet>
                     <group colspan="2" col="2">
                         <field
                             name="vehicle_id"
-                            attrs="{'readonly':[('state','in',('confirm'))]}"
+                            readonly="state in ('confirm')"
                             options="{'no_open': True, 'create': false, 'create_edit': false}"
                         />
+                            <!-- attrs="{'readonly':[('state','in',('confirm'))]}" -->
                         <field name="fmp_id" invisible="1" />
                     </group>
                     <separator
                         string="Vehicle Pending Repairs"
                         colspan="4"
-                        attrs="{'invisible':[('state','in',('confirm'))]}"
+                        invisible="state in ('confirm')"
                     />
+                        <!-- attrs="{'invisible':[('state','in',('confirm'))]}" -->
                     <field
                         name="pending_reapir_ids"
                         colspan="4"
-                        attrs="{'invisible':[('state','in',('confirm'))]}"
+                        invisible="state in ('confirm')"
                         domain="[('vehicle_rep_type_id','=',vehicle_id)]"
                         nolabel="1"
                     >
+                        <!-- attrs="{'invisible':[('state','in',('confirm'))]}" -->
                         <tree>
                             <field name="vehicle_rep_type_id" invisible="1" />
                             <field name="name" />
@@ -63,13 +67,15 @@
                     <separator
                         string="Applied Pending"
                         colspan="4"
-                        attrs="{'invisible':[('state','in',('draft'))]}"
+                        invisible="state in ('confirm')"
                     />
+                        <!-- attrs="{'invisible':[('state','in',('draft'))]}" -->
                     <field
                         name="pending_reapir_history_ids"
                         colspan="4"
-                        attrs="{'invisible':[('state','in',('draft'))]}"
+                        invisible="state in ('confirm')"
                     >
+                        <!-- attrs="{'invisible':[('state','in',('draft'))]}" -->
                         <tree>
                             <field name="vehicle_rep_type_id" invisible="1" />
                             <field name="name" />
@@ -101,11 +107,8 @@
                         </form>
                     </field>
                     <separator string="Note" />
-                    <field
-                        name="note"
-                        colspan="4"
-                        attrs="{'readonly':[('state','in',('confirm'))]}"
-                    />
+                    <field name="note" colspan="4" readonly="state in ('confirm')" />
+                        <!-- attrs="{'readonly':[('state','in',('confirm'))]}" -->
                     <group colspan="2" col="2">
                         <field
                             name="user_id"

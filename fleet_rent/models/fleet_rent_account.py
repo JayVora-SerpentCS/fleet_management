@@ -101,8 +101,8 @@ class AccountPaymentRegister(models.TransientModel):
         """Overridden Method to update tenancy information."""
         inv_obj = self.env["account.move"]
         rent_sched_obj = self.env["tenancy.rent.schedule"]
-        if self._context.get("active_ids", False):
-            for invoice in inv_obj.browse(self._context["active_ids"]):
+        if self._context.get("active_id", False):
+            for invoice in inv_obj.browse(self._context["active_id"]):
                 if invoice.fleet_rent_id:
                     self.write(
                         {
@@ -128,10 +128,10 @@ class AccountPaymentRegister(models.TransientModel):
         )
         if (
             self._context.get("active_model", False)
-            and self._context["active_model"] == "account.move"
-            and self._context.get("active_ids", False)
+            and self._context["active_model"] == "account.move.line"
+            # and self._context.get("active_ids", False)
         ):
-            for move in inv_obj.browse(self._context["active_ids"]):
+            for move in inv_obj.browse(self._context["active_id"]):
                 for rent_line in rent_sched_obj.search([("invc_id", "=", move.id)]):
                     tenancy_vals = {"pen_amt": 0.0}
                     if rent_line.invc_id:

@@ -1407,10 +1407,6 @@ msgstr ""
 
 #. module: fleet_rent
 #: model:ir.ui.menu,name:fleet_rent.menu_vehicle_rent
-msgid "Vehicle Rent"
-msgstr "استئجار سيارة"
-
-#. module: fleet_rent
 #: model:ir.ui.menu,name:fleet_rent.sub_menu_vehicles_rent
 msgid "Vehicle Rent"
 msgstr "استئجار سيارة"

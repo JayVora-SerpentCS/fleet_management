@@ -115,27 +115,27 @@ class FleetOperations(models.Model):
                 raise UserError(msg)
         return True
 
-    def name_get(self):
-        """
-        Method will be called when you view an M2O field in a form.
-
-        And return name whatever we want to search.
-        """
-        if not len(self._ids):
-            return []
-        res = []
-        for vehicle in self:
-            vehicle_unique_id = vehicle.name or ""
-            vehicle_unique_id += "-"
-            vehicle_unique_id += vehicle.model_id and vehicle.model_id.name or ""
-            res.append((vehicle["id"], vehicle_unique_id))
-        return res
-
-    @api.model
-    def name_search(self, name="", args=None, operator="ilike", limit=100):
-        """Overwritten this method for the bypass base domain."""
-        vehicle_ids = self.search(args, limit=limit)
-        return vehicle_ids.name_get()
+    # def name_get(self):
+    #     """
+    #     Method will be called when you view an M2O field in a form.
+    #
+    #     And return name whatever we want to search.
+    #     """
+    #     if not len(self._ids):
+    #         return []
+    #     res = []
+    #     for vehicle in self:
+    #         vehicle_unique_id = vehicle.name or ""
+    #         vehicle_unique_id += "-"
+    #         vehicle_unique_id += vehicle.model_id and vehicle.model_id.name or ""
+    #         res.append((vehicle["id"], vehicle_unique_id))
+    #     return res
+    #
+    # @api.model
+    # def name_search(self, name="", args=None, operator="ilike", limit=100):
+    #     """Overwritten this method for the bypass base domain."""
+    #     vehicle_ids = self.search(args, limit=limit)
+    #     return vehicle_ids.name_get()
 
     def return_action_too_open(self):
         """

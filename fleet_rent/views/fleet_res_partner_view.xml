@@ -13,10 +13,8 @@
                 <field name="id_attachment" filename="doc_name" />
             </xpath>
             <xpath expr="//notebook/page[@name='internal_notes']" position="before">
-                <page
-                    string="Rental Vehicle Details"
-                    attrs="{'invisible': [('is_tenant','!=',True)]}"
-                >
+                <page string="Rental Vehicle Details" invisible="is_tenant != 'True'">
+                    <!-- attrs="{'invisible': [('is_tenant','!=',True)]}" -->
                         <group colspan="1">
                             <separator string="Rental Vehicle Details" colspan="4" />
                             <field
@@ -40,10 +38,8 @@
                             </field>
                         </group>
                 </page>
-                <page
-                    string="Maintenance Details"
-                    attrs="{'invisible': [('is_tenant', '!=', True)]}"
-                >
+                <page string="Maintenance Details" invisible="is_tenant != 'True'">
+                    <!-- attrs="{'invisible': [('is_tenant', '!=', True)]}" -->
                     <group>
                         <separator string="Maintenance Details" colspan="4" />
                         <field name="maintanance_ids" readonly="1" nolabel="1">
