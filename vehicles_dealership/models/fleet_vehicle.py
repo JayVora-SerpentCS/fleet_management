@@ -32,7 +32,7 @@ class ProductProduct(models.Model):
                         "is_vehicle": True,
                     }
                 )
-            return super(ProductProduct, self).create(vals)
+        return super(ProductProduct, self).create(vals_list)
 
     def write(self, vals):
         """Overridden method to update the vehicle information."""
@@ -53,8 +53,7 @@ class ProductProduct(models.Model):
                 if vals.get("name", False):
                     update_vehicle_vals.update({"name": product.name})
                 if update_vehicle_vals and vehicles:
-                    for vehicle in vehicles:
-                        vehicle.write(update_vehicle_vals)
+                    vehicles.write(update_vehicle_vals)
         return res
 
 

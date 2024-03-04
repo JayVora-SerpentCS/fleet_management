@@ -156,7 +156,8 @@ class FleetVehicleLogServices(models.Model):
                 .with_context(active_model="account.move", active_ids=invoice.ids)
                 .create(
                     {
-                        "refund_method": "refund",
+                        "move_type": "out_refund",
+                        "journal_id": self.service_invoice_id.journal_id.id,
                     }
                 )
             )
