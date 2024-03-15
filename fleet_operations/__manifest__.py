@@ -43,7 +43,7 @@
     "images": ["static/description/fleet_operations_banner.png"],
     "assets": {
         "web.assets_backend": [
-            "fleet_operations/static/src/views/kanban/WebDisableDragDropKanban.js",
+            "fleet_operations/static/src/views/kanban/WebDisableDragDropKanban.esm.js",
         ],
     },
     # Technical

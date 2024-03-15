@@ -1,13 +1,31 @@
 /* @odoo-module */
 
-import {patch} from "@web/core/utils/patch";
-import {KanbanRenderer} from "@web/views/kanban/kanban_renderer";
-import {useSortable} from "@web/core/utils/sortable_owl";
 import {onPatched, onWillDestroy, onWillPatch, useRef, useState} from "@odoo/owl";
 import {useBus, useService} from "@web/core/utils/hooks";
+import {KanbanRenderer} from "@web/views/kanban/kanban_renderer";
+import {patch} from "@web/core/utils/patch";
 import {registry} from "@web/core/registry";
 import {useBounceButton} from "@web/views/view_hook";
 import {useHotkey} from "@web/core/hotkeys/hotkey_hook";
+import {useSortable} from "@web/core/utils/sortable_owl";
+
+function validateColumnQuickCreateExamples(data) {
+    const {allowedGroupBys = [], examples = [], foldField = ""} = data;
+    if (!allowedGroupBys.length) {
+        throw new Error("The example data must contain an array of allowed groupbys");
+    }
+    if (!examples.length) {
+        throw new Error("The example data must contain an array of examples");
+    }
+    const someHasFoldedColumns = examples.some(
+        ({foldedColumns = []}) => foldedColumns.length
+    );
+    if (!foldField && someHasFoldedColumns) {
+        throw new Error(
+            "The example data must contain a fold field if there are folded columns"
+        );
+    }
+}
 
 patch(KanbanRenderer.prototype, {
     setup() {
@@ -30,8 +48,8 @@ patch(KanbanRenderer.prototype, {
         this.ghostColumns = this.generateGhostColumns();
 
         // Sortable
-        let dataRecordId;
-        let dataGroupId;
+        let dataRecordId = "";
+        let dataGroupId = "";
         this.rootRef = useRef("root");
         if (
             this.canUseSortable &&

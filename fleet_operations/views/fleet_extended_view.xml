@@ -774,7 +774,7 @@
                          <separator string="Pending Repair Types" colspan="4" />
                          <field name="pending_repair_type_ids">
                             <tree>
-                                <field name="vehicle_rep_type_id" column_invisible="1" />
+                                <field name="vehicle_rep_type_id" invisible="1" />
                                 <field name="name" string="Name" />
                                 <field name="repair_type_id" />
                                 <field name="categ_id" />
@@ -1284,7 +1284,7 @@
         <field name="inherit_id" ref="fleet.fleet_vehicle_model_view_tree" />
         <field name="arch" type="xml">
             <field name="vehicle_type" position="attributes">
-                <attribute name="column_invisible">1</attribute>
+                <attribute name="invisible">1</attribute>
             </field>
         </field>
     </record>
