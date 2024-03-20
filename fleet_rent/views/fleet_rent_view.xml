@@ -75,8 +75,6 @@
                         class="oe_highlight"
                         groups="fleet.fleet_group_manager"
                     />
-                        <!-- states="draft" -->
-
                     <button
                         name="create_rent_schedule"
                         string=" Schedule Rent"
@@ -84,30 +82,23 @@
                         class="oe_highlight"
                         invisible="state != 'open' or cr_rent_btn"
                     />
-                        <!-- attrs="{'invisible': ['|', ('state','!=','open'),('cr_rent_btn','=',True)]}" -->
-
                     <button
                         name="action_deposite_receive"
                         string="Deposit Receive"
                         type="object"
-                        invisible="state == 'draft' or deposit_received"
+                        invisible="state == 'draft' or deposit_received or invoice_count &gt;= 1"
                         class="oe_highlight"
                         groups="fleet_rent.group_vehicle_rent_manager"
                     />
-                        <!-- attrs="{'invisible':['|',
-                            ('deposit_received','=',True), ('state', '=', 'draft')]}" -->
                     <button
                         name="action_deposite_return"
                         string="Deposit Return"
                         type="object"
-                        invisible="is_deposit_return or deposit_received == 'False'"
+                        invisible="state == 'draft' or is_deposit_return or not deposit_received or refund_inv_count &gt;= 1 "
                         class="oe_highlight"
                         context="{'return':1}"
                         groups="fleet_rent.group_vehicle_rent_manager"
                     />
-                        <!-- attrs="{'invisible':['|',
-                            ('is_deposit_return','=',True),
-                            ('deposit_received','=',False)]}" -->
 
                     <button
                         name="action_set_to_renew"
@@ -117,7 +108,6 @@
                         class="oe_highlight"
                         groups="fleet.fleet_group_manager"
                     />
-                        <!-- states="close,done" -->
                     <button
                         name="action_set_to_draft"
                         string="Set To Draft"
@@ -126,7 +116,6 @@
                         class="oe_highlight"
                         groups="fleet_rent.group_vehicle_rent_manager"
                     />
-                        <!-- states="open" -->
                     <button
                         name="action_rent_close"
                         string="Close"
@@ -135,7 +124,6 @@
                         class="oe_highlight"
                         groups="fleet_rent.group_vehicle_rent_manager"
                     />
-                        <!-- states="open" -->
                     <button
                         name="action_rent_done"
                         string="Done"
@@ -144,7 +132,6 @@
                         class="oe_highlight"
                         groups="fleet_rent.group_vehicle_rent_manager"
                     />
-                        <!-- states="open" -->
                     <field name="cr_rent_btn" invisible="1" />
                     <field
                         name="state"
@@ -184,7 +171,6 @@
                         </button>
                     </div>
                     <group colspan="2" readonly="state == 'close'">
-                        <!-- attrs="{'readonly':[('state','=','close')]}" -->
                     <div class="oe_title oe_left">
                         <label for="name" class="oe_edit_only" string="Rental Number" />
                         <h1>
@@ -240,7 +226,6 @@
                             </div>
                         </group>
                         <group colspan="4" col="4" readonly="state == 'close'">
-                            <!-- attrs="{'readonly':[('state','=','close')]}" -->
                             <separator
                                 string="Rental Vehicle Information"
                                 colspan="4"
@@ -250,7 +235,6 @@
                                 widget="monetary"
                                 readonly="state != 'draft'"
                             />
-                                <!-- attrs="{'readonly':[('state','!=','draft')]}" -->
                             <field name="contract_dt" required="1" readonly="1" />
                             <field
                                 name="deposit_amt"
@@ -258,7 +242,6 @@
                                 string="Amount Deposit"
                                 readonly="deposit_received"
                             />
-                                <!-- attrs="{'readonly':[('deposit_received','=',True)]}" -->
                             <field
                                 name="amount_return"
                                 widget="monetary"
@@ -285,7 +268,6 @@
                                 required="True"
                                 readonly="state != 'draft'"
                             />
-                                <!-- attrs="{'readonly':[('state','!=','draft')]}" -->
                             <field
                                 name="date_end"
                                 placeholder="End Date"
@@ -293,8 +275,6 @@
                                 string='Expiration Date'
                                 readonly="state != 'draft'"
                             />
-                                <!-- readonly="True" -->
-                                <!-- attrs="{'readonly':[('state','!=','draft')]}" -->
                             <field name="rent_type_id" required="True" />
                             <field
                                 name="total_rent"
@@ -342,21 +322,16 @@
                                         type="object"
                                         context="{'asset':1}"
                                     />
-                                        <!-- attrs="{'invisible':['|',
-                                        ('inv','=',True),
-                                        ('state','=','close')]}" -->
                                     <button
                                         name="open_invoice"
                                         icon="fa-arrow-circle-o-right fa-lg"
-                                        invisible="inv == 'False'"
+                                        invisible="not inv"
                                         class="oe_highlight
                                         btn_visible_in_tree"
                                         string="Open Invoice"
                                         type="object"
                                         context="{'openinvoice':1}"
                                     />
-                                        <!-- attrs="{'invisible':[
-                                        ('inv','=',False)]}" -->
                                 </tree>
                             </field>
                         </page>
@@ -423,7 +398,6 @@
                                 nolabel="1"
                                 colspan="4"
                             />
-                                <!-- attrs="{'invisible':[('state','in',['draft','open'])]}" -->
                         </page>
                         <page string="Terms &amp; Conditions" name="contract_page">
                             <separator
@@ -578,7 +552,6 @@
                             invisible="main_cost != 'True'"
                             required="1"
                         />
-                            <!-- attrs="{'invisible': [('main_cost','!=',True)]}" -->
                     </group>
                 </sheet>
             </form>

@@ -12,9 +12,8 @@
                         name="file"
                         filename="name"
                         string="Download"
-                        invisible="file == 'False'"
+                        invisible="not file"
                     />
-                        <!-- attrs="{'invisible':[('file', '=', False)]}" -->
                     <field name="name" invisible="1" />
                 </group>
                 <notebook>

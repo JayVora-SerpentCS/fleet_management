@@ -421,6 +421,10 @@ class FleetRent(models.Model):
             if not rent.name or rent.name == "New":
                 seq = self.env["ir.sequence"].next_by_code("fleet.rent")
                 rent_vals.update({"name": seq})
+            if rent.deposit_amt == 0:
+                raise ValidationError(_("Please add the deposit amount"))
+            if rent.rent_amt == 0:
+                raise ValidationError(_("Please add the Rent amount"))
             rent.write(rent_vals)
 
     def action_rent_close(self):

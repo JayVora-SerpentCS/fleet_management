@@ -12,7 +12,6 @@
                         bg_color="bg-danger"
                         invisible="active"
                     />
-                        <!-- attrs="{'invisible': [('active', '=', True)]}" -->
                     <field name="id" invisible="1" />
                     <div class="oe_button_box" name="button_box">
                     </div>
@@ -44,9 +43,8 @@
                                 readonly="1"
                                 required="0"
                                 groups="base.group_no_one"
-                                invisible="id == 'False'"
+                                invisible="not id"
                             />
-                                <!-- attrs="{'invisible': [('id', '=', False)]}" -->
                             </group>
                     </div>
                     <group>
@@ -105,7 +103,6 @@
                                 context="{'gravatar_image': True}"
                                 required="user_ids != [] "
                             />
-                                <!-- attrs="{'required': [('user_ids','!=', [])]}" -->
                             <field
                                 name="website"
                                 widget="url"

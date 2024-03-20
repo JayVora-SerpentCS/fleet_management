@@ -40,7 +40,6 @@
                         class="oe_highlight"
                         confirm="Are you sure you want to confirm this write off?"
                     />
-                        <!-- states="draft" -->
                     <button
                         name="cancel_writeoff"
                         invisible="state != 'confirm'"
@@ -49,7 +48,6 @@
                         class="oe_highlight"
                         confirm="Are you sure you want to close this write off?"
                     />
-                        <!-- states="confirm" -->
                     <button
                         name="action_set_to_draft"
                         invisible="state != 'cancel'"
@@ -58,7 +56,6 @@
                         class="oe_highlight"
                         confirm="Are you sure you want to set Draft this write off?"
                     />
-                        <!-- states="cancel" -->
                     <field
                         name="state"
                         string="State"
@@ -135,19 +132,16 @@
                                 string="Report Date"
                                 readonly="state in ('confirm','cancel')"
                             />
-                                <!-- attrs="{'readonly': [('state','in',('confirm','cancel'))]}" -->
                         <field
                                 name="write_off_type"
                                 readonly="state in ('confirm','cancel')"
                             />
-                                <!-- attrs="{'readonly': [('state','in',('confirm','cancel'))]}" -->
                        <field
                                 name="cost_esitmation"
                                 widget="monetary"
                                 string="Expense To Repair"
                                 readonly="state in ('confirm','cancel')"
                             />
-                                <!-- attrs="{'readonly': [('state','in',('confirm','cancel'))]}" -->
                     </group>
                 </group>
                 <notebook colspan="4">
@@ -181,7 +175,6 @@
                                 readonly="state in ('confirm','cancel')"
                                 nolabel="1"
                             />
-                                <!-- attrs="{'readonly':[('state','in',['confirm','cancel'])]}" -->
                     </page>
                     <page string="Other Note" colspan="4">
                         <field
@@ -191,7 +184,6 @@
                                 colspan="4"
                                 readonly="state in ('confirm','cancel')"
                             />
-                                <!-- attrs="{'readonly':[('state','in',['confirm','cancel'])]}" -->
                     </page>
                 </notebook>
                 </sheet>
@@ -248,7 +240,6 @@
         <field name="name">fleet.vehicle.model.form.extended</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_form" />
-        <field name="priority">101</field>
         <field name="arch" type="xml">
             <xpath expr="//header/field[@name='state_id']" position="replace">
                 <button
@@ -260,7 +251,6 @@
                     groups="fleet.fleet_group_manager"
                     help="set the vehicle status to released if the status is compelte."
                 >
-                    <!-- states="complete" -->
                 </button>
                 <button
                     name="update_history"
@@ -272,7 +262,6 @@
                     groups="fleet.fleet_group_manager"
                     invisible="state in ('write-off')"
                 />
-                    <!-- attrs="{'invisible':[('state','in',('write-off'))]}" -->
                 <button
                     name="update_history"
                     type="object"
@@ -283,7 +272,6 @@
                     groups="fleet.fleet_group_manager"
                     invisible="state in ('write-off')"
                 />
-                    <!-- attrs="{'invisible':[('state','in',('write-off'))]}" -->
                 <button
                     name="update_history"
                     type="object"
@@ -294,7 +282,6 @@
                     groups="fleet.fleet_group_manager"
                     invisible="state in ('write-off')"
                 />
-                    <!-- attrs="{'invisible':[('state','in',('write-off'))]}" -->
                 <button
                     name="update_history"
                     type="object"
@@ -305,7 +292,6 @@
                     groups="fleet.fleet_group_manager"
                     invisible="state in ('write-off')"
                 />
-                    <!-- attrs="{'invisible':[('state','in',('write-off'))]}" -->
 
                 <button
                     name="%(fleet_operations.fleet_vehicle_log_services_form_action)d"
@@ -416,22 +402,13 @@
                 <field name="updated_by" readonly="1" string="Updated By" />
                 <field name="updated_date" readonly="1" />
                 <field name="warranty_period" readonly="state in ('write-off')" />
-                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                 <field name="increment_odometer" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='odometer']" position="attributes">
                 <attribute name="readonly">state in ('write')</attribute>
-
-               <!--  <attribute
-                    name="attrs"
-                >{'readonly':[('state','in',('write-off'))]}</attribute> -->
             </xpath>
             <xpath expr="//field[@name='odometer_unit']" position="attributes">
                 <attribute name="readonly">state in ('write')</attribute>
-
-                <!-- <attribute
-                    name="attrs"
-                >{'readonly':[('state','in',('write-off'))]}</attribute> -->
             </xpath>
             <xpath expr="//sheet/field[@name='image_128']" position="after">
                 <div class="oe_title">
@@ -444,7 +421,6 @@
                             options="{'no_open': True, 'create': false, 'create_edit': false}"
                             readonly="state in ('write-off')"
                         />
-                            <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                  </h1>
                <group colspan="2" col="2">
                    <field
@@ -455,28 +431,23 @@
                             readonly="state in ('write-off')"
                             context="{'default_brand_id': f_brand_id}"
                         />
-                            <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                    <field
                             name="model_no"
                             string='Model No'
                             class="oe_inline"
                             readonly="state in ('write-off')"
                         />
-                            <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                    <field
                             name="license_plate"
                             string='License Plate'
                             class="oe_inline"
                             readonly="state in ('write-off')"
                         />
-                            <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                    <field
                             name="name"
                             string="Vehicle-ID"
                             readonly="state in ('write-off')"
                         />
-                            <!-- readonly="1" -->
-                            <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                </group>
                </div>
             </xpath>
@@ -484,11 +455,7 @@
                 <field name="odometer_check" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='odometer_unit']" position="attributes">
-                <attribute name="readonly">odometer_check == 'False'</attribute>
-
-<!--                 <attribute
-                    name="attrs"
-                >{'readonly':[('odometer_check','=',False)]}</attribute> -->
+                <attribute name="readonly">not odometer_check</attribute>
             </xpath>
             <xpath expr="//field[@name='location']" position="replace" />
             <xpath expr="//field[@name='driver_id']" position="before">
@@ -497,14 +464,9 @@
                     options="{'no_open': True, 'create': false, 'create_edit': false}"
                     readonly="state in ('write-off')"
                 />
-                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
             </xpath>
             <xpath expr="//field[@name='driver_id']" position="attributes">
                 <attribute name="readonly">state in 'write-off'</attribute>
-
-                 <!-- <attribute
-                    name="attrs"
-                >{'readonly':[('state','in',('write-off'))]}</attribute> -->
                  <attribute name="domain">[('is_driver','=',True)]</attribute>
                  <attribute name="options">{'no_quick_create': True}</attribute>
                  <attribute name="context">{'default_is_driver':True}</attribute>
@@ -514,13 +476,11 @@
                     name="driver_identification_no"
                     readonly="state in ('write-off')"
                 />
-                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                 <field
                     name="driver_contact_no"
                     string="Driver Contact Number"
                     readonly="state in ('write-off')"
                 />
-                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
             </xpath>
             <xpath expr="//field[@name='vechical_type_id']" position="after">
                 <field
@@ -528,21 +488,18 @@
                     readonly="is_color_set"
                     options="{'no_open': True, 'create': false, 'create_edit': false}"
                 />
-                    <!-- attrs="{'readonly':[('is_color_set','=',True)]}" -->
                 <field
                     name="vehicle_location_id"
                     string="Registration State"
                     readonly="state in 'write-off'"
                     options="{'no_open': True, 'create': false, 'create_edit': false}"
                 />
-                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                 <field
                     name="vehical_division_id"
                     invisible="1"
                     readonly="state in 'write-off'"
                     options="{'no_open': True, 'create': false, 'create_edit': false}"
                 />
-                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
             </xpath>
             <xpath expr="//field[@name='car_value']" position="replace">
                 <field name="car_value" invisible="1" />
@@ -563,38 +520,30 @@
                                     string="Engine No"
                                     readonly="is_engine_set"
                                 />
-                                    <!-- attrs="{'readonly': [('is_engine_set','=',True)]}" -->
                                 <field
                                     name="transmission"
                                     readonly="state in 'write-off'"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 <field name="co2" readonly="state in 'write-off'" />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 <field
                                     name="engine_size"
                                     string="Engine Size"
                                     readonly="state in 'write-off'"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 <field
                                     name="horsepower"
                                     readonly="state in 'write-off'"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 <field
                                     name="cylinders"
                                     string='No of Cylinders'
                                     readonly="state in 'write-off'"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 <field
                                     name="horsepower_tax"
                                     readonly="state in 'write-off'"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 <field name="power" readonly="state in 'write-off'" />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                             </group>
                          </group>
                     </page>
@@ -606,18 +555,15 @@
                                     string="Tire Size"
                                     readonly="is_tire_size_set or state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':['|',('is_tire_size_set','=',True),('state','in',('write-off'))]}" -->
                                 <field
                                     name="tire_srno"
                                     readonly="is_tire_srno_set or state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':['|',('is_tire_srno_set','=',True),('state','in',('write-off'))]}" -->
                                 <field
                                     name="tire_issuance_date"
                                     string="Tire Issuance Date"
                                     readonly="is_tire_issue_set or state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':['|',('is_tire_issue_set','=',True),('state','in',('write-off'))]}" -->
                             </group>
                             <group string="Battery Detail">
                                 <field
@@ -625,18 +571,15 @@
                                     string="Battery Size"
                                     readonly="is_battery_size_set or state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':['|',('state','in',('write-off')),('is_battery_size_set','=',True)]}" -->
                                 <field
                                     name="battery_srno"
                                     readonly="is_battery_srno_set or state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':['|',('state','in',('write-off')),('is_battery_srno_set','=',True)]}" -->
                                 <field
                                     name="battery_issuance_date"
                                     readonly="is_battery_issue_set or state in ('write-off')"
                                     string="Battery Issuance Date"
                                 />
-                                    <!-- attrs="{'readonly':['|',('state','in',('write-off')),('is_battery_issue_set','=',True)]}" -->
                             </group>
                         </group>
 
@@ -648,24 +591,20 @@
                                             name="vehicle_length"
                                             readonly="state in ('write-off')"
                                         />
-                                            <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                         <field
                                             name="vehicle_width"
                                             readonly="state in ('write-off')"
                                         />
-                                            <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                         <field
                                             name="vehicle_height"
                                             readonly="state in ('write-off')"
                                         />
-                                            <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                     </group>
                                     <group col="2" string="Capacity">
                                         <field
                                             name="seats"
                                             readonly="state in ('write-off')"
                                         />
-                                            <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                     </group>
                                 </group>
                             </page>
@@ -676,23 +615,19 @@
                                         name="left_wiper_blade"
                                         readonly="state in ('write-off')"
                                     />
-                                        <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                     <field
                                         name="right_wiper_blade"
                                         readonly="state in ('write-off')"
                                     />
-                                        <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                     <field
                                         name="rr_wiper_blade"
                                         readonly="state in ('write-off')"
                                     />
-                                        <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                     <field
                                         name="doors"
                                         string="No of Doors"
                                         readonly="state in ('write-off')"
                                     />
-                                        <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 </group>
                             </page>
 
@@ -706,18 +641,15 @@
                                     required="1"
                                     readonly="state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 <field
                                     name="fuel_qty"
                                     readonly="state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 <field
                                     name="fuel_capacity"
                                     string="Fuel Capacity"
                                     readonly="state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                             </group>
                             <group colspan="2" col="4" string="Oil">
                                 <field
@@ -725,13 +657,11 @@
                                     string='Oil Name'
                                     readonly="state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 <field
                                     name="oil_capacity"
                                     string='Oil Capacity'
                                     readonly="state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                             </group>
                         </group>
                     </page>
@@ -814,11 +744,8 @@
                                 string='Dealer'
                                 readonly="state in ('write-off')"
                             />
-                                <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                             <field name="car_value" readonly="state in ('write-off')" />
-                                <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                             <field name="mileage" readonly="state in ('write-off')" />
-                                <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                         </group>
                         <group string="Equipment Detail">
                             <group col="2">
@@ -826,7 +753,6 @@
                                     name="buyer_id"
                                     readonly="state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                             </group>
                             <group colspan="2" col="4">
                                 <field
@@ -834,13 +760,11 @@
                                     string="Date Sold"
                                     readonly="state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 <field
                                     name="transfer_date"
                                     string="Transfer Date"
                                     readonly="state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                             </group>
                         </group>
                         <separator string="Attachments" colspan="4" />
@@ -849,7 +773,6 @@
                             nolabel="1"
                             readonly="state in ('write-off')"
                         />
-                            <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                     </page>
                     <page string="Insurance Terms">
                         <group>
@@ -861,22 +784,18 @@
                                     readonly="state in ('write-off')"
                                     context="{'default_is_company':True,'default_insurance':True}"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 <field
                                     name="insurance_type_id"
                                     readonly="state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 <field
                                     name="start_date_insurance"
                                     readonly="state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 <field
                                     name="end_date_insurance"
                                     readonly="state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                             </group>
                             <group col="2">
                                 <field
@@ -884,18 +803,15 @@
                                     string="Policy Number"
                                     readonly="state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 <field
                                     name="payment"
                                     string="Payment"
                                     readonly="state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                                 <field
                                     name="payment_deduction"
                                     readonly="state in ('write-off')"
                                 />
-                                    <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                             </group>
                         </group>
                     </page>
@@ -905,7 +821,6 @@
                             nolabel="1"
                             readonly="state in ('write-off')"
                         />
-                            <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                     </page>
                     <page string="Vehicle Images">
                         <field
@@ -1025,7 +940,6 @@
                             placeholder="Put an internal note..."
                             readonly="state in ('write-off')"
                         />
-                            <!-- attrs="{'readonly':[('state','in',('write-off'))]}" -->
                         </page>
                 </notebook>
             </xpath>
