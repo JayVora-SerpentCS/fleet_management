@@ -17,23 +17,25 @@
         <field name="name">Invoices</field>
         <field name="res_model">account.move</field>
         <field name="view_mode">tree,form</field>
+        <!-- <field name="view_id" ref="account.view_move_tree"/> -->
+        <field name="search_view_id" ref="account.view_account_move_filter" />
         <field
             name="domain"
         >[('vehicle_service_id','=',active_id),('move_type','=','out_invoice')]</field>
         <field
             name="context"
         >{'default_vehicle_service_id':active_id,'default_move_type':'out_invoice','move_type':'out_invoice', 'journal_type': 'sale'}</field>
-        <field name="search_view_id" ref="account.view_invoice_tree" />
         <field name="help" type="html">
           <p class="o_view_nocontent_smiling_face">
-            Create a customer invoice
+            Create a journal entry
           </p><p>
-            Create invoices, register payments and keep track of the discussions with your customers.
+            A journal entry consists of several journal items, each of
+            which is either a debit or a credit transaction.
           </p>
         </field>
     </record>
 
-    <record id="action_fleet_out_invoice_tree" model="ir.actions.act_window.view">
+    <!-- <record id="action_fleet_out_invoice_tree" model="ir.actions.act_window.view">
         <field eval="1" name="sequence" />
         <field name="view_mode">tree</field>
         <field name="view_id" ref="account.view_invoice_tree" />
@@ -45,7 +47,7 @@
         <field name="view_mode">form</field>
         <field name="view_id" ref="account.view_move_form" />
         <field name="act_window_id" ref="action_fleet_service_out_invoice_view" />
-    </record>
+    </record> -->
 
     <record
         id="action_fleet_service_out_refund_invoice_view"

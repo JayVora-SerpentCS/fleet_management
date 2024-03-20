@@ -10,22 +10,18 @@
                 <field
                     name="insurance"
                     string="Insurance"
-                    attrs="{'invisible':['|',('is_company','=',False),('is_driver','=',True)]}"
+                    invisible="not is_company or is_driver"
                 />
             </xpath>
             <xpath expr="//field[@name='vat']" position="after">
                 <field
                     name="is_driver"
                     string="Is Driver"
-                    attrs="{'invisible':['|',('is_company','=',True),('insurance','=',True)]}"
+                    invisible="is_company or is_driver"
                 />
             </xpath>
             <xpath expr="//field[@name='website']" position="after">
-                <field
-                    name="d_id"
-                    string="ID-Card"
-                    attrs="{'invisible':[('is_driver','=',False)]}"
-                />
+                <field name="d_id" string="ID-Card" invisible="not is_driver" />
             </xpath>
             <xpath expr="//field[@name='category_id']" position="attributes">
                 <attribute name="invisible">1</attribute>

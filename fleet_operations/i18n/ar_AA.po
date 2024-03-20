@@ -1472,11 +1472,6 @@ msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/report/repair_line_summary.py:61
-#, python-format
-msgid "Form content is missing,this report cannot be printed."
-msgstr ""
-
-#. module: fleet_operations
 #: code:addons/fleet_operations/report/vehicle_change_history.py:187
 #, python-format
 msgid "Form content is missing,this report cannot be printed."
@@ -2613,10 +2608,6 @@ msgstr "سجل عداد المسافات لمركبة"
 #. module: fleet_operations
 #: model:ir.model.fields,help:fleet_operations.field_fleet_vehicle__odometer
 #: model:ir.model.fields,help:fleet_operations.field_fleet_vehicle_log_services__odometer
-msgid "Odometer measure of the vehicle at the moment of this log"
-msgstr ""
-
-#. module: fleet_operations
 #: model:ir.model.fields,help:fleet_operations.field_fleet_vehicle_log_fuel__odometer
 msgid "Odometer measure of the vehicle at the moment of this log"
 msgstr "قيمة عداد مسافات المركبة عند إنشاء هذا السجل"
@@ -2809,11 +2800,6 @@ msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/wizard/pending_repair_confirm.py:44
-#, python-format
-msgid "Please set the current Odometer of vehilce in work order!"
-msgstr ""
-
-#. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:261
 #, python-format
 msgid "Please set the current Odometer of vehilce in work order!"
@@ -3470,21 +3456,9 @@ msgstr ""
 
 #. module: fleet_operations
 #: model:ir.model.fields,field_description:fleet_operations.field_update_engine_info__temp_bool
-msgid "Temp Bool for making previous color readonly"
-msgstr ""
-
-#. module: fleet_operations
 #: model:ir.model.fields,field_description:fleet_operations.field_update_battery_info__temp_bool
-msgid "Temp Bool for making previous Battery info readonly"
-msgstr ""
-
-#. module: fleet_operations
-#: model:ir.model.fields,field_description:fleet_operations.field_update_vin_info__temp_bool
-msgid "Temp Bool for making previous color readonly"
-msgstr ""
-
-#. module: fleet_operations
 #: model:ir.model.fields,field_description:fleet_operations.field_update_color_info__temp_bool
+#: model:ir.model.fields,field_description:fleet_operations.field_update_vin_info__temp_bool
 msgid "Temp Bool for making previous color readonly"
 msgstr ""
 

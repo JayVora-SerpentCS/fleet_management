@@ -36,8 +36,7 @@ class PendingRepairConfirm(models.TransientModel):
                     )
                     % work_order.vehicle_id.name
                 )
-            if increment_ids:
-                odometer_increment = increment_ids.number
+            odometer_increment = increment_ids.number
             next_service_day_ids = next_service_day_obj.search(
                 [("vehicle_id", "=", work_order.vehicle_id.id)], limit=1
             )
@@ -93,7 +92,7 @@ class PendingRepairConfirm(models.TransientModel):
                                         "state": "complete",
                                     }
                                 )
-                for repair_line in work_order.repair_line_ids:
+                    # for repair_line in work_order.repair_line_ids:
                     for (
                         pending_repair_line
                     ) in work_order.vehicle_id.pending_repair_type_ids:
@@ -153,6 +152,5 @@ class PendingRepairConfirm(models.TransientModel):
                         "last_change_status_date": date.today(),
                     }
                 )
-            if self._context.get("team_trip", False):
-                self.encode_history()
+
         return True

@@ -38,7 +38,7 @@
                         string="Create Invoice"
                         class="oe_highlight"
                         type="object"
-                        attrs="{'invisible': [('state', '=', 'draft')]}"
+                        invisible="state == 'draft' or invoice_count &gt;= 1"
                         groups="fleet.fleet_group_manager"
                     />
                     <button
@@ -46,7 +46,7 @@
                         string="Return Invoice"
                         class="oe_highlight"
                         type="object"
-                        attrs="{'invisible':[('state','=', 'draft')]}"
+                        invisible="state == 'draft' or return_inv_count &gt;= 1"
                         groups="fleet.fleet_group_manager"
                     />
                     <button
@@ -54,7 +54,7 @@
                         string="Confirm"
                         class="oe_highlight"
                         type="object"
-                        states="draft"
+                        invisible="state != 'draft'"
                         confirm="Are you sure you want to open this work order?"
                         groups="base.group_system,base.group_erp_manager,fleet.fleet_group_manager"
                     />
@@ -62,14 +62,14 @@
                         name="action_done"
                         string="Done"
                         type="object"
-                        states="confirm"
+                        invisible="state != 'confirm'"
                         class="oe_highlight"
                         groups="base.group_system,base.group_erp_manager,fleet.fleet_group_manager"
                     />
 
                     <button
                         name="action_reopen"
-                        attrs="{'invisible':['|',('from_migration','=',True),('state','!=','done')]}"
+                        invisible="from_migration or state != 'done'"
                         groups="fleet.fleet_group_manager"
                         type="object"
                         string="Re-Open"
@@ -124,9 +124,7 @@
             <xpath expr="//field[@name='vehicle_id']" position="replace" />
 
             <xpath expr="//field[@name='odometer']" position="attributes">
-                <attribute
-                    name="attrs"
-                >{'readonly':[('state','in',('draft','done'))]}</attribute>
+                <attribute name="readonly">state in ('draft', 'done')</attribute>
             </xpath>
 
             <xpath expr="//field[@name='odometer_unit']" position="attributes">
@@ -158,17 +156,13 @@
                     readonly="True"
                     options="{'no_open': True, 'create': false, 'create_edit': false}"
                 />
-                <field
-                    name="purchaser_id"
-                    string="Driver"
-                    readonly="1"
-                    attrs="{'readonly':[('state','=','done')]}"
-                />
+                <field name="purchaser_id" string="Driver" readonly="state == 'done'" />
                 <field
                     name="service_type_id"
                     string="Service Type"
                     options="{'no_open': True, 'create': false, 'create_edit': false}"
-                    attrs="{'readonly':[('state','=','done')],'required':[('state','in',('confirm'))]}"
+                    readonly="state == 'done'"
+                    required="state in ('confirm')"
                 />
             </xpath>
             <xpath expr="//sheet/group/group[2]" position="replace">
@@ -186,8 +180,7 @@
                 <field
                         name="next_service_date"
                         string="Next Service Date"
-                        readonly="True"
-                        attrs="{'readonly':[('state','=','done')]}"
+                        readonly="state == 'done'"
                     />
                 <field name="deposit_receive" />
                 <field name="amount_receive" invisible="1" />
@@ -195,7 +188,7 @@
                 <field
                         name="source_service_id"
                         string="Re-Opened From"
-                        attrs="{'invisible':[('source_service_id','=',False)]}"
+                        invisible="not source_service_id"
                         readonly="1"
                     />
                 <field
@@ -211,9 +204,7 @@
             <xpath expr="//field[@name='amount']" position="attributes">
                 <attribute name="string">Service Amount</attribute>
                 <attribute name="required">1</attribute>
-                <attribute
-                    name="attrs"
-                >{'readonly':[('state','in',('done'))]}</attribute>
+                <attribute name="readonly">state in ('done')</attribute>
             </xpath>
             <xpath expr="//field[@name='amount']" position="after">
                 <field name="service_amount" widget="monetary" />
@@ -252,23 +243,24 @@
                             name="priority"
                             required="1"
                             string="Service Priority"
-                            attrs="{'readonly':[('state','in',('draft','done'))]}"
+                            readonly="state in ('draft','done')"
                         />
                             <field
                             name="etic"
                             invisible="1"
-                            attrs="{'readonly':[('state','in',('draft','done'))]}"
+                            readonly="state in ('draft','done')"
                         />
                             <field
                             name="date_complete"
                             required="1"
-                            attrs="{'invisible':[('etic','=',False)], 'readonly': [('state','=','done')]}"
+                            readonly="state == 'done'"
+                            invisible="not etic"
                             string="Estimated Date"
                             on_change="1"
                         />
                             <field
                             name="warehouse_id"
-                            attrs="{'readonly':[('state','in',('draft','done'))]}"
+                            readonly="state in ('draft','done')"
                             invisible="1"
                             can_create="true"
                             can_write="true"
@@ -283,7 +275,8 @@
                             <field
                             name="team_id"
                             string="Work Shop"
-                            attrs="{'readonly':['|',('state','in',('draft','done')),('is_parts','=',True)],'required':[('state','in',('confirm'))]}"
+                            readonly="state in ('draft','done') or is_parts"
+                            required="state in ('confirm')"
                             context="{'wo':True,'default_is_company':True}"
                             domain="[('is_company','=',True)]"
                             can_create="true"
@@ -299,12 +292,11 @@
                      <field
                             name="repair_line_ids"
                             nolabel="1"
-                            attrs="{'readonly':[('state','in',('draft','done'))]}"
+                            readonly="state in ('draft','done')"
                             context="{'default_issue_date':date}"
-
                         >
                          <tree>
-                             <field name="repair_type_id"/>
+                             <field name="repair_type_id" />
                              <field
                                     name="categ_id"
                                     invisible="1"
@@ -343,31 +335,24 @@
                                 context="{'date_open':date_open}"
                                 create='false'
                                 delete='false'
-                                attrs="{'readonly':[('state','in',('draft','done'))]}"
+                                readonly="state in ('draft','done')"
                             >
                              <tree>
                                  <field
                                         name='product_id'
                                         string="Part No"
                                         required="1"
-                                        attrs="{'readonly':[('is_deliver','=',True)]}"
+                                        readonly="is_deliver"
                                         options="{'no_open': True, 'create': false, 'create_edit': false}"
                                     />
                                  <field name="qty_hand" readonly="1" force_save="1" />
-                                 <field
-                                        name='qty'
-                                        required="1"
-                                        attrs="{'readonly':[('is_deliver','=',True)]}"
-                                    />
+                                 <field name='qty' required="1" readonly="is_deliver" />
                                  <field
                                         name='product_uom'
-                                        attrs="{'readonly':[('is_deliver','=',True)]}"
+                                        readonly="is_deliver"
                                         required="1"
                                     />
-                                 <field
-                                        name='price_unit'
-                                        attrs="{'readonly':[('is_deliver','=',True)]}"
-                                    />
+                                 <field name='price_unit' readonly="is_deliver" />
                                  <field name='total' readonly="1" force_save="1" />
                                  <field name="date_issued" />
                                  <field
@@ -384,7 +369,7 @@
                                             name='product_id'
                                             string="Part No"
                                             required="1"
-                                            attrs="{'readonly':[('is_deliver','=',True)]}"
+                                            readonly="is_deliver"
                                             options="{'no_open': True, 'create': false, 'create_edit': false}"
                                         />
                                     <field
@@ -395,17 +380,14 @@
                                     <field
                                             name='qty'
                                             required="1"
-                                            attrs="{'readonly':[('is_deliver','=',True)]}"
+                                            readonly="is_deliver"
                                         />
                                     <field
                                             name='product_uom'
-                                            attrs="{'readonly':[('is_deliver','=',True)]}"
+                                            readonly="is_deliver"
                                             required="1"
                                         />
-                                    <field
-                                            name='price_unit'
-                                            attrs="{'readonly':[('is_deliver','=',True)]}"
-                                        />
+                                    <field name='price_unit' readonly="is_deliver" />
                                     <field name='total' readonly="1" force_save="1" />
                                     <field name="date_issued" />
                                     <field
@@ -432,10 +414,7 @@
                      </group>
                  </page>
                  <page string="Attachments">
-                     <field
-                            name="wrk_attach_ids"
-                            attrs="{'readonly':[('state','in',('draft','done'))]}"
-                        >
+                     <field name="wrk_attach_ids" readonly="state in ('draft','done')">
                          <tree>
                              <field name='name' />
                              <field name='datas' />
@@ -451,7 +430,7 @@
                  <page string="Notes">
                      <field
                             name="note"
-                            attrs="{'readonly':[('state','in',('draft','done'))]}"
+                            readonly="state in ('draft','done')"
                             nolabel="1"
                             placeholder="Put an internal note..."
                         />

@@ -4,7 +4,7 @@
     # Module Information
     "name": "Vehicles Dealership",
     "category": "vehicles",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "license": "LGPL-3",
     "summary": """Vehicles Dealership Management System""",
     # Website
@@ -17,6 +17,7 @@
         "views/product_views.xml",
         "views/res_company_views.xml",
     ],
+    "demo": ["data/fleet_vehicle_demo.xml"],
     "images": ["static/description/vehicles_dealership_banner.png"],
     # Technical
     "auto_install": False,

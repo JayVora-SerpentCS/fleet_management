@@ -4,7 +4,7 @@
     # Module Information
     "name": "Fleet Operations",
     "category": "Managing vehicles and contracts",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "license": "LGPL-3",
     "summary": """This module extends the fleet functionality and
      provides extra features and manage fleet operations.
@@ -43,7 +43,7 @@
     "images": ["static/description/fleet_operations_banner.png"],
     "assets": {
         "web.assets_backend": [
-            "fleet_operations/static/src/js/web_disable_drag_drop_kanban.js",
+            "fleet_operations/static/src/views/kanban/WebDisableDragDropKanban.esm.js",
         ],
     },
     # Technical

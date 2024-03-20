@@ -151,16 +151,13 @@ class FleetVehicleLogServices(models.Model):
                 limit=1,
                 order="id desc",
             )
-            move_reversal = (
-                self.env["account.move.reversal"]
-                .with_context(active_model="account.move", active_ids=invoice.ids)
-                .create(
-                    {
-                        "refund_method": "refund",
-                    }
-                )
-            )
-            move_reversal.reverse_moves()
+            if not invoice:
+                return
+
+            move_reversal = self.env['account.move.reversal'].with_context(active_model="account.move", active_ids=invoice.ids).create({
+                'journal_id': invoice[0].journal_id.id,
+            })
+            return move_reversal.refund_moves()
 
     def action_confirm(self):
         """Action Confirm Of Button."""
@@ -244,82 +241,60 @@ class FleetVehicleLogServices(models.Model):
                 ]
             )
             if work_order.amount > 0 and not service_inv:
-                msg = _(
-                    "Vehicle Service amount is greater"
-                    " than Zero So, "
-                    "Without Service Invoice you can not done the Service !!"
-                    "Please Generate Service Invoice first !!"
-                )
-                raise ValidationError(msg)
-            for repair_line in work_order.repair_line_ids:
-                if repair_line.complete is True:
-                    continue
-                elif repair_line.complete is False:
-                    pending_repair_resource_id = self.env.ref(
-                        "fleet_operations.pending_repair_confirm_form_view"
+                raise ValidationError(
+                    _(
+                        "Vehicle Service amount is greater than Zero."
+                        " Please Generate Service Invoice first!"
                     )
-                    context.update({"work_order_id": work_order.id})
-                    return {
-                        "name": _("WO Close Forcefully"),
-                        "context": context,
-                        "view_type": "form",
-                        "view_mode": "form",
-                        "res_model": "pending.repair.confirm",
-                        "views": [(pending_repair_resource_id.id, "form")],
-                        "type": "ir.actions.act_window",
-                        "target": "new",
-                    }
+                )
 
-        increment_ids = increment_obj.search(
-            [("vehicle_id", "=", work_order.vehicle_id.id)]
-        )
-        if not increment_ids:
-            return {
-                "name": _("Next Service Day"),
-                "res_model": "update.next.service.config",
-                "type": "ir.actions.act_window",
-                "view_id": False,
-                "view_mode": "form",
-                "view_type": "form",
-                "target": "new",
-            }
-        if increment_ids:
-            odometer_increment = increment_ids[0].number
-
-        next_service_day_ids = next_service_day_obj.search(
-            [("vehicle_id", "=", work_order.vehicle_id.id)]
-        )
-        if not next_service_day_ids:
-            return {
-                "name": _("Next Service Day"),
-                "res_model": "update.next.service.config",
-                "type": "ir.actions.act_window",
-                "view_id": False,
-                "view_mode": "form",
-                "view_type": "form",
-                "target": "new",
-            }
-        work_order_vals = {}
-        for work_order in self:
-            # self.env.args = cr, uid, misc.frozendict(context)
-            user = self.env.user
-            if work_order.odometer == 0:
-                msg = _("Please set the current " "Odometer of vehicle in work order!")
-                raise UserError(msg)
-            odometer_increment += work_order.odometer
-            next_service_date = datetime.strptime(
-                str(fields.Date.today()), DEFAULT_SERVER_DATE_FORMAT
-            ) + timedelta(days=next_service_day_ids[0].days)
-            work_order_vals.update(
-                {
-                    "state": "done",
-                    "next_service_odometer": odometer_increment,
-                    "already_closed": True,
-                    "closed_by": user,
-                    "date_close": fields.Date.today(),
-                    "next_service_date": next_service_date,
-                }
+            increment_ids = increment_obj.search(
+                [("vehicle_id", "=", work_order.vehicle_id.id)]
             )
+            next_service_day_ids = next_service_day_obj.search(
+                [("vehicle_id", "=", work_order.vehicle_id.id)]
+            )
+            if not increment_ids or not next_service_day_ids:
+                return {
+                    "name": _("Next Service Day"),
+                    "res_model": "update.next.service.config",
+                    "type": "ir.actions.act_window",
+                    "view_id": False,
+                    "view_mode": "form",
+                    "view_type": "form",
+                    "target": "new",
+                }
+
+            odometer_increment += increment_ids[0].number
+
+            for _repair_line in work_order.repair_line_ids.filtered(
+                lambda line: not line.complete
+            ):
+                pending_repair_resource_id = self.env.ref(
+                    "fleet_operations.pending_repair_confirm_form_view"
+                )
+                context.update({"work_order_id": work_order.id})
+                return {
+                    "name": _("WO Close Forcefully"),
+                    "context": context,
+                    "view_type": "form",
+                    "view_mode": "form",
+                    "res_model": "pending.repair.confirm",
+                    "views": [(pending_repair_resource_id.id, "form")],
+                    "type": "ir.actions.act_window",
+                    "target": "new",
+                }
+
+            work_order_vals = {
+                "state": "done",
+                "next_service_odometer": odometer_increment + work_order.odometer,
+                "already_closed": True,
+                "closed_by": self.env.user,
+                "date_close": fields.Date.today(),
+                "next_service_date": (
+                    fields.Date.today() + timedelta(days=next_service_day_ids[0].days)
+                ),
+            }
             work_order.write(work_order_vals)
             if work_order.vehicle_id:
                 work_order.vehicle_id.write(
@@ -329,7 +304,10 @@ class FleetVehicleLogServices(models.Model):
                         and work_order.team_id.id
                         or False,
                         "last_service_date": fields.Date.today(),
-                        "next_service_date": next_service_date,
+                        "next_service_date": (
+                            fields.Date.today()
+                            + timedelta(days=next_service_day_ids[0].days)
+                        ),
                         "due_odometer": odometer_increment,
                         "due_odometer_unit": work_order.odometer_unit,
                         "last_change_status_date": fields.Date.today(),

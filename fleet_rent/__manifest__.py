@@ -4,7 +4,7 @@
     # Module Information
     "name": "Fleet Rental Vehicle",
     "category": "Fleet Rent",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "license": "LGPL-3",
     "summary": """Rental Vehicle Management System
         This module provides fleet rent features.""",

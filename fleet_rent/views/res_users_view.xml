@@ -10,7 +10,7 @@
                         name="web_ribbon"
                         text="ARCHIVED"
                         bg_color="bg-danger"
-                        attrs="{'invisible': [('active', '=', True)]}"
+                        invisible="active"
                     />
                     <field name="id" invisible="1" />
                     <div class="oe_button_box" name="button_box">
@@ -43,7 +43,7 @@
                                 readonly="1"
                                 required="0"
                                 groups="base.group_no_one"
-                                attrs="{'invisible': [('id', '=', False)]}"
+                                invisible="not id"
                             />
                             </group>
                     </div>
@@ -101,7 +101,7 @@
                                 name="email"
                                 widget="email"
                                 context="{'gravatar_image': True}"
-                                attrs="{'required': [('user_ids','!=', [])]}"
+                                required="user_ids != [] "
                             />
                             <field
                                 name="website"

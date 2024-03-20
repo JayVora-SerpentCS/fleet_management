@@ -17,7 +17,7 @@
                     <field
                         name="previous_color_id"
                         string="Previous Engine No"
-                        attrs="{'readonly':[('temp_bool','=',True)]}"
+                        readonly="temp_bool "
                     />
                     <field
                         name="current_color_id"
@@ -60,10 +60,7 @@
                         domain="[('vehicle_id','=',vehicle_id)]"
                         options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"
                     />
-                    <field
-                        name="previous_engine_no"
-                        attrs="{'readonly':[('temp_bool','=',True)]}"
-                    />
+                    <field name="previous_engine_no" readonly="temp_bool " />
                     <field name="new_engine_no" required="1" string="New Engine No" />
                     <field name="changed_date" />
                     <field name="vehicle_id" invisible="1" />
@@ -104,7 +101,7 @@
                     <field
                         name="previous_vin_no"
                         string="Previous Vin No"
-                        attrs="{'readonly':[('temp_bool','=',True)]}"
+                        readonly="temp_bool "
                     />
                     <field name="new_vin_no" required="1" string="New Vin No" />
                     <field name="changed_date" />
@@ -146,16 +143,10 @@
                         <field
                             name="previous_tire_size"
                             string="Previous Tire Size"
-                            attrs="{'readonly':[('temp_bool','=',True)]}"
+                            readonly="temp_bool "
                         />
-                        <field
-                            name="previous_tire_sn"
-                            attrs="{'readonly':[('temp_bool','=',True)]}"
-                        />
-                        <field
-                            name="previous_tire_issue_date"
-                            attrs="{'readonly':[('temp_bool','=',True)]}"
-                        />
+                        <field name="previous_tire_sn" readonly="temp_bool " />
+                        <field name="previous_tire_issue_date" readonly="temp_bool " />
                     </group>
                     <group>
                         <field
@@ -205,15 +196,12 @@
                         <field
                             name="previous_battery_size"
                             string="Previous Battery Size"
-                            attrs="{'readonly':[('temp_bool','=',True)]}"
+                            readonly="temp_bool "
                         />
-                        <field
-                            name="previous_battery_sn"
-                            attrs="{'readonly':[('temp_bool','=',True)]}"
-                        />
+                        <field name="previous_battery_sn" readonly="temp_bool " />
                         <field
                             name="previous_battery_issue_date"
-                            attrs="{'readonly':[('temp_bool','=',True)]}"
+                            readonly="temp_bool "
                         />
                     </group>
                     <group>

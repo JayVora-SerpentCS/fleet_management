@@ -12,7 +12,7 @@
                         name="file"
                         filename="name"
                         string="Download"
-                        attrs="{'invisible':[('file', '=', False)]}"
+                        invisible="not file"
                     />
                     <field name="name" invisible="1" />
                 </group>
