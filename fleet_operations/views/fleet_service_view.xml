@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
 
-    <!-- Service category editable tree view. -->
+    <!-- Service category editable list view. -->
     <record model='ir.ui.view' id='service_category_tree_view'>
-        <field name="name">service.category.tree</field>
+        <field name="name">service.category.list</field>
         <field name="model">service.category</field>
         <field name="arch" type="xml">
-            <tree editable="top">
+            <list editable="top">
                 <field name="name" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -16,7 +16,7 @@
     <record model='ir.actions.act_window' id='service_category_tree_act'>
         <field name="name">Service Category</field>
         <field name="res_model">service.category</field>
-        <field name="view_mode">form,tree</field>
+        <field name="view_mode">form,list</field>
     </record>
 
     <!-- Inherited Fleet Service Form View. -->
@@ -295,7 +295,7 @@
                             readonly="state in ('draft','done')"
                             context="{'default_issue_date':date}"
                         >
-                         <tree>
+                         <list>
                              <field name="repair_type_id" />
                              <field
                                     name="categ_id"
@@ -306,7 +306,7 @@
                              <field name="date_complete" invisible="1" />
                              <field name="target_date" />
                              <field name="complete" />
-                         </tree>
+                         </list>
                          <form>
                              <group>
                                  <field name="repair_type_id" required="1" />
@@ -327,72 +327,87 @@
                  <page string="Parts Used">
                         <div>
                             <field
-                                    name="parts_ids"
-                                    nolable = "1"
-                                    context="{'date_open':date_open}"
-                                    create='false'
-                                    delete='false'
-                                    readonly="state in ('draft','done')"
-                                >
-                                <tree>
+                                name="parts_ids"
+                                nolable="1"
+                                context="{'date_open':date_open}"
+                                create='false'
+                                delete='false'
+                                readonly="state in ('draft','done')"
+                            >
+                                <list>
                                     <field
+                                        name='product_id'
+                                        string="Part No"
+                                        required="1"
+                                        readonly="is_deliver"
+                                        options="{'no_open': True, 'create': false, 'create_edit': false}"
+                                    />
+                                    <field
+                                        name="qty_hand"
+                                        readonly="1"
+                                        force_save="1"
+                                    />
+                                    <field
+                                        name='qty'
+                                        required="1"
+                                        readonly="is_deliver"
+                                    />
+                                    <field
+                                        name='product_uom'
+                                        readonly="is_deliver"
+                                        required="1"
+                                    />
+                                    <field name='price_unit' readonly="is_deliver" />
+                                    <field name='total' readonly="1" force_save="1" />
+                                    <field name="date_issued" />
+                                    <field
+                                        name="issued_by"
+                                        string="Issued By"
+                                        readonly="1"
+                                        options="{'no_open': True, 'create': false, 'create_edit': false}"
+                                    />
+                                    <field name="is_deliver" invisible="1" />
+                                </list>
+                                <form string="Maintenance">
+                                    <group>
+                                        <field
                                             name='product_id'
                                             string="Part No"
                                             required="1"
                                             readonly="is_deliver"
                                             options="{'no_open': True, 'create': false, 'create_edit': false}"
                                         />
-                                    <field name="qty_hand" readonly="1" force_save="1" />
-                                    <field name='qty' required="1" readonly="is_deliver" />
-                                    <field
+                                        <field
+                                            name="qty_hand"
+                                            readonly="1"
+                                            force_save="1"
+                                        />
+                                        <field
+                                            name='qty'
+                                            required="1"
+                                            readonly="is_deliver"
+                                        />
+                                        <field
                                             name='product_uom'
                                             readonly="is_deliver"
                                             required="1"
                                         />
-                                    <field name='price_unit' readonly="is_deliver" />
-                                    <field name='total' readonly="1" force_save="1" />
-                                    <field name="date_issued" />
-                                    <field
+                                        <field
+                                            name='price_unit'
+                                            readonly="is_deliver"
+                                        />
+                                        <field
+                                            name='total'
+                                            readonly="1"
+                                            force_save="1"
+                                        />
+                                        <field name="date_issued" />
+                                        <field
                                             name="issued_by"
                                             string="Issued By"
                                             readonly="1"
                                             options="{'no_open': True, 'create': false, 'create_edit': false}"
                                         />
-                                    <field name="is_deliver" invisible="1" />
-                                </tree>
-                                <form string="Maintenance">
-                                    <group>
-                                        <field
-                                                name='product_id'
-                                                string="Part No"
-                                                required="1"
-                                                readonly="is_deliver"
-                                                options="{'no_open': True, 'create': false, 'create_edit': false}"
-                                            />
-                                        <field
-                                                name="qty_hand"
-                                                readonly="1"
-                                                force_save="1"
-                                            />
-                                        <field
-                                                name='qty'
-                                                required="1"
-                                                readonly="is_deliver"
-                                            />
-                                        <field
-                                                name='product_uom'
-                                                readonly="is_deliver"
-                                                required="1"
-                                            />
-                                        <field name='price_unit' readonly="is_deliver" />
-                                        <field name='total' readonly="1" force_save="1" />
-                                        <field name="date_issued" />
-                                        <field
-                                                name="issued_by"
-                                                string="Issued By"
-                                                readonly="1"
-                                                options="{'no_open': True, 'create': false, 'create_edit': false}"
-                                            />
                                         <field name="is_deliver" invisible="1" />
                                     </group>
                                 </form>
@@ -400,24 +415,28 @@
                         </div>
                      <group name="note_group" col="6" class="mt-2 mt-md-0">
                         <group class="oe_subtotal_footer oe_right">
-                            <field name="total_parts_line" style="font-weight: bold; font-size: 20px;"/>
+                            <field
+                                    name="total_parts_line"
+                                    style="font-weight: bold; font-size: 20px;"
+                                />
                         </group>
                         <newline />
                         <group class="oe_subtotal_footer oe_right">
-                            <field 
-                                name="sub_total" 
-                                nolabel="0"
-                                widget="monetary"
-                                style="font-weight: bold; font-size: 24px;"/>
+                            <field
+                                    name="sub_total"
+                                    nolabel="0"
+                                    widget="monetary"
+                                    style="font-weight: bold; font-size: 24px;"
+                                />
                         </group>
                      </group>
                  </page>
                  <page string="Attachments">
                      <field name="wrk_attach_ids" readonly="state in ('draft','done')">
-                         <tree>
+                         <list>
                              <field name='name' />
                              <field name='datas' />
-                         </tree>
+                         </list>
                          <form>
                              <field name='name' />
                              <group>
@@ -439,7 +458,7 @@
                      <field
                             name="service_invoice_id"
                             domain="[('move_type', '=', 'out_invoice')]"
-                            context="{'form_view_ref': 'account.view_move_form', 'tree_view_ref':
+                            context="{'form_view_ref': 'account.view_move_form', 'list_view_ref':
                         'account.view_invoice_tree'}"
                         />
                      <field
@@ -456,12 +475,12 @@
     </record>
 <!--
     <record model='ir.ui.view' id='fleet_vehicle_log_services_view_tree_inherit'>
-        <field name="name">fleet.vehicle.log.services.tree</field>
+        <field name="name">fleet.vehicle.log.services.list</field>
         <field name="model">fleet.vehicle.log.services</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_tree" />
         <field name="arch" type="xml">
-            <xpath expr="//tree" position="replace">
-                <tree string="Services Logs" create="false"
+            <xpath expr="//list" position="move">
+                <list string="Services Logs" create="false"
                     colors="blue:state=='confirm';black:state=='done';">
                      <field name="name" string="Service Order#"/>
                     <field name="vehicle_id" string="Vehicle-Identification"/>
@@ -479,7 +498,7 @@
                     <field name="amount" sum="Total price"/>
                     <field name="state" string="Status"/>
                     <field name="closed_by" invisible="1"/>
-                </tree>
+                </list>
             </xpath>
         </field>
     </record> -->
@@ -563,15 +582,15 @@
            </field>
     </record>
 
-     <!--Task Tree View. -->
+     <!--Task List View. -->
      <record model='ir.ui.view' id='fleet_vehicle_maintain_task_tree'>
-        <field name="name">fleet.vehicle.maintain.task.tree</field>
+        <field name="name">fleet.vehicle.maintain.task.list</field>
         <field name="model">service.task</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
             <field name='type' string="Type" />
             <field name="total_type" />
-        </tree>
+        </list>
         </field>
     </record>
 
@@ -580,7 +599,7 @@
     <record model='ir.actions.act_window' id='fleet.fleet_vehicle_log_services_action'>
         <field name="name">Services</field>
         <field name="res_model">fleet.vehicle.log.services</field>
-        <field name="view_mode">tree,kanban,form,graph,pivot,activity</field>
+        <field name="view_mode">list,kanban,form,graph,pivot,activity</field>
         <field name="context">{"search_default_groupby_vehicle" : True}</field>
         <field name="help" type="html">
           <p class="oe_view_nocontent_create">
@@ -681,12 +700,12 @@
     </record>
     <!-- View and action for repiar type -->
     <record model='ir.ui.view' id='fleet_repair_type_tree_view'>
-        <field name="name">fleet.repair.type.tree</field>
+        <field name="name">fleet.repair.type.list</field>
         <field name="model">repair.type</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" required="1" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -694,7 +713,7 @@
     <record model='ir.actions.act_window' id='fleet_repair_type_tree_act'>
         <field name="name">Repair Type</field>
         <field name="res_model">repair.type</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <!-- Repair Type Menu. -->
@@ -724,14 +743,14 @@
         </field>
     </record>
 
-    <!-- Fleet Service Type Tree View -->
+    <!-- Fleet Service Type List View -->
     <record model='ir.ui.view' id='fleet.fleet_vehicle_service_types_view_tree'>
-        <field name="name">fleet.service.type.tree</field>
+        <field name="name">fleet.service.type.list</field>
         <field name="model">fleet.service.type</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
-            </tree>
+            </list>
         </field>
     </record>
 

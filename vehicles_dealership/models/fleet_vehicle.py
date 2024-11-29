@@ -28,7 +28,7 @@ class ProductProduct(models.Model):
                 vals.update(
                     {
                         "name": "NEW VEHICLE",
-                        "detailed_type": "product",
+                        "type": "consu",
                         "is_vehicle": True,
                     }
                 )

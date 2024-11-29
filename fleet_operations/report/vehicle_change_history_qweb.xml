@@ -128,7 +128,7 @@
                                                 /></td>
                                     <td style="text-align:center;"><span
                                                     t-esc="line.get('old_engine', '')"
-                                                /></td>    
+                                                /></td>
                                     <td style="text-align:center;"><span
                                                     t-esc="line.get('new_engine', '')"
                                                 /></td>

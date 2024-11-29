@@ -191,12 +191,12 @@
         </field>
     </record>
 
-    <!--  Tree view of fleet write-off -->
+    <!--  List view of fleet write-off -->
     <record model='ir.ui.view' id='fleet_vehicle_wittenoff_tree_view'>
         <field name="name">fleet.vehicle.wittenoff.off</field>
         <field name="model">fleet.wittenoff</field>
         <field name="arch" type="xml">
-            <tree create='false'>
+            <list create='false'>
                 <field name="vehicle_id" string="Vehicle Id" />
                 <field name="vehicle_plate" />
                 <field name="report_date" />
@@ -205,7 +205,7 @@
                 <field name="date_cancel" />
                 <field name="cancel_by_id" />
                 <field name="state" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -213,7 +213,7 @@
     <record id='fleet_vehicle_witten_off_act' model='ir.actions.act_window'>
         <field name="name">Vehicles Write-off</field>
         <field name="res_model">fleet.wittenoff</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="help" type="html">
         <p class="oe_view_nocontent_create">
             Click to create a new write off entry.
@@ -235,7 +235,7 @@
         />
     </record>
 
-      <!-- Inherited vehicle registration form view added extra fields on fleet vehicle -->
+    <!-- Inherited vehicle registration form view added extra fields on fleet vehicle -->
     <record id='fleet_vehicle_model_form_extended' model='ir.ui.view'>
         <field name="name">fleet.vehicle.model.form.extended</field>
         <field name="model">fleet.vehicle</field>
@@ -300,8 +300,9 @@
                     icon="fa-gears"
                     class="oe_stat_button oe_highlight"
                     domain="[('state','in',('inspection','released'))]"
-                    context="{'default_vehicle_id': active_id}"
+                    context="{'default_vehicle_id': id}"
                 />
+                    <!-- context="{'default_vehicle_id': active_id}" -->
                 <button
                     name="%(fleet_operations.fleet_vehicle_write_off_form_action)d"
                     type="action"
@@ -309,8 +310,9 @@
                     icon="fa-gears"
                     class="oe_stat_button oe_highlight"
                     domain="[('state','in',('inspection','released'))]"
-                    context="{'default_vehicle_id': active_id}"
+                    context="{'default_vehicle_id': id}"
                 />
+                    <!-- context="{'default_vehicle_id': active_id}" -->
                 <field
                     name="state"
                     widget="statusbar"
@@ -364,8 +366,9 @@
                             string="Odometer"
                         />
                     </button>
-               </div>
+                </div>
             </xpath>
+
             <xpath expr="//field[@name='next_assignation_date']" position="after">
                 <field name="active" string="Active" />
             </xpath>
@@ -396,7 +399,6 @@
                     required="1"
                     options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"
                 />
-
             </xpath>
             <xpath expr="//field[@name='acquisition_date']" position="after">
                 <field name="updated_by" readonly="1" string="Updated By" />
@@ -413,17 +415,17 @@
             <xpath expr="//sheet/field[@name='image_128']" position="after">
                 <div class="oe_title">
                 <label for="f_brand_id" class="oe_edit_only" />
-                 <h1>
-                     <field
+                <h1>
+                    <field
                             name="f_brand_id"
                             required="1"
                             class="oe_inline"
                             options="{'no_open': True, 'create': false, 'create_edit': false}"
                             readonly="state in ('write-off')"
                         />
-                 </h1>
-               <group colspan="2" col="2">
-                   <field
+                </h1>
+            <group colspan="2" col="2">
+                <field
                             name="model_id"
                             class="oe_inline"
                             domain="[('brand_id','=',f_brand_id)]"
@@ -431,25 +433,25 @@
                             readonly="state in ('write-off')"
                             context="{'default_brand_id': f_brand_id}"
                         />
-                   <field
+                <field
                             name="model_no"
                             string='Model No'
                             class="oe_inline"
                             readonly="state in ('write-off')"
                         />
-                   <field
+                <field
                             name="license_plate"
                             string='License Plate'
                             class="oe_inline"
                             readonly="state in ('write-off')"
                         />
-                   <field
+                <field
                             name="name"
                             string="Vehicle-ID"
                             readonly="state in ('write-off')"
                         />
-               </group>
-               </div>
+            </group>
+            </div>
             </xpath>
             <xpath expr="//field[@name='odometer']" position="after">
                 <field name="odometer_check" invisible="1" />
@@ -458,6 +460,7 @@
                 <attribute name="readonly">not odometer_check</attribute>
             </xpath>
             <xpath expr="//field[@name='location']" position="replace" />
+
             <xpath expr="//field[@name='driver_id']" position="before">
                 <field
                     name="vechical_type_id"
@@ -467,9 +470,9 @@
             </xpath>
             <xpath expr="//field[@name='driver_id']" position="attributes">
                 <attribute name="readonly">state in 'write-off'</attribute>
-                 <attribute name="domain">[('is_driver','=',True)]</attribute>
-                 <attribute name="options">{'no_quick_create': True}</attribute>
-                 <attribute name="context">{'default_is_driver':True}</attribute>
+                <attribute name="domain">[('is_driver','=',True)]</attribute>
+                <attribute name="options">{'no_quick_create': True}</attribute>
+                <attribute name="context">{'default_is_driver':True}</attribute>
             </xpath>
             <xpath expr="//field[@name='driver_id']" position="after">
                 <field
@@ -545,7 +548,7 @@
                                 />
                                 <field name="power" readonly="state in 'write-off'" />
                             </group>
-                         </group>
+                        </group>
                     </page>
                     <page string="Features">
                         <group>
@@ -600,7 +603,7 @@
                                             readonly="state in ('write-off')"
                                         />
                                     </group>
-                                    <group col="2" string="Capacity" invisible = "1">
+                                    <group col="2" string="Capacity" invisible="1">
                                         <field
                                             name="seats"
                                             readonly="state in ('write-off')"
@@ -627,11 +630,11 @@
                                         name="doors"
                                         string="No of Doors"
                                         readonly="state in ('write-off')"
-                                        invisible = "1"
+                                        invisible="1"
                                     />
                                 </group>
                             </page>
-
+                            
                         </notebook>
                     </page>
                     <page string="Fluids">
@@ -693,18 +696,18 @@
                         </group>
                         <separator string="Work Orders" colspan="4" invisible="1" />
                         <field name="work_order_ids" invisible="1">
-                            <tree>
+                            <list>
                                 <field name="name" string="Name" />
                                 <field name="service_type_id" />
                                 <field name="date" string="Issue Date" />
                                 <field name="date_open" />
                                 <field name="date_close" />
                                 <field name="state" />
-                            </tree>
+                            </list>
                         </field>
-                         <separator string="Pending Repair Types" colspan="4" />
-                         <field name="pending_repair_type_ids">
-                            <tree>
+                        <separator string="Pending Repair Types" colspan="4" />
+                        <field name="pending_repair_type_ids">
+                            <list>
                                 <field name="vehicle_rep_type_id" invisible="1" />
                                 <field name="name" string="Name" />
                                 <field name="repair_type_id" />
@@ -712,7 +715,7 @@
                                 <field name="issue_date" />
                                 <field name="state" />
                                 <field name="user_id" />
-                            </tree>
+                            </list>
                             <form>
                                 <group colspan="4" col="4">
                                     <field
@@ -736,7 +739,7 @@
                                     />
                                 </group>
                             </form>
-                         </field>
+                        </field>
                     </page>
                     <page string="Sales &amp; Purchases" invisible="1">
                         <group col="2">
@@ -829,17 +832,17 @@
                             widget="many2many_binary"
                             string='Multi Images'
                         />
-                            <!-- <tree>
+                            <!-- <list>
                                 <field name="image"/>
                                 <field name="description"/>
                                 <field name="title"/>
-                            </tree>
+                            </list>
                             <form>
                                 <group>
                                     <field name="title" required="True"/>
                                     <field name="description" required="True"/>
                                     <field name="image" required="True"/>
-                               </group>
+                            </group>
                             </form> -->
                     </page>
                     <page string="History">
@@ -860,7 +863,7 @@
                         </group>
                         <separator string="Engine History" colspan="4" />
                         <field name="engine_history_ids" nolabel="1">
-                            <tree>
+                            <list>
                                 <field
                                     name="previous_engine_no"
                                     style="width:20%;"
@@ -870,11 +873,11 @@
                                 <field name="changed_date" style="width:100%" />
                                 <field name="workorder_id" />
                                 <field name="note" />
-                            </tree>
+                            </list>
                         </field>
                         <separator string="Vin History" colspan="4" invisible="1" />
                         <field name="vin_history_ids" nolabel="1" invisible="1">
-                            <tree>
+                            <list>
                                 <field
                                     name="previous_vin_no"
                                     string="Previous Vin No"
@@ -883,21 +886,21 @@
                                 <field name="changed_date" />
                                 <field name="workorder_id" />
                                 <field name="note" />
-                            </tree>
+                            </list>
                         </field>
                         <separator string="Color History" colspan="4" />
                         <field name="color_history_ids" nolabel="1">
-                            <tree>
+                            <list>
                                 <field name="previous_color_id" />
                                 <field name="current_color_id" />
                                 <field name="changed_date" />
                                 <field name="workorder_id" />
                                 <field name="note" />
-                            </tree>
+                            </list>
                         </field>
                         <separator string="Tire History" colspan="4" />
                         <field name="tire_history_ids" nolabel="1">
-                            <tree>
+                            <list>
                                 <field
                                     name="previous_tire_size"
                                     string="Previous Tire Size"
@@ -910,11 +913,11 @@
                                 <field name="workorder_id" />
                                 <field name="changed_date" />
                                 <field name="note" />
-                            </tree>
+                            </list>
                         </field>
                         <separator string="Battery History" colspan="4" />
                         <field name="battery_history_ids" nolabel="1">
-                            <tree>
+                            <list>
                                 <field
                                     name="previous_battery_size"
                                     string="Previous Battery Size"
@@ -930,12 +933,12 @@
                                 <field name="workorder_id" />
                                 <field name="changed_date" />
                                 <field name="note" />
-                            </tree>
+                            </list>
                         </field>
                         </page>
                         <page string="Notes">
-                             <separator string="Note" colspan="4" />
-                             <field
+                            <separator string="Note" colspan="4" />
+                            <field
                             nolabel="1"
                             name="description"
                             placeholder="Put an internal note..."
@@ -951,12 +954,12 @@
     </record>
 
 
-    <!-- Override the tree view of fleet vehicle added extra fields on tree view.  -->
+    <!-- Override the list view of fleet vehicle added extra fields on list view.  -->
     <!-- <record model='ir.ui.view' id='fleet.fleet_vehicle_view_tree'>
-        <field name="name">fleet.vehicle.tree</field>
+        <field name="name">fleet.vehicle.list</field>
         <field name="model">fleet.vehicle</field>fleet.vehicle.tree
         <field name="arch" type="xml">
-            <tree string="Vehicle" toolbar="1"
+            <list string="Vehicle" toolbar="1"
                 colors="blue:state=='in_progress';red:state =='write-off';#9932CC:state=='inspection';orange:next_service_date and work_order_close and (next_service_date&lt;current_date);green:state=='complete';#00000:state=='released';" >
                 <field name="name" string="Vehicle-ID"/>
                 <field name="f_brand_id" required="1"/>
@@ -983,7 +986,7 @@
                 <field name="last_change_status_date" invisible="1"/>
                 <field name="engine_no" invisible="1"/>
                 <field name="reg_id" invisible="1"/>
-            </tree>
+            </list>
         </field>
     </record> -->
 
@@ -1194,7 +1197,7 @@
     </record>
 
     <record id='fleet_vehicle_model_tree_extended_view' model='ir.ui.view'>
-        <field name="name">fleet.vehicle.model.tree.inherit.extended</field>
+        <field name="name">fleet.vehicle.model.list.inherit.extended</field>
         <field name="model">fleet.vehicle.model</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_model_view_tree" />
         <field name="arch" type="xml">
@@ -1209,64 +1212,31 @@
         <field name="name">fleet.vehicle.model.kanban.extended</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_kanban" />
-        <field name="priority">101</field>
         <field name="arch" type="xml">
-            <xpath expr="//kanban[@default_group_by='state_id']" position="attributes">
-                <attribute name="default_group_by">state</attribute>
-                <attribute name="edit">false</attribute>
-                <attribute name="quick_create">false</attribute>
-                <!-- <attribute name="create">false</attribute> -->
-            </xpath>
-            <xpath expr="//kanban/field[@name='location']" position="replace" />
-            <xpath expr="//kanban/field[@name='state_id']" position="replace" />
-            <xpath expr="//kanban/field[@name='tag_ids']" position="replace">
-                <field name="state" />
-            </xpath>
-            <xpath
-                expr="//div[hasclass('o_kanban_tags_section')]/field[@name='tag_ids']"
-                position="replace"
+                <xpath expr="//field[@name='tag_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//main/div[1]" position="after">
+                    <b><field name="state" /></b>
+                </xpath>
+                <xpath
+                expr="//div[contains(@class, 'd-flex fs-6')]"
+                position="attributes"
             >
-                <field
-                    name="state"
-                    widget="kanban_label_selection"
-                    options="{'classes': {'draft': 'default', 'complete': 'success', 'released': 'success', 'write-off': 'danger', 'rent': 'warning', 'in_progress': 'warning'}}"
-                />
-            </xpath>
-            <xpath
-                expr="//kanban/field[@name='contract_renewal_due_soon']"
-                position="replace"
-            />
-            <xpath
-                expr="//kanban/field[@name='contract_renewal_overdue']"
-                position="replace"
-            />
-            <xpath
-                expr="//kanban/field[@name='contract_renewal_name']"
-                position="replace"
-            />
-            <xpath
-                expr="//kanban/field[@name='contract_renewal_total']"
-                position="replace"
-            />
-            <xpath
-                expr="//div[hasclass('oe_kanban_details')]/ul/li[2]"
-                position="replace"
-            />
-            <xpath
-                expr="//div[hasclass('o_kanban_record_bottom')]"
-                position="replace"
-            />
+                    <attribute name="invisible">1</attribute>
+                </xpath>
         </field>
     </record>
 
+
     <!-- Inherited vehicle brand view -->
      <record id='fleet.fleet_vehicle_model_brand_view_tree' model='ir.ui.view'>
-        <field name="name">fleet.vehicle.model.brand.tree</field>
+        <field name="name">fleet.vehicle.model.brand.list</field>
         <field name="model">fleet.vehicle.model.brand</field>
         <field name="arch" type="xml">
-           <tree>
+           <list>
                 <field name="name" string="Name" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -1296,12 +1266,12 @@
         </field>
     </record>
 
-     <!-- Pending repair type tree view.  -->
+     <!-- Pending repair type list view.  -->
     <record id='pending_repair_type_tree_view' model='ir.ui.view'>
         <field name="name">pending.repair.typeltree_view</field>
         <field name="model">pending.repair.type</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="vehicle_rep_type_id" invisible="1" />
                 <field name="name" required="1" />
                 <field name="repair_type_id" />
@@ -1309,7 +1279,7 @@
                 <field name="issue_date" string="Issue Date" />
                 <field name="state" />
                 <field name="user_id" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -1355,7 +1325,7 @@
 
     <!-- Inherited view for Vehicle odometer  -->
     <record id="view_fleet_odometer_tree" model="ir.ui.view">
-        <field name="name">fleet.vehicle.odometer.tree</field>
+        <field name="name">fleet.vehicle.odometer.list</field>
         <field name="model">fleet.vehicle.odometer</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_odometer_view_tree" />
         <field name="arch" type="xml">
@@ -1375,7 +1345,7 @@
     <record id='fleet.fleet_vehicle_action' model='ir.actions.act_window'>
         <field name="name">Vehicles Registration</field>
         <field name="res_model">fleet.vehicle</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field
             name="context"
         >{"search_default_vehicle_non_writeoff_filter" : True}</field>
@@ -1403,11 +1373,11 @@
 
     <!-- Menu itesm of existing fleet module with new labels and added new one. -->
     <menuitem
+        id="fleet.fleet_vehicle_menu"
         action="fleet.fleet_vehicle_action"
         name="Vehicles Registration"
         groups="fleet.fleet_group_manager"
         parent="fleet.fleet_vehicles"
-        id="fleet.fleet_vehicle_menu"
         sequence="3"
     />
 
@@ -1485,17 +1455,17 @@
         </field>
     </record>
 
-    <!-- Tree view of vehicle unique sequence -->
+    <!-- List view of vehicle unique sequence -->
     <record id='fleet_unique_vehicle_sequence_tree_view' model='ir.ui.view'>
-        <field name="name">fleet.unique.sequence.tree</field>
+        <field name="name">fleet.unique.sequence.list</field>
         <field name="model">vehicle.unique.sequence</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" string="Name" />
                 <field name="vehicle_location_id" />
                 <field name="make_id" />
                 <field name="sequence_id" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -1503,7 +1473,7 @@
     <record id='fleet_unique_vehicle_sequence_tree_act' model='ir.actions.act_window'>
         <field name="name">Vehicle Unique Sequence</field>
         <field name="res_model">vehicle.unique.sequence</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <!-- Form view of next odometer increment -->
@@ -1521,16 +1491,16 @@
         </field>
     </record>
 
-    <!-- Editable tree view of next odometer increment -->
+    <!-- Editable list view of next odometer increment -->
     <record id='next_increment_number_tree_view' model='ir.ui.view'>
-        <field name="name">next.increment.number.tree</field>
+        <field name="name">next.increment.number.list</field>
         <field name="model">next.increment.number</field>
         <field name="arch" type="xml">
-            <tree editable="top">
+            <list editable="top">
                 <field name="name" string="Name" />
                 <field name="vehicle_id" required="1" string="Vehicle Id" />
                 <field name="number" required="1" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -1555,7 +1525,7 @@
     <record id='next_increment_number_tree_act' model='ir.actions.act_window'>
         <field name="name">Odometer Increment</field>
         <field name="res_model">next.increment.number</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <!-- Menuitem for odometer increment -->
@@ -1591,17 +1561,17 @@
         </field>
     </record>
 
-        <!-- tree view of Damage Type -->
+        <!-- list view of Damage Type -->
     <record id='damage_type_tree_view' model='ir.ui.view'>
-        <field name="name">damage.type.tree.view</field>
+        <field name="name">damage.type.list.view</field>
         <field name="model">damage.types</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
 
                 <field name="name" required="1" />
                 <field name="code" string="Code" />
 
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -1609,7 +1579,7 @@
     <record id="damage_type_action" model="ir.actions.act_window">
         <field name="name">Damage Types</field>
         <field name="res_model">damage.types</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <!-- Menuitem for Damage Type -->
@@ -1645,16 +1615,16 @@
         </field>
     </record>
 
-    <!-- Tree view of next service days -->
+    <!-- List view of next service days -->
     <record id="next_service_days_tree" model='ir.ui.view'>
-        <field name="name">next.service.days.tree</field>
+        <field name="name">next.service.days.list</field>
         <field name="model">next.service.days</field>
         <field name="arch" type="xml">
-            <tree editable="top" delete="1">
+            <list editable="top" delete="1">
                 <field name="name" string="Name" />
                 <field name="vehicle_id" required="1" string="Vehicle Id" />
                 <field name="days" required="1" string="Days" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -1679,7 +1649,7 @@
     <record id="next_service_days_act" model="ir.actions.act_window">
         <field name="name">Next Service Days</field>
         <field name="res_model">next.service.days</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <!-- Menuitem for next service days -->
@@ -1691,14 +1661,14 @@
     />
 
 
-    <!-- Tree view for color -->
+    <!-- List view for color -->
     <record id="color_color_tree" model='ir.ui.view'>
-        <field name="name">color_color.tree</field>
+        <field name="name">color_color.list</field>
         <field name="model">color.color</field>
         <field name="arch" type="xml">
-            <tree editable="top" delete="1">
+            <list editable="top" delete="1">
                 <field name="name" string="Name" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -1706,7 +1676,7 @@
      <record id="color_color_act" model="ir.actions.act_window">
         <field name="name">Color</field>
         <field name="res_model">color.color</field>
-        <field name="view_mode">tree</field>
+        <field name="view_mode">list</field>
     </record>
 
     <!-- Menuitem for color -->
@@ -1718,14 +1688,14 @@
         groups="fleet.fleet_group_manager"
     />
 
-     <!-- Tree view for Division -->
+     <!-- List view for Division -->
      <record id="vehical_divison_tree" model='ir.ui.view'>
-        <field name="name">vehical_divison.tree</field>
+        <field name="name">vehical_divison.list</field>
         <field name="model">vehicle.divison</field>
         <field name="arch" type="xml">
-            <tree editable="top">
+            <list editable="top">
                 <field name="name" string="Name" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -1733,7 +1703,7 @@
      <record id="vehical_divison_act" model="ir.actions.act_window">
         <field name="name">Division</field>
         <field name="res_model">vehicle.divison</field>
-        <field name="view_mode">tree</field>
+        <field name="view_mode">list</field>
     </record>
 
     <!-- Form view for Vehicle Type -->
@@ -1747,14 +1717,14 @@
         </field>
     </record>
 
-    <!-- Tree view for Vehicle Type -->
+    <!-- List view for Vehicle Type -->
     <record id="vehicle_type_tree" model='ir.ui.view'>
-        <field name="name">vehicle.type.tree</field>
+        <field name="name">vehicle.type.list</field>
         <field name="model">vehicle.type</field>
         <field name="arch" type="xml">
-            <tree editable="top" delete="1">
+            <list editable="top" delete="1">
                 <field name="name" string="Name" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -1762,7 +1732,7 @@
     <record id="vehicle_type_act" model="ir.actions.act_window">
         <field name="name">Vehicle Type</field>
         <field name="res_model">vehicle.type</field>
-        <field name="view_mode">tree</field>
+        <field name="view_mode">list</field>
     </record>
 
     <!-- Menuitem for Vehicle Type -->
@@ -1808,16 +1778,16 @@
         </field>
     </record>
 
-   <!-- Report Heading Tree View -->
+   <!-- Report Heading List View -->
    <record id="report_heading_tree" model='ir.ui.view'>
-       <field name="name">report.heading.tree</field>
+       <field name="name">report.heading.list</field>
        <field name="model">report.heading</field>
        <field name="arch" type="xml">
-           <tree>
+           <list>
                <field name="name" string="Name" />
                <field name="revision_no" />
                <field name="document_no" />
-           </tree>
+           </list>
        </field>
    </record>
 
@@ -1842,7 +1812,7 @@
    <record id="report_heading_act" model="ir.actions.act_window">
        <field name="name">Report Heading</field>
        <field name="res_model">report.heading</field>
-       <field name="view_mode">tree,form</field>
+       <field name="view_mode">list,form</field>
    </record>
 
     <!-- Inherited product.product form view -->

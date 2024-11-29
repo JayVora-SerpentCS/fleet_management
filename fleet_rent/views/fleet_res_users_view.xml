@@ -15,12 +15,12 @@
                     <field name="fleet_rent_ids" />
                 </page>
                 <page string="Maintanance Details" name="maintanance_details">
-                        <field name="maintanance_ids">
-                            <tree>
-                                <field name="maint_type" />
-                                <field name="cost" sum="cost" />
-                            </tree>
-                        </field>
+                    <field name="maintanance_ids">
+                        <list>
+                            <field name="maint_type" />
+                            <field name="cost" sum="cost" />
+                        </list>
+                    </field>
                 </page>
             </xpath>
         </field>

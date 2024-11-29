@@ -40,12 +40,12 @@
             </kanban>
         </field>
     </record>
-    <!--  Fleet Rent Tree View -->
+    <!--  Fleet Rent List View -->
     <record id='view_fleet_rent_tree' model='ir.ui.view'>
-        <field name="name">view.fleet.rent.tree</field>
+        <field name="name">view.fleet.rent.list</field>
         <field name="model">fleet.rent</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field
                     name="name"
                     string="Rental Number"
@@ -56,7 +56,7 @@
                 <field name="date_end" />
                 <field name="rent_type_id" />
                 <field name="state" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -193,7 +193,7 @@
                             />
                             <field
                                 name="tenant_id"
-                                context="{'default_is_tenant':True, 'tree_view_ref': 'fleet_rent.view_tenant_users_tree',
+                                context="{'default_is_tenant':True, 'list_view_ref': 'fleet_rent.view_tenant_users_tree',
                                 'form_view_ref': 'fleet_rent.view_tenant_users_form'}"
                                 placeholder="Tenant Name"
                                 required="1"
@@ -293,7 +293,7 @@
                         <page string="Rent Schedule" name="rent_schedule">
                             <separator string="Rent Schedule Details" colspan="4" />
                             <field name="rent_schedule_ids" nolabel="1" readonly="1">
-                                <tree editable="bottom" limit="12">
+                                <list editable="bottom" limit="12">
                                     <field name="start_date" />
                                     <field
                                         name="amount"
@@ -332,20 +332,20 @@
                                         type="object"
                                         context="{'openinvoice':1}"
                                     />
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page name="maintenance_lines" string="Maintenance">
                             <separator colspan="4" string="Maintenance" />
                             <field name="maintanance_ids">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field
                                         name="maint_type"
                                         required="1"
                                         domain="[('main_cost','=','true')]"
                                     />
                                     <field name="cost" />
-                                </tree>
+                                </list>
                                 <form>
                                     <group>
                                         <field
@@ -360,7 +360,7 @@
                         </page>
                         <page string="Payment History">
                              <field name="account_move_line_ids" readonly="1">
-                                <tree create="false">
+                                <list create="false">
                                     <field name="date" />
                                     <field name="name" string="Name" />
                                     <field name="ref" string="Reference" />
@@ -372,7 +372,7 @@
                                     <field
                                         name="account_id"
                                         options="{&quot;no_open&quot;:True}"
-                                        domain="[('company_id', '=', parent.company_id)]"
+                                        domain="[('company_ids', '=', parent.company_id)]"
                                     />
                                     <field
                                         name="debit"
@@ -385,7 +385,7 @@
                                         invisible="1"
                                         options="{'no_create': True}"
                                     />
-                                </tree>
+                                </list>
                             </field>
                             <group />
                         </page>
@@ -412,10 +412,11 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
+                <chatter />
+                <!-- <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers" />
                     <field name="message_ids" widget="mail_thread" />
-                </div>
+                </div> -->
             </form>
         </field>
     </record>
@@ -426,7 +427,7 @@
         <field name="name">Vehicles Rent</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">fleet.rent</field>
-        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_mode">list,form,kanban</field>
     </record>
 
     <!-- Main Menuitem for Vehicles Rent -->
@@ -462,7 +463,7 @@
             name="context"
         >{'default_vehicle_id': active_id,'from_rent_smartbutton': True}</field>
         <field name="domain">[('vehicle_id','=',active_id)]</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
 
@@ -491,15 +492,15 @@
 
     <!-- Rent Type Tree View-->
     <record id="rent_type_tree" model="ir.ui.view">
-        <field name="name">rent.type.tree</field>
+        <field name="name">rent.type.list</field>
         <field name="model">rent.type</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" string="Name" />
                 <field name="duration" string="Duration" />
                 <field name="renttype" />
                 <!-- <field name="sequence_in_view"/> -->
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -521,7 +522,7 @@
         <field name="name">Rent Type</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">rent.type</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem
@@ -558,16 +559,16 @@
         </field>
     </record>
 
-    <!-- Maintenance Type Tree View -->
+    <!-- Maintenance Type List View -->
     <record id="maintenance_type_tree" model="ir.ui.view">
-        <field name="name">maintenance.type.tree</field>
+        <field name="name">maintenance.type.list</field>
         <field name="model">maintenance.type</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" string="Name" />
                 <field name="main_cost" />
                 <field name="cost" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -587,7 +588,7 @@
         <field name="name">Maintenance Type</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">maintenance.type</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <!-- <menuitem name="Maintenance Type" id="menu_maintenance_type"   parent="menu_types_main" action="action_maintenance_type_view"/> -->
@@ -624,10 +625,10 @@
 
     <!--Tenancy Rent Schedule Tree view-->
     <record id="tenancy_rent_tree" model="ir.ui.view">
-        <field name="name">tenancy.rent.schedule.tree</field>
+        <field name="name">tenancy.rent.schedule.list</field>
         <field name="model">tenancy.rent.schedule</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="start_date" />
                 <field name="cheque_detail" string="Cheque Detail" />
                 <field name="fleet_rent_id" />
@@ -636,7 +637,7 @@
                 <field name="move_check" />
                 <field name="note" />
                 <field name="state" invisible="1" string="State" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -707,7 +708,7 @@
         <field name="name">Tenancy Rent Schedule</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">tenancy.rent.schedule</field>
-        <field name="view_mode">calendar,tree,form</field>
+        <field name="view_mode">calendar,list,form</field>
     </record>
 
     <!--Rent Schedule menu-->

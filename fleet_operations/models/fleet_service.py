@@ -290,16 +290,15 @@ class FleetVehicleLogServices(models.Model):
                     "type": "ir.actions.act_window",
                     "target": "new",
                 }
-            next_ser_date =  self.next_service_date or fields.Date.today()
+            next_ser_date = self.next_service_date or fields.Date.today()
+            next_service_date = next_ser_date + timedelta(days=next_service_day_ids[0].days)
             work_order_vals = {
                 "state": "done",
                 "next_service_odometer": odometer_increment + work_order.odometer,
                 "already_closed": True,
                 "closed_by": self.env.user,
                 "date_close": next_ser_date,
-                "next_service_date": (
-                    next_ser_date + timedelta(days=next_service_day_ids[0].days)
-                ),
+                "next_service_date": next_service_date,
             }
             work_order.write(work_order_vals)
             if work_order.vehicle_id:
@@ -310,9 +309,7 @@ class FleetVehicleLogServices(models.Model):
                         and work_order.team_id.id
                         or False,
                         "last_service_date": fields.Date.today(),
-                        "next_service_date": (
-                            next_ser_date + timedelta(days=next_service_day_ids[0].days)
-                        ),
+                        "next_service_date": next_service_date,
                         "due_odometer": odometer_increment,
                         "due_odometer_unit": work_order.odometer_unit,
                         "last_change_status_date": fields.Date.today(),
@@ -628,7 +625,6 @@ class FleetVehicleLogServices(models.Model):
     delivery_id = fields.Many2one("stock.picking", "Delivery Reference", readonly=True)
     team_id = fields.Many2one("res.partner", "Teams")
     maintenance_team_id = fields.Many2one("stock.location", "Team")
-    next_service_date = fields.Date()
     next_service_odometer = fields.Float("Next Odometer Value", readonly=True)
     repair_line_ids = fields.One2many(
         "service.repair.line", "service_id", "Repair Lines"
@@ -687,6 +683,7 @@ class FleetVehicleLogServices(models.Model):
         "account.move", "vehicle_service_id", "Service Refund Invoice"
     )
     deposit_receive = fields.Boolean("Deposit Received?")
+    next_service_date = fields.Date()
 
     def _compute_invoice_receive(self):
         """Method used to check amount received."""
@@ -959,7 +956,7 @@ class FleetWorkOrderSearch(models.TransientModel):
         return {
             "name": _("Work Order"),
             "view_type": "form",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "fleet.vehicle.log.services",
             "type": "ir.actions.act_window",
             "domain": [("id", "=", self.work_order_id.id)]

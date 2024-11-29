@@ -4,7 +4,7 @@
         <field name="name">Opel/Astra/1-ACK-205</field>
         <field name="standard_price">800.0</field>
         <field name="list_price">320.0</field>
-        <field name="detailed_type">consu</field>
+        <field name="type">consu</field>
         <field name="weight">0.01</field>
         <field name="uom_id" ref="uom.product_uom_unit" />
         <field name="uom_po_id" ref="uom.product_uom_unit" />
@@ -14,7 +14,7 @@
         <field name="name">Audi/A1/1-AUD-001</field>
         <field name="standard_price">800.0</field>
         <field name="list_price">320.0</field>
-        <field name="detailed_type">consu</field>
+        <field name="type">consu</field>
         <field name="weight">0.01</field>
         <field name="uom_id" ref="uom.product_uom_unit" />
         <field name="uom_po_id" ref="uom.product_uom_unit" />
@@ -24,7 +24,7 @@
         <field name="name">Bmw/Serie 1/1-BMW-001</field>
         <field name="standard_price">800.0</field>
         <field name="list_price">320.0</field>
-        <field name="detailed_type">consu</field>
+        <field name="type">consu</field>
         <field name="weight">0.01</field>
         <field name="uom_id" ref="uom.product_uom_unit" />
         <field name="uom_po_id" ref="uom.product_uom_unit" />
@@ -34,7 +34,7 @@
         <field name="name">Mercedes/Class A/1-MER-001</field>
         <field name="standard_price">800.0</field>
         <field name="list_price">320.0</field>
-        <field name="detailed_type">consu</field>
+        <field name="type">consu</field>
         <field name="weight">0.01</field>
         <field name="uom_id" ref="uom.product_uom_unit" />
         <field name="uom_po_id" ref="uom.product_uom_unit" />
@@ -44,7 +44,7 @@
         <field name="name">Opel/Corsa/1-SYN-404</field>
         <field name="standard_price">800.0</field>
         <field name="list_price">320.0</field>
-        <field name="detailed_type">consu</field>
+        <field name="type">consu</field>
         <field name="weight">0.01</field>
         <field name="uom_id" ref="uom.product_uom_unit" />
         <field name="uom_po_id" ref="uom.product_uom_unit" />

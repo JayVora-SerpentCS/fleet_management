@@ -8,8 +8,6 @@
             <field name="code">model.vehicle_service_reminder_send_mail()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
             <field name="model_id" ref="fleet.model_fleet_vehicle" />
     </record>
 
