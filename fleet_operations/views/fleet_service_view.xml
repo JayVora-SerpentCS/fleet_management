@@ -86,6 +86,20 @@
             <xpath expr="//group" position="before">
                 <div class="oe_button_box" name="button_box">
                     <button
+                        name="action_view_delivery_orders"
+                        string="Delivery Orders"
+                        type="object"
+                        icon="fa-truck"
+                        class="oe_stat_button"
+                        groups="fleet.fleet_group_manager"
+                    >
+                        <field
+                            name="delivery_count"
+                            string="Delivery"
+                            widget="statinfo"
+                        />
+                    </button>
+                    <button
                         icon="fa-pencil-square-o"
                         class="oe_stat_button"
                         name="%(action_fleet_service_out_invoice_view)d"
@@ -281,6 +295,10 @@
                             domain="[('is_company','=',True)]"
                             can_create="true"
                             can_write="true"
+                        />
+                        <field name="company_id"/>
+                        <field
+                            name="warehouse_id" invisible="1"
                         />
                     </group>
                 </group>
