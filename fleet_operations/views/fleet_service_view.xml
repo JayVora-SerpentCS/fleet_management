@@ -86,6 +86,20 @@
             <xpath expr="//group" position="before">
                 <div class="oe_button_box" name="button_box">
                     <button
+                        name="action_view_delivery_orders"
+                        string="Delivery Orders"
+                        type="object"
+                        icon="fa-truck"
+                        class="oe_stat_button"
+                        groups="fleet.fleet_group_manager"
+                    >
+                        <field
+                            name="delivery_count"
+                            string="Delivery"
+                            widget="statinfo"
+                        />
+                    </button>
+                    <button
                         icon="fa-pencil-square-o"
                         class="oe_stat_button"
                         name="%(action_fleet_service_out_invoice_view)d"
@@ -282,6 +296,8 @@
                             can_create="true"
                             can_write="true"
                         />
+                        <field name="company_id" readonly="1" />
+                        <field name="warehouse_id" invisible="1" />
                     </group>
                 </group>
             </xpath>
@@ -343,6 +359,12 @@
                                         options="{'no_open': True, 'create': false, 'create_edit': false}"
                                     />
                                     <field
+                                        name='warehouse_id'
+                                        required="1"
+                                        readonly="is_deliver"
+                                        options="{'no_open': True, 'create': false, 'create_edit': false}"
+                                    />
+                                    <field
                                         name="qty_hand"
                                         readonly="1"
                                         force_save="1"
@@ -373,6 +395,13 @@
                                         <field
                                             name='product_id'
                                             string="Part No"
+                                            required="1"
+                                            readonly="is_deliver"
+                                            options="{'no_open': True, 'create': false, 'create_edit': false}"
+                                        />
+                                        <field
+                                            name='warehouse_id'
+                                            domain="[('company_id','=',parent.company_id)]"
                                             required="1"
                                             readonly="is_deliver"
                                             options="{'no_open': True, 'create': false, 'create_edit': false}"

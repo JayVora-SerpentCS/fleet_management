@@ -239,6 +239,7 @@
     <record id='fleet_vehicle_model_form_extended' model='ir.ui.view'>
         <field name="name">fleet.vehicle.model.form.extended</field>
         <field name="model">fleet.vehicle</field>
+        <field eval="100" name="priority" />
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//header/field[@name='state_id']" position="replace">
@@ -634,7 +635,7 @@
                                     />
                                 </group>
                             </page>
-                            
+
                         </notebook>
                     </page>
                     <page string="Fluids">

@@ -56,6 +56,14 @@ class FleetVehicleLogServices(models.Model):
                 }
             )
 
+    delivery_count = fields.Integer("Delivery", compute="_compute_delivery_count")
+
+    def _compute_delivery_count(self):
+        for rec in self:
+            rec.delivery_count = self.env["stock.picking"].search_count(
+                [("service_id", "=", rec.id)]
+            )
+
     def action_create_invoice(self):
         """Invoice for Deposit Receive."""
         for service in self:
@@ -291,7 +299,9 @@ class FleetVehicleLogServices(models.Model):
                     "target": "new",
                 }
             next_ser_date = self.next_service_date or fields.Date.today()
-            next_service_date = next_ser_date + timedelta(days=next_service_day_ids[0].days)
+            next_service_date = next_ser_date + timedelta(
+                days=next_service_day_ids[0].days
+            )
             work_order_vals = {
                 "state": "done",
                 "next_service_odometer": odometer_increment + work_order.odometer,
@@ -329,32 +339,90 @@ class FleetVehicleLogServices(models.Model):
                                 if repair_line.complete is True:
                                     pending_repair_line.unlink()
         if work_order.parts_ids:
-            parts = self.env["task.line"].search(
-                [("fleet_service_id", "=", work_order.id), ("is_deliver", "=", False)]
-            )
-            for part in parts:
-                part.write({"is_deliver": True})
-                source_location = self.env.ref(
-                    "stock.picking_type_out"
-                ).default_location_src_id
-                dest_location, loc = self.env[
-                    "stock.warehouse"
-                ]._get_partner_locations()
-                move = self.env["stock.move"].create(
-                    {
-                        "name": "Used in Work Order",
-                        "product_id": part.product_id.id or False,
-                        "location_id": source_location.id or False,
-                        "location_dest_id": dest_location.id or False,
-                        "product_uom": part.product_uom.id or False,
-                        "product_uom_qty": part.qty or 0.0,
-                    }
-                )
-                move._action_confirm()
-                move._action_assign()
-                move.move_line_ids.update({"quantity": part.qty})
-                move._action_done()
+            work_order.prepare_shipment_for_used_parts()
+            # parts = self.env["task.line"].search(
+            #     [("fleet_service_id", "=", work_order.id), ("is_deliver", "=", False)]
+            # )
+            # for part in parts:
+            # part.write({"is_deliver": True})
+            # source_location = self.env.ref(
+            #     "stock.picking_type_out"
+            # ).default_location_src_id
+            # dest_location, loc = self.env[
+            #     "stock.warehouse"
+            # ]._get_partner_locations()
+            # move = self.env["stock.move"].create(
+            #     {
+            #         "name": "Used in Work Order",
+            #         "product_id": part.product_id.id or False,
+            #         "location_id": source_location.id or False,
+            #         "location_dest_id": dest_location.id or False,
+            #         "product_uom": part.product_uom.id or False,
+            #         "product_uom_qty": part.qty or 0.0,
+            #     }
+            # )
+            # move._action_confirm()
+            # move._action_assign()
+            # move.move_line_ids.update({"quantity": part.qty})
+            # move._action_done()
+
         return True
+
+    def prepare_shipment_for_used_parts(self):
+        """Prepare and validate shipment for used parts."""
+        self.ensure_one()
+        stock_obj = self.env["stock.picking"]
+        new_picking_recs = self.env["stock.picking"]
+        parts_lines_ids = self.parts_ids.filtered(lambda part: not part.is_deliver)
+        for warehouse_id in parts_lines_ids.mapped("warehouse_id"):
+            line_vals = []
+            for part_line in parts_lines_ids.filtered(
+                lambda part_l: part_l.warehouse_id.id == warehouse_id.id
+            ):
+                line_vals.append(
+                    (
+                        0,
+                        0,
+                        {
+                            "product_id": part_line.product_id.id,
+                            "product_uom_qty": part_line.qty,
+                            "product_uom": part_line.product_id.uom_id.id,
+                            "name": part_line.product_id.name,
+                        },
+                    )
+                )
+            out_pick_type = (
+                warehouse_id
+                and warehouse_id.out_type_id
+                and warehouse_id.out_type_id
+                or False
+            )
+            src_loc = (
+                out_pick_type
+                and out_pick_type.default_location_src_id
+                and out_pick_type.default_location_src_id.id
+                or False
+            )
+            dest_loc = (
+                out_pick_type
+                and out_pick_type.default_location_dest_id
+                and out_pick_type.default_location_dest_id.id
+                or False
+            )
+            picking = stock_obj.create(
+                {
+                    "partner_id": self.purchaser_id.id,
+                    "picking_type_id": out_pick_type and out_pick_type.id or False,
+                    "location_id": src_loc,
+                    "location_dest_id": dest_loc,
+                    "origin": self.name,
+                    "service_id": self.id,
+                    "move_ids_without_package": line_vals,
+                }
+            )
+            new_picking_recs |= picking
+            picking.button_validate()
+        return new_picking_recs
 
     def encode_history(self):
         """Method is used to create the Encode Qty.
@@ -446,6 +514,13 @@ class FleetVehicleLogServices(models.Model):
                 "target": "current",
                 "res_id": new_reopen_service.id,
             }
+
+    def action_view_delivery_orders(self):
+        """Show only delivery pickings linked to this service."""
+        self.ensure_one()
+        action = self.env.ref("stock.action_picking_tree_all").read()[0]
+        action["domain"] = [("service_id", "=", self.id)]
+        return action
 
     @api.depends("parts_ids")
     def _compute_get_total(self):
@@ -866,6 +941,7 @@ class StockPicking(models.Model):
     work_order_reopen_id = fields.Many2one("fleet.vehicle.log.services", " Work Order")
     stock_warehouse_id = fields.Many2one("stock.warehouse", "Warehouse")
     received_by_id = fields.Many2one("res.users", "Received By")
+    service_id = fields.Many2one("fleet.vehicle.log.services", "Service No.")
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -1015,6 +1091,7 @@ class TaskLine(models.Model):
     date_issued = fields.Datetime("Date issued")
     issued_by = fields.Many2one("res.users", default=lambda self: self._uid)
     is_deliver = fields.Boolean("Is Deliver?")
+    warehouse_id = fields.Many2one("stock.warehouse", string="Warehouse")
 
     @api.constrains("qty", "qty_hand")
     def _check_used_qty(self):
@@ -1023,7 +1100,7 @@ class TaskLine(models.Model):
                 msg = _("You can't " "enter used quantity as Zero!")
                 raise UserError(msg)
 
-    @api.onchange("product_id", "qty")
+    @api.onchange("product_id", "qty", "warehouse_id")
     def _onchange_product(self):
         for rec in self:
             if rec.product_id:
@@ -1032,7 +1109,20 @@ class TaskLine(models.Model):
                     rec.product_id = False
                     msg = _("You can't select " "part which is In-Active!")
                     raise UserError(msg)
-                rec.qty_hand = prod.qty_available or 0.0
+                qty_hand = (
+                    self.env["stock.quant"]
+                    .search(
+                        [
+                            ("product_id", "=", prod.id),
+                            ("warehouse_id", "=", rec.warehouse_id.id),
+                            ("location_id", "=", rec.warehouse_id.lot_stock_id.id),
+                            ("company_id", "=", rec.fleet_service_id.company_id.id),
+                        ],
+                        limit=1,
+                    )
+                    .quantity
+                )
+                rec.qty_hand = qty_hand or 0.0
                 rec.product_uom = prod.uom_id or False
                 rec.price_unit = prod.list_price or 0.0
             if rec.qty and rec.price_unit:
@@ -1125,6 +1215,17 @@ class TaskLine(models.Model):
                 msg = _("You can't delete part those already used.")
                 raise UserError(msg)
         return super(TaskLine, self).unlink()
+
+    def default_get(self, fields_list):
+        fleet_service_id = self.env["fleet.vehicle.log.services"].browse(
+            self._context.get("active_id")
+        )
+        warehouse_id = self.env["stock.warehouse"].search(
+            [("company_id", "=", fleet_service_id.company_id.id)], limit=1
+        )
+        default_vals = super().default_get(fields_list)
+        default_vals.update({"warehouse_id": warehouse_id.id})
+        return default_vals
 
 
 class RepairType(models.Model):
