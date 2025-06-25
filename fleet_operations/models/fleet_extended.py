@@ -255,26 +255,34 @@ class FleetOperations(models.Model):
                         "greater than registration date."
                     )
                     raise ValidationError(msg)
-    
+
     def _compute_get_odometer(self):
         fleet_vehicle_odometer_obj = self.env["fleet.vehicle.odometer"]
         all_odometer_records = fleet_vehicle_odometer_obj.search([])
         for record in self:
-            vehicle_odometer = all_odometer_records.filtered(lambda odometer: odometer.vehicle_id == record).sorted(key=lambda x: x.value, reverse=True)
+            vehicle_odometer = all_odometer_records.filtered(
+                lambda odometer: odometer.vehicle_id == record
+            ).sorted(key=lambda x: x.value, reverse=True)
             if vehicle_odometer:
                 record.odometer = vehicle_odometer[0].value
-    
+
     def _inverse_set_odometer(self):
         fleet_vehicle_odometer_obj = self.env["fleet.vehicle.odometer"]
         all_odometer_records = fleet_vehicle_odometer_obj.search([])
         for record in self:
-            vehicle_odometer = all_odometer_records.filtered(lambda odometer: odometer.vehicle_id == record).sorted(key=lambda x: x.value, reverse=True)
+            vehicle_odometer = all_odometer_records.filtered(
+                lambda odometer: odometer.vehicle_id == record
+            ).sorted(key=lambda x: x.value, reverse=True)
             if vehicle_odometer:
                 previous_odometer_value = vehicle_odometer[0].value
                 if record.odometer < previous_odometer_value:
-                    msg = _(
-                        "You can't enter odometer less than previous " "odometer %s !"
-                    ) % previous_odometer_value
+                    msg = (
+                        _(
+                            "You can't enter odometer less than previous "
+                            "odometer %s !"
+                        )
+                        % previous_odometer_value
+                    )
                     raise UserError(msg)
             if record.odometer:
                 date = fields.Date.context_today(record)
