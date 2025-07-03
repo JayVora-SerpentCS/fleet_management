@@ -125,6 +125,20 @@
                             widget="statinfo"
                         />
                     </button>
+                    <button
+                        name="action_reopen_services"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-repeat"
+                        invisible="reopen_service_count == 0"
+                    >
+                        <div class="o_form_field o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="reopen_service_count" />
+                            </span>
+                            <span class="o_stat_text">Re-Opened Services</span>
+                        </div>
+                    </button>
                 </div>
                 <div class="oe_title">
                     <h1>
@@ -502,35 +516,20 @@
             </xpath> -->
         </field>
     </record>
-<!--
-    <record model='ir.ui.view' id='fleet_vehicle_log_services_view_tree_inherit'>
+
+    <record model='ir.ui.view' id='fleet_vehicle_log_services_view_tree'>
         <field name="name">fleet.vehicle.log.services.list</field>
         <field name="model">fleet.vehicle.log.services</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_tree" />
         <field name="arch" type="xml">
-            <xpath expr="//list" position="move">
-                <list string="Services Logs" create="false"
-                    colors="blue:state=='confirm';black:state=='done';">
-                     <field name="name" string="Service Order#"/>
-                    <field name="vehicle_id" string="Vehicle-Identification"/>
-                    <field name="fmp_id" />
-                    <field name="vechical_type_id" />
-                    <field name="cost_subtype_id" string="Service Type"/>
-                    <field name="date" string="Service Report On" />
-                    <field name="date_open" string="Service Start Date"/>
-                    <field name="date_close" string="Service Close Date" /> -->
-                    <!-- <field name="open_days" /> -->
-             <!--        <field name="odometer" />
-                    <field name="next_service_odometer" />
-                    <field name="purchaser_id" string="Driver"/>
-                    <field name="team_id" string="Work Shop"/>
-                    <field name="amount" sum="Total price"/>
-                    <field name="state" string="Status"/>
-                    <field name="closed_by" invisible="1"/>
-                </list>
+            <xpath expr="//list/field[@name='description']" position="before">
+                <field name="name" optional="show" />
+            </xpath>
+            <xpath expr="//list/field[@name='notes']" position="after">
+                <field name="source_service_id" optional="hide" />
             </xpath>
         </field>
-    </record> -->
+    </record>
 
     <record model='ir.ui.view' id='fleet.fleet_vehicle_log_services_view_search'>
             <field name="name">fleet.vehicle.log.services_search_view</field>
