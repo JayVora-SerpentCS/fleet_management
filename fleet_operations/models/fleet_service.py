@@ -36,6 +36,32 @@ class FleetVehicleLogServices(models.Model):
     _order = "id desc"
     _rec_name = "name"
 
+    reopen_service_count = fields.Integer(
+        string="Re-Open Services", compute="_compute_count_reopen_services"
+    )
+
+    def _compute_count_reopen_services(self):
+        service_obj = self.env["fleet.vehicle.log.services"]
+        for service in self:
+            service.reopen_service_count = service_obj.search_count(
+                [("source_service_id", "=", service.id)]
+            )
+
+    def action_reopen_services(self):
+        """Show particular Revision for Clearance."""
+        self.ensure_one()
+        service_obj = self.env["fleet.vehicle.log.services"]
+        action = self.env["ir.actions.act_window"]._for_xml_id(
+            "fleet.fleet_vehicle_log_services_action"
+        )
+        for service in self:
+            reopen_services = service_obj.search(
+                [("source_service_id", "=", service.id)]
+            )
+            action["domain"] = [("id", "in", reopen_services.ids)]
+            action["context"] = {}
+        return action
+
     @api.ondelete(at_uninstall=False)
     def _unlink_if_state_draft(self):
         if any(state not in "draft " for state in self.mapped("state")):
@@ -340,32 +366,6 @@ class FleetVehicleLogServices(models.Model):
                                     pending_repair_line.unlink()
         if work_order.parts_ids:
             work_order.prepare_shipment_for_used_parts()
-            # parts = self.env["task.line"].search(
-            #     [("fleet_service_id", "=", work_order.id), ("is_deliver", "=", False)]
-            # )
-            # for part in parts:
-            # part.write({"is_deliver": True})
-            # source_location = self.env.ref(
-            #     "stock.picking_type_out"
-            # ).default_location_src_id
-            # dest_location, loc = self.env[
-            #     "stock.warehouse"
-            # ]._get_partner_locations()
-            # move = self.env["stock.move"].create(
-            #     {
-            #         "name": "Used in Work Order",
-            #         "product_id": part.product_id.id or False,
-            #         "location_id": source_location.id or False,
-            #         "location_dest_id": dest_location.id or False,
-            #         "product_uom": part.product_uom.id or False,
-            #         "product_uom_qty": part.qty or 0.0,
-            #     }
-            # )
-            # move._action_confirm()
-            # move._action_assign()
-            # move.move_line_ids.update({"quantity": part.qty})
-            # move._action_done()
-
         return True
 
     def prepare_shipment_for_used_parts(self):
@@ -386,6 +386,7 @@ class FleetVehicleLogServices(models.Model):
                         {
                             "product_id": part_line.product_id.id,
                             "product_uom_qty": part_line.qty,
+                            "quantity": part_line.qty,
                             "product_uom": part_line.product_id.uom_id.id,
                             "name": part_line.product_id.name,
                         },
@@ -473,47 +474,43 @@ class FleetVehicleLogServices(models.Model):
         return True
 
     def action_reopen(self):
-        """Method Action Reopen."""
-        for order in self:
-            service_type_id = False
-            try:
-                service_type_id = self.env.ref("fleet.type_service_service_8")
-            except ValueError:
-                _logger.warning("IT IS warn")
-            if not service_type_id:
-                service_type_obj = self.env["fleet.service.type"]
-                service_type_id = service_type_obj.search(
-                    [
-                        ("name", "=", "Repair and maintenance"),
-                    ]
-                )
-                if not service_type_id:
-                    service_type_id = service_type_obj.create(
-                        {"name": "Repair and maintenance", "category": "service"}
-                    )
-            order.write({"state": "done"})
-            new_reopen_service = order.copy()
-            new_reopen_service.write(
+        """Reopen the service order by duplicating and resetting key fields."""
+        self.ensure_one()
+        service_type_obj = self.env["fleet.service.type"]
+        # Try to find the service type via XML ID, fallback to name-based search
+        service_type = self.env.ref(
+            "fleet.type_service_service_7", raise_if_not_found=False
+        )
+        if not service_type:
+            service_type = service_type_obj.search(
+                [("name", "=", "Repair and maintenance")], limit=1
+            )
+        if not service_type:
+            service_type = service_type_obj.create(
                 {
-                    "source_service_id": order.id,
-                    "date_open": False,
-                    "date_close": False,
-                    "service_type_id": service_type_id.id,
-                    "amount": False,
-                    "team_id": False,
-                    "closed_by": False,
-                    "repair_line_ids": [(6, 0, [])],
-                    "parts_ids": [(6, 0, [])],
+                    "name": "Repair and maintenance",
+                    "category": "service",
                 }
             )
-            return {
-                "view_mode": "form",
-                "view_type": "form",
-                "res_model": "fleet.vehicle.log.services",
-                "type": "ir.actions.act_window",
-                "target": "current",
-                "res_id": new_reopen_service.id,
+
+        self.write({"state": "done"})
+
+        # Copy the record with reset fields
+        new_service = self.copy(
+            {
+                "vehicle_id": self.vehicle_id.id,
+                "source_service_id": self.id,
+                "date_open": False,
+                "date_close": False,
+                "service_type_id": service_type.id,
+                "amount": False,
+                "team_id": False,
+                "closed_by": False,
+                "repair_line_ids": [(6, 0, [])],
+                "parts_ids": [(6, 0, [])],
             }
+        )
+        return new_service
 
     def action_view_delivery_orders(self):
         """Show only delivery pickings linked to this service."""
