@@ -1104,7 +1104,7 @@ class TaskLine(models.Model):
                 prod = rec.product_id
                 if prod.in_active_part:
                     rec.product_id = False
-                    msg = _("You can't select " "part which is In-Active!")
+                    msg = _("You can't select part which is In-Active!")
                     raise UserError(msg)
                 qty_hand = (
                     self.env["stock.quant"]
