@@ -10,12 +10,19 @@ from odoo.exceptions import UserError, ValidationError
 _logger = logging.getLogger(__name__)
 
 
+class ProductTemplate(models.Model):
+    """Product Template model."""
+
+    _inherit = "product.template"
+
+    in_active_part = fields.Boolean("In-Active Part?")
+
+
 class ProductProduct(models.Model):
     """product model."""
 
     _inherit = "product.product"
 
-    in_active_part = fields.Boolean("In-Active Part?")
     vehicle_make_id = fields.Many2one("fleet.vehicle.model.brand", "Vehicle Make")
 
 
