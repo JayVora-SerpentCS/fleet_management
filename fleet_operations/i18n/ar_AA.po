@@ -1697,9 +1697,9 @@ msgid "In Service"
 msgstr "في الخدمة"
 
 #. module: fleet_operations
-#: model:ir.model.fields,field_description:fleet_operations.field_product_product__in_active_part
+#: model:ir.model.fields,field_description:fleet_operations.field_product_template__in_active_part
 msgid "In-Active Part?"
-msgstr ""
+msgstr "جزء غير نشط؟"
 
 #. module: fleet_operations
 #: model:ir.model.fields,field_description:fleet_operations.field_service_task__maintenance_info

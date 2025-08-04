@@ -10,12 +10,19 @@ from odoo.exceptions import UserError, ValidationError
 _logger = logging.getLogger(__name__)
 
 
+class ProductTemplate(models.Model):
+    """Product Template model."""
+
+    _inherit = "product.template"
+
+    in_active_part = fields.Boolean("In-Active Part?")
+
+
 class ProductProduct(models.Model):
     """product model."""
 
     _inherit = "product.product"
 
-    in_active_part = fields.Boolean("In-Active Part?")
     vehicle_make_id = fields.Many2one("fleet.vehicle.model.brand", "Vehicle Make")
 
 
@@ -269,16 +276,22 @@ class FleetOperations(models.Model):
 
     def _inverse_set_odometer(self):
         fleet_vehicle_odometer_obj = self.env["fleet.vehicle.odometer"]
+        all_odometer_records = fleet_vehicle_odometer_obj.search([])
         for record in self:
-            vehicle_odometer = fleet_vehicle_odometer_obj.search(
-                [("vehicle_id", "=", record.id)], limit=1, order="value desc"
-            )
-            if record.odometer < vehicle_odometer.value:
-                msg = _(
-                    "You can't enter odometer less than previous " "odometer %s !"
-                ).format(vehicle_odometer.value)
-                raise UserError(msg)
-
+            vehicle_odometer = all_odometer_records.filtered(
+                lambda odometer: odometer.vehicle_id == record
+            ).sorted(key=lambda x: x.value, reverse=True)
+            if vehicle_odometer:
+                previous_odometer_value = vehicle_odometer[0].value
+                if record.odometer < previous_odometer_value:
+                    msg = (
+                        _(
+                            "You can't enter odometer less than previous "
+                            "odometer %s !"
+                        )
+                        % previous_odometer_value
+                    )
+                    raise UserError(msg)
             if record.odometer:
                 date = fields.Date.context_today(record)
                 data = {"value": record.odometer, "date": date, "vehicle_id": record.id}
