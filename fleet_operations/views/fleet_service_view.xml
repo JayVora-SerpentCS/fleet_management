@@ -86,6 +86,20 @@
             <xpath expr="//group" position="before">
                 <div class="oe_button_box" name="button_box">
                     <button
+                        name="action_view_delivery_orders"
+                        string="Delivery Orders"
+                        type="object"
+                        icon="fa-truck"
+                        class="oe_stat_button"
+                        groups="fleet.fleet_group_manager"
+                    >
+                        <field
+                            name="delivery_count"
+                            string="Delivery"
+                            widget="statinfo"
+                        />
+                    </button>
+                    <button
                         icon="fa-pencil-square-o"
                         class="oe_stat_button"
                         name="%(action_fleet_service_out_invoice_view)d"
@@ -110,6 +124,20 @@
                             string="Return Invoice"
                             widget="statinfo"
                         />
+                    </button>
+                    <button
+                        name="action_reopen_services"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-repeat"
+                        invisible="reopen_service_count == 0"
+                    >
+                        <div class="o_form_field o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="reopen_service_count" />
+                            </span>
+                            <span class="o_stat_text">Re-Opened Services</span>
+                        </div>
                     </button>
                 </div>
                 <div class="oe_title">
@@ -282,6 +310,8 @@
                             can_create="true"
                             can_write="true"
                         />
+                        <field name="company_id" readonly="1" />
+                        <field name="warehouse_id" invisible="1" />
                     </group>
                 </group>
             </xpath>
@@ -327,72 +357,100 @@
                  <page string="Parts Used">
                         <div>
                             <field
-                                    name="parts_ids"
-                                    nolable = "1"
-                                    context="{'date_open':date_open}"
-                                    create='false'
-                                    delete='false'
-                                    readonly="state in ('draft','done')"
-                                >
+                                name="parts_ids"
+                                nolable="1"
+                                context="{'date_open':date_open}"
+                                create='false'
+                                delete='false'
+                                readonly="state in ('draft','done')"
+                            >
                                 <tree>
                                     <field
+                                        name='product_id'
+                                        string="Part No"
+                                        required="1"
+                                        readonly="is_deliver"
+                                        options="{'no_open': True, 'create': false, 'create_edit': false}"
+                                    />
+                                    <field
+                                        name='warehouse_id'
+                                        required="1"
+                                        readonly="is_deliver"
+                                        options="{'no_open': True, 'create': false, 'create_edit': false}"
+                                    />
+                                    <field
+                                        name="qty_hand"
+                                        readonly="1"
+                                        force_save="1"
+                                    />
+                                    <field
+                                        name='qty'
+                                        required="1"
+                                        readonly="is_deliver"
+                                    />
+                                    <field
+                                        name='product_uom'
+                                        readonly="is_deliver"
+                                        required="1"
+                                    />
+                                    <field name='price_unit' readonly="is_deliver" />
+                                    <field name='total' readonly="1" force_save="1" />
+                                    <field name="date_issued" />
+                                    <field
+                                        name="issued_by"
+                                        string="Issued By"
+                                        readonly="1"
+                                        options="{'no_open': True, 'create': false, 'create_edit': false}"
+                                    />
+                                    <field name="is_deliver" invisible="1" />
+                                </tree>
+                                <form string="Maintenance">
+                                    <group>
+                                        <field
                                             name='product_id'
                                             string="Part No"
                                             required="1"
                                             readonly="is_deliver"
                                             options="{'no_open': True, 'create': false, 'create_edit': false}"
                                         />
-                                    <field name="qty_hand" readonly="1" force_save="1" />
-                                    <field name='qty' required="1" readonly="is_deliver" />
-                                    <field
+                                        <field
+                                            name='warehouse_id'
+                                            domain="[('company_id','=',parent.company_id)]"
+                                            required="1"
+                                            readonly="is_deliver"
+                                            options="{'no_open': True, 'create': false, 'create_edit': false}"
+                                        />
+                                        <field
+                                            name="qty_hand"
+                                            readonly="1"
+                                            force_save="1"
+                                        />
+                                        <field
+                                            name='qty'
+                                            required="1"
+                                            readonly="is_deliver"
+                                        />
+                                        <field
                                             name='product_uom'
                                             readonly="is_deliver"
                                             required="1"
                                         />
-                                    <field name='price_unit' readonly="is_deliver" />
-                                    <field name='total' readonly="1" force_save="1" />
-                                    <field name="date_issued" />
-                                    <field
+                                        <field
+                                            name='price_unit'
+                                            readonly="is_deliver"
+                                        />
+                                        <field
+                                            name='total'
+                                            readonly="1"
+                                            force_save="1"
+                                        />
+                                        <field name="date_issued" />
+                                        <field
                                             name="issued_by"
                                             string="Issued By"
                                             readonly="1"
                                             options="{'no_open': True, 'create': false, 'create_edit': false}"
                                         />
-                                    <field name="is_deliver" invisible="1" />
-                                </tree>
-                                <form string="Maintenance">
-                                    <group>
-                                        <field
-                                                name='product_id'
-                                                string="Part No"
-                                                required="1"
-                                                readonly="is_deliver"
-                                                options="{'no_open': True, 'create': false, 'create_edit': false}"
-                                            />
-                                        <field
-                                                name="qty_hand"
-                                                readonly="1"
-                                                force_save="1"
-                                            />
-                                        <field
-                                                name='qty'
-                                                required="1"
-                                                readonly="is_deliver"
-                                            />
-                                        <field
-                                                name='product_uom'
-                                                readonly="is_deliver"
-                                                required="1"
-                                            />
-                                        <field name='price_unit' readonly="is_deliver" />
-                                        <field name='total' readonly="1" force_save="1" />
-                                        <field name="date_issued" />
-                                        <field
-                                                name="issued_by"
-                                                string="Issued By"
-                                                readonly="1"
-                                                options="{'no_open': True, 'create': false, 'create_edit': false}"
-                                            />
                                         <field name="is_deliver" invisible="1" />
                                     </group>
                                 </form>
@@ -400,15 +458,19 @@
                         </div>
                      <group name="note_group" col="6" class="mt-2 mt-md-0">
                         <group class="oe_subtotal_footer oe_right">
-                            <field name="total_parts_line" style="font-weight: bold; font-size: 20px;"/>
+                            <field
+                                    name="total_parts_line"
+                                    style="font-weight: bold; font-size: 20px;"
+                                />
                         </group>
                         <newline />
                         <group class="oe_subtotal_footer oe_right">
-                            <field 
-                                name="sub_total" 
-                                nolabel="0"
-                                widget="monetary"
-                                style="font-weight: bold; font-size: 24px;"/>
+                            <field
+                                    name="sub_total"
+                                    nolabel="0"
+                                    widget="monetary"
+                                    style="font-weight: bold; font-size: 24px;"
+                                />
                         </group>
                      </group>
                  </page>
@@ -454,23 +516,25 @@
             </xpath> -->
         </field>
     </record>
-<!--
-    <record model='ir.ui.view' id='fleet_vehicle_log_services_view_tree_inherit'>
+
+    <record
+        model='ir.ui.view'
+        id='fleet_vehicle_log_services_view_tree_inherit_fleet_operations'
+    >
         <field name="name">fleet.vehicle.log.services.tree</field>
         <field name="model">fleet.vehicle.log.services</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_tree" />
+        <field name="priority" eval="17" />
         <field name="arch" type="xml">
-            <xpath expr="//tree" position="replace">
-                <tree string="Services Logs" create="false"
-                    colors="blue:state=='confirm';black:state=='done';">
-                     <field name="name" string="Service Order#"/>
-                    <field name="vehicle_id" string="Vehicle-Identification"/>
-                    <field name="fmp_id" />
-                    <field name="vechical_type_id" />
-                    <field name="cost_subtype_id" string="Service Type"/>
-                    <field name="date" string="Service Report On" />
-                    <field name="date_open" string="Service Start Date"/>
-                    <field name="date_close" string="Service Close Date" /> -->
+            <xpath expr="//field[@name='description']" position="before">
+                <field name="name" optional="show" />
+            </xpath>
+            <xpath expr="//field[@name='notes']" position="after">
+                <field name="source_service_id" optional="hide" />
+            </xpath>
+        </field>
+    </record>
+
                     <!-- <field name="open_days" /> -->
              <!--        <field name="odometer" />
                     <field name="next_service_odometer" />
