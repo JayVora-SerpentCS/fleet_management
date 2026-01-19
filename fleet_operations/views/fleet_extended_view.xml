@@ -1047,7 +1047,7 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//group" position="after">
-                <group expand="0" string="Filter By Status ...">
+                <group>
                     <filter
                         string="Non-Write-Off"
                         help="List of vehicle with non-write off"
@@ -1105,7 +1105,7 @@
                         name="vehicle_pending_filter"
                     />
                 </group>
-                <group expand="0" string="Filter By Main Type ...">
+                <group>
                     <filter
                         string="Vehicle"
                         help="List of vehicle with vehicle type"
@@ -1119,7 +1119,7 @@
                         name="vehicle_type_n_filter"
                     />
                 </group>
-                <group expand="0" string="Group By...">
+                <group>
                     <filter
                         name="groupby_Make"
                         string="Make"

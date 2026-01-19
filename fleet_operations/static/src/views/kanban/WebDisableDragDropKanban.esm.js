@@ -29,6 +29,7 @@ function validateColumnQuickCreateExamples(data) {
 
 patch(KanbanRenderer.prototype, {
     setup() {
+        super.setup();
         this.dialogClose = [];
         /**
          * @type {{ processedIds: string[], columnQuickCreateIsFolded: boolean }}

@@ -137,7 +137,7 @@
         <field name="arch" type="xml">
             <search string="Update Pending History">
                 <field name="fmp_id" filter_domain="[('fmp_id','ilike',self)]" />
-                <group expand="0" string="Filter By Status ...">
+                <group>
                     <filter
                         string="New"
                         domain="[('state','=','draft')]"
@@ -153,7 +153,7 @@
                         name="vehicle_appied_pending_filter"
                     />
                 </group>
-                <group expand="0" string="Group By...">
+                <group>
                     <filter
                         name="groupby_vehicle"
                         string="Vehicle ID"
