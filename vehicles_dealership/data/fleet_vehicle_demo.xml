@@ -7,7 +7,7 @@
         <field name="type">consu</field>
         <field name="weight">0.01</field>
         <field name="uom_id" ref="uom.product_uom_unit" />
-        <field name="uom_po_id" ref="uom.product_uom_unit" />
+        <!-- <field name="uom_id" ref="uom.product_uom_unit" /> -->
     </record>
 
     <record id="product_product_fleet_2" model="product.product">
@@ -17,7 +17,7 @@
         <field name="type">consu</field>
         <field name="weight">0.01</field>
         <field name="uom_id" ref="uom.product_uom_unit" />
-        <field name="uom_po_id" ref="uom.product_uom_unit" />
+        <!-- <field name="uom_id" ref="uom.product_uom_unit" /> -->
     </record>
 
     <record id="product_product_fleet_3" model="product.product">
@@ -27,7 +27,7 @@
         <field name="type">consu</field>
         <field name="weight">0.01</field>
         <field name="uom_id" ref="uom.product_uom_unit" />
-        <field name="uom_po_id" ref="uom.product_uom_unit" />
+        <!-- <field name="uom_id" ref="uom.product_uom_unit" /> -->
     </record>
 
     <record id="product_product_fleet_4" model="product.product">
@@ -37,7 +37,7 @@
         <field name="type">consu</field>
         <field name="weight">0.01</field>
         <field name="uom_id" ref="uom.product_uom_unit" />
-        <field name="uom_po_id" ref="uom.product_uom_unit" />
+        <!-- <field name="uom_id" ref="uom.product_uom_unit" /> -->
     </record>
 
     <record id="product_product_fleet_5" model="product.product">
@@ -47,7 +47,7 @@
         <field name="type">consu</field>
         <field name="weight">0.01</field>
         <field name="uom_id" ref="uom.product_uom_unit" />
-        <field name="uom_po_id" ref="uom.product_uom_unit" />
+        <!-- <field name="uom_id" ref="uom.product_uom_unit" /> -->
     </record>
 
     <record id="fleet.vehicle_1" model="fleet.vehicle">
