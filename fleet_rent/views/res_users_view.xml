@@ -95,7 +95,7 @@
                         <group>
                             <field name="function" placeholder="e.g. Sales Director" />
                             <field name="phone" widget="phone" />
-                            <field name="mobile" widget="phone" />
+                            <field name="phone_mobile_search" widget="phone" />
                             <field name="user_ids" invisible="1" />
                             <field
                                 name="email"
@@ -108,7 +108,6 @@
                                 widget="url"
                                 placeholder="e.g. https://www.odoo.com"
                             />
-                            <field name="title" options="{&quot;no_open&quot;: True}" />
                             <field name="lang" />
                             <field
                                 name="category_id"
