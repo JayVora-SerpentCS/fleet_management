@@ -569,7 +569,7 @@ class FleetOperations(models.Model):
         or its license plate.
         """
         vals.update({"fmp_id_editable": True})
-        if self._uid:
+        if self.env.uid:
             vals.update({"updated_by": self.env.user.id})
             vals.update({"updated_date": fields.Date.today()})
 

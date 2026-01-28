@@ -31,9 +31,7 @@ patch(KanbanRenderer.prototype, {
     setup() {
         super.setup();
         this.dialogClose = [];
-        /**
-         * @type {{ processedIds: string[], columnQuickCreateIsFolded: boolean }}
-         */
+
         this.state = useState({
             processedIds: [],
             columnQuickCreateIsFolded:
@@ -43,76 +41,67 @@ patch(KanbanRenderer.prototype, {
         this.exampleData = registry
             .category("kanban_examples")
             .get(this.props.archInfo.examples, null);
+
         if (this.exampleData) {
             validateColumnQuickCreateExamples(this.exampleData);
         }
-        this.ghostColumns = this.generateGhostColumns();
-
-        // Sortable
-        let dataRecordId = "";
-        let dataGroupId = "";
         this.rootRef = useRef("root");
+        let recordId = "";
+        let groupId = "";
         if (
             this.canUseSortable &&
             this.props.list.model.config.resModel === "fleet.vehicle"
         ) {
             useSortable({
                 enable: () => this.canResequenceGroups,
-                // Params
                 ref: this.rootRef,
                 elements: ".o_group_draggable",
                 handle: ".o_column_title",
                 cursor: "move",
-                // Hooks
-                onDragStart: (params) => {
-                    const {element} = params;
-                    dataGroupId = element.dataset.id;
-                    return this.sortStart(params);
+                onDragStart: ({ element }) => {
+                    groupId = element.dataset.id;
+                    return this.sortStart(...arguments);
                 },
                 onDragEnd: (params) => this.sortStop(params),
-                onDrop: (params) => this.sortGroupDrop(dataGroupId, params),
+                onDrop: (params) => this.sortGroupDrop(groupId, params),
             });
         } else {
             useSortable({
                 enable: () => this.canResequenceRecords,
-                // Params
                 ref: this.rootRef,
                 elements: ".o_draggable",
                 ignore: ".dropdown",
-                groups: () => this.props.list.isGrouped && ".o_kanban_group",
+                groups: () =>
+                    this.props.list.isGrouped && ".o_kanban_group",
                 connectGroups: () => this.canMoveRecords,
                 cursor: "move",
-                // Hooks
-                onDragStart: (params) => {
-                    const {element, group} = params;
-                    dataRecordId = element.dataset.id;
-                    dataGroupId = group && group.dataset.id;
-                    return this.sortStart(params);
+                onDragStart: ({ element, group }) => {
+                    recordId = element.dataset.id;
+                    groupId = group && group.dataset.id;
+                    return this.sortStart(...arguments);
                 },
                 onDragEnd: (params) => this.sortStop(params),
-                onGroupEnter: (params) => this.sortRecordGroupEnter(params),
-                onGroupLeave: (params) => this.sortRecordGroupLeave(params),
+                onGroupEnter: (params) =>
+                    this.sortRecordGroupEnter(params),
+                onGroupLeave: (params) =>
+                    this.sortRecordGroupLeave(params),
                 onDrop: (params) =>
-                    this.sortRecordDrop(dataRecordId, dataGroupId, params),
+                    this.sortRecordDrop(recordId, groupId, params),
             });
             useSortable({
                 enable: () => this.canResequenceGroups,
-                // Params
                 ref: this.rootRef,
                 elements: ".o_group_draggable",
                 handle: ".o_column_title",
                 cursor: "move",
-                // Hooks
-                onDragStart: (params) => {
-                    const {element} = params;
-                    dataGroupId = element.dataset.id;
-                    return this.sortStart(params);
+                onDragStart: ({ element }) => {
+                    groupId = element.dataset.id;
+                    return this.sortStart(...arguments);
                 },
                 onDragEnd: (params) => this.sortStop(params),
-                onDrop: (params) => this.sortGroupDrop(dataGroupId, params),
+                onDrop: (params) => this.sortGroupDrop(groupId, params),
             });
         }
-
         useBounceButton(this.rootRef, (clickedEl) => {
             if (!this.props.list.count || this.props.list.model.useSampleModel) {
                 return clickedEl.matches(
@@ -139,20 +128,16 @@ patch(KanbanRenderer.prototype, {
                 }
                 const firstCard = this.rootRef.el.querySelector(".o_kanban_record");
                 if (firstCard) {
-                    // Focus first kanban card
                     firstCard.focus();
                 }
             });
         }
-
         useHotkey(
             "Enter",
             ({target}) => {
                 if (!target.classList.contains("o_kanban_record")) {
                     return;
                 }
-
-                // Open first link
                 const firstLink = target.querySelector(
                     ".oe_kanban_global_click, a, button"
                 );
@@ -163,7 +148,6 @@ patch(KanbanRenderer.prototype, {
             },
             {area: () => this.rootRef.el}
         );
-
         const arrowsOptions = {area: () => this.rootRef.el, allowRepeat: true};
         if (this.env.searchModel) {
             useHotkey(
