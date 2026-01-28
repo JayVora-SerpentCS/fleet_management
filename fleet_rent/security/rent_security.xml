@@ -10,20 +10,14 @@
         <field name="sequence">19</field>
     </record>
        
-    <!-- <record id="fleet_rent_access_categ" model="ir.module.category">
-        <field name="name">Fleet Rent</field>
-        <field name="sequence">18</field>
-    </record> -->
 
     <record id="group_vehicle_rent_user" model="res.groups">
         <field name="name">Vehicle Tenant (User)</field>
-        <!-- <field name="category_id" ref="fleet_rent.fleet_rent_access_categ" /> -->
         <field name="privilege_id" ref="fleet_rent_access_categ"/>
     </record>
 
     <record id="group_vehicle_rent_manager" model="res.groups">
         <field name="name">Vehicle Rent Manager</field>
-        <!-- <field name="category_id" ref="fleet_rent.fleet_rent_access_categ" /> -->
         <field name="privilege_id" ref="fleet_rent_access_categ"/>
         <field name="implied_ids" eval="[(4, ref('group_vehicle_rent_user'))]" />
     </record>
@@ -55,17 +49,6 @@
         <field name="perm_unlink" eval="True" />
         <field name="domain_force">[(1,'=',1)]</field>
     </record>
-
-        <!-- <record id="fleet_rule_tenancy_visibility_user" model="ir.rule">
-            <field name="name">User can only see his/her tenancy</field>
-            <field name="model_id" ref="model_tenancy_rent_schedule"/>
-            <field name="groups" eval="[(4, ref('group_vehicle_rent_user'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-            <field name="domain_force">['|',('fleet_rent_id.tenant_id','=',user.id),('fleet_rent_id.tenant_id','=',False)]</field>
-        </record> -->
 
     <record id="fleet_rule_tenancy_visibility_manager" model="ir.rule">
         <field name="name">Manager can see all the tenancy</field>
