@@ -48,16 +48,13 @@ class FleetPendingRepair(models.AbstractModel):
         worksheet.col(7).width = 5000
         worksheet.col(8).width = 2500
         font = xlwt.Font()
-        # borders = xlwt.Borders()
         font.bold = True
         font.name = "Arial"
         font.height = 200
-        # pattern = xlwt.Pattern()
         tot = xlwt.easyxf("font: bold 1; font: name 1; font: height 200")
         style1 = xlwt.easyxf(
             "font: bold 1; font: name 1; font: height 200", num_format_str="DD/MM/YYYY"
         )
-        # border = xlwt.easyxf('font: name 1; font: height 200')
         format1 = xlwt.easyxf(
             "font: bold 1; font: name 1; font: height 200;\
                     pattern: pattern solid, fore_colour yellow;"

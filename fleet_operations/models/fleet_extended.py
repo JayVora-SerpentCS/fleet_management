@@ -487,22 +487,8 @@ class FleetOperations(models.Model):
     work_order_close = fields.Boolean(default=True)
     fmp_id_editable = fields.Boolean("Vehicle ID Editable?")
 
-    # _sql_constraints = [
-    #     (
-    #         "vehilce_unique",
-    #         "unique(vin_sn)",
-    #         "The vehicle is already exist with this vin no.!",
-    #     ),
     _vehilce_unique = models.Constraint("unique(vin_sn)","The vehicle is already exist with this vin no.!",)
-
-
     _fmp_unique = models.Constraint("unique(name)","The vehicle is already exist with this Vehicle ID!",)
-    #     (
-    #         "fmp_unique",
-    #         "unique(name)",
-    #         "The vehicle is already exist with this Vehicle ID!",
-    #     ),
-    # ]
 
     income_acc_id = fields.Many2one("account.account", "Income Account")
     expence_acc_id = fields.Many2one("account.account", "Expense Account")
@@ -705,10 +691,6 @@ class VehicleDivision(models.Model):
     code = fields.Char(translate=True)
     name = fields.Char(required=True, translate=True)
 
-    # _sql_constraints = [
-    #     ("vehicle.divison_uniq", "unique(name)", "This divison is already exist!")
-    # ]
-    
     _vehicle_divison_uniq = models.Constraint("unique(name)","This divison is already exist!")
 
 
@@ -921,9 +903,6 @@ class FleetWittenOff(models.Model):
                         "which is in Progress or Complete state!"
                     )
                     raise UserError(msg)
-                # elif vehicle.state == 'inspection':
-                #     raise UserError(_("You can\'t write-off this "
-                #                       "vehicle which is in Inspection"))
                 elif vehicle.state == "rent":
                     msg = _("You can't write-off this " "vehicle which is On Rent.")
                     raise UserError(msg)
@@ -981,14 +960,6 @@ class FleetWittenOff(models.Model):
                 "state": "confirm",
                 "name": seq,
             })
-            # wr_off.write(
-            #     {
-            #         "state": "confirm",
-            #         "name": self.env["ir.sequence"].next_by_code(
-            #             "vehicle.writeoff.sequnce"
-            #         ),
-            #     }
-            # )
 
     def action_set_to_draft(self):
         """Button method to set state in draft."""
@@ -1012,15 +983,6 @@ class FleetVehicleModel(models.Model):
     )
 
     image_128 = fields.Image("Image", readonly=False)
-
-    # _sql_constraints = [
-    #     (
-    #         "model_brand_name_uniq",
-    #         "unique(name,brand_id)",
-    #         "Model with this brand Name and Make is " "already exist!",
-    #     )
-    # ]
-    
 
     _model_brand_name_uniq = models.Constraint("unique(name,brand_id)","Model with this brand Name and Make is " "already exist!",)
 
@@ -1089,15 +1051,6 @@ class VehicleUniqueSequence(models.Model):
     vehicle_location_id = fields.Many2one("res.country.state", "Location ")
     make_id = fields.Many2one("fleet.vehicle.model.brand", "Make")
     sequence_id = fields.Many2one("ir.sequence", "Sequence")
-
-    # _sql_constraints = [
-    #     (
-    #         "location_make_name_uniq",
-    #         "unique (vehicle_location_id,make_id,sequence_id)",
-    #         "Location, Make and Sequence all should be \
-    #             unique for unique sequence!",
-    #     )
-    # ]
 
     _location_make_name_uniq = models.Constraint("unique (vehicle_location_id,make_id,sequence_id)","Location, Make and Sequence all should be \
                 unique for unique sequence!",)

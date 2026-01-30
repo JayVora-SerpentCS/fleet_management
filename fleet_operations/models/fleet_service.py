@@ -533,8 +533,6 @@ class FleetVehicleLogServices(models.Model):
 
     def write(self, vals):
         """Method Write."""
-        # if not self._context:
-        #     self._context = {}
         for work_order in self:
             if work_order.vehicle_id:
                 vals.update(
@@ -677,8 +675,6 @@ class FleetVehicleLogServices(models.Model):
     task_ids = fields.One2many("service.task", "main_id", "Service Task")
     parts_ids = fields.One2many("task.line", "fleet_service_id", "Parts")
     note = fields.Text("Log Notes")
-    # date_child = fields.Date(related='cost_id.date', 'Cost Date',
-    #                          store=True)
     sub_total = fields.Float(
         compute="_compute_get_total", string="Total Parts Amount", store=True
     )
@@ -868,14 +864,6 @@ class TripPartsHistoryDetails(models.Model):
             res[parts_load.id] = 0.0
             total_encoded_qty = 0.0
             if parts_load.team_id and parts_load.team_id.wo_parts_ids:
-                # query = (
-                #     "select sum(used_qty) from \
-                #             workorder_parts_history_details where \
-                #             product_id="
-                #     + str(parts_load.product_id.id)
-                #     + " and team_id="
-                #     + str(parts_load.team_id.id)
-                # )
                 self._cr.execute(
                     "select sum(used_qty) "
                     "from workorder_parts_history_details"
@@ -1139,7 +1127,6 @@ class TaskLine(models.Model):
         of the part and the time when it was issued.
         """
         for vals in vals_list:
-            # product_obj = self.env['product.product']
             if not vals.get("issued_by", False):
                 vals.update({"issued_by": self._uid})
             if not vals.get("date_issued", False):

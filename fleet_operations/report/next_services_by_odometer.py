@@ -35,7 +35,6 @@ class NextServiceByOdometer(models.AbstractModel):
         font.bold = True
         font.name = "Arial"
         font.height = 200
-        # pattern = xlwt.Pattern()
         border = xlwt.easyxf("font: bold 1; font: name 1; font: height 200")
         format1 = xlwt.easyxf(
             "font: bold 1; font: name 1; font: height 200;\
@@ -94,9 +93,6 @@ class NextServiceByOdometer(models.AbstractModel):
             line_col += 1
             worksheet.write(line_row, line_col, obj.due_odometer or "", border)
             line_col += 1
-            # worksheet.write(line_row, line_col,
-            #                 obj.vechical_location_id and
-            #                 obj.vechical_location_id.name or '', border)
             line_col = 0
             line_row += 1
             counter += 1

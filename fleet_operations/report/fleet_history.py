@@ -142,8 +142,6 @@ class PrintFleetHistory(models.TransientModel):
         font.name = "Arial"
         font.height = 200
         style1 = xlwt.easyxf("font: bold 1; font: name 1; font: height 200")
-        # pattern = xlwt.Pattern()
-        # tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         border = xlwt.easyxf("font: bold 1; font: name 1; font: height 200")
         format1 = xlwt.easyxf(
             "font: bold 1; font: name 1; font: height 200;\
@@ -182,9 +180,6 @@ class PrintFleetHistory(models.TransientModel):
             row += 1
             worksheet.write(row, 0, "Plate No :", format1)
             worksheet.write(row, 1, obj.license_plate or "", border)
-            # worksheet.write(row, 2, 'Registration State :', format1)
-            # worksheet.write(row, 3, obj.vechical_location_id and
-            #                 obj.vechical_location_id.name or '', border)
             row += 2
             for order in obj.work_order_ids:
                 row += 1
@@ -203,9 +198,6 @@ class PrintFleetHistory(models.TransientModel):
                     )
                 worksheet.write(row, 0, "Actual Date Issued :", format1)
                 worksheet.write(row, 1, date or "", style1)
-                # worksheet.write(row, 2, 'Location :', format1)
-                # worksheet.write(row, 3, order.vechical_location_id and
-                #                 order.vechical_location_id.name or '', border)
                 worksheet.write(row, 2, "Notes :", format1)
                 worksheet.write(row, 3, order.note or "", border)
                 row += 2

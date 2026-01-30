@@ -75,7 +75,6 @@
                                 <td
                                         style="text-align:center;background-color: #E0EBEB;"
                                     >DATE</td>
-                        <!--         <td style="text-align:center;background-color: #E0EBEB;">COUNT</td> -->
                             </tr>
                             </thead>
                             <tbody>
@@ -97,7 +96,6 @@
                                     <td style="text-align:center"><span
                                                 t-esc="line.get('issue_date')"
                                             /></td>
-                           <!--          <td style="text-align:center;"><span t-esc="line.get('count')"/></td> -->
                                 </t>
                             </tr>
                             </tbody>

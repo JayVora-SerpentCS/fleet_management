@@ -52,13 +52,10 @@ class FleetListing(models.AbstractModel):
         worksheet.col(12).width = 8500
 
         font = xlwt.Font()
-        # borders = xlwt.Borders()
         font.bold = True
         font.name = "Arial"
         font.height = 200
-        # pattern = xlwt.Pattern()
         xlwt.easyxf("font: name 1; font: height 220")
-        # tot = xlwt.easyxf('font: bold 1; font: name 1; font: height 200')
         border = xlwt.easyxf("font: bold 1; font: name 1; font: height 200")
         format1 = xlwt.easyxf(
             "font: bold 1; font: name 1; font: height 200;\

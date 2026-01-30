@@ -34,7 +34,6 @@ class NextServiceDate(models.AbstractModel):
         font.bold = True
         font.name = "Arial"
         font.height = 200
-        # pattern = xlwt.Pattern()
         style1 = xlwt.easyxf("font: bold 1; font: name 1; font: height 200")
         border = xlwt.easyxf("font: bold 1; font: name 1; font: height 200")
         format1 = xlwt.easyxf(
