@@ -57,7 +57,7 @@ class FleetRent(models.Model):
     @api.model
     def default_get(self, fields):
         """Overridden method to update odometer in fleet rent."""
-        context = self._context or {}
+        context = self.env.context or {}
         vehical_obj = self.env["fleet.vehicle"]
         res = super(FleetRent, self).default_get(fields)
         if res.get("vehicle_id", False):
@@ -875,7 +875,7 @@ class TenancyRentSchedule(models.Model):
             inv_values.update({"invoice_line_ids": [(0, 0, inv_line_values)]})
         acc_id = self.env["account.move"].create(inv_values)
         self.write({"invc_id": acc_id.id, "inv": True})
-        context = dict(self._context or {})
+        context = dict(self.env.context or {})
         wiz_form_id = self.env.ref("account.view_move_form").id
 
         return {
@@ -891,7 +891,7 @@ class TenancyRentSchedule(models.Model):
 
     def open_invoice(self):
         """Method Open Invoice."""
-        context = dict(self._context or {})
+        context = dict(self.env.context or {})
         wiz_form_id = self.env.ref("account.view_move_form").id
         return {
             "view_type": "form",
