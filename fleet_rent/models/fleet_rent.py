@@ -57,7 +57,7 @@ class FleetRent(models.Model):
     @api.model
     def default_get(self, fields):
         """Overridden method to update odometer in fleet rent."""
-        context = self._context or {}
+        context = self.env.context or {}
         vehical_obj = self.env["fleet.vehicle"]
         res = super(FleetRent, self).default_get(fields)
         if res.get("vehicle_id", False):
@@ -114,57 +114,40 @@ class FleetRent(models.Model):
 
     @api.depends("deposit_amt")
     def _compute_get_deposit(self):
-        """Method to set deposit return and deposit received."""
         for rent in self:
-            deposit_inv_ids = self.env["account.move"].search(
-                [
-                    ("fleet_rent_id", "=", rent.id),
-                    ("move_type", "=", "out_invoice"),
-                    ("state", "in", ["posted"]),
-                    ("is_deposit_inv", "=", True),
-                ]
-            )
-            residual_amt = 0.0
             rent.deposit_received = False
-            if deposit_inv_ids:
-                residual_amt = sum(
-                    [
-                        dp_inv.amount_residual
-                        for dp_inv in deposit_inv_ids
-                        if dp_inv.amount_residual > 0.0
-                    ]
-                )
-                if residual_amt > 0.0:
-                    rent.deposit_received = False
-                else:
-                    rent.deposit_received = True
+
+            deposit_inv_ids = self.env["account.move"].search([
+                ("fleet_rent_id", "=", rent.id),
+                ("move_type", "=", "out_invoice"),
+                ("state", "in", ["posted"]),
+                ("is_deposit_inv", "=", True),
+            ])
+            if not deposit_inv_ids:
+                continue
+            if any(inv.amount_residual > 0.0 for inv in deposit_inv_ids):
+                rent.deposit_received = False
+            else:
+                rent.deposit_received = True
 
     @api.depends("amount_return")
     def _compute_amount_return(self):
-        """Method to set the deposit return value."""
         for rent in self:
-            credit_inv_ids = self.env["account.move"].search(
-                [
-                    ("fleet_rent_id", "=", rent.id),
-                    ("move_type", "=", "out_refund"),
-                    ("state", "in", ["posted"]),
-                    ("is_deposit_return_inv", "=", True),
-                ]
-            )
-            residual_amt = 0.0
             rent.is_deposit_return = False
-            if credit_inv_ids:
-                residual_amt = sum(
-                    [
-                        credit_inv.amount_residual
-                        for credit_inv in credit_inv_ids
-                        if credit_inv.amount_residual > 0.0
-                    ]
-                )
-                if residual_amt > 0.0:
-                    rent.is_deposit_return = False
-                else:
-                    rent.is_deposit_return = True
+            
+            credit_inv_ids = self.env["account.move"].search([
+                ("fleet_rent_id", '=', rent.id),
+                ("move_type", '=', 'out_refund'),
+                ("state", 'in', ['posted']),
+                ("is_deposit_return_inv", '=', True),
+            ])
+            
+            if not credit_inv_ids:
+                continue
+            if any(inv.amount_residual > 0.0 for inv in credit_inv_ids):
+                rent.is_deposit_return = False
+            else:
+                rent.is_deposit_return = True
 
     @api.depends("rent_type_id", "date_start")
     def _compute_create_date(self):
@@ -892,7 +875,7 @@ class TenancyRentSchedule(models.Model):
             inv_values.update({"invoice_line_ids": [(0, 0, inv_line_values)]})
         acc_id = self.env["account.move"].create(inv_values)
         self.write({"invc_id": acc_id.id, "inv": True})
-        context = dict(self._context or {})
+        context = dict(self.env.context or {})
         wiz_form_id = self.env.ref("account.view_move_form").id
 
         return {
@@ -908,7 +891,7 @@ class TenancyRentSchedule(models.Model):
 
     def open_invoice(self):
         """Method Open Invoice."""
-        context = dict(self._context or {})
+        context = dict(self.env.context or {})
         wiz_form_id = self.env.ref("account.view_move_form").id
         return {
             "view_type": "form",

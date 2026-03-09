@@ -671,7 +671,7 @@
                 <field name="start_date" />
                 <field name="amount" string="Amount" />
                 <newline />
-                <group expand="0" string="Group by..." colspan="4" col="10">
+                <group>
                     <!-- <filter icon="terp-personal" string="Rental Vehicle"
                         name="rental_vehicle" context="{'group_by':'tenancy_id'}"/> -->
                     <filter
