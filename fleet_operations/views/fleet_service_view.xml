@@ -562,7 +562,7 @@
                     icon="terp-stock_effects-object-colorize"
                     domain="[('date_close','=',context_today().strftime('%%Y-%%m-%%d'))]"
                 />
-                    <group expand="0" string="Group By...">
+                    <group>
                         <filter
                         string="Vehicle"
                         name="vehicle"

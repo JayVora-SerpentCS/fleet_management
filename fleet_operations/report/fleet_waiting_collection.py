@@ -39,7 +39,6 @@ class FleetWaitingCollection(models.AbstractModel):
         font.bold = True
         font.name = "Arial"
         font.height = 200
-        # pattern = xlwt.Pattern()
         border = xlwt.easyxf("font: bold 1; font: name 1; font: height 200")
         format1 = xlwt.easyxf(
             "font: bold 1; font: name 1; font: height 200;\
@@ -59,7 +58,6 @@ class FleetWaitingCollection(models.AbstractModel):
         worksheet.write(row, 4, "METER", format1)
         worksheet.write(row, 5, "MAKE", format1)
         worksheet.write(row, 6, "MODEL", format1)
-        # worksheet.write(row, 7, 'REGISTRATION STATE', format1)
         worksheet.write(row, 7, "DRIVER", format1)
         worksheet.write(row, 8, "DRIVER CONTACT NO", format1)
         line_row = row + 1
@@ -87,10 +85,6 @@ class FleetWaitingCollection(models.AbstractModel):
                 worksheet.write(
                     line_row, line_col, obj.model_id and obj.model_id.name or "", border
                 )
-                # line_col += 1
-                # worksheet.write(line_row, line_col,
-                #                 obj.vechical_location_id and
-                #                 obj.vechical_location_id.name or '', border)
                 line_col += 1
                 worksheet.write(
                     line_row,
