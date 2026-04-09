@@ -8,6 +8,7 @@
     "license": "LGPL-3",
     "summary": """Rental Vehicle Management System
         This module provides fleet rent features.""",
+    "sequence": 1,
     # Website
     "author": "Serpent Consulting Services Pvt. Ltd.",
     "website": "https://www.serpentcs.com",
@@ -30,7 +31,7 @@
         "wizard/rent_close_reason_view.xml",
         "report/fleet_rent.xml",
     ],
-    "images": ["static/description/fleet_rental_vehicle_banner.png"],
+    "images": ["static/description/manage_fleet_rentals_product_banner.jpg"],
     "assets": {
         "web.assets_backend": [
             "fleet_rent/static/src/css/fleet_rent.scss",

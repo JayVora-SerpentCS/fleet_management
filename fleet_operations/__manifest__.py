@@ -6,6 +6,7 @@
     "category": "Managing vehicles and contracts",
     "version": "19.0.1.0.0",
     "license": "LGPL-3",
+    "sequence": 1,
     "summary": """This module extends the fleet functionality and
      provides extra features and manage fleet operations.
     """,
@@ -40,7 +41,7 @@
         "wizard/vehicle_change_history_view.xml",
         "wizard/repair_line_summary_view.xml",
     ],
-    "images": ["static/description/Banner_Fleet_Operation.png"],
+    "images": ["static/description/fleet_management_product_banner.jpg"],
     # "assets": {
     #     "web.assets_backend": [
     #         "fleet_operations/static/src/views/kanban/WebDisableDragDropKanban.esm.js",
