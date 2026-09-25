@@ -32,12 +32,12 @@ class ProductProduct(models.Model):
                         "is_vehicle": True,
                     }
                 )
-        return super(ProductProduct, self).create(vals_list)
+        return super().create(vals_list)
 
     def write(self, vals):
         """Overridden method to update the vehicle information."""
         ctx = dict(self.env.context)
-        res = super(ProductProduct, self).write(vals)
+        res = super().write(vals)
         for product in self:
             if (
                 ctx
@@ -88,7 +88,7 @@ class FleetVehicle(models.Model):
 
     def write(self, vals):
         """Overridden method to update the product information."""
-        res = super(FleetVehicle, self).write(vals)
+        res = super().write(vals)
         update_prod_vals = {}
         for vehicle in self:
             if vehicle.product_id:

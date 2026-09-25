@@ -8,7 +8,7 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 class TestWriteOff(TransactionCase):
     def setUp(self):
-        super(TestWriteOff, self).setUp()
+        super().setUp()
 
     def test(self):
         self.vehicle_obj = self.env["fleet.vehicle"]

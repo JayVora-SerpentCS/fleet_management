@@ -10,7 +10,7 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 @tagged("-standard", "test_rj")
 class TestWorkOrder(TransactionCase):
     def setUp(self):
-        super(TestWorkOrder, self).setUp()
+        super().setUp()
 
     def test(self):
         self.vehicle_obj = self.env["fleet.vehicle"]

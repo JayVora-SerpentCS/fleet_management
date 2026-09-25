@@ -13,9 +13,9 @@
 
 
     <meta name="description"
-        content="A Module for managing your Vehicle rental business Note : Please See the requirements.txt file before installation of this module.(sudo pip3 install -r>
+        content="A Module for managing your Vehicle rental business Note : Please See the requirements.txt file before installation of this module.(sudo pip3 install -r">
     <meta property="og:description"
-        content="A Module for managing your Vehicle rental business Note : Please See the requirements.txt file before installation of this module.(sudo pip3 install -r>
+        content="A Module for managing your Vehicle rental business Note : Please See the requirements.txt file before installation of this module.(sudo pip3 install -r">
 
 
     <meta name="keywords"
@@ -33,7 +33,7 @@
     {
       "@context": "https://www.serpentcs.com/",
       "@type": "SoftwareApplication",
-      "name": "Manage Fleet Rentals"",
+      "name": "Manage Fleet Rentals",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Odoo",
       "description": "A Module for managing your Vehicle rental business Note : Please See the requirements.txt file before installation of this module.(sudo pip3 install -r",
@@ -179,6 +179,15 @@
                     <a href="#faq" data-bs-toggle="pill" aria-expanded="true" class="nav-link"
                         style="font-family: Roboto;text-transform: uppercase;font-weight: 600;font-size: 15px;letter-spacing: 1px;padding: 14px 20px;color:#282828;">
                         <img src="images/faq.png" style="width:30px; margin-top:-4px; margin-right:6px">FAQs
+                    </a>
+                </li>
+                
+                
+                <li style="background-color:#f5f3f3; margin-right:30px; padding-bottom:2px; padding:0px !important; border-radius: 10px;"
+                    class="nav-item">
+                    <a href="#support" data-bs-toggle="pill" aria-expanded="true" class="nav-link"
+                        style="font-family: Roboto;text-transform: uppercase;font-weight: 600;font-size: 15px;letter-spacing: 1px;padding: 14px 20px;color:#282828;">
+                        <img src="images/contact_query.png" style="width:30px; margin-top:-4px; margin-right:6px">Support
                     </a>
                 </li>
                 
@@ -633,7 +642,6 @@
     </section>
         
         
-        </section>
             </div>
 
             <div aria-labelledby="feature-tab" class="tab-pane fade show py-1" id="ss" role="tabpanel"
@@ -1148,6 +1156,48 @@
                 </div>
             </div>
         </div>
+
+        
+        <!-- Support tab: only Odoo Apps whitelisted inline CSS; layout/shadow via Bootstrap classes -->
+        <div aria-labelledby="support-tab" class="tab-pane fade" id="support" role="tabpanel"
+            style="background-color:#fff !important; padding: 2rem 0;">
+            <div class="row justify-content-center">
+                <div class="col-lg-12 d-flex flex-column align-items-center">
+                    <h3 style="text-align: center;padding:1rem; letter-spacing: 2px; font-weight: 800;
+                        color: black; text-transform: uppercase; font-family: Poppins, Helvetica, sans-serif;">
+                        Support & Service Policy
+                    </h3>
+                </div>
+                <div class="container">
+                    <div class="mt-3 tab-content tab-content-last typography">
+                        <ul style="padding:0">
+                            
+                            <li class="shadow rounded" style="font-family:Montserrat; padding:20px; margin-bottom:20px; font-size:16px; color:#212121; font-weight:600; letter-spacing:1px; display:block; background-color:#fff5f5; border-left:4px solid #C3282D; border-radius:0.25rem !important">
+                                <span class="fa fa-check-circle" style="color:#C3282D; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                30 Days Bug-Fix Support: Any bugs related to the purchased module reported within 30 days from the date of purchase are covered under our bug-fix support.
+                            </li>
+                            
+                            <li class="shadow rounded" style="font-family:Montserrat; padding:20px; margin-bottom:20px; font-size:16px; color:#212121; font-weight:600; letter-spacing:1px; display:block; background-color:#fff5f5; border-left:4px solid #C3282D; border-radius:0.25rem !important">
+                                <span class="fa fa-check-circle" style="color:#C3282D; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                Customization & Add-ons: For customization requirements or additional add-on development, please contact us at contact@serpentcs.com.
+                            </li>
+                            
+                            <li class="shadow rounded" style="font-family:Montserrat; padding:20px; margin-bottom:20px; font-size:16px; color:#212121; font-weight:600; letter-spacing:1px; display:block; background-color:#fff5f5; border-left:4px solid #C3282D; border-radius:0.25rem !important">
+                                <span class="fa fa-check-circle" style="color:#C3282D; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                Support Availability: Our support team is available Monday to Saturday.
+                            </li>
+                            
+                            <li class="shadow rounded" style="font-family:Montserrat; padding:20px; margin-bottom:20px; font-size:16px; color:#212121; font-weight:600; letter-spacing:1px; display:block; background-color:#fff5f5; border-left:4px solid #C3282D; border-radius:0.25rem !important">
+                                <span class="fa fa-check-circle" style="color:#C3282D; font-weight:600; font-size:18px; padding-right:10px"></span>
+                                Free Configuration Support: We provide up to 3 hours of complimentary support for queries related to module configuration and setup.
+                            </li>
+                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         </div>
 
     <section class="oe_container ">
@@ -1841,7 +1891,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var animatedElements = document.querySelectorAll(
-                '.,' +
                 '.oe_container,' +
                 '.card,' +
                 '.nav-pills .nav-link,' +
@@ -1849,10 +1898,6 @@
                 '.accordion-item,' +
                 '.help-support'
             );
-
-            animatedElements.forEach(function (el) {
-                el.classList.add('');
-            });
 
             var observer = new IntersectionObserver(function (entries, obs) {
                 entries.forEach(function (entry) {

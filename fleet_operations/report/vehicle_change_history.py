@@ -71,30 +71,42 @@ class VehicalChangeHistoryReport(models.AbstractModel):
                         or "",
                         "vin": rec.vehicle_id and rec.vehicle_id.vin_sn or "",
                         "plate": rec.vehicle_id and rec.vehicle_id.license_plate or "",
-                        "new_engine": rec.new_engine_no
-                        if report_type == "engine_history"
-                        else "",
-                        "old_engine": rec.previous_engine_no
-                        if report_type == "engine_history"
-                        else "",
-                        "new_color": rec.current_color_id.name
-                        if report_type == "color_history"
-                        else "",
-                        "old_color": rec.previous_color_id.name
-                        if report_type == "color_history"
-                        else "",
-                        "new_tire": rec.new_tire_size
-                        if report_type == "tire_history"
-                        else "",
-                        "old_tire": rec.previous_tire_size
-                        if report_type == "tire_history"
-                        else "",
-                        "new_battery": rec.new_battery_size
-                        if report_type == "battery_history"
-                        else "",
-                        "old_battery": rec.previous_battery_size
-                        if report_type == "battery_history"
-                        else "",
+                        "new_engine": (
+                            rec.new_engine_no if report_type == "engine_history" else ""
+                        ),
+                        "old_engine": (
+                            rec.previous_engine_no
+                            if report_type == "engine_history"
+                            else ""
+                        ),
+                        "new_color": (
+                            rec.current_color_id.name
+                            if report_type == "color_history"
+                            else ""
+                        ),
+                        "old_color": (
+                            rec.previous_color_id.name
+                            if report_type == "color_history"
+                            else ""
+                        ),
+                        "new_tire": (
+                            rec.new_tire_size if report_type == "tire_history" else ""
+                        ),
+                        "old_tire": (
+                            rec.previous_tire_size
+                            if report_type == "tire_history"
+                            else ""
+                        ),
+                        "new_battery": (
+                            rec.new_battery_size
+                            if report_type == "battery_history"
+                            else ""
+                        ),
+                        "old_battery": (
+                            rec.previous_battery_size
+                            if report_type == "battery_history"
+                            else ""
+                        ),
                         "old_vin": "",
                         "new_vin": "",
                         "change_date": changed_date,

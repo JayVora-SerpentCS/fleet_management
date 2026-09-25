@@ -3,7 +3,7 @@ from odoo.tests.common import TransactionCase
 
 class TestVehicleColor(TransactionCase):
     def setUp(self):
-        super(TestVehicleColor, self).setUp()
+        super().setUp()
 
     def test(self):
         vehicle_color_obj = self.env["color.color"]

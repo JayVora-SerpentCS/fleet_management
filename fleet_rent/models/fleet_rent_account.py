@@ -18,7 +18,7 @@ class AccountInvoice(models.Model):
     def _prepare_refund(
         self, invoice, invoice_date=None, date=None, description=None, journal_id=None
     ):
-        refund_vals = super(AccountInvoice, self)._prepare_refund(
+        refund_vals = super()._prepare_refund(
             invoice, invoice_date, date, description, journal_id
         )
         refund_vals.update(
@@ -30,7 +30,7 @@ class AccountInvoice(models.Model):
 
     def action_move_create(self):
         """Method Action Move Create."""
-        res = super(AccountInvoice, self).action_move_create()
+        res = super().action_move_create()
         for inv_rec in self:
             if inv_rec.move_id and inv_rec.vehicle_id:
                 inv_rec.move_id.write(
@@ -44,7 +44,7 @@ class AccountInvoice(models.Model):
 
     def action_invoice_open(self):
         """Method to Change state in Open."""
-        res = super(AccountInvoice, self).action_invoice_open()
+        res = super().action_invoice_open()
         for invoice in self:
             record = self.env["tenancy.rent.schedule"].search(
                 [("invc_id", "=", invoice.id)]
@@ -73,9 +73,7 @@ class AccountPayment(models.AbstractModel):
     # def _compute_payment_amount(self, invoices=None, currency=None):
     def _compute_payment_amount(self, invoices, currency, journal, date):
         """Overridden Method to update deposit amount in payment wizard."""
-        rec = super(AccountPayment, self)._compute_payment_amount(
-            invoices, currency, journal, date
-        )
+        rec = super()._compute_payment_amount(invoices, currency, journal, date)
         if self._context.get("active_model", False) == "fleet.rent":
             return self._context.get("default_amount" or 0.0)
         return rec
@@ -91,9 +89,7 @@ class AccountPaymentRegister(models.TransientModel):
     )
 
     def _create_payment_vals_from_wizard(self, batch_result):
-        res = super(AccountPaymentRegister, self)._create_payment_vals_from_wizard(
-            batch_result
-        )
+        res = super()._create_payment_vals_from_wizard(batch_result)
         res.update({"fleet_rent_id": self.fleet_rent_id.id or False})
         return res
 
@@ -111,7 +107,7 @@ class AccountPaymentRegister(models.TransientModel):
                             or False
                         }
                     )
-        res = super(AccountPaymentRegister, self)._create_payments()
+        res = super()._create_payments()
         user = self.env.user
         notes = (
             "Your Rent Payment is Registered by"

@@ -40,7 +40,7 @@ class UpdateEngineInfo(models.TransientModel):
     def default_get(self, fields):
         """Method Default Get."""
         vehicle_obj = self.env["fleet.vehicle"]
-        res = super(UpdateEngineInfo, self).default_get(fields)
+        res = super().default_get(fields)
         if self._context.get("active_id", False):
             vehicle = vehicle_obj.browse(self._context["active_id"])
             res.update(
@@ -108,7 +108,7 @@ class UpdateColorInfo(models.TransientModel):
     def default_get(self, fields):
         """Method default Get."""
         vehicle_obj = self.env["fleet.vehicle"]
-        res = super(UpdateColorInfo, self).default_get(fields)
+        res = super().default_get(fields)
         if self._context.get("active_id", False):
             vehicle = vehicle_obj.browse(self._context["active_id"])
             res.update(
@@ -164,7 +164,7 @@ class UpdateVinInfo(models.TransientModel):
     def default_get(self, fields):
         """Method default get."""
         vehicle_obj = self.env["fleet.vehicle"]
-        res = super(UpdateVinInfo, self).default_get(fields)
+        res = super().default_get(fields)
         if self._context.get("active_id", False):
             vehicle = vehicle_obj.browse(self._context["active_id"])
             res.update(
@@ -246,7 +246,7 @@ class UpdateTireInfo(models.TransientModel):
     def default_get(self, fields):
         """Method to default get."""
         vehicle_obj = self.env["fleet.vehicle"]
-        res = super(UpdateTireInfo, self).default_get(fields)
+        res = super().default_get(fields)
         if self._context.get("active_id", False):
             vehicle = vehicle_obj.browse(self._context["active_id"])
             res.update(
@@ -347,7 +347,7 @@ class UpdateBatteryInfo(models.TransientModel):
     def default_get(self, fields):
         """Method to default get."""
         vehicle_obj = self.env["fleet.vehicle"]
-        res = super(UpdateBatteryInfo, self).default_get(fields)
+        res = super().default_get(fields)
         if self._context.get("active_id", False):
             vehicle = vehicle_obj.browse(self._context["active_id"])
             res.update(

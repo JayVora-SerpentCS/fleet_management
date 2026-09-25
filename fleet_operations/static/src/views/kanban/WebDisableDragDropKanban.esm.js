@@ -58,7 +58,7 @@ patch(KanbanRenderer.prototype, {
                 elements: ".o_group_draggable",
                 handle: ".o_column_title",
                 cursor: "move",
-                onDragStart: ({ element }) => {
+                onDragStart: ({element}) => {
                     groupId = element.dataset.id;
                     return this.sortStart(...arguments);
                 },
@@ -71,22 +71,18 @@ patch(KanbanRenderer.prototype, {
                 ref: this.rootRef,
                 elements: ".o_draggable",
                 ignore: ".dropdown",
-                groups: () =>
-                    this.props.list.isGrouped && ".o_kanban_group",
+                groups: () => this.props.list.isGrouped && ".o_kanban_group",
                 connectGroups: () => this.canMoveRecords,
                 cursor: "move",
-                onDragStart: ({ element, group }) => {
+                onDragStart: ({element, group}) => {
                     recordId = element.dataset.id;
                     groupId = group && group.dataset.id;
                     return this.sortStart(...arguments);
                 },
                 onDragEnd: (params) => this.sortStop(params),
-                onGroupEnter: (params) =>
-                    this.sortRecordGroupEnter(params),
-                onGroupLeave: (params) =>
-                    this.sortRecordGroupLeave(params),
-                onDrop: (params) =>
-                    this.sortRecordDrop(recordId, groupId, params),
+                onGroupEnter: (params) => this.sortRecordGroupEnter(params),
+                onGroupLeave: (params) => this.sortRecordGroupLeave(params),
+                onDrop: (params) => this.sortRecordDrop(recordId, groupId, params),
             });
             useSortable({
                 enable: () => this.canResequenceGroups,
@@ -94,7 +90,7 @@ patch(KanbanRenderer.prototype, {
                 elements: ".o_group_draggable",
                 handle: ".o_column_title",
                 cursor: "move",
-                onDragStart: ({ element }) => {
+                onDragStart: ({element}) => {
                     groupId = element.dataset.id;
                     return this.sortStart(...arguments);
                 },

@@ -6,7 +6,7 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 class TestVehicleCost(TransactionCase):
     def setUp(self):
-        super(TestVehicleCost, self).setUp()
+        super().setUp()
 
     def test(self):
         # cost_obj = self.env['fleet.vehicle.cost']

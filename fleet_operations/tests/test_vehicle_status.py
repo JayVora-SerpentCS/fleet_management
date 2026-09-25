@@ -3,7 +3,7 @@ from odoo.tests.common import TransactionCase
 
 class TestVehicleStatus(TransactionCase):
     def setUp(self):
-        super(TestVehicleStatus, self).setUp()
+        super().setUp()
 
     def test(self):
         vehicle_status_obj = self.env["fleet.vehicle.state"].search(

@@ -6,7 +6,7 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 class TestRegistration(TransactionCase):
     def setUp(self):
-        super(TestRegistration, self).setUp()
+        super().setUp()
 
     def test(self):
         self.vehicle_obj = self.env["fleet.vehicle"]

@@ -3,7 +3,7 @@ from odoo.tests.common import TransactionCase
 
 class TestVehicleDriver(TransactionCase):
     def setUp(self):
-        super(TestVehicleDriver, self).setUp()
+        super().setUp()
 
     def test(self):
         driver_obj = self.env["res.partner"]

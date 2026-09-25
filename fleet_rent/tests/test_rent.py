@@ -10,7 +10,7 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 @tagged("-standard", "fleet_rent")
 class TestRent(TransactionCase):
     def setUp(self):
-        super(TestRent, self).setUp()
+        super().setUp()
         self.vehicle_obj = self.env["fleet.vehicle"]
         self.fleet_brand = self.env.ref("fleet.brand_audi")
         self.fleet_model = self.env.ref("fleet.model_a1")

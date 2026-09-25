@@ -8,7 +8,7 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 @tagged("-standard", "fleet_operation")
 class TestOperation(TransactionCase):
     def setUp(self):
-        super(TestOperation, self).setUp()
+        super().setUp()
         self.create_make = self.env["fleet.vehicle.model.brand"]
         self.create_model = self.env["fleet.vehicle.model"]
         self.create_vehicle_type = self.env["vehicle.type"]

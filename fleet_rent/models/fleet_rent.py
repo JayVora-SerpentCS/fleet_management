@@ -59,7 +59,7 @@ class FleetRent(models.Model):
         """Overridden method to update odometer in fleet rent."""
         context = self._context or {}
         vehical_obj = self.env["fleet.vehicle"]
-        res = super(FleetRent, self).default_get(fields)
+        res = super().default_get(fields)
         if res.get("vehicle_id", False):
             vehicle = vehical_obj.browse(res["vehicle_id"])
             if (
@@ -114,8 +114,9 @@ class FleetRent(models.Model):
 
     @api.depends("deposit_amt")
     def _compute_get_deposit(self):
-        """Method to set deposit return and deposit received."""
         for rent in self:
+            rent.deposit_received = False
+
             deposit_inv_ids = self.env["account.move"].search(
                 [
                     ("fleet_rent_id", "=", rent.id),
@@ -124,25 +125,18 @@ class FleetRent(models.Model):
                     ("is_deposit_inv", "=", True),
                 ]
             )
-            residual_amt = 0.0
-            rent.deposit_received = False
-            if deposit_inv_ids:
-                residual_amt = sum(
-                    [
-                        dp_inv.amount_residual
-                        for dp_inv in deposit_inv_ids
-                        if dp_inv.amount_residual > 0.0
-                    ]
-                )
-                if residual_amt > 0.0:
-                    rent.deposit_received = False
-                else:
-                    rent.deposit_received = True
+            if not deposit_inv_ids:
+                continue
+            if any(inv.amount_residual > 0.0 for inv in deposit_inv_ids):
+                rent.deposit_received = False
+            else:
+                rent.deposit_received = True
 
     @api.depends("amount_return")
     def _compute_amount_return(self):
-        """Method to set the deposit return value."""
         for rent in self:
+            rent.is_deposit_return = False
+
             credit_inv_ids = self.env["account.move"].search(
                 [
                     ("fleet_rent_id", "=", rent.id),
@@ -151,20 +145,13 @@ class FleetRent(models.Model):
                     ("is_deposit_return_inv", "=", True),
                 ]
             )
-            residual_amt = 0.0
-            rent.is_deposit_return = False
-            if credit_inv_ids:
-                residual_amt = sum(
-                    [
-                        credit_inv.amount_residual
-                        for credit_inv in credit_inv_ids
-                        if credit_inv.amount_residual > 0.0
-                    ]
-                )
-                if residual_amt > 0.0:
-                    rent.is_deposit_return = False
-                else:
-                    rent.is_deposit_return = True
+
+            if not credit_inv_ids:
+                continue
+            if any(inv.amount_residual > 0.0 for inv in credit_inv_ids):
+                rent.is_deposit_return = False
+            else:
+                rent.is_deposit_return = True
 
     @api.depends("rent_type_id", "date_start")
     def _compute_create_date(self):

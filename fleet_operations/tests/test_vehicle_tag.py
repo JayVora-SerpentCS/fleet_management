@@ -3,7 +3,7 @@ from odoo.tests.common import TransactionCase
 
 class TestVehicleTag(TransactionCase):
     def setUp(self):
-        super(TestVehicleTag, self).setUp()
+        super().setUp()
 
     def test(self):
         vehicle_tag_obj = self.env["fleet.vehicle.tag"]

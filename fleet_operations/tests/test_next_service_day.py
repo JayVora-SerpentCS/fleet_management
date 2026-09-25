@@ -3,7 +3,7 @@ from odoo.tests.common import TransactionCase
 
 class TestNextServiceDay(TransactionCase):
     def setUp(self):
-        super(TestNextServiceDay, self).setUp()
+        super().setUp()
 
     def test(self):
         next_service_obj = self.env["next.service.days"]

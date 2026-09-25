@@ -559,7 +559,7 @@ class FleetVehicleLogServices(models.Model):
                         or False,
                     }
                 )
-        return super(FleetVehicleLogServices, self).write(vals)
+        return super().write(vals)
 
     @api.model
     def _get_location(self):
@@ -601,7 +601,7 @@ class FleetVehicleLogServices(models.Model):
                         "Inspection or Released!"
                     )
                     raise UserError(msg)
-        res = super(FleetVehicleLogServices, self).default_get(fields)
+        res = super().default_get(fields)
         repair_type_ids = repair_type_obj.search([])
         if not repair_type_ids:
             msg = _(
@@ -936,7 +936,7 @@ class StockPicking(models.Model):
                 vals.update({"origin": vals["origin"][1:]})
             if vals.get("origin", False) and vals["origin"][-1] == ":":
                 vals.update({"origin": vals["origin"][:-1]})
-            return super(StockPicking, self).create(vals)
+            return super().create(vals)
 
     def write(self, vals):
         """Overridden write method."""
@@ -944,7 +944,7 @@ class StockPicking(models.Model):
             vals.update({"origin": vals["origin"][1:]})
         if vals.get("origin", False) and vals["origin"][-1] == ":":
             vals.update({"origin": vals["origin"][:-1]})
-        return super(StockPicking, self).write(vals)
+        return super().write(vals)
 
 
 class StockMove(models.Model):
@@ -975,7 +975,7 @@ class StockMove(models.Model):
 
     @api.model
     def _default_location_source(self):
-        location_id = super(StockMove, self)._default_location_source()
+        location_id = super()._default_location_source()
         if self._context.get("stock_warehouse_id", False):
             warehouse_pool = self.env["stock.warehouse"]
             for rec in warehouse_pool.browse([self._context["stock_warehouse_id"]]):
@@ -985,7 +985,7 @@ class StockMove(models.Model):
 
     @api.model
     def _default_location_destination(self):
-        location_dest_id = super(StockMove, self)._default_location_source()
+        location_dest_id = super()._default_location_source()
         if self._context.get("stock_warehouse_id", False):
             warehouse_pool = self.env["stock.warehouse"]
             for rec in warehouse_pool.browse([self._context["stock_warehouse_id"]]):
@@ -1020,9 +1020,9 @@ class FleetWorkOrderSearch(models.TransientModel):
             "view_mode": "list,form",
             "res_model": "fleet.vehicle.log.services",
             "type": "ir.actions.act_window",
-            "domain": [("id", "=", self.work_order_id.id)]
-            if self.work_order_id
-            else [],
+            "domain": (
+                [("id", "=", self.work_order_id.id)] if self.work_order_id else []
+            ),
             "context": self._context,
             "target": "current",
         }
@@ -1144,7 +1144,7 @@ class TaskLine(models.Model):
                 if task_line_ids:
                     msg = _("You can not have duplicate parts assigned !!!")
                     raise UserError(msg)
-            return super(TaskLine, self).create(vals)
+            return super().create(vals)
 
     def write(self, vals):
         """
@@ -1165,7 +1165,7 @@ class TaskLine(models.Model):
                     "date_issued": time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                 }
             )
-        return super(TaskLine, self).write(vals)
+        return super().write(vals)
 
     @api.onchange("date_issued")
     def check_onchange_part_issue_date(self):
@@ -1198,7 +1198,7 @@ class TaskLine(models.Model):
             if part.is_deliver:
                 msg = _("You can't delete part those already used.")
                 raise UserError(msg)
-        return super(TaskLine, self).unlink()
+        return super().unlink()
 
     def default_get(self, fields_list):
         fleet_service_id = self.env["fleet.vehicle.log.services"].browse(

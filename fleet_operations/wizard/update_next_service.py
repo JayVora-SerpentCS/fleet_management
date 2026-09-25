@@ -38,7 +38,7 @@ class UpdateNextServiceConfig(models.TransientModel):
     @api.model
     def default_get(self, default_fields):
         """Method is used to set Vehicle Id."""
-        res = super(UpdateNextServiceConfig, self).default_get(default_fields)
+        res = super().default_get(default_fields)
         serv_obj = self.env["fleet.vehicle.log.services"]
         service = serv_obj.browse(self._context["active_id"])
         if service:

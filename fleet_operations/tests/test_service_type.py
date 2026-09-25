@@ -3,7 +3,7 @@ from odoo.tests.common import TransactionCase
 
 class TestVehicleServiceType(TransactionCase):
     def setUp(self):
-        super(TestVehicleServiceType, self).setUp()
+        super().setUp()
 
     def test(self):
         service_type_obj = self.env["fleet.service.type"]

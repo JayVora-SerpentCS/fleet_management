@@ -42,7 +42,7 @@ class FleetOperations(models.Model):
                 "You can't duplicate this record " "because it is already write-off"
             )
             raise UserError(msg)
-        return super(FleetOperations, self).copy(default=default)
+        return super().copy(default=default)
 
     @api.model
     def vehicle_service_reminder_send_mail(self):
@@ -487,8 +487,14 @@ class FleetOperations(models.Model):
     work_order_close = fields.Boolean(default=True)
     fmp_id_editable = fields.Boolean("Vehicle ID Editable?")
 
-    _vehilce_unique = models.Constraint("unique(vin_sn)","The vehicle is already exist with this vin no.!",)
-    _fmp_unique = models.Constraint("unique(name)","The vehicle is already exist with this Vehicle ID!",)
+    _vehilce_unique = models.Constraint(
+        "unique(vin_sn)",
+        "The vehicle is already exist with this vin no.!",
+    )
+    _fmp_unique = models.Constraint(
+        "unique(name)",
+        "The vehicle is already exist with this Vehicle ID!",
+    )
 
     income_acc_id = fields.Many2one("account.account", "Income Account")
     expence_acc_id = fields.Many2one("account.account", "Expense Account")
@@ -496,7 +502,7 @@ class FleetOperations(models.Model):
     @api.model
     def default_get(self, fields):
         """Method to default get."""
-        res = super(FleetOperations, self).default_get(fields)
+        res = super().default_get(fields)
         res["acquisition_date"] = date.today().strftime("%Y-%m-%d")
         return res
 
@@ -542,7 +548,7 @@ class FleetOperations(models.Model):
             if vals.get("battery_issuance_date", False):
                 vals.update({"is_battery_issue_set": True})
 
-            return super(FleetOperations, self).create(vals)
+            return super().create(vals)
 
     def write(self, vals):
         """
@@ -573,7 +579,7 @@ class FleetOperations(models.Model):
         if vals.get("battery_issuance_date", False):
             vals.update({"is_battery_issue_set": True})
 
-        return super(FleetOperations, self).write(vals)
+        return super().write(vals)
 
     @api.onchange("driver_id")
     def get_driver_id_no(self):
@@ -691,7 +697,9 @@ class VehicleDivision(models.Model):
     code = fields.Char(translate=True)
     name = fields.Char(required=True, translate=True)
 
-    _vehicle_divison_uniq = models.Constraint("unique(name)","This divison is already exist!")
+    _vehicle_divison_uniq = models.Constraint(
+        "unique(name)", "This divison is already exist!"
+    )
 
 
 class VehicleType(models.Model):
@@ -885,13 +893,13 @@ class FleetWittenOff(models.Model):
                         or False,
                     }
                 )
-        return super(FleetWittenOff, self).write(vals)
+        return super().write(vals)
 
     @api.model
     def default_get(self, fields):
         """Default get method update in state changing record."""
         vehicle_obj = self.env["fleet.vehicle"]
-        res = super(FleetWittenOff, self).default_get(fields)
+        res = super().default_get(fields)
         if self._context.get("active_ids", False):
             for vehicle in vehicle_obj.browse(self._context["active_ids"]):
                 if vehicle.state == "write-off":
@@ -956,10 +964,12 @@ class FleetWittenOff(models.Model):
             seq = self.env["ir.sequence"].next_by_code("vehicle.writeoff.sequnce")
             if not seq:
                 raise UserError(_("Write-Off sequence not found!"))
-            wr_off.write({
-                "state": "confirm",
-                "name": seq,
-            })
+            wr_off.write(
+                {
+                    "state": "confirm",
+                    "name": seq,
+                }
+            )
 
     def action_set_to_draft(self):
         """Button method to set state in draft."""
@@ -984,7 +994,11 @@ class FleetVehicleModel(models.Model):
 
     image_128 = fields.Image("Image", readonly=False)
 
-    _model_brand_name_uniq = models.Constraint("unique(name,brand_id)","Model with this brand Name and Make is " "already exist!",)
+    _model_brand_name_uniq = models.Constraint(
+        "unique(name,brand_id)",
+        "Model with this brand Name and Make is " "already exist!",
+    )
+
 
 class FleetVehicleModelBrand(models.Model):
     """Model Fleet Vehicle Model Brand."""
@@ -1052,8 +1066,11 @@ class VehicleUniqueSequence(models.Model):
     make_id = fields.Many2one("fleet.vehicle.model.brand", "Make")
     sequence_id = fields.Many2one("ir.sequence", "Sequence")
 
-    _location_make_name_uniq = models.Constraint("unique (vehicle_location_id,make_id,sequence_id)","Location, Make and Sequence all should be \
-                unique for unique sequence!",)
+    _location_make_name_uniq = models.Constraint(
+        "unique (vehicle_location_id,make_id,sequence_id)",
+        "Location, Make and Sequence all should be \
+                unique for unique sequence!",
+    )
 
 
 class NextIncrementNumber(models.Model):
@@ -1184,7 +1201,7 @@ class FleetVehicleOdometer(models.Model):
     @api.model
     def default_get(self, fields):
         """Method default get."""
-        res = super(FleetVehicleOdometer, self).default_get(fields)
+        res = super().default_get(fields)
         # cr, uid, context = self.env.args
         context = self.env.context
         # context = dict(context)
