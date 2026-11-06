@@ -23,8 +23,8 @@ class PendingRepairConfirm(models.TransientModel):
         next_service_day_obj = self.env["next.service.days"]
         odometer_increment = 0.0
         work_order = False
-        if self._context.get("work_order_id", False):
-            work_order = wo_obj.browse(self._context["work_order_id"])
+        if self.env.context.get("work_order_id", False):
+            work_order = wo_obj.browse(self.env.context["work_order_id"])
             increment_ids = increment_obj.search(
                 [("vehicle_id", "=", work_order.vehicle_id.id)], limit=1
             )
@@ -77,7 +77,7 @@ class PendingRepairConfirm(models.TransientModel):
                                         or False,
                                         "name": work_order.name or "",
                                         "state": "in-complete",
-                                        "user_id": self._uid,
+                                        "user_id": self.env.uid,
                                         "categ_id": repair_line.categ_id
                                         and repair_line.categ_id.id
                                         or False,
@@ -113,7 +113,7 @@ class PendingRepairConfirm(models.TransientModel):
                                 or False,
                                 "name": work_order.name or "",
                                 "state": "in-complete",
-                                "user_id": self._uid,
+                                "user_id": self.env.uid,
                                 "categ_id": repair_line.categ_id
                                 and repair_line.categ_id.id
                                 or False,
@@ -133,7 +133,7 @@ class PendingRepairConfirm(models.TransientModel):
                     "already_closed": True,
                     "next_service_odometer": odometer_increment,
                     "date_close": date.today(),
-                    "closed_by": self._uid,
+                    "closed_by": self.env.uid,
                     "next_service_date": next_service_date,
                 }
             )

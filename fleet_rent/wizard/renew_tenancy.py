@@ -42,7 +42,7 @@ class WizardRenewTenancy(models.TransientModel):
 
     start_date = fields.Datetime()
     end_date = fields.Datetime(compute="_compute_create_date", store=True)
-    rent_type_id = fields.Many2one("rent.type", string="Rent Type", required=True)
+    rent_type_id = fields.Many2one("rent.type", required=True)
 
     @api.constrains("start_date", "end_date")
     def check_date_overlap(self):
@@ -59,7 +59,7 @@ class WizardRenewTenancy(models.TransientModel):
     def renew_contract(self):
         """Button Method is used to Renew Tenancy."""
         view_id = self.env.ref("fleet_rent.view_fleet_rent_form").id
-        if self._context.get("active_id", False):
+        if self.env.context.get("active_id", False):
             for rec in self:
                 if rec.start_date > rec.end_date:
                     raise UserError(
@@ -68,7 +68,7 @@ class WizardRenewTenancy(models.TransientModel):
                         Greater Than Start Date !!"
                         )
                     )
-                rent_rec = self.env["fleet.rent"].browse(self._context["active_id"])
+                rent_rec = self.env["fleet.rent"].browse(self.env.context["active_id"])
                 for rent in rent_rec:
                     if rent.date_close and rec.start_date:
                         if rec.start_date < rent.date_close:

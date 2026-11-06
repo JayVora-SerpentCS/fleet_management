@@ -127,7 +127,7 @@ class FleetPendingRepair(models.AbstractModel):
                         date = format_date(
                             self.env,
                             line.issue_date,
-                            self._context.get("lang"),
+                            self.env.context.get("lang"),
                             date_format=False,
                         )
                     worksheet.write(row, 5, date or "", style1)
@@ -154,5 +154,5 @@ class FleetPendingRepair(models.AbstractModel):
         fp.seek(0)
         data = fp.read()
         fp.close()
-        res = base64.encodebytes(data)
+        res = base64.b64encode(data).decode()
         return res

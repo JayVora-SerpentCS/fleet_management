@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <!--Renew Tenancy Wizard Form View  -->
-    <record model="ir.ui.view" id="view_writeoff_cancel_reason_wizard">
+    <record id="view_writeoff_cancel_reason_wizard" model="ir.ui.view">
         <field name="name">writeoff.cancel.reason.form</field>
         <field name="model">writeoff.cancel.reason</field>
         <field name="arch" type="xml">
@@ -23,7 +24,7 @@
     </record>
 
     <!--  Action for Renew Tenancy Wizard -->
-    <record model="ir.actions.act_window" id="action_writeoff_cancel_reason_wizard">
+    <record id="action_writeoff_cancel_reason_wizard" model="ir.actions.act_window">
         <field name="name">Write Off Cancel Reason Wizard</field>
         <field name="res_model">writeoff.cancel.reason</field>
         <field name="view_mode">form</field>

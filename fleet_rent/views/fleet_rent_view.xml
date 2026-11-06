@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
 
     <record id="view_fleet_rent_kanban" model="ir.ui.view">
@@ -144,7 +144,7 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button
-                            icon="fa-pencil-square-o"
+                            icon="receipt_long"
                             class="oe_stat_button"
                             name="%(action_fleet_out_invoice_view)d"
                             type="action"
@@ -157,7 +157,7 @@
                             />
                         </button>
                         <button
-                            icon="fa-pencil-square-o"
+                            icon="receipt_long"
                             class="oe_stat_button"
                             name="%(action_fleet_out_refund_invoice_view)d"
                             type="action"
@@ -314,7 +314,7 @@
                                     <field name="currency_id" invisible="0" />
                                     <button
                                         name="create_invoice"
-                                        icon="fa-arrow-circle-o-right fa-lg"
+                                        icon="arrow_circle_right"
                                         invisible="inv or state == 'close'"
                                         class="oe_highlight
                                         btn_visible_in_tree"
@@ -324,7 +324,7 @@
                                     />
                                     <button
                                         name="open_invoice"
-                                        icon="fa-arrow-circle-o-right fa-lg"
+                                        icon="arrow_circle_right"
                                         invisible="not inv"
                                         class="oe_highlight
                                         btn_visible_in_tree"
@@ -446,8 +446,8 @@
     />
 
     <menuitem
-        name="Fleet"
         id="fleet.menu_root"
+        name="Fleet"
         sequence="115"
         groups="fleet.fleet_group_user,fleet_rent.group_vehicle_rent_user"
         web_icon="fleet,static/description/icon.png"
@@ -505,7 +505,7 @@
     </record>
 
     <!--Rent Type Search View-->
-    <record model="ir.ui.view" id="rent_type_view_search">
+    <record id="rent_type_view_search" model="ir.ui.view">
         <field name="name">rent.type.search</field>
         <field name="model">rent.type</field>
         <field name="arch" type="xml">
@@ -526,8 +526,8 @@
     </record>
 
     <menuitem
-        name="Rent Type"
         id="menu_rent_type"
+        name="Rent Type"
         parent="fleet.fleet_configuration"
         groups="fleet_rent.group_vehicle_rent_manager"
         action="action_rent_type_view"
@@ -591,7 +591,7 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <!-- <menuitem name="Maintenance Type" id="menu_maintenance_type"   parent="menu_types_main" action="action_maintenance_type_view"/> -->
+    <!-- <menuitem id="menu_maintenance_type" name="Maintenance Type" parent="menu_types_main" action="action_maintenance_type_view"/> -->
 
 <!--    ###################################################################
                         TENANCY RENT SCHEDULE VIEW
@@ -712,6 +712,5 @@
     </record>
 
     <!--Rent Schedule menu-->
-    <!-- <menuitem name="Tenancy Rent Schedule" id="menu_tenancy_rent"
-            parent="menu_property_sub" action="action_tenancy_rent" sequence="5"/> -->
+    <!-- <menuitem id="menu_tenancy_rent" name="Tenancy Rent Schedule" parent="menu_property_sub" action="action_tenancy_rent" sequence="5"/> -->
 </odoo>

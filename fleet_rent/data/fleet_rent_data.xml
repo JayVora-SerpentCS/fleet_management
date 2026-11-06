@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <!-- This template is use for the send vehicle rent remainder -->
     <record id="email_rent_remainder_template" model="mail.template">

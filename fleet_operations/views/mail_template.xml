@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <record id="fleet_email_template" model="mail.template">
         <field name="name">Expired service: Send by email</field>

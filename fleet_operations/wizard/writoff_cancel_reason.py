@@ -2,7 +2,7 @@
 """Vehicle Change History."""
 
 from odoo import fields, models
-from odoo.tools import format_date, ustr
+from odoo.tools import format_date
 
 
 class WizardWritOffCancelReason(models.TransientModel):
@@ -15,7 +15,7 @@ class WizardWritOffCancelReason(models.TransientModel):
 
     def cancel_writoff(self):
         """Method Cancel Write off."""
-        if self._context.get("active_id", False) and self._context.get(
+        if self.env.context.get("active_id", False) and self.env.context.get(
             "active_model", False
         ):
             user = self.env.user
@@ -28,7 +28,7 @@ class WizardWritOffCancelReason(models.TransientModel):
                 + " "
                 + "on"
                 + " "
-                + ustr(
+                + str(
                     format_date(
                         self.env,
                         fields.Date.today(),
@@ -37,8 +37,8 @@ class WizardWritOffCancelReason(models.TransientModel):
                     )
                 )
             )
-            writeoff_rec = self.env[self._context["active_model"]].browse(
-                self._context["active_id"]
+            writeoff_rec = self.env[self.env.context["active_model"]].browse(
+                self.env.context["active_id"]
             )
             for wiz in self:
                 if writeoff_rec.vehicle_id:

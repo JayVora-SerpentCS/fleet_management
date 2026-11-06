@@ -1,0 +1,21 @@
+id,name,model_id/id,group_id/id,operation,domain
+access_rent_type_admin,rent_type_admin,model_rent_type,group_vehicle_rent_manager,crud,
+access_rent_type_tenant,tenant_rent_type,model_rent_type,group_vehicle_rent_user,r,
+access_maintenance_type_admin,maintenance_type_admin,model_maintenance_type,group_vehicle_rent_manager,crud,
+access_maintenance_type_tenant,maintenance_type_tenant,model_maintenance_type,group_vehicle_rent_user,r,
+access_maintenance_cost_admin,maintenance_cost_admin,model_maintenance_cost,group_vehicle_rent_manager,crud,
+access_maintenance_cost_tenant,maintenance_cost_tenant,model_maintenance_cost,group_vehicle_rent_user,r,
+access_tenancy_rent_schedule_admin,tenancy_rent_schedule_admin,model_tenancy_rent_schedule,group_vehicle_rent_manager,crud,
+access_tenancy_rent_schedule_tenant,tenancy_rent_schedule_tenant,model_tenancy_rent_schedule,group_vehicle_rent_user,r,
+access_fleet_rent_admin,fleet_rent_admin,model_fleet_rent,group_vehicle_rent_manager,crud,
+access_fleet_rent_tenant,fleet_rent_tenant,model_fleet_rent,group_vehicle_rent_user,r,"['|',('tenant_id','=',user.id),('tenant_id','=',False)]"
+access_fleet_rent_user,access_fleet_rent_user,model_fleet_rent,fleet.fleet_group_user,r,
+access_fleet_rent_mgr,access_fleet_rent_mgr,model_fleet_rent,fleet.fleet_group_manager,crud,
+access_fleet_odometer,access_fleet_odometer,fleet.model_fleet_vehicle_odometer,group_vehicle_rent_user,r,
+access_renew_tenancy,access_renew_tenancy,model_renew_tenancy,base.group_user,crud,
+access_rent_close_reason,access_rent_close_reason,model_rent_close_reason,base.group_user,crud,
+fleet_rule_rent_visibility_manager,Manager can see all the rents,model_fleet_rent,group_vehicle_rent_manager,crud,"[(1,'=',1)]"
+fleet_rule_tenancy_visibility_manager,Manager can see all the tenancy,model_tenancy_rent_schedule,group_vehicle_rent_manager,crud,"[(1,'=',1)]"
+fleet_rent_show_tenants_rule_user,User can only see his/her tenants,base.model_res_users,group_vehicle_rent_user,r,"[('id','=',user.id)]"
+fleet_rent_show_tenants_rule_manager,Manager can see all the tenants,base.model_res_users,group_vehicle_rent_manager,r,"[(1,'=',1)]"
+fleet_rent_rule_user,User can only see his/her vehicle,fleet.model_fleet_vehicle,group_vehicle_rent_user,r,"[(1,'=',1)]"

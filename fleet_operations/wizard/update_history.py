@@ -22,7 +22,9 @@ class UpdateEngineInfo(models.TransientModel):
         string="Temp Bool for making \
                                     previous color readonly",
     )
-    vehicle_id = fields.Many2one("fleet.vehicle", string="Vehicle")
+    vehicle_id = fields.Many2one(
+        "fleet.vehicle",
+    )
 
     @api.constrains("changed_date")
     def check_engine_changed_date(self):
@@ -41,8 +43,8 @@ class UpdateEngineInfo(models.TransientModel):
         """Method Default Get."""
         vehicle_obj = self.env["fleet.vehicle"]
         res = super().default_get(fields)
-        if self._context.get("active_id", False):
-            vehicle = vehicle_obj.browse(self._context["active_id"])
+        if self.env.context.get("active_id", False):
+            vehicle = vehicle_obj.browse(self.env.context["active_id"])
             res.update(
                 {
                     "previous_engine_no": vehicle.engine_no or "",
@@ -55,8 +57,8 @@ class UpdateEngineInfo(models.TransientModel):
         """Method set new engine info."""
         vehicle_obj = self.env["fleet.vehicle"]
         engine_history_obj = self.env["engine.history"]
-        if self._context.get("active_id", False):
-            vehicle = vehicle_obj.browse(self._context["active_id"])
+        if self.env.context.get("active_id", False):
+            vehicle = vehicle_obj.browse(self.env.context["active_id"])
             for wiz_data in self:
                 vehicle.write({"engine_no": wiz_data.new_engine_no or ""})
                 engine_history_obj.create(
@@ -81,7 +83,9 @@ class UpdateColorInfo(models.TransientModel):
     _description = "Update Color Info"
 
     workorder_id = fields.Many2one("fleet.vehicle.log.services", string="Work Order")
-    previous_color_id = fields.Many2one("color.color", string="Previous Color")
+    previous_color_id = fields.Many2one(
+        "color.color",
+    )
     current_color_id = fields.Many2one("color.color", string="New Color")
     changed_date = fields.Date(string="Change Date", default=fields.Date.today())
     note = fields.Text(string="Notes", translate=True)
@@ -90,7 +94,9 @@ class UpdateColorInfo(models.TransientModel):
         string="Temp Bool for making previous \
                                color readonly",
     )
-    vehicle_id = fields.Many2one("fleet.vehicle", string="Vehicle")
+    vehicle_id = fields.Many2one(
+        "fleet.vehicle",
+    )
 
     @api.constrains("changed_date")
     def check_color_changed_date(self):
@@ -109,8 +115,8 @@ class UpdateColorInfo(models.TransientModel):
         """Method default Get."""
         vehicle_obj = self.env["fleet.vehicle"]
         res = super().default_get(fields)
-        if self._context.get("active_id", False):
-            vehicle = vehicle_obj.browse(self._context["active_id"])
+        if self.env.context.get("active_id", False):
+            vehicle = vehicle_obj.browse(self.env.context["active_id"])
             res.update(
                 {
                     "previous_color_id": vehicle.vehical_color_id.id or False,
@@ -123,8 +129,8 @@ class UpdateColorInfo(models.TransientModel):
         """Method set new color info."""
         vehicle_obj = self.env["fleet.vehicle"]
         color_history_obj = self.env["color.history"]
-        if self._context.get("active_id", False):
-            vehicle = vehicle_obj.browse(self._context["active_id"])
+        if self.env.context.get("active_id", False):
+            vehicle = vehicle_obj.browse(self.env.context["active_id"])
             for wiz_data in self:
                 vehicle.write(
                     {"vehical_color_id": wiz_data.current_color_id.id or False}
@@ -158,15 +164,17 @@ class UpdateVinInfo(models.TransientModel):
         string="Temp Bool for making previous \
                                 color readonly",
     )
-    vehicle_id = fields.Many2one("fleet.vehicle", string="Vehicle")
+    vehicle_id = fields.Many2one(
+        "fleet.vehicle",
+    )
 
     @api.model
     def default_get(self, fields):
         """Method default get."""
         vehicle_obj = self.env["fleet.vehicle"]
         res = super().default_get(fields)
-        if self._context.get("active_id", False):
-            vehicle = vehicle_obj.browse(self._context["active_id"])
+        if self.env.context.get("active_id", False):
+            vehicle = vehicle_obj.browse(self.env.context["active_id"])
             res.update(
                 {"previous_vin_no": vehicle.vin_sn or "", "vehicle_id": vehicle.id}
             )
@@ -176,8 +184,8 @@ class UpdateVinInfo(models.TransientModel):
         """Method to set new vin info."""
         vehicle_obj = self.env["fleet.vehicle"]
         vin_history_obj = self.env["vin.history"]
-        if self._context.get("active_id", False):
-            vehicle = vehicle_obj.browse(self._context["active_id"])
+        if self.env.context.get("active_id", False):
+            vehicle = vehicle_obj.browse(self.env.context["active_id"])
             for wiz_data in self:
                 vehicle.write({"vin_sn": wiz_data.new_vin_no or ""})
                 vin_history_obj.create(
@@ -211,7 +219,9 @@ class UpdateTireInfo(models.TransientModel):
         default=True, string="Temp Bool for making " "previous Tire info readonly"
     )
     workorder_id = fields.Many2one("fleet.vehicle.log.services", string="Work Order")
-    vehicle_id = fields.Many2one("fleet.vehicle", string="Vehicle")
+    vehicle_id = fields.Many2one(
+        "fleet.vehicle",
+    )
 
     @api.constrains("previous_tire_issue_date", "new_tire_issue_date")
     def check_new_tire_issue_date(self):
@@ -247,8 +257,8 @@ class UpdateTireInfo(models.TransientModel):
         """Method to default get."""
         vehicle_obj = self.env["fleet.vehicle"]
         res = super().default_get(fields)
-        if self._context.get("active_id", False):
-            vehicle = vehicle_obj.browse(self._context["active_id"])
+        if self.env.context.get("active_id", False):
+            vehicle = vehicle_obj.browse(self.env.context["active_id"])
             res.update(
                 {
                     "previous_tire_size": vehicle.tire_size or "",
@@ -263,8 +273,8 @@ class UpdateTireInfo(models.TransientModel):
         """Method set new tire info."""
         vehicle_obj = self.env["fleet.vehicle"]
         tire_history_obj = self.env["tire.history"]
-        if self._context.get("active_id", False):
-            vehicle = vehicle_obj.browse(self._context["active_id"])
+        if self.env.context.get("active_id", False):
+            vehicle = vehicle_obj.browse(self.env.context["active_id"])
             for wiz_data in self:
                 vehicle.write(
                     {
@@ -311,7 +321,9 @@ class UpdateBatteryInfo(models.TransientModel):
                                              Battery info readonly",
     )
     workorder_id = fields.Many2one("fleet.vehicle.log.services", string="Work Order")
-    vehicle_id = fields.Many2one("fleet.vehicle", string="Vehicle")
+    vehicle_id = fields.Many2one(
+        "fleet.vehicle",
+    )
 
     @api.constrains("previous_battery_issue_date", "new_battery_issue_date")
     def check_new_battery_issue_date(self):
@@ -348,8 +360,8 @@ class UpdateBatteryInfo(models.TransientModel):
         """Method to default get."""
         vehicle_obj = self.env["fleet.vehicle"]
         res = super().default_get(fields)
-        if self._context.get("active_id", False):
-            vehicle = vehicle_obj.browse(self._context["active_id"])
+        if self.env.context.get("active_id", False):
+            vehicle = vehicle_obj.browse(self.env.context["active_id"])
             res.update(
                 {
                     "previous_battery_size": vehicle.battery_size or "",
@@ -364,8 +376,8 @@ class UpdateBatteryInfo(models.TransientModel):
         """Method to set new battery info."""
         vehicle_obj = self.env["fleet.vehicle"]
         battery_history_obj = self.env["battery.history"]
-        if self._context.get("active_id", False):
-            vehicle = vehicle_obj.browse(self._context["active_id"])
+        if self.env.context.get("active_id", False):
+            vehicle = vehicle_obj.browse(self.env.context["active_id"])
             for wiz_data in self:
                 vehicle.write(
                     {

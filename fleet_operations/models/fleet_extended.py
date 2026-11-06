@@ -23,7 +23,9 @@ class ProductProduct(models.Model):
 
     _inherit = "product.product"
 
-    vehicle_make_id = fields.Many2one("fleet.vehicle.model.brand", "Vehicle Make")
+    vehicle_make_id = fields.Many2one(
+        "fleet.vehicle.model.brand",
+    )
 
 
 class FleetOperations(models.Model):
@@ -94,7 +96,7 @@ class FleetOperations(models.Model):
         # self.env.args = cr, uid, misc.frozendict(context)
         return {
             "name": view_name,
-            "context": self._context,
+            "context": self.env.context,
             "view_type": "form",
             "view_mode": "form",
             "res_model": res_model,
@@ -268,7 +270,7 @@ class FleetOperations(models.Model):
         all_odometer_records = fleet_vehicle_odometer_obj.search([])
         for record in self:
             vehicle_odometer = all_odometer_records.filtered(
-                lambda odometer: odometer.vehicle_id == record
+                lambda odometer, record=record: odometer.vehicle_id == record
             ).sorted(key=lambda x: x.value, reverse=True)
             if vehicle_odometer:
                 record.odometer = vehicle_odometer[0].value
@@ -278,7 +280,7 @@ class FleetOperations(models.Model):
         all_odometer_records = fleet_vehicle_odometer_obj.search([])
         for record in self:
             vehicle_odometer = all_odometer_records.filtered(
-                lambda odometer: odometer.vehicle_id == record
+                lambda odometer, record=record: odometer.vehicle_id == record
             ).sorted(key=lambda x: x.value, reverse=True)
             if vehicle_odometer:
                 previous_odometer_value = vehicle_odometer[0].value
@@ -311,8 +313,9 @@ class FleetOperations(models.Model):
                 model.transmission = model.model_id.transmission or False
                 model.seats = model.model_id.seats or 0
                 model.doors = model.model_id.doors or 0
-                model.color = model.model_id.color or ""
-                model.trailer_hook = model.model_id.trailer_hook or 0
+                # Odoo 20 removed color/trailer_hook from fleet.vehicle.model
+                model.color = getattr(model.model_id, "color", "") or ""
+                model.trailer_hook = getattr(model.model_id, "trailer_hook", 0) or 0
                 model.fuel_type = model.model_id.default_fuel_type or False
                 model.co2 = model.model_id.default_co2 or 0.0
                 model.co2_standard = model.model_id.co2_standard or ""
@@ -340,6 +343,9 @@ class FleetOperations(models.Model):
     fuel_qty = fields.Char("Fuel Quality")
     oil_name = fields.Char()
     oil_capacity = fields.Char()
+    # Odoo 20 removed ``horsepower_tax`` from fleet.vehicle; kept here because
+    # the module's vehicle form and onchange still use it.
+    horsepower_tax = fields.Float("Horsepower Taxation")
     fleet_id = fields.Integer("Fleet ID", help="Take this field for data migration")
     f_brand_id = fields.Many2one("fleet.vehicle.model.brand", "Make")
     model_no = fields.Char(translate=True)
@@ -379,16 +385,20 @@ class FleetOperations(models.Model):
     vehicle_height = fields.Integer("Height(mm)")
     fuel_capacity = fields.Float()
     date_sold = fields.Date()
-    buyer_id = fields.Many2one("res.partner", "Buyer")
+    buyer_id = fields.Many2one(
+        "res.partner",
+    )
     transfer_date = fields.Date()
     monthly_deprication = fields.Float("Deprication(Monthly)")
     resale_value = fields.Float("Current value")
     salvage_value = fields.Float()
     warranty_period = fields.Date("Warranty Upto")
     insurance_company_id = fields.Many2one(
-        "res.partner", "Insurance Company", domain=[("insurance", "=", True)]
+        "res.partner", domain=[("insurance", "=", True)]
     )
-    insurance_type_id = fields.Many2one("insurance.type", "Insurance Type")
+    insurance_type_id = fields.Many2one(
+        "insurance.type",
+    )
     policy_number = fields.Char()
     payment = fields.Float()
     start_date_insurance = fields.Date("Start Date")
@@ -409,13 +419,17 @@ class FleetOperations(models.Model):
     vehical_color_id = fields.Many2one("color.color", "Vehicle Color")
     vehicle_location_id = fields.Many2one("res.country.state", "Registration State")
     vehical_division_id = fields.Many2one("vehicle.divison", "Division")
-    driver_id = fields.Many2one("res.partner", "Driver")
+    driver_id = fields.Many2one(
+        "res.partner",
+    )
     driver_identification_no = fields.Char("Driver ID")
     driver_contact_no = fields.Char("Driver Contact Number")
     main_type = fields.Selection(
         [("vehicle", "Vehicle"), ("non-vehicle", "Non-Vehicle")], default="vehicle"
     )
-    vechical_type_id = fields.Many2one("vehicle.type", "Vechical Type")
+    vechical_type_id = fields.Many2one(
+        "vehicle.type",
+    )
     engine_no = fields.Char()
     multi_images = fields.Many2many(
         "ir.attachment",
@@ -452,18 +466,10 @@ class FleetOperations(models.Model):
     battery_size = fields.Char()
     battery_srno = fields.Char("Battery S/N")
     battery_issuance_date = fields.Date()
-    color_history_ids = fields.One2many(
-        "color.history", "vehicle_id", "Color History", readonly=True
-    )
-    engine_history_ids = fields.One2many(
-        "engine.history", "vehicle_id", "Engine History", readonly=True
-    )
-    vin_history_ids = fields.One2many(
-        "vin.history", "vehicle_id", "Vin History", readonly=True
-    )
-    tire_history_ids = fields.One2many(
-        "tire.history", "vehicle_id", "Tire History", readonly=True
-    )
+    color_history_ids = fields.One2many("color.history", "vehicle_id", readonly=True)
+    engine_history_ids = fields.One2many("engine.history", "vehicle_id", readonly=True)
+    vin_history_ids = fields.One2many("vin.history", "vehicle_id", readonly=True)
+    tire_history_ids = fields.One2many("tire.history", "vehicle_id", readonly=True)
     battery_history_ids = fields.One2many(
         "battery.history", "vehicle_id", "Battrey History", readonly=True
     )
@@ -476,7 +482,9 @@ class FleetOperations(models.Model):
     is_battery_size_set = fields.Boolean("Is battery Size set?")
     is_battery_srno_set = fields.Boolean("Is battery Srno set?")
     is_battery_issue_set = fields.Boolean("Is battery Issue set?")
-    last_service_by_id = fields.Many2one("res.partner", "Last Service By")
+    last_service_by_id = fields.Many2one(
+        "res.partner",
+    )
     work_order_ids = fields.One2many(
         "fleet.vehicle.log.services", "vehicle_id", "Service Order"
     )
@@ -516,8 +524,8 @@ class FleetOperations(models.Model):
             vals.update({"fmp_id_editable": True})
             seq = self.env["ir.sequence"].next_by_code("fleet.vehicle")
             vals.update({"name": seq})
-            if self._uid:
-                vals.update({"reg_id": self._uid})
+            if self.env.uid:
+                vals.update({"reg_id": self.env.uid})
             if not vals.get("acquisition_date", False):
                 vals.update({"acquisition_date": fields.Date.today()})
             if not vals.get("last_change_status_date", False):
@@ -599,8 +607,12 @@ class ColorHistory(models.Model):
     _name = "color.history"
     _description = "Color History for Vehicle"
 
-    vehicle_id = fields.Many2one("fleet.vehicle", "Vehicle")
-    previous_color_id = fields.Many2one("color.color", "Previous Color")
+    vehicle_id = fields.Many2one(
+        "fleet.vehicle",
+    )
+    previous_color_id = fields.Many2one(
+        "color.color",
+    )
     current_color_id = fields.Many2one("color.color", "New Color")
     changed_date = fields.Date("Change Date")
     note = fields.Text("Notes", translate=True)
@@ -613,7 +625,9 @@ class EngineHistory(models.Model):
     _name = "engine.history"
     _description = "Engine History for Vehicle"
 
-    vehicle_id = fields.Many2one("fleet.vehicle", "Vehicle")
+    vehicle_id = fields.Many2one(
+        "fleet.vehicle",
+    )
     previous_engine_no = fields.Char()
     new_engine_no = fields.Char()
     changed_date = fields.Date("Change Date")
@@ -627,7 +641,9 @@ class VinHistory(models.Model):
     _name = "vin.history"
     _description = "Vin History"
 
-    vehicle_id = fields.Many2one("fleet.vehicle", "Vehicle")
+    vehicle_id = fields.Many2one(
+        "fleet.vehicle",
+    )
     previous_vin_no = fields.Char(translate=True)
     new_vin_no = fields.Char(translate=True)
     changed_date = fields.Date("Change Date")
@@ -641,7 +657,9 @@ class TireHistory(models.Model):
     _name = "tire.history"
     _description = "Tire History for Vehicle"
 
-    vehicle_id = fields.Many2one("fleet.vehicle", "Vehicle")
+    vehicle_id = fields.Many2one(
+        "fleet.vehicle",
+    )
     previous_tire_size = fields.Char(translate=True)
     new_tire_size = fields.Char(translate=True)
     previous_tire_sn = fields.Char("Previous Tire Serial", translate=True)
@@ -659,7 +677,9 @@ class BatteryHistory(models.Model):
     _name = "battery.history"
     _description = "Battery History for Vehicle"
 
-    vehicle_id = fields.Many2one("fleet.vehicle", "Vehicle")
+    vehicle_id = fields.Many2one(
+        "fleet.vehicle",
+    )
     previous_battery_size = fields.Char()
     new_battery_size = fields.Char()
     previous_battery_sn = fields.Char("Previous Battery Serial")
@@ -678,7 +698,9 @@ class PendingRepairType(models.Model):
     _description = "Pending Repair Type"
 
     vehicle_rep_type_id = fields.Many2one("fleet.vehicle", "Vehicle")
-    repair_type_id = fields.Many2one("repair.type", "Repair Type")
+    repair_type_id = fields.Many2one(
+        "repair.type",
+    )
     name = fields.Char("Work Order #", translate=True)
     categ_id = fields.Many2one("service.category", "Category")
     issue_date = fields.Date()
@@ -771,6 +793,7 @@ class IrAttachment(models.Model):
 
     attachment_id = fields.Many2one("fleet.vehicle")
     attachment_id_2 = fields.Many2one("fleet.vehicle")
+    wo_attachment_id = fields.Many2one("fleet.vehicle.log.services")
 
 
 class FleetWittenOff(models.Model):
@@ -783,7 +806,7 @@ class FleetWittenOff(models.Model):
 
     name = fields.Char()
     fleet_id = fields.Integer("Fleet ID", help="Take this field for data migration")
-    vehicle_id = fields.Many2one("fleet.vehicle", "Vehicle", required=True)
+    vehicle_id = fields.Many2one("fleet.vehicle", required=True)
     currency_id = fields.Many2one(
         "res.currency",
         default=lambda self: self.env["res.company"]._default_currency_id(),
@@ -791,7 +814,9 @@ class FleetWittenOff(models.Model):
     )
     vehicle_fmp_id = fields.Char("Vehicle ID")
     vin_no = fields.Char(translate=True)
-    color_id = fields.Many2one("color.color", "Color")
+    color_id = fields.Many2one(
+        "color.color",
+    )
     vehicle_plate = fields.Char("Vechicle Plate No.", translate=True)
     report_date = fields.Date()
     odometer = fields.Float()
@@ -810,17 +835,19 @@ class FleetWittenOff(models.Model):
         "fleet_wittenoff_damage_types_rel",
         "write_off_id",
         "damage_id",
-        "Damage Type",
     )
     repair_type_ids = fields.Many2many(
         "repair.type",
         "fleet_wittenoff_repair_types_rel",
         "write_off_id",
         "repair_id",
-        "Repair Type",
     )
-    location_id = fields.Many2one("vehicle.location", "Location")
-    driver_id = fields.Many2one("res.partner", "Driver")
+    location_id = fields.Many2one(
+        "vehicle.location",
+    )
+    driver_id = fields.Many2one(
+        "res.partner",
+    )
     write_off_type = fields.Selection(
         [
             ("general_accident", "General Accident"),
@@ -835,7 +862,9 @@ class FleetWittenOff(models.Model):
         help="Unit of the odometer ",
     )
     province_id = fields.Many2one("res.country.state", "Registration State")
-    division_id = fields.Many2one("vehicle.divison", "Division")
+    division_id = fields.Many2one(
+        "vehicle.divison",
+    )
     state = fields.Selection(
         [("draft", "Draft"), ("confirm", "Confirmed"), ("cancel", "Cancelled")],
         default="draft",
@@ -900,8 +929,8 @@ class FleetWittenOff(models.Model):
         """Default get method update in state changing record."""
         vehicle_obj = self.env["fleet.vehicle"]
         res = super().default_get(fields)
-        if self._context.get("active_ids", False):
-            for vehicle in vehicle_obj.browse(self._context["active_ids"]):
+        if self.env.context.get("active_ids", False):
+            for vehicle in vehicle_obj.browse(self.env.context["active_ids"]):
                 if vehicle.state == "write-off":
                     msg = _("This vehicle is already in " "write-off state!")
                     raise UserError(msg)
@@ -992,7 +1021,7 @@ class FleetVehicleModel(models.Model):
         "fleet.vehicle.model.brand", "Make", required=True, help="Brand of the vehicle"
     )
 
-    image_128 = fields.Image("Image", readonly=False)
+    image_128 = fields.Image(readonly=False)
 
     _model_brand_name_uniq = models.Constraint(
         "unique(name,brand_id)",
@@ -1049,10 +1078,18 @@ class FleetVehicleAdvanceSearch(models.TransientModel):
     release_date_from = fields.Date("Released From")
     release_date_to = fields.Date("Released To")
     driver_identification_no = fields.Char("Driver ID")
-    vechical_type_id = fields.Many2one("vehicle.type", "Vechical Type")
-    division_id = fields.Many2one("vehicle.divison", "Division")
-    make_id = fields.Many2one("fleet.vehicle.model.brand", "Make")
-    model_id = fields.Many2one("fleet.vehicle.model", "Model")
+    vechical_type_id = fields.Many2one(
+        "vehicle.type",
+    )
+    division_id = fields.Many2one(
+        "vehicle.divison",
+    )
+    make_id = fields.Many2one(
+        "fleet.vehicle.model.brand",
+    )
+    model_id = fields.Many2one(
+        "fleet.vehicle.model",
+    )
 
 
 class VehicleUniqueSequence(models.Model):
@@ -1063,8 +1100,12 @@ class VehicleUniqueSequence(models.Model):
 
     name = fields.Char(translate=True)
     vehicle_location_id = fields.Many2one("res.country.state", "Location ")
-    make_id = fields.Many2one("fleet.vehicle.model.brand", "Make")
-    sequence_id = fields.Many2one("ir.sequence", "Sequence")
+    make_id = fields.Many2one(
+        "fleet.vehicle.model.brand",
+    )
+    sequence_id = fields.Many2one(
+        "ir.sequence",
+    )
 
     _location_make_name_uniq = models.Constraint(
         "unique (vehicle_location_id,make_id,sequence_id)",
@@ -1193,7 +1234,7 @@ class FleetVehicleOdometer(models.Model):
     name = fields.Char(compute="_compute_vehicle_log_name_get_fnc", store=True)
     date = fields.Date(default=fields.Date.today())
     value = fields.Float("Odometer Value", aggregator="max")
-    vehicle_id = fields.Many2one("fleet.vehicle", "Vehicle", required=True)
+    vehicle_id = fields.Many2one("fleet.vehicle", required=True)
     make = fields.Many2one(related="vehicle_id.f_brand_id", store=True)
     model = fields.Many2one(related="vehicle_id.model_id", store=True)
     unit = fields.Selection(related="vehicle_id.odometer_unit")
@@ -1206,7 +1247,7 @@ class FleetVehicleOdometer(models.Model):
         context = self.env.context
         # context = dict(context)
         fleet_obj = self.env["fleet.vehicle"]
-        if self._context.get("active_id"):
+        if self.env.context.get("active_id"):
             vehicle_id = fleet_obj.browse(context["active_id"])
             if vehicle_id.state == "write-off":
                 res["vehicle_id"] = False

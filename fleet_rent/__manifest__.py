@@ -2,13 +2,21 @@
 
 {
     # Module Information
-    "name": "Fleet Rental Vehicle",
+    "name": (
+        "Fleet Rental Vehicle | Fleet Rental Management | Odoo Vehicle Rental | "
+        "Odoo Fleet Rental System | Vehicle Rental Contract Management"
+    ),
     "category": "Fleet Rent",
-    "version": "19.0.1.0.0",
+    "version": "20.0.1.0.0",
     "license": "LGPL-3",
-    "summary": """Rental Vehicle Management System
-        This module provides fleet rent features.""",
-    # Website
+    "summary": (
+        "Fleet Rental Management | Odoo Fleet Rental | Odoo Vehicle Rental | \n"
+        "        Vehicle Rental Contract Odoo | Odoo Rental Plans | "
+        "Daily Weekly Monthly Vehicle Rental | \n"
+        "        Odoo Rental Payment History | Fleet Rental Accounting Integration | \n"
+        "        Vehicle Rental Damage Management | Fleet Rental Report | "
+        "Vehicle Rental Management System"
+    ),  # Website
     "author": "Serpent Consulting Services Pvt. Ltd.",
     "website": "https://www.serpentcs.com",
     # Dependencies
@@ -16,7 +24,7 @@
     # Data
     "data": [
         "security/rent_security.xml",
-        "security/ir.model.access.csv",
+        "security/ir.access.csv",
         "data/rent_sequence.xml",
         "data/fleet_rent_data.xml",
         "data/rent_done_scheduler.xml",
@@ -30,7 +38,7 @@
         "wizard/rent_close_reason_view.xml",
         "report/fleet_rent.xml",
     ],
-    "images": ["static/description/fleet_rental_vehicle_banner.png"],
+    "images": ["static/description/fleet_rental_vehicle_product_banner.gif"],
     "assets": {
         "web.assets_backend": [
             "fleet_rent/static/src/css/fleet_rent.scss",

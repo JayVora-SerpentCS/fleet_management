@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* fleet_operations
+# * fleet_operations
 #
 msgid ""
 msgstr ""
@@ -17,17 +17,18 @@ msgstr ""
 
 #. module: fleet_operations
 #: model:mail.template,body_html:fleet_operations.email_template_edi_fleet
-msgid "\n"
-"		<div style=\"font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; \">\n"
-"		           <p>Hello ${object.purchaser_id.name}</p>\n"
-"		           <p>Your Vehicle ${object.vehicle_id  or ''} 's service Date is ${object.next_service_date  or ''}.\n"
-"		        <div style=\"width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;\">\n"
-"		            <span style=\"color: #222; margin-bottom: 5px; display: block; \">\n"
-"		            <p>Thank you,</p>\n"
-"		            <p>Regards,</p>\n"
-"		            <p>Fleet Manager</p>\n"
-"		        </div>\n"
-"		</div>\n"
+msgid ""
+"\n"
+"\t\t<div style=\"font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; \">\n"
+"\t\t           <p>Hello ${object.purchaser_id.name}</p>\n"
+"\t\t           <p>Your Vehicle ${object.vehicle_id  or ''} 's service Date is ${object.next_service_date  or ''}.\n"
+"\t\t        <div style=\"width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;\">\n"
+"\t\t            <span style=\"color: #222; margin-bottom: 5px; display: block; \">\n"
+"\t\t            <p>Thank you,</p>\n"
+"\t\t            <p>Regards,</p>\n"
+"\t\t            <p>Fleet Manager</p>\n"
+"\t\t        </div>\n"
+"\t\t</div>\n"
 "            "
 msgstr ""
 
@@ -78,12 +79,15 @@ msgstr ""
 
 #. module: fleet_operations
 #: model_terms:ir.ui.view,arch_db:fleet_operations.write_off_qweb
-msgid "<span style=\"font-size:14px;font-weight: bold;\"> Required Repairs :</span>"
+msgid ""
+"<span style=\"font-size:14px;font-weight: bold;\"> Required Repairs :</span>"
 msgstr ""
 
 #. module: fleet_operations
 #: model_terms:ir.ui.view,arch_db:fleet_operations.write_off_qweb
-msgid "<span style=\"font-size:14px;font-weight: bold;\">Please indicate Major Damage Information : </span>"
+msgid ""
+"<span style=\"font-size:14px;font-weight: bold;\">Please indicate Major "
+"Damage Information : </span>"
 msgstr ""
 
 #. module: fleet_operations
@@ -736,7 +740,9 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:164
 #, python-format
-msgid "Confirm work order can only when vehicle status is in Inspection or Released!"
+msgid ""
+"Confirm work order can only when vehicle status is in Inspection or "
+"Released!"
 msgstr ""
 
 #. module: fleet_operations
@@ -803,7 +809,9 @@ msgstr "إنشاء فاتورة عميل"
 #. module: fleet_operations
 #: model_terms:ir.actions.act_window,help:fleet_operations.action_fleet_service_out_invoice_view
 #: model_terms:ir.actions.act_window,help:fleet_operations.action_fleet_service_out_refund_invoice_view
-msgid "Create invoices, register payments and keep track of the discussions with your customers."
+msgid ""
+"Create invoices, register payments and keep track of the discussions with "
+"your customers."
 msgstr "إنشاء الفواتير، وإثبات المدفوعات ومتابعة المحادثات مع عملاءك."
 
 #. module: fleet_operations
@@ -920,12 +928,12 @@ msgid "Current value"
 msgstr ""
 
 #. module: fleet_operations
-#: model:color.color,name:fleet_operations.DARK GREEN_12
+#: model:color.color,name:fleet_operations.color_dark_green_12
 msgid "DARK GREEN"
 msgstr ""
 
 #. module: fleet_operations
-#: model:color.color,name:fleet_operations.DARK RED_3
+#: model:color.color,name:fleet_operations.color_dark_red_3
 msgid "DARK RED"
 msgstr ""
 
@@ -1030,14 +1038,16 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:114
 #, python-format
-msgid "Deposit Return invoice is already Pending\n"
+msgid ""
+"Deposit Return invoice is already Pending\n"
 "Please proceed that deposit invoice first"
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:72
 #, python-format
-msgid "Deposit invoice is already Pending\n"
+msgid ""
+"Deposit invoice is already Pending\n"
 "Please proceed that deposit invoice first"
 msgstr ""
 
@@ -1149,7 +1159,9 @@ msgstr ""
 
 #. module: fleet_operations
 #: model_terms:ir.ui.view,arch_db:fleet_operations.pending_repair_confirm_form_view
-msgid "Do you Forcefully want to close the WO because there is some repair types which are selected for repair but not completed"
+msgid ""
+"Do you Forcefully want to close the WO because there is some repair types "
+"which are selected for repair but not completed"
 msgstr ""
 
 #. module: fleet_operations
@@ -1171,8 +1183,7 @@ msgid "Download"
 msgstr "تنزيل"
 
 #. module: fleet_operations
-#: selection:fleet.vehicle,state:0
-#: selection:fleet.wittenoff,state:0
+#: selection:fleet.vehicle,state:0 selection:fleet.wittenoff,state:0
 msgid "Draft"
 msgstr "مسودة"
 
@@ -2127,7 +2138,9 @@ msgstr "رقم اللوحة"
 
 #. module: fleet_operations
 #: model:ir.model.fields,help:fleet_operations.field_fleet_vehicle__license_plate
-msgid "License plate number of the vehicle.                                (ie: plate number for a vehicle)"
+msgid ""
+"License plate number of the vehicle.                                (ie: "
+"plate number for a vehicle)"
 msgstr ""
 
 #. module: fleet_operations
@@ -2210,7 +2223,12 @@ msgstr "صورة متوسطة الحجم"
 
 #. module: fleet_operations
 #: model:ir.model.fields,help:fleet_operations.field_report_heading__image_medium
-msgid "Medium-sized image of the Report.                                  It is automatically resized as a 128x128px                                 image, with aspect ratio preserved, only when the image exceeds one of those                                  sizes. Use this field in form views or                                  some kanban views."
+msgid ""
+"Medium-sized image of the Report.                                  It is "
+"automatically resized as a 128x128px                                 image, "
+"with aspect ratio preserved, only when the image exceeds one of those"
+"                                  sizes. Use this field in form views or"
+"                                  some kanban views."
 msgstr ""
 
 #. module: fleet_operations
@@ -2263,7 +2281,9 @@ msgstr "موديل المركبة"
 
 #. module: fleet_operations
 #: sql_constraint:fleet.vehicle.model:0
-msgid "Model with this brand Name and Make is                           already exist!"
+msgid ""
+"Model with this brand Name and Make is                           already "
+"exist!"
 msgstr ""
 
 #. module: fleet_operations
@@ -2321,13 +2341,15 @@ msgstr "جديد"
 
 #. module: fleet_operations
 #: model_terms:ir.ui.view,arch_db:fleet_operations.vehicle_change_history_qweb
-msgid "New \n"
+msgid ""
+"New \n"
 "                                Battery Size"
 msgstr ""
 
 #. module: fleet_operations
 #: model_terms:ir.ui.view,arch_db:fleet_operations.vehicle_change_history_qweb
-msgid "New \n"
+msgid ""
+"New \n"
 "                                Tire Size"
 msgstr ""
 
@@ -2411,7 +2433,9 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:478
 #, python-format
-msgid "New work order can only be generated either vehicle status is in Inspection or Released!"
+msgid ""
+"New work order can only be generated either vehicle status is in Inspection "
+"or Released!"
 msgstr ""
 
 #. module: fleet_operations
@@ -2427,7 +2451,8 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/wizard/pending_repair_confirm.py:31
 #, python-format
-msgid "Next Increment Odometer is not set for %s please set it from configuration!"
+msgid ""
+"Next Increment Odometer is not set for %s please set it from configuration!"
 msgstr ""
 
 #. module: fleet_operations
@@ -2506,7 +2531,9 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/wizard/pending_repair_confirm.py:39
 #, python-format
-msgid "Next service days is not configured for %s please set it from                      configuration!"
+msgid ""
+"Next service days is not configured for %s please set it from"
+"                      configuration!"
 msgstr ""
 
 #. module: fleet_operations
@@ -2634,13 +2661,15 @@ msgstr ""
 
 #. module: fleet_operations
 #: model_terms:ir.ui.view,arch_db:fleet_operations.vehicle_change_history_qweb
-msgid "Old \n"
+msgid ""
+"Old \n"
 "                                Battery Size"
 msgstr ""
 
 #. module: fleet_operations
 #: model_terms:ir.ui.view,arch_db:fleet_operations.vehicle_change_history_qweb
-msgid "Old \n"
+msgid ""
+"Old \n"
 "                                Tire Size"
 msgstr ""
 
@@ -2687,7 +2716,8 @@ msgstr ""
 
 #. module: fleet_operations
 #: model_terms:ir.actions.act_window,help:fleet_operations.fleet_vehicle_witten_off_act
-msgid "OpenERP helps you keeping track of all the write off done\n"
+msgid ""
+"OpenERP helps you keeping track of all the write off done\n"
 "            on your vehicle. Write off can be of many type: general accident\n"
 "            insurgent accident etc."
 msgstr ""
@@ -2897,13 +2927,17 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:159
 #, python-format
-msgid "Previous work order is not complete, complete that work order first than you can confirm this work order!"
+msgid ""
+"Previous work order is not complete, complete that work order first than you"
+" can confirm this work order!"
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:471
 #, python-format
-msgid "Previous work order is not complete, complete that work order first than you can create new work order!"
+msgid ""
+"Previous work order is not complete, complete that work order first than you"
+" can create new work order!"
 msgstr ""
 
 #. module: fleet_operations
@@ -3367,7 +3401,10 @@ msgstr ""
 
 #. module: fleet_operations
 #: model:ir.model.fields,help:fleet_operations.field_report_heading__image_small
-msgid "Small-sized image of the Report.It is automatically resized as a 64x64px image,with aspect ratio preserved. Use this field anywhere a small                                 image is required."
+msgid ""
+"Small-sized image of the Report.It is automatically resized as a 64x64px "
+"image,with aspect ratio preserved. Use this field anywhere a small"
+"                                 image is required."
 msgstr ""
 
 #. module: fleet_operations
@@ -3486,7 +3523,9 @@ msgstr ""
 
 #. module: fleet_operations
 #: model:ir.model.fields,help:fleet_operations.field_trip_encoded_history__used_qty
-msgid "The Quantity that is used in in                                     Contact Team Trip"
+msgid ""
+"The Quantity that is used in in                                     Contact "
+"Team Trip"
 msgstr ""
 
 #. module: fleet_operations
@@ -3497,7 +3536,8 @@ msgstr ""
 
 #. module: fleet_operations
 #: model:ir.model.fields,help:fleet_operations.field_workorder_parts_history_details__wo_encoded_qty
-msgid "The Quantity which is                                   available to use"
+msgid ""
+"The Quantity which is                                   available to use"
 msgstr ""
 
 #. module: fleet_operations
@@ -3508,13 +3548,20 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:880
 #, python-format
-msgid "The rounding of the                         initial uom does not allow you to ship \"%s %s\",                         as it would let a quantity of \"%s %s\" to ship and                         only rounding of \"%s %s\" is accepted                         by the uom."
+msgid ""
+"The rounding of the                         initial uom does not allow you "
+"to ship \"%s %s\",                         as it would let a quantity of "
+"\"%s %s\" to ship and                         only rounding of \"%s %s\" is "
+"accepted                         by the uom."
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:856
 #, python-format
-msgid "The unit of measure                             rounding does not allow you to ship \"%s %s\",                             only rounding of \"%s %s\" is accepted by the                             Unit of Measure."
+msgid ""
+"The unit of measure                             rounding does not allow you "
+"to ship \"%s %s\",                             only rounding of \"%s %s\" is"
+" accepted by the                             Unit of Measure."
 msgstr ""
 
 #. module: fleet_operations
@@ -3560,13 +3607,17 @@ msgstr ""
 
 #. module: fleet_operations
 #: model:ir.model.fields,help:fleet_operations.field_report_heading__image
-msgid "This field holds the image used as image for the Report , limited to 1024x1024px."
+msgid ""
+"This field holds the image used as image for the Report , limited to "
+"1024x1024px."
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_extended.py:899
 #, python-format
-msgid "This vehicle is already in                                    write-off state!"
+msgid ""
+"This vehicle is already in                                    write-off "
+"state!"
 msgstr ""
 
 #. module: fleet_operations
@@ -3802,21 +3853,24 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/wizard/vehicle_change_history.py:42
 #, python-format
-msgid "User Error!\n"
+msgid ""
+"User Error!\n"
 " 'Please select criteria                          to create Vehicle Change History Report!"
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/wizard/vehicle_change_history.py:45
 #, python-format
-msgid "User Error!\n"
+msgid ""
+"User Error!\n"
 " Date To' must                             be greater than 'Date From'!"
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/wizard/repair_line_summary.py:38
 #, python-format
-msgid "User Error!\n"
+msgid ""
+"User Error!\n"
 "'Date To' must be                                 greater than 'Date From' !"
 msgstr ""
 
@@ -4064,12 +4118,15 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_extended.py:99
 #, python-format
-msgid "Vehicle status will only set to released                                       if it is in compeleted state."
+msgid ""
+"Vehicle status will only set to released"
+"                                       if it is in compeleted state."
 msgstr ""
 
 #. module: fleet_operations
 #: model_terms:ir.ui.view,arch_db:fleet_operations.fleet_print
-msgid "Vehicle xlsx Report.<br/>\n"
+msgid ""
+"Vehicle xlsx Report.<br/>\n"
 "                    Select Option and print xlsx report for that"
 msgstr ""
 
@@ -4129,7 +4186,9 @@ msgstr "المخزن"
 
 #. module: fleet_operations
 #: model_terms:ir.ui.view,arch_db:fleet_operations.continue_pending_repair_form_view
-msgid "Warning!! There is some previous repairs are remains to be repair for this vehicle"
+msgid ""
+"Warning!! There is some previous repairs are remains to be repair for this "
+"vehicle"
 msgstr ""
 
 #. module: fleet_operations
@@ -4139,7 +4198,9 @@ msgstr ""
 
 #. module: fleet_operations
 #: model:ir.model.fields,help:fleet_operations.field_fleet_vehicle_log_services__date_open
-msgid "When Work Order                                         will confirm this date will be set."
+msgid ""
+"When Work Order                                         will confirm this "
+"date will be set."
 msgstr ""
 
 #. module: fleet_operations
@@ -4296,7 +4357,10 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:1315
 #, python-format
-msgid "You can	 enter                         parts issue either open work order date or in                            between open work order date and current date!"
+msgid ""
+"You can\t enter                         parts issue either open work order "
+"date or in                            between open work order date and "
+"current date!"
 msgstr ""
 
 #. module: fleet_operations
@@ -4308,25 +4372,33 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:156
 #, python-format
-msgid "You can't confirm this                             work order which vehicle is in write-off state!"
+msgid ""
+"You can't confirm this                             work order which vehicle "
+"is in write-off state!"
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:475
 #, python-format
-msgid "You can't create work order                              for vehicle which is already On Rent!"
+msgid ""
+"You can't create work order                              for vehicle which "
+"is already On Rent!"
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:468
 #, python-format
-msgid "You can't create work order                              for vehicle which is already write-off!"
+msgid ""
+"You can't create work order                              for vehicle which "
+"is already write-off!"
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:41
 #, python-format
-msgid "You can't delete Work Order which                                   in Confirmed or Done state!"
+msgid ""
+"You can't delete Work Order which                                   in "
+"Confirmed or Done state!"
 msgstr ""
 
 #. module: fleet_operations
@@ -4365,25 +4437,33 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_extended.py:39
 #, python-format
-msgid "You can't duplicate this record                       because it is already write-off"
+msgid ""
+"You can't duplicate this record                       because it is already "
+"write-off"
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_extended.py:229
 #, python-format
-msgid "You can't enter odometer less than previous                                 odometer %s !"
+msgid ""
+"You can't enter odometer less than previous                                 "
+"odometer %s !"
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_service.py:688
 #, python-format
-msgid "You can't enter odometer less than previous                                odometer %s !"
+msgid ""
+"You can't enter odometer less than previous                                "
+"odometer %s !"
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_extended.py:1302
 #, python-format
-msgid "You can't enter odometer less than previous                               odometer %s !"
+msgid ""
+"You can't enter odometer less than previous                               "
+"odometer %s !"
 msgstr ""
 
 #. module: fleet_operations
@@ -4395,19 +4475,25 @@ msgstr ""
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_extended.py:909
 #, python-format
-msgid "You can't write-off this                                 vehicle which is On Rent."
+msgid ""
+"You can't write-off this                                 vehicle which is On"
+" Rent."
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_extended.py:906
 #, python-format
-msgid "You can't write-off this                                 vehicle which is in Inspection"
+msgid ""
+"You can't write-off this                                 vehicle which is in"
+" Inspection"
 msgstr ""
 
 #. module: fleet_operations
 #: code:addons/fleet_operations/models/fleet_extended.py:903
 #, python-format
-msgid "You can't write-off this vehicle                                   which is in Progress or Complete state!"
+msgid ""
+"You can't write-off this vehicle                                   which is "
+"in Progress or Complete state!"
 msgstr ""
 
 #. module: fleet_operations
@@ -4451,4 +4537,3 @@ msgstr "عرض سجلات خدمات هذه المركبة"
 #: model:ir.model.fields,field_description:fleet_operations.field_task_line__task_id
 msgid "task reference"
 msgstr ""
-

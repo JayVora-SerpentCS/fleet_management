@@ -57,14 +57,14 @@ class FleetWorkOrder(models.AbstractModel):
                             date_open = format_date(
                                 self.env,
                                 work_rec.date_open,
-                                self._context.get("lang"),
+                                self.env.context.get("lang"),
                                 date_format=False,
                             )
                         if work_rec.date_close:
                             date_close = format_date(
                                 self.env,
                                 work_rec.date_close,
-                                self._context.get("lang"),
+                                self.env.context.get("lang"),
                                 date_format=False,
                             )
                         wo_data = {
@@ -87,14 +87,14 @@ class FleetWorkOrder(models.AbstractModel):
                             date_open = format_date(
                                 self.env,
                                 work_rec.date_open,
-                                self._context.get("lang"),
+                                self.env.context.get("lang"),
                                 date_format=False,
                             )
                         if work_rec.date_close:
                             date_close = format_date(
                                 self.env,
                                 work_rec.date_close,
-                                self._context.get("lang"),
+                                self.env.context.get("lang"),
                                 date_format=False,
                             )
                         wo_data = {
@@ -194,5 +194,5 @@ class FleetWorkOrder(models.AbstractModel):
         fp.seek(0)
         data = fp.read()
         fp.close()
-        res = base64.encodestring(data)
+        res = base64.b64encode(data).decode()
         return res

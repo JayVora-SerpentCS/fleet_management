@@ -84,7 +84,7 @@ class NextServiceByOdometer(models.AbstractModel):
                 date = format_date(
                     self.env,
                     obj.last_service_date,
-                    self._context.get("lang"),
+                    self.env.context.get("lang"),
                     date_format=False,
                 )
             worksheet.write(line_row, line_col, date or "", border)
@@ -102,5 +102,5 @@ class NextServiceByOdometer(models.AbstractModel):
         fp.seek(0)
         data = fp.read()
         fp.close()
-        res = base64.encodebytes(data)
+        res = base64.b64encode(data).decode()
         return res

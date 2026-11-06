@@ -16,7 +16,10 @@ class WorkOrderReports(models.TransientModel):
     )
     name = fields.Char(default="Genric Report.xls")
     vehicle_ids = fields.Many2many(
-        "fleet.vehicle", "fleet_wo_report_rel", "wor_id", "vehicle_id", string="Vehicle"
+        "fleet.vehicle",
+        "fleet_wo_report_rel",
+        "wor_id",
+        "vehicle_id",
     )
     file = fields.Binary("Click On Download Link To Download Xls File", readonly=True)
 

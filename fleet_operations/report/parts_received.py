@@ -103,7 +103,7 @@ class ReceivedPartsXlsx(models.AbstractModel):
                 date = format_date(
                     self.env,
                     picking.date_done,
-                    self._context.get("lang"),
+                    self.env.context.get("lang"),
                     date_format=False,
                 )
                 worksheet.write(row + 1, 3, date, tot)
@@ -111,7 +111,7 @@ class ReceivedPartsXlsx(models.AbstractModel):
                 date = format_date(
                     self.env,
                     picking.scheduled_date,
-                    self._context.get("lang"),
+                    self.env.context.get("lang"),
                     date_format=False,
                 )
                 worksheet.write(row + 1, 3, date, tot)
@@ -170,5 +170,5 @@ class ReceivedPartsXlsx(models.AbstractModel):
         fp.seek(0)
         data = fp.read()
         fp.close()
-        res = base64.encodebytes(data)
+        res = base64.b64encode(data).decode()
         return res

@@ -38,7 +38,7 @@ class RepairLineSummary(models.AbstractModel):
                             date = format_date(
                                 self.env,
                                 work_rec.date,
-                                self._context.get("lang"),
+                                self.env.context.get("lang"),
                                 date_format=False,
                             )
                             repair_l_dic[rep_type.id] = {
