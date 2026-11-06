@@ -22,7 +22,6 @@
         <field name="model">fleet.wittenoff</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">fleet_operations.write_off_qweb</field>
-        <field name="report_file">fleet_operations.write_off_qweb</field>
         <field name="print_report_name">'Write-Off'</field>
         <field name="binding_model_id" ref="fleet_operations.model_fleet_wittenoff" />
         <field name="binding_type">report</field>
@@ -45,7 +44,6 @@
         <field name="model">repair.line.summary</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">fleet_operations.repair_line_summary_qweb</field>
-        <field name="report_file">fleet_operations.repair_line_summary_qweb</field>
         <field name="print_report_name">'Repair Line Summary'</field>
         <field name="binding_model_id" ref="" />
         <field name="binding_type">report</field>
@@ -57,7 +55,6 @@
         <field name="model">vehicle.change.history</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">fleet_operations.vehicle_change_history_qweb</field>
-        <field name="report_file">fleet_operations.vehicle_change_history_qweb</field>
         <field name="print_report_name">'Vehicle Change History'</field>
         <field name="binding_model_id" ref="" />
         <field name="binding_type">report</field>

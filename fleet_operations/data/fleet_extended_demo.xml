@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <!-- Vehicle Registration-1 -->
     <record id="fleet.vehicle_1" model="fleet.vehicle">

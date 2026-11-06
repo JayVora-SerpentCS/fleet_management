@@ -193,7 +193,7 @@ class PrintFleetHistory(models.TransientModel):
                     date = format_date(
                         self.env,
                         order.date,
-                        self._context.get("lang"),
+                        self.env.context.get("lang"),
                         date_format=False,
                     )
                 worksheet.write(row, 0, "Actual Date Issued :", format1)
@@ -244,5 +244,5 @@ class PrintFleetHistory(models.TransientModel):
         fp.seek(0)
         data = fp.read()
         fp.close()
-        res = base64.encodebytes(data)
+        res = base64.b64encode(data).decode()
         return res

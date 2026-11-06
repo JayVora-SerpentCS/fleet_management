@@ -2,14 +2,19 @@
 
 {
     # Module Information
-    "name": "Fleet Operations",
+    "name": (
+        "Fleet Operations | Fleet Management Odoo | Odoo Fleet Management | "
+        "Vehicle Management Odoo | Odoo Vehicle Maintenance | Fleet Repair Management"
+    ),
     "category": "Managing vehicles and contracts",
-    "version": "19.0.1.0.0",
+    "version": "20.0.1.0.0",
     "license": "LGPL-3",
     "sequence": 1,
-    "summary": """This module extends the fleet functionality and
-     provides extra features and manage fleet operations.
-    """,
+    "summary": """Fleet Operations Management | Odoo Fleet Operations | Odoo Fleet Management |
+        Vehicle Management Odoo | Odoo Vehicle Registration | Odoo Fleet Driver Management |
+        Odoo Vehicle Repair Management | Odoo Fleet Maintenance | Odoo Vehicle Service Log |
+        Odoo Fleet Odometer Management | Odoo Fleet Vehicle History | Odoo Vehicle Write Off |
+        Fleet Operations Reporting | Fleet Management Module""",
     # Website
     "author": "Serpent Consulting Services Pvt. Ltd.",
     "website": "https://www.serpentcs.com",
@@ -18,7 +23,7 @@
     # Data
     "data": [
         "security/fleet_security.xml",
-        "security/ir.model.access.csv",
+        "security/ir.access.csv",
         "data/fleet_extended_data.xml",
         "data/vechical_sequence.xml",
         "wizard/pending_repair_confirm_view.xml",
@@ -41,7 +46,7 @@
         "wizard/vehicle_change_history_view.xml",
         "wizard/repair_line_summary_view.xml",
     ],
-    "images": ["static/description/fleet_management_product_banner.jpg"],
+    "images": ["static/description/fleet_management_product_banner.gif"],
     # "assets": {
     #     "web.assets_backend": [
     #         "fleet_operations/static/src/views/kanban/WebDisableDragDropKanban.esm.js",

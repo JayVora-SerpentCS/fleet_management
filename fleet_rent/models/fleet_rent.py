@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF, ustr
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
 
 
 class FleetRent(models.Model):
@@ -57,7 +57,7 @@ class FleetRent(models.Model):
     @api.model
     def default_get(self, fields):
         """Overridden method to update odometer in fleet rent."""
-        context = self._context or {}
+        context = self.env.context or {}
         vehical_obj = self.env["fleet.vehicle"]
         res = super().default_get(fields)
         if res.get("vehicle_id", False):
@@ -208,13 +208,11 @@ class FleetRent(models.Model):
         default="draft",
         copy=False,
     )
-    vehicle_id = fields.Many2one("fleet.vehicle", "Vehicle", help="Name of Vehicle.")
+    vehicle_id = fields.Many2one("fleet.vehicle", help="Name of Vehicle.")
     vehicle_owner = fields.Char(
         "vehicle_owner", compute="_compute_change_vehicle_owner"
     )
-    tenant_id = fields.Many2one(
-        "res.users", "Tenant", help="Tenant Name of Rental Vehicle."
-    )
+    tenant_id = fields.Many2one("res.users", help="Tenant Name of Rental Vehicle.")
     fleet_tenant_id = fields.Many2one(
         related="tenant_id.partner_id",
         store=True,
@@ -261,7 +259,7 @@ class FleetRent(models.Model):
         copy=False,
         help="True if deposit amount received for " "current Rental Vehicle.",
     )
-    contact_id = fields.Many2one("res.partner", "Contact", help="Contact person name.")
+    contact_id = fields.Many2one("res.partner", help="Contact person name.")
     contract_dt = fields.Datetime(
         "Contract Creation",
         default=lambda *a: datetime.now(),
@@ -293,7 +291,7 @@ class FleetRent(models.Model):
         store=True,
         help="Rental Vehicle contract end date.",
     )
-    rent_type_id = fields.Many2one("rent.type", "Rent Type")
+    rent_type_id = fields.Many2one("rent.type")
     total_rent = fields.Monetary(
         compute="_compute_total_amount_rent",
         currency_field="currency_id",
@@ -303,9 +301,7 @@ class FleetRent(models.Model):
     rent_close_by = fields.Many2one("res.users", copy=False)
     date_close = fields.Datetime("Rent Close Date", copy=False)
 
-    rent_schedule_ids = fields.One2many(
-        "tenancy.rent.schedule", "fleet_rent_id", "Rent Schedule"
-    )
+    rent_schedule_ids = fields.One2many("tenancy.rent.schedule", "fleet_rent_id")
     maintanance_ids = fields.One2many(
         "maintenance.cost", "fleet_rent_id", "Maintenance Costs"
     )
@@ -329,7 +325,7 @@ class FleetRent(models.Model):
         string="Total Expenditure",
         currency_field="currency_id",
     )
-    invoice_id = fields.Many2one("account.move", "Invoice")
+    invoice_id = fields.Many2one("account.move")
     cr_rent_btn = fields.Boolean("Hide Rent Button", copy=False)
 
     close_reson = fields.Text("Rent Close Reason", help="Rent Close Reason.")
@@ -718,7 +714,7 @@ class RentType(models.Model):
         for rec in self:
             rec_str = ""
             if rec.duration:
-                rec_str += ustr(rec.duration)
+                rec_str += str(rec.duration)
             if rec.renttype:
                 rec_str += " " + rec.renttype
             res.append((rec.id, rec_str))
@@ -737,9 +733,9 @@ class RentType(models.Model):
         full_name = ""
         for rec in self:
             if rec.duration:
-                full_name += ustr(rec.duration)
+                full_name += str(rec.duration)
             if rec.renttype:
-                full_name += " " + ustr(rec.renttype)
+                full_name += " " + str(rec.renttype)
             rec.name = full_name
 
     name = fields.Char()
@@ -785,7 +781,7 @@ class MaintenanceCost(models.Model):
         help="Tenant Name of Rental Vehicle.",
     )
     fleet_tenant_id = fields.Many2one(
-        "res.partner", "Fleet Tenant", help="Tenant Name of Rental Vehicle."
+        "res.partner", help="Tenant Name of Rental Vehicle."
     )
 
     @api.onchange("maint_type")
@@ -812,7 +808,7 @@ class TenancyRentSchedule(models.Model):
             rent_sched.move_check = bool(rent_sched.invc_id)
 
     note = fields.Text("Notes", help="Additional Notes.")
-    currency_id = fields.Many2one("res.currency", "Currency")
+    currency_id = fields.Many2one("res.currency")
     amount = fields.Monetary(
         default=0.0, currency_field="currency_id", help="Rent Amount."
     )
@@ -822,7 +818,7 @@ class TenancyRentSchedule(models.Model):
     move_check = fields.Boolean(compute="_compute_get_move_check", store=True)
     rel_tenant_id = fields.Many2one("res.users", "Tenant")
     move_id = fields.Many2one("account.move", "Depreciation Entry")
-    vehicle_id = fields.Many2one("fleet.vehicle", "Vehicle", help="Vehicle Name.")
+    vehicle_id = fields.Many2one("fleet.vehicle", help="Vehicle Name.")
     fleet_rent_id = fields.Many2one(
         "fleet.rent", "Rental Vehicle", help="Rental Vehicle Name."
     )
@@ -879,7 +875,7 @@ class TenancyRentSchedule(models.Model):
             inv_values.update({"invoice_line_ids": [(0, 0, inv_line_values)]})
         acc_id = self.env["account.move"].create(inv_values)
         self.write({"invc_id": acc_id.id, "inv": True})
-        context = dict(self._context or {})
+        context = dict(self.env.context or {})
         wiz_form_id = self.env.ref("account.view_move_form").id
 
         return {
@@ -895,7 +891,7 @@ class TenancyRentSchedule(models.Model):
 
     def open_invoice(self):
         """Method Open Invoice."""
-        context = dict(self._context or {})
+        context = dict(self.env.context or {})
         wiz_form_id = self.env.ref("account.view_move_form").id
         return {
             "view_type": "form",

@@ -41,7 +41,7 @@ class VehicalChangeHistoryReport(models.AbstractModel):
                         format_date(
                             self.env,
                             rec.changed_date,
-                            self._context.get("lang"),
+                            self.env.context.get("lang"),
                             date_format=False,
                         )
                         if rec.changed_date
@@ -52,7 +52,7 @@ class VehicalChangeHistoryReport(models.AbstractModel):
                         format_date(
                             self.env,
                             rec.workorder_id.date_close,
-                            self._context.get("lang"),
+                            self.env.context.get("lang"),
                             date_format=False,
                         )
                         if rec.workorder_id and rec.workorder_id.date_close

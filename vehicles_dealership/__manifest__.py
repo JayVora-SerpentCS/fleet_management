@@ -2,12 +2,21 @@
 
 {
     # Module Information
-    "name": "Vehicles Dealership",
+    "name": (
+        "Vehicles Dealership | Vehicle Dealership Management | Odoo Car Dealership | "
+        "Odoo Vehicle Sales and Purchase | Dealership Vehicle Management"
+    ),
     "category": "vehicles",
-    "version": "19.0.1.0.0",
+    "version": "20.0.1.0.0",
     "license": "LGPL-3",
     "sequence": 1,
-    "summary": """Vehicles Dealership Management System""",
+    "summary": (
+        "Vehicle Dealership Management | Odoo Vehicle Dealership | "
+        "Odoo Car Dealership | \n"
+        "        Odoo Vehicle Sales | Odoo Vehicle Purchase | "
+        "Dealership Product Management | \n"
+        "        Car Sales and Purchase Management | Vehicle Dealership System"
+    ),
     # Website
     "author": "Serpent Consulting Services Pvt. Ltd.",
     "website": "https://www.serpentcs.com",
@@ -19,7 +28,7 @@
         "views/product_views.xml",
         "views/res_company_views.xml",
     ],
-    "images": ["static/description/vehicles_dealership_product_banner.jpg"],
+    "images": ["static/description/vehicles_dealership_product_banner.gif"],
     # Technical
     "auto_install": False,
     "installable": True,
