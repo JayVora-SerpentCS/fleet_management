@@ -192,7 +192,7 @@
     </record>
 
     <!--  List view of fleet write-off -->
-    <record model='ir.ui.view' id='fleet_vehicle_wittenoff_tree_view'>
+    <record id='fleet_vehicle_wittenoff_tree_view' model='ir.ui.view'>
         <field name="name">fleet.vehicle.wittenoff.off</field>
         <field name="model">fleet.wittenoff</field>
         <field name="arch" type="xml">
@@ -258,7 +258,7 @@
                     type="object"
                     string="Update Engine"
                     context="{'history':'engine'}"
-                    icon="fa-gears"
+                    icon="settings"
                     class="oe_stat_button oe_highlight"
                     groups="fleet.fleet_group_manager"
                     invisible="state in ('write-off')"
@@ -268,7 +268,7 @@
                     type="object"
                     string="Update Color"
                     context="{'history':'color'}"
-                    icon="fa-gears"
+                    icon="settings"
                     class="oe_stat_button oe_highlight"
                     groups="fleet.fleet_group_manager"
                     invisible="state in ('write-off')"
@@ -278,7 +278,7 @@
                     type="object"
                     string="Update Tire"
                     context="{'history':'tire'}"
-                    icon="fa-gears"
+                    icon="settings"
                     class="oe_stat_button oe_highlight"
                     groups="fleet.fleet_group_manager"
                     invisible="state in ('write-off')"
@@ -288,7 +288,7 @@
                     type="object"
                     string="Update Battery"
                     context="{'history':'battery'}"
-                    icon="fa-gears"
+                    icon="settings"
                     class="oe_stat_button oe_highlight"
                     groups="fleet.fleet_group_manager"
                     invisible="state in ('write-off')"
@@ -298,7 +298,7 @@
                     name="%(fleet_operations.fleet_vehicle_log_services_form_action)d"
                     type="action"
                     string="Services"
-                    icon="fa-gears"
+                    icon="settings"
                     class="oe_stat_button oe_highlight"
                     domain="[('state','in',('inspection','released'))]"
                     context="{'default_vehicle_id': id}"
@@ -308,7 +308,7 @@
                     name="%(fleet_operations.fleet_vehicle_write_off_form_action)d"
                     type="action"
                     string="Write-off"
-                    icon="fa-gears"
+                    icon="settings"
                     class="oe_stat_button oe_highlight"
                     domain="[('state','in',('inspection','released'))]"
                     context="{'default_vehicle_id': id}"
@@ -327,7 +327,7 @@
                         name="open_assignation_logs"
                         type="object"
                         class="oe_stat_button"
-                        icon="fa-history"
+                        icon="history"
                         help="show all the driver history"
                         groups="fleet.fleet_group_manager"
                     >
@@ -342,7 +342,7 @@
                         name="return_action_to_open"
                         type="object"
                         class="oe_stat_button"
-                        icon="fa-wrench"
+                        icon="build"
                         context="{'xml_id':'fleet_vehicle_log_services_action'}"
                         help="show the services logs for this vehicle"
                     >
@@ -357,7 +357,7 @@
                         name="return_action_to_open"
                         type="object"
                         class="oe_stat_button"
-                        icon="fa-tachometer"
+                        icon="speed"
                         context="{'xml_id':'fleet_vehicle_odometer_action'}"
                         help="show the odometer logs for this vehicle"
                     >
@@ -956,7 +956,7 @@
 
 
     <!-- Override the list view of fleet vehicle added extra fields on list view.  -->
-    <!-- <record model='ir.ui.view' id='fleet.fleet_vehicle_view_tree'>
+    <!-- <record id='fleet.fleet_vehicle_view_tree' model='ir.ui.view'>
         <field name="name">fleet.vehicle.list</field>
         <field name="model">fleet.vehicle</field>fleet.vehicle.tree
         <field name="arch" type="xml">
@@ -1285,7 +1285,7 @@
     </record>
 
       <!-- Search view of vehicle odometer -->
-    <record model='ir.ui.view' id='fleet_vehicle_odometer_search_view'>
+    <record id='fleet_vehicle_odometer_search_view' model='ir.ui.view'>
         <field name="name">fleet.vehicle.odometer.search.view</field>
         <field name="model">fleet.vehicle.odometer</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_odometer_view_search" />
@@ -1365,12 +1365,6 @@
     </record>
 
     <!-- Changed the groups for this menus -->
-    <menuitem
-        action="fleet.fleet_vehicle_model_action"
-        groups="-base.group_no_one,fleet.fleet_group_manager"
-        parent="fleet.fleet_configuration"
-        id="fleet.fleet_vehicle_model_menu"
-    />
 
     <!-- Menu itesm of existing fleet module with new labels and added new one. -->
     <menuitem
@@ -1402,9 +1396,9 @@
 
     <!-- Menu for state -->
     <menuitem
+        id="fleet.fleet_vehicle_state_menu"
         action="fleet.fleet_vehicle_state_action"
         parent="fleet.fleet_configuration"
-        id="fleet.fleet_vehicle_state_menu"
         groups="fleet.fleet_group_manager"
     />
 
@@ -1419,9 +1413,9 @@
 
     <!-- Menuitem Reports Menu -->
     <menuitem
+        id="fleet.menu_fleet_reporting"
         name="Reports"
         parent="fleet.menu_root"
-        id="fleet.menu_fleet_reporting"
         sequence="3"
         groups="fleet.fleet_group_manager"
     />
@@ -1531,19 +1525,19 @@
 
     <!-- Menuitem for odometer increment -->
     <menuitem
+        id="odometer_increment_menu"
         action="next_increment_number_tree_act"
         name="Odometer Increment"
         parent="fleet.fleet_configuration"
-        id="odometer_increment_menu"
         sequence="4"
         groups="fleet.fleet_group_manager"
     />
 
     <!-- Change the groups of main configuration menu from manager to Admin user. -->
     <menuitem
+        id="fleet.fleet_configuration"
         name="Configuration"
         parent="fleet.menu_root"
-        id="fleet.fleet_configuration"
         sequence="4"
         groups="-fleet.fleet_group_manager"
     />
@@ -1585,18 +1579,18 @@
 
     <!-- Menuitem for Damage Type -->
     <menuitem
+        id="damage_type_menu"
         action="damage_type_action"
         name="Damage Types"
         parent="fleet.fleet_configuration"
-        id="damage_type_menu"
         groups="fleet.fleet_group_manager"
     />
 
 
     <!--  Change the sequence number of main menu Fleet to 3-->
     <menuitem
-        name="Fleet"
         id="fleet.menu_root"
+        name="Fleet"
         sequence="1"
         groups="fleet.fleet_group_manager,fleet.fleet_group_user"
     />
@@ -1655,8 +1649,8 @@
 
     <!-- Menuitem for next service days -->
     <menuitem
-        action="next_service_days_act"
         id="next_service_days"
+        action="next_service_days_act"
         parent="fleet.fleet_configuration"
         sequence="17"
     />
@@ -1682,8 +1676,8 @@
 
     <!-- Menuitem for color -->
     <menuitem
-        action="color_color_act"
         id="color_color_menu"
+        action="color_color_act"
         parent="fleet.fleet_configuration"
         sequence="20"
         groups="fleet.fleet_group_manager"
@@ -1738,8 +1732,8 @@
 
     <!-- Menuitem for Vehicle Type -->
     <menuitem
-        action="vehicle_type_act"
         id="vehicle_type"
+        action="vehicle_type_act"
         parent="fleet.fleet_configuration"
         sequence="16"
         groups="fleet.fleet_group_manager"
@@ -1759,9 +1753,9 @@
 
     <!-- Menu for Vehicle Model -->
     <menuitem
+        id="fleet.fleet_vehicle_model_menu"
         action="fleet.fleet_vehicle_model_action"
         parent="fleet.fleet_configuration"
-        id="fleet.fleet_vehicle_model_menu"
         sequence="10"
         groups="base.group_no_one"
     />
@@ -1846,8 +1840,6 @@
     </record>
 
     <!-- Report Heading Menuitem -->
-    <!-- <menuitem action="report_heading_act" id="report_heading_menu"
-        parent="fleet.fleet_configuration" sequence="22"
-        groups="fleet.fleet_group_manager"/> -->
+    <!-- <menuitem id="report_heading_menu" action="report_heading_act" parent="fleet.fleet_configuration" sequence="22" groups="fleet.fleet_group_manager"/> -->
 
 </odoo>

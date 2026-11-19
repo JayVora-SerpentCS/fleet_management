@@ -22,7 +22,7 @@ class ProductProduct(models.Model):
     def create(self, vals_list):
         """Overridden method to update the product information."""
         for vals in vals_list:
-            if not vals.get("name", False) and self._context.get(
+            if not vals.get("name", False) and self.env.context.get(
                 "create_fleet_vehicle", False
             ):
                 vals.update(
@@ -64,9 +64,56 @@ class FleetVehicle(models.Model):
     _inherits = {"product.product": "product_id"}
 
     product_id = fields.Many2one(
-        "product.product", "Product", ondelete="cascade", required=True
+        "product.product", "Vehicle Product", ondelete="cascade", required=True
     )
-    image_128 = fields.Image("Image", readonly=False)
+    image_128 = fields.Image("Vehicle Image", readonly=False)
+    # The fields below share their label with fields coming from
+    # product.product through ``_inherits``. Give them a distinct label.
+    tag_ids = fields.Many2many(string="Vehicle Tags")
+    vehicle_properties = fields.Properties()
+    location = fields.Char(string="Vehicle Location")
+
+    def init(self):
+        """Create a product for the vehicles which do not have one.
+
+        ``product_id`` is required (``_inherits``), so the vehicles created
+        before this module was installed need a product before the NOT NULL
+        constraint can be added.
+        """
+        result = super().init()
+        cr = self.env.cr
+        # Model ``init`` methods run before the registry has necessarily
+        # initialized every other model's columns. Creating a product below
+        # reads company defaults, which fetch all stored res.company fields.
+        # Ensure this module's company field exists before that ORM read.
+        cr.execute(
+            "ALTER TABLE res_company " "ADD COLUMN IF NOT EXISTS din_number varchar"
+        )
+        cr.execute("SELECT id FROM fleet_vehicle WHERE product_id IS NULL")
+        vehicle_ids = [row[0] for row in cr.fetchall()]
+        if vehicle_ids:
+            product_obj = self.env["product.product"].with_context(
+                create_fleet_vehicle=True
+            )
+            vehicles = self.with_context(active_test=False).browse(vehicle_ids)
+            for vehicle in vehicles:
+                product = product_obj.create(
+                    {
+                        "name": vehicle.name or "NEW VEHICLE",
+                        "type": "consu",
+                        "is_vehicle": True,
+                        "company_id": vehicle.company_id.id or False,
+                    }
+                )
+                cr.execute(
+                    "UPDATE fleet_vehicle SET product_id = %s WHERE id = %s",
+                    (product.id, vehicle.id),
+                )
+            self.env.invalidate_all()
+        cr.execute("SELECT 1 FROM fleet_vehicle WHERE product_id IS NULL LIMIT 1")
+        if not cr.fetchone():
+            cr.execute("ALTER TABLE fleet_vehicle ALTER COLUMN product_id SET NOT NULL")
+        return result
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -108,7 +155,7 @@ class FleetVehicle(models.Model):
         This method is called when pass context 'remove_inprogeress'
         This method will remove in rent car state in_progress records
         """
-        if self._context.get("remove_inprogeress"):
+        if self.env.context.get("remove_inprogeress"):
             inprograce_recs = (
                 self.env["fleet.rent"]
                 .with_context(is_updated=True)

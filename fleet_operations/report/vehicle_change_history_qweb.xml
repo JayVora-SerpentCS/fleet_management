@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <template id="vehicle_change_history_qweb">
         <t t-call="web.html_container">
@@ -45,34 +45,34 @@
                             <tr t-foreach="get_vehicle_history" t-as="line">
                                 <t t-if="line">
                                     <td style="text-align:center;"><span
-                                                    t-esc="counter"
+                                                    t-out="counter"
                                                 /><t
                                                     t-set="counter"
                                                     t-value="counter+1"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('description', '')"
+                                                    t-out="line.get('description', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('vehicle_type', '')"
+                                                    t-out="line.get('vehicle_type', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('old_color', '')"
+                                                    t-out="line.get('old_color', '')"
                                                 /></td>
-                                    <!-- <td style="text-align:center;"><span t-esc="line.get('vin', '')"/></td>
-                                    <td style="text-align:center;"><span t-esc="line.get('plate', '')"/></td>
-                                    <td style="text-align:center;"><span t-esc="line.get('new_engine', '')"/></td> -->
+                                    <!-- <td style="text-align:center;"><span t-out="line.get('vin', '')"/></td>
+                                    <td style="text-align:center;"><span t-out="line.get('plate', '')"/></td>
+                                    <td style="text-align:center;"><span t-out="line.get('new_engine', '')"/></td> -->
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('new_color', '')"
-                                                /></td>
-                                    <td style="text-align:center;"><span
-                                                    t-esc="line.get('change_date', '')"
+                                                    t-out="line.get('new_color', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('work_order', '')"
+                                                    t-out="line.get('change_date', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('wo_close_date', '')"
+                                                    t-out="line.get('work_order', '')"
+                                                /></td>
+                                    <td style="text-align:center;"><span
+                                                    t-out="line.get('wo_close_date', '')"
                                                 /></td>
                                 </t>
                             </tr>
@@ -115,31 +115,31 @@
                             <tr t-foreach="get_vehicle_history" t-as="line">
                                 <t t-if="line">
                                     <td style="text-align:center;"><span
-                                                    t-esc="counter"
+                                                    t-out="counter"
                                                 /><t
                                                     t-set="counter"
                                                     t-value="counter+1"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('description', '')"
+                                                    t-out="line.get('description', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('vehicle_type', '')"
+                                                    t-out="line.get('vehicle_type', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('old_engine', '')"
+                                                    t-out="line.get('old_engine', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('new_engine', '')"
+                                                    t-out="line.get('new_engine', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('change_date', '')"
+                                                    t-out="line.get('change_date', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('work_order', '')"
+                                                    t-out="line.get('work_order', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('wo_close_date', '')"
+                                                    t-out="line.get('wo_close_date', '')"
                                                 /></td>
                                 </t>
                             </tr>
@@ -184,31 +184,31 @@
                             <tr t-foreach="get_vehicle_history" t-as="line">
                                 <t t-if="line">
                                     <td style="text-align:center;"><span
-                                                    t-esc="counter"
+                                                    t-out="counter"
                                                 /><t
                                                     t-set="counter"
                                                     t-value="counter+1"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('description', '')"
+                                                    t-out="line.get('description', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('vehicle_type', '')"
+                                                    t-out="line.get('vehicle_type', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('old_tire', '')"
+                                                    t-out="line.get('old_tire', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('new_tire', '')"
+                                                    t-out="line.get('new_tire', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('change_date', '')"
+                                                    t-out="line.get('change_date', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('work_order', '')"
+                                                    t-out="line.get('work_order', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('wo_close_date', '')"
+                                                    t-out="line.get('wo_close_date', '')"
                                                 /></td>
                                 </t>
                             </tr>
@@ -253,31 +253,31 @@
                             <tr t-foreach="get_vehicle_history" t-as="line">
                                 <t t-if="line">
                                     <td style="text-align:center;"><span
-                                                    t-esc="counter"
+                                                    t-out="counter"
                                                 /><t
                                                     t-set="counter"
                                                     t-value="counter+1"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('description', '')"
+                                                    t-out="line.get('description', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('vehicle_type', '')"
+                                                    t-out="line.get('vehicle_type', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('old_battery', '')"
+                                                    t-out="line.get('old_battery', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('new_battery', '')"
+                                                    t-out="line.get('new_battery', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('change_date', '')"
+                                                    t-out="line.get('change_date', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('work_order', '')"
+                                                    t-out="line.get('work_order', '')"
                                                 /></td>
                                     <td style="text-align:center;"><span
-                                                    t-esc="line.get('wo_close_date', '')"
+                                                    t-out="line.get('wo_close_date', '')"
                                                 /></td>
                                 </t>
                             </tr>

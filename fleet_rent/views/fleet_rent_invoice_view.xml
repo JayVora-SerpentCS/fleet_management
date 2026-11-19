@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <!--Inherited account invoice form view to add property id-->
     <record id="view_account_invoice_prop_form_inherit" model="ir.ui.view">

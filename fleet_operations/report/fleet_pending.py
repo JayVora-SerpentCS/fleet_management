@@ -129,5 +129,5 @@ class FleetPending(models.AbstractModel):
         fp.seek(0)
         data = fp.read()
         fp.close()
-        res = base64.encodebytes(data)
+        res = base64.b64encode(data).decode()
         return res

@@ -5,7 +5,6 @@
 from datetime import datetime
 
 from odoo import fields, models
-from odoo.tools import ustr
 
 
 class WizardRentCloseReason(models.TransientModel):
@@ -27,13 +26,13 @@ class WizardRentCloseReason(models.TransientModel):
             + " "
             + "on"
             + " "
-            + ustr(date)
+            + str(date)
         )
-        if self._context.get("active_id", False) and self._context.get(
+        if self.env.context.get("active_id", False) and self.env.context.get(
             "active_model", False
         ):
-            for rent in self.env[self._context["active_model"]].browse(
-                self._context.get("active_id", False)
+            for rent in self.env[self.env.context["active_model"]].browse(
+                self.env.context.get("active_id", False)
             ):
                 tenancy_obj = self.env["tenancy.rent.schedule"].search(
                     [

@@ -14,13 +14,17 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib64/
 parts/
 sdist/
 var/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# Distribution packages
+*.deb
+*.rpm
+*.msi
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -44,7 +48,6 @@ coverage.xml
 
 # Translations
 *.mo
-*.pot
 
 # Django stuff:
 *.log

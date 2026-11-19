@@ -2,7 +2,7 @@
 """Fleet Rent and Account related model."""
 
 from odoo import fields, models
-from odoo.tools import format_date, ustr
+from odoo.tools import format_date
 
 
 class AccountInvoice(models.Model):
@@ -10,7 +10,7 @@ class AccountInvoice(models.Model):
 
     _inherit = "account.move"
 
-    vehicle_id = fields.Many2one("fleet.vehicle", "Vehicle", help="Vehicle Name.")
+    vehicle_id = fields.Many2one("fleet.vehicle", help="Vehicle Name.")
     fleet_rent_id = fields.Many2one("fleet.rent", "Rental Vehicle")
     is_deposit_inv = fields.Boolean("Is Deposit Invoice")
     is_deposit_return_inv = fields.Boolean("Is Deposit Return Invoice")
@@ -74,8 +74,8 @@ class AccountPayment(models.AbstractModel):
     def _compute_payment_amount(self, invoices, currency, journal, date):
         """Overridden Method to update deposit amount in payment wizard."""
         rec = super()._compute_payment_amount(invoices, currency, journal, date)
-        if self._context.get("active_model", False) == "fleet.rent":
-            return self._context.get("default_amount" or 0.0)
+        if self.env.context.get("active_model", False) == "fleet.rent":
+            return self.env.context.get("default_amount" or 0.0)
         return rec
 
 
@@ -97,8 +97,8 @@ class AccountPaymentRegister(models.TransientModel):
         """Overridden Method to update tenancy information."""
         inv_obj = self.env["account.move"]
         rent_sched_obj = self.env["tenancy.rent.schedule"]
-        if self._context.get("active_id", False):
-            for invoice in inv_obj.browse(self._context["active_id"]):
+        if self.env.context.get("active_id", False):
+            for invoice in inv_obj.browse(self.env.context["active_id"]):
                 if invoice.fleet_rent_id:
                     self.write(
                         {
@@ -116,18 +116,18 @@ class AccountPaymentRegister(models.TransientModel):
             + " "
             + "on"
             + " "
-            + ustr(
+            + str(
                 format_date(
                     self.env, fields.Date.today(), self.env.user.lang, date_format=False
                 )
             )
         )
         if (
-            self._context.get("active_model", False)
-            and self._context["active_model"] == "account.move.line"
-            # and self._context.get("active_ids", False)
+            self.env.context.get("active_model", False)
+            and self.env.context["active_model"] == "account.move.line"
+            # and self.env.context.get("active_ids", False)
         ):
-            for move in inv_obj.browse(self._context["active_id"]):
+            for move in inv_obj.browse(self.env.context["active_id"]):
                 for rent_line in rent_sched_obj.search([("invc_id", "=", move.id)]):
                     tenancy_vals = {"pen_amt": 0.0}
                     if rent_line.invc_id:

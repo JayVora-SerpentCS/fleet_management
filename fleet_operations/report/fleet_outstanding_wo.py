@@ -148,5 +148,5 @@ class FleetOutstandingWO(models.AbstractModel):
         fp.seek(0)
         data = fp.read()
         fp.close()
-        res = base64.encodestring(data)
+        res = base64.b64encode(data).decode()
         return res

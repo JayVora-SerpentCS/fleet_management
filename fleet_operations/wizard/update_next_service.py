@@ -20,7 +20,7 @@ class UpdateNextServiceConfig(models.TransientModel):
         next_service_obj = self.env["next.service.days"]
         service_obj = self.env["fleet.vehicle.log.services"]
         incre_obj = self.env["next.increment.number"]
-        service_active_id = service_obj.browse(self._context["active_id"])
+        service_active_id = service_obj.browse(self.env.context["active_id"])
         next_service_obj.create(
             {
                 "vehicle_id": self.vehicle_id and self.vehicle_id.id or False,
@@ -40,7 +40,7 @@ class UpdateNextServiceConfig(models.TransientModel):
         """Method is used to set Vehicle Id."""
         res = super().default_get(default_fields)
         serv_obj = self.env["fleet.vehicle.log.services"]
-        service = serv_obj.browse(self._context["active_id"])
+        service = serv_obj.browse(self.env.context["active_id"])
         if service:
             res.update(
                 {

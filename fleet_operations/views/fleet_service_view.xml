@@ -2,7 +2,7 @@
 <odoo>
 
     <!-- Service category editable list view. -->
-    <record model='ir.ui.view' id='service_category_tree_view'>
+    <record id='service_category_tree_view' model='ir.ui.view'>
         <field name="name">service.category.list</field>
         <field name="model">service.category</field>
         <field name="arch" type="xml">
@@ -13,18 +13,18 @@
     </record>
 
     <!-- Service category Action. -->
-    <record model='ir.actions.act_window' id='service_category_tree_act'>
+    <record id='service_category_tree_act' model='ir.actions.act_window'>
         <field name="name">Service Category</field>
         <field name="res_model">service.category</field>
         <field name="view_mode">form,list</field>
     </record>
 
     <!-- Inherited Fleet Service Form View. -->
-    <record model='ir.ui.view' id='fleet_vehicle_log_services_view_inherit'>
+    <record id='fleet_vehicle_log_services_view_inherit' model='ir.ui.view'>
         <field name="name">fleet.vehicle.log.services_view</field>
         <field name="model">fleet.vehicle.log.services</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form" />
-        <field name="priority">101</field>
+        <field name="priority" eval="101" />
         <field name="arch" type="xml">
             <xpath expr="//header" position="replace">
                 <header>
@@ -89,7 +89,7 @@
                         name="action_view_delivery_orders"
                         string="Delivery Orders"
                         type="object"
-                        icon="fa-truck"
+                        icon="local_shipping"
                         class="oe_stat_button"
                         groups="fleet.fleet_group_manager"
                     >
@@ -100,7 +100,7 @@
                         />
                     </button>
                     <button
-                        icon="fa-pencil-square-o"
+                        icon="receipt_long"
                         class="oe_stat_button"
                         name="%(action_fleet_service_out_invoice_view)d"
                         type="action"
@@ -113,7 +113,7 @@
                         />
                     </button>
                     <button
-                        icon="fa-pencil-square-o"
+                        icon="receipt_long"
                         class="oe_stat_button"
                         name="%(action_fleet_service_out_refund_invoice_view)d"
                         type="action"
@@ -129,7 +129,7 @@
                         name="action_reopen_services"
                         type="object"
                         class="oe_stat_button"
-                        icon="fa-repeat"
+                        icon="autorenew"
                         invisible="reopen_service_count == 0"
                     >
                         <div class="o_form_field o_stat_info">
@@ -227,7 +227,7 @@
                     />
               </group>
             </xpath>
-            <xpath expr="//field[@name='date']" position="replace" />
+            <xpath expr="//field[@name='date_from']" position="replace" />
             <xpath expr="//field[@name='vendor_id']" position="replace" />
             <xpath expr="//field[@name='amount']" position="attributes">
                 <attribute name="string">Service Amount</attribute>
@@ -478,12 +478,22 @@
                      <field name="wrk_attach_ids" readonly="state in ('draft','done')">
                          <list>
                              <field name='name' />
-                             <field name='datas' />
+                             <field
+                                    name="raw"
+                                    widget="binary"
+                                    filename="name"
+                                    string="File Content"
+                                />
                          </list>
                          <form>
                              <field name='name' />
                              <group>
-                                 <field name='datas' />
+                                 <field
+                                        name="raw"
+                                        widget="binary"
+                                        filename="name"
+                                        string="File Content"
+                                    />
                              </group>
                          </form>
                      </field>
@@ -517,7 +527,7 @@
         </field>
     </record>
 
-    <record model='ir.ui.view' id='fleet_vehicle_log_services_view_tree'>
+    <record id='fleet_vehicle_log_services_view_tree' model='ir.ui.view'>
         <field name="name">fleet.vehicle.log.services.list</field>
         <field name="model">fleet.vehicle.log.services</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_tree" />
@@ -531,7 +541,7 @@
         </field>
     </record>
 
-    <record model='ir.ui.view' id='fleet.fleet_vehicle_log_services_view_search'>
+    <record id='fleet.fleet_vehicle_log_services_view_search' model='ir.ui.view'>
             <field name="name">fleet.vehicle.log.services_search_view</field>
             <field name="model">fleet.vehicle.log.services</field>
             <field name="arch" type="xml">
@@ -611,7 +621,7 @@
     </record>
 
      <!--Task List View. -->
-     <record model='ir.ui.view' id='fleet_vehicle_maintain_task_tree'>
+     <record id='fleet_vehicle_maintain_task_tree' model='ir.ui.view'>
         <field name="name">fleet.vehicle.maintain.task.list</field>
         <field name="model">service.task</field>
         <field name="arch" type="xml">
@@ -624,7 +634,7 @@
 
 
     <!-- Work Order Search Action. -->
-    <record model='ir.actions.act_window' id='fleet.fleet_vehicle_log_services_action'>
+    <record id='fleet.fleet_vehicle_log_services_action' model='ir.actions.act_window'>
         <field name="name">Services</field>
         <field name="res_model">fleet.vehicle.log.services</field>
         <field name="view_mode">list,kanban,form,graph,pivot,activity</field>
@@ -650,9 +660,9 @@
 
     <!-- Work Order Menu. -->
     <menuitem
+        id="fleet.fleet_vehicle_log_services_menu"
         action="fleet.fleet_vehicle_log_services_action"
         parent="fleet.fleet_vehicles"
-        id="fleet.fleet_vehicle_log_services_menu"
         sequence="5"
         groups="fleet.fleet_group_user"
         name="Vehicle Services"
@@ -697,7 +707,7 @@
     </record>
 
     <!-- Work Order Search Action. -->
-    <record model='ir.actions.act_window' id='fleet_work_order_advance_search_act'>
+    <record id='fleet_work_order_advance_search_act' model='ir.actions.act_window'>
         <field name="name">Check Services Status</field>
         <field name="res_model">fleet.work.order.search</field>
         <field name="view_mode">form</field>
@@ -706,16 +716,16 @@
 
     <!-- Work Order Search Menu. -->
     <menuitem
+        id="work_order_advance_search_sub_menu"
         action="fleet_work_order_advance_search_act"
         name="Check Service Status"
         parent="fleet.menu_fleet_reporting"
-        id="work_order_advance_search_sub_menu"
         sequence="2"
         groups="fleet.fleet_group_manager,fleet.fleet_group_user"
     />
 
     <!--fleet work order repair type form view-->
-    <record model='ir.ui.view' id='fleet_repair_type_form_view'>
+    <record id='fleet_repair_type_form_view' model='ir.ui.view'>
         <field name="name">fleet.repair.type.form</field>
         <field name="model">repair.type</field>
         <field name="arch" type="xml">
@@ -727,7 +737,7 @@
         </field>
     </record>
     <!-- View and action for repiar type -->
-    <record model='ir.ui.view' id='fleet_repair_type_tree_view'>
+    <record id='fleet_repair_type_tree_view' model='ir.ui.view'>
         <field name="name">fleet.repair.type.list</field>
         <field name="model">repair.type</field>
         <field name="arch" type="xml">
@@ -738,7 +748,7 @@
     </record>
 
     <!-- Repair Type Action. -->
-    <record model='ir.actions.act_window' id='fleet_repair_type_tree_act'>
+    <record id='fleet_repair_type_tree_act' model='ir.actions.act_window'>
         <field name="name">Repair Type</field>
         <field name="res_model">repair.type</field>
         <field name="view_mode">list,form</field>
@@ -746,16 +756,16 @@
 
     <!-- Repair Type Menu. -->
     <menuitem
+        id="fleet_repair_type_menu"
         action="fleet_repair_type_tree_act"
         name="Repair Type"
         parent="fleet.fleet_configuration"
         groups="fleet.fleet_group_manager"
-        id="fleet_repair_type_menu"
         sequence="2"
     />
 
     <!-- Fleet Service Type Form View -->
-    <record model='ir.ui.view' id='fleet_vehicle_service_types_form'>
+    <record id='fleet_vehicle_service_types_form' model='ir.ui.view'>
         <field name="name">fleet.service.type.form</field>
         <field name="model">fleet.service.type</field>
         <field name="arch" type="xml">
@@ -772,7 +782,7 @@
     </record>
 
     <!-- Fleet Service Type List View -->
-    <record model='ir.ui.view' id='fleet.fleet_vehicle_service_types_view_tree'>
+    <record id='fleet.fleet_vehicle_service_types_view_tree' model='ir.ui.view'>
         <field name="name">fleet.service.type.list</field>
         <field name="model">fleet.service.type</field>
         <field name="arch" type="xml">
@@ -783,28 +793,14 @@
     </record>
 
     <!-- Fleet Service Type Menu item -->
-    <menuitem
-        action="fleet.fleet_vehicle_service_types_action"
-        parent="fleet.fleet_configuration"
-        groups="fleet.fleet_group_manager"
-        id="fleet.fleet_vehicle_service_types_menu"
-        sequence="1"
-    />
 
     <!-- Service Type Action. -->
-    <menuitem
-        action="fleet.fleet_vehicle_service_types_action"
-        parent="fleet.fleet_configuration"
-        id="fleet.fleet_vehicle_service_types_menu"
-        groups="base.group_no_one"
-        sequence="2"
-    />
 
     <!-- Override the Service menu to remove groups. -->
     <menuitem
+        id="fleet.fleet_vehicle_service_types_menu"
         action="fleet.fleet_vehicle_service_types_action"
         parent="fleet.fleet_configuration"
-        id="fleet.fleet_vehicle_service_types_menu"
         groups="-base.group_no_one"
     />
 

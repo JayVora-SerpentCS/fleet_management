@@ -10,7 +10,7 @@ class AccountInvoice(models.Model):
     _inherit = "account.move"
 
     vehicle_service_id = fields.Many2one(
-        "fleet.vehicle.log.services", "Vehicle Service"
+        "fleet.vehicle.log.services",
     )
     is_invoice_receive = fields.Boolean("Is Service Invoice Receive")
     is_invoice_return = fields.Boolean("Is Service Invoice Deposit")

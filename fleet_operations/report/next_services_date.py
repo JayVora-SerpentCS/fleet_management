@@ -80,7 +80,7 @@ class NextServiceDate(models.AbstractModel):
                 ser_date = format_date(
                     self.env,
                     obj.last_service_date,
-                    self._context.get("lang"),
+                    self.env.context.get("lang"),
                     date_format=False,
                 )
             worksheet.write(line_row, line_col, ser_date or "", style1)
@@ -90,7 +90,7 @@ class NextServiceDate(models.AbstractModel):
                 next_date = format_date(
                     self.env,
                     obj.next_service_date,
-                    self._context.get("lang"),
+                    self.env.context.get("lang"),
                     date_format=False,
                 )
             worksheet.write(line_row, line_col, next_date or "", style1)
@@ -110,5 +110,5 @@ class NextServiceDate(models.AbstractModel):
         fp.seek(0)
         data = fp.read()
         fp.close()
-        res = base64.encodebytes(data)
+        res = base64.b64encode(data).decode()
         return res

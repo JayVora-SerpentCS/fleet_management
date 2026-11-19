@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <record id="excel_sg_leave_summary_report_wiz" model="ir.ui.view">
         <field name="name">excel.fleet.report.wizard</field>
@@ -82,19 +82,19 @@
                             <tr t-foreach="get_vehicle_history" t-as="line">
                                 <t t-if="line">
                                     <td style="text-align:center;"><span
-                                                t-esc="counter"
+                                                t-out="counter"
                                             /><t
                                                 t-set="counter"
                                                 t-value="counter+1"
                                             /></td>
                                     <td style="text-align:center"><span
-                                                t-esc="line.get('vehicle_name')"
+                                                t-out="line.get('vehicle_name')"
                                             /></td>
                                     <td style="text-align:left;"><span
-                                                t-esc="line.get('repair_type')"
+                                                t-out="line.get('repair_type')"
                                             /></td>
                                     <td style="text-align:center"><span
-                                                t-esc="line.get('issue_date')"
+                                                t-out="line.get('issue_date')"
                                             /></td>
                                 </t>
                             </tr>

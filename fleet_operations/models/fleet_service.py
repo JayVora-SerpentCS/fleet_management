@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, ustr
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 _logger = logging.getLogger(__name__)
 
@@ -36,6 +36,13 @@ class FleetVehicleLogServices(models.Model):
     _order = "id desc"
     _rec_name = "name"
 
+    # Odoo 20: base fleet.vehicle.log.services replaced ``date`` with
+    # ``date_from`` / ``date_to``. Module logic (constraint, views, filters)
+    # still relies on ``date``, so it is declared here as in Odoo 19.
+    date = fields.Date(
+        help="Date when the cost has been executed",
+        default=fields.Date.context_today,
+    )
     reopen_service_count = fields.Integer(
         string="Re-Open Services", compute="_compute_count_reopen_services"
     )
@@ -125,7 +132,7 @@ class FleetVehicleLogServices(models.Model):
                     0,
                     0,
                     {
-                        "name": ustr(
+                        "name": str(
                             service.service_type_id and service.service_type_id.name
                         )
                         + " - Service Cost",
@@ -377,7 +384,8 @@ class FleetVehicleLogServices(models.Model):
         for warehouse_id in parts_lines_ids.mapped("warehouse_id"):
             line_vals = []
             for part_line in parts_lines_ids.filtered(
-                lambda part_l: part_l.warehouse_id.id == warehouse_id.id
+                lambda part_l, warehouse_id=warehouse_id: part_l.warehouse_id.id
+                == warehouse_id.id
             ):
                 line_vals.append(
                     (
@@ -431,9 +439,9 @@ class FleetVehicleLogServices(models.Model):
         History for Team Trip from WO.
         """
         wo_part_his_obj = self.env["workorder.parts.history.details"]
-        if self._context.get("team_trip", False):
-            team_trip = self._context.get("team_trip", False)
-            work_order = self._context.get("workorder", False)
+        if self.env.context.get("team_trip", False):
+            team_trip = self.env.context.get("team_trip", False)
+            work_order = self.env.context.get("workorder", False)
             # If existing parts Updated
             wo_part_his_ids = wo_part_his_obj.search(
                 [
@@ -467,7 +475,7 @@ class FleetVehicleLogServices(models.Model):
                         "new_encode_qty": new_wo_encode_qty,
                         "wo_id": work_order.id,
                         "used_date": t_part.issue_date,
-                        "issued_by": self._uid or False,
+                        "issued_by": self.env.uid or False,
                     }
                     wo_part_his_obj.create(wo_part_history_vals)
                     t_part.write({"encode_qty": new_wo_encode_qty})
@@ -544,10 +552,6 @@ class FleetVehicleLogServices(models.Model):
                         and work_order.vehicle_id.vechical_type_id
                         and work_order.vehicle_id.vechical_type_id.id
                         or False,
-                        "purchaser_id": work_order.vehicle_id
-                        and work_order.vehicle_id.driver_id
-                        and work_order.vehicle_id.driver_id.id
-                        or False,
                         "main_type": work_order.vehicle_id.main_type,
                         "f_brand_id": work_order.vehicle_id
                         and work_order.vehicle_id.f_brand_id
@@ -573,8 +577,8 @@ class FleetVehicleLogServices(models.Model):
         """Method Default get."""
         vehicle_obj = self.env["fleet.vehicle"]
         repair_type_obj = self.env["repair.type"]
-        if self._context.get("active_ids", False):
-            for vehicle in vehicle_obj.browse(self._context["active_ids"]):
+        if self.env.context.get("active_ids", False):
+            for vehicle in vehicle_obj.browse(self.env.context["active_ids"]):
                 if vehicle.state == "write-off":
                     msg = _(
                         "You can't create work order "
@@ -644,9 +648,10 @@ class FleetVehicleLogServices(models.Model):
                     raise ValidationError(msg)
 
     wono_id = fields.Integer("WONo", help="Take this field for data migration")
-    purchaser_id = fields.Many2one(
-        "res.partner", "Purchaser", related="vehicle_id.driver_id"
-    )
+    # Keep the work-order driver independently editable. The vehicle onchange
+    # pre-fills this from the vehicle, but a user may select another driver for
+    # this service order.
+    purchaser_id = fields.Many2one("res.partner", string="Driver")
     name = fields.Char(
         "Work Order", readonly=True, translate=True, copy=False, default="New"
     )
@@ -673,7 +678,10 @@ class FleetVehicleLogServices(models.Model):
     wrk_location_id = fields.Many2one("stock.location", "Location ", readonly=True)
     wrk_attach_ids = fields.One2many("ir.attachment", "wo_attachment_id", "Attachments")
     task_ids = fields.One2many("service.task", "main_id", "Service Task")
-    parts_ids = fields.One2many("task.line", "fleet_service_id", "Parts")
+    parts_ids = fields.One2many(
+        "task.line",
+        "fleet_service_id",
+    )
     note = fields.Text("Log Notes")
     sub_total = fields.Float(
         compute="_compute_get_total", string="Total Parts Amount", store=True
@@ -689,7 +697,9 @@ class FleetVehicleLogServices(models.Model):
         default="draft",
         readonly=True,
     )
-    warehouse_id = fields.Many2one("stock.warehouse", "Warehouse")
+    warehouse_id = fields.Many2one(
+        "stock.warehouse",
+    )
     delivery_id = fields.Many2one("stock.picking", "Delivery Reference", readonly=True)
     team_id = fields.Many2one("res.partner", "Teams")
     maintenance_team_id = fields.Many2one("stock.location", "Team")
@@ -703,10 +713,10 @@ class FleetVehicleLogServices(models.Model):
     reopen_return_incoming_ship_ids = fields.One2many(
         "stock.picking", "work_order_reopen_id", "Reopen Returned", readonly=True
     )
-    out_going_ids = fields.One2many(
-        "stock.picking", "work_order_out_id", "Out Going", readonly=True
+    out_going_ids = fields.One2many("stock.picking", "work_order_out_id", readonly=True)
+    vechical_type_id = fields.Many2one(
+        "vehicle.type",
     )
-    vechical_type_id = fields.Many2one("vehicle.type", "Vechical Type")
     already_closed = fields.Boolean("Already Closed?")
     total_parts_line = fields.Integer(
         compute="_compute_get_total_parts_line", string="Total Parts"
@@ -745,7 +755,8 @@ class FleetVehicleLogServices(models.Model):
     )
     amount_return = fields.Boolean("Invoice Return")
     service_invoice_id = fields.One2many(
-        "account.move", "vehicle_service_id", "Service Invoice"
+        "account.move",
+        "vehicle_service_id",
     )
     service_ref_invoice_id = fields.One2many(
         "account.move", "vehicle_service_id", "Service Refund Invoice"
@@ -864,14 +875,14 @@ class TripPartsHistoryDetails(models.Model):
             res[parts_load.id] = 0.0
             total_encoded_qty = 0.0
             if parts_load.team_id and parts_load.team_id.wo_parts_ids:
-                self._cr.execute(
+                self.env.cr.execute(
                     "select sum(used_qty) "
                     "from workorder_parts_history_details"
                     " where product_id IN %s"
                     "team_id IN %s",
                     (tuple(id)),
                 )
-                result = self._cr.fetchone()
+                result = self.env.cr.fetchone()
                 total_encoded_qty = result and result[0] or 0.0
                 parts_load.write({"encoded_qty": total_encoded_qty})
             if total_encoded_qty:
@@ -925,7 +936,9 @@ class StockPicking(models.Model):
     work_order_old_id = fields.Many2one("fleet.vehicle.log.services", "Work Order")
     work_order_reopen_id = fields.Many2one("fleet.vehicle.log.services", " Work Order")
     stock_warehouse_id = fields.Many2one("stock.warehouse", "Warehouse")
-    received_by_id = fields.Many2one("res.users", "Received By")
+    received_by_id = fields.Many2one(
+        "res.users",
+    )
     service_id = fields.Many2one("fleet.vehicle.log.services", "Service No.")
 
     @api.model_create_multi
@@ -953,7 +966,9 @@ class StockMove(models.Model):
     _inherit = "stock.move"
     _order = "id desc"
 
-    type = fields.Many2one(related="picking_id.picking_type_id", store=True)
+    type = fields.Many2one(
+        related="picking_id.picking_type_id", string="Move Operation Type", store=True
+    )
     issued_received_by_id = fields.Many2one("res.users", "Received By")
 
     @api.onchange("picking_type_id", "location_id", "location_dest_id")
@@ -976,9 +991,9 @@ class StockMove(models.Model):
     @api.model
     def _default_location_source(self):
         location_id = super()._default_location_source()
-        if self._context.get("stock_warehouse_id", False):
+        if self.env.context.get("stock_warehouse_id", False):
             warehouse_pool = self.env["stock.warehouse"]
-            for rec in warehouse_pool.browse([self._context["stock_warehouse_id"]]):
+            for rec in warehouse_pool.browse([self.env.context["stock_warehouse_id"]]):
                 if rec.lot_stock_id:
                     location_id = rec.lot_stock_id.id
         return location_id
@@ -986,9 +1001,9 @@ class StockMove(models.Model):
     @api.model
     def _default_location_destination(self):
         location_dest_id = super()._default_location_source()
-        if self._context.get("stock_warehouse_id", False):
+        if self.env.context.get("stock_warehouse_id", False):
             warehouse_pool = self.env["stock.warehouse"]
-            for rec in warehouse_pool.browse([self._context["stock_warehouse_id"]]):
+            for rec in warehouse_pool.browse([self.env.context["stock_warehouse_id"]]):
                 if rec.wh_output_id_stock_loc_id:
                     location_dest_id = (
                         rec.wh_output_id_stock_loc_id
@@ -1023,7 +1038,7 @@ class FleetWorkOrderSearch(models.TransientModel):
             "domain": (
                 [("id", "=", self.work_order_id.id)] if self.work_order_id else []
             ),
-            "context": self._context,
+            "context": self.env.context,
             "target": "current",
         }
 
@@ -1036,14 +1051,6 @@ class ResUsers(models.Model):
     usersql_id = fields.Char("User ID", help="Take this field for data migration")
 
 
-class IrAttachment(models.Model):
-    """Ir Attachment model."""
-
-    _inherit = "ir.attachment"
-
-    wo_attachment_id = fields.Many2one("fleet.vehicle.log.services")
-
-
 class ServiceTask(models.Model):
     """Service Task Model."""
 
@@ -1053,7 +1060,10 @@ class ServiceTask(models.Model):
     main_id = fields.Many2one("fleet.vehicle.log.services", "Maintanace Reference")
     type = fields.Many2one("fleet.service.type")
     total_type = fields.Float("Cost", readonly=True, default=0.0)
-    product_ids = fields.One2many("task.line", "task_id", "Product")
+    product_ids = fields.One2many(
+        "task.line",
+        "task_id",
+    )
     maintenance_info = fields.Text("Information", translate=True)
 
 
@@ -1074,9 +1084,11 @@ class TaskLine(models.Model):
     price_unit = fields.Float("Unit Cost")
     total = fields.Float("Total Cost")
     date_issued = fields.Datetime("Date issued")
-    issued_by = fields.Many2one("res.users", default=lambda self: self._uid)
+    issued_by = fields.Many2one("res.users", default=lambda self: self.env.uid)
     is_deliver = fields.Boolean("Is Deliver?")
-    warehouse_id = fields.Many2one("stock.warehouse", string="Warehouse")
+    warehouse_id = fields.Many2one(
+        "stock.warehouse",
+    )
 
     @api.constrains("qty", "qty_hand")
     def _check_used_qty(self):
@@ -1128,7 +1140,7 @@ class TaskLine(models.Model):
         """
         for vals in vals_list:
             if not vals.get("issued_by", False):
-                vals.update({"issued_by": self._uid})
+                vals.update({"issued_by": self.env.uid})
             if not vals.get("date_issued", False):
                 vals.update(
                     {"date_issued": time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)}
@@ -1161,7 +1173,7 @@ class TaskLine(models.Model):
         ):
             vals.update(
                 {
-                    "issued_by": self._uid,
+                    "issued_by": self.env.uid,
                     "date_issued": time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                 }
             )
@@ -1170,9 +1182,9 @@ class TaskLine(models.Model):
     @api.onchange("date_issued")
     def check_onchange_part_issue_date(self):
         """Onchange method to check the validation for part issues date."""
-        context_keys = self._context.keys()
+        context_keys = self.env.context.keys()
         if "date_open" in context_keys and self.date_issued:
-            date_open = self._context.get("date_open", False)
+            date_open = self.env.context.get("date_open", False)
             date_open = datetime.strptime(date_open, DEFAULT_SERVER_DATE_FORMAT)
             current_date = datetime.now().date()
             #
@@ -1202,7 +1214,7 @@ class TaskLine(models.Model):
 
     def default_get(self, fields_list):
         fleet_service_id = self.env["fleet.vehicle.log.services"].browse(
-            self._context.get("active_id")
+            self.env.context.get("active_id")
         )
         warehouse_id = self.env["stock.warehouse"].search(
             [("company_id", "=", fleet_service_id.company_id.id)], limit=1
@@ -1260,7 +1272,9 @@ class ServiceRepairLine(models.Model):
                     raise ValidationError(msg)
 
     service_id = fields.Many2one("fleet.vehicle.log.services", ondelete="cascade")
-    repair_type_id = fields.Many2one("repair.type", "Repair Type")
+    repair_type_id = fields.Many2one(
+        "repair.type",
+    )
     categ_id = fields.Many2one("service.category", "Category")
     issue_date = fields.Date("Issued Date ")
     date_complete = fields.Date(
@@ -1291,7 +1305,6 @@ class FleetServiceType(models.Model):
         "fleet_service_repair_type_rel",
         "service_type_id",
         "reapir_type_id",
-        "Repair Type",
     )
 
     @api.constrains("name")

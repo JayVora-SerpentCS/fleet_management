@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <!-- Form View for Update Color. -->
-    <record model="ir.ui.view" id="update_color_info_form_view">
+    <record id="update_color_info_form_view" model="ir.ui.view">
         <field name="name">update.color.info.form</field>
         <field name="model">update.color.info</field>
         <field name="type">form</field>
@@ -47,7 +47,7 @@
     </record>
 
     <!-- Form View for Update Engine. -->
-    <record model="ir.ui.view" id="update_engine_info_form_view">
+    <record id="update_engine_info_form_view" model="ir.ui.view">
         <field name="name">update.engine.info.form</field>
         <field name="model">update.engine.info</field>
         <field name="type">form</field>
@@ -84,7 +84,7 @@
     </record>
 
     <!-- Form View for Update Vin. -->
-    <record model="ir.ui.view" id="update_vin_info_form_view">
+    <record id="update_vin_info_form_view" model="ir.ui.view">
         <field name="name">update.engine.vin.form</field>
         <field name="model">update.vin.info</field>
         <field name="type">form</field>
@@ -126,7 +126,7 @@
     </record>
 
     <!-- Form View for Update Tire. -->
-    <record model="ir.ui.view" id="update_tire_info_form_view">
+    <record id="update_tire_info_form_view" model="ir.ui.view">
         <field name="name">update.engine.tire.form</field>
         <field name="model">update.tire.info</field>
         <field name="type">form</field>
@@ -179,7 +179,7 @@
     </record>
 
     <!-- Form View for Update Battery. -->
-    <record model="ir.ui.view" id="update_battery_info_form_view">
+    <record id="update_battery_info_form_view" model="ir.ui.view">
         <field name="name">update.battery.form</field>
         <field name="model">update.battery.info</field>
         <field name="type">form</field>

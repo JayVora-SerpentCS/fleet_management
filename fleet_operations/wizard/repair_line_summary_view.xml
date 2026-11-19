@@ -37,9 +37,9 @@
 
    <!-- Menuitem for Repair Line Summary. -->
    <menuitem
+        id="repair_line_summary_menu"
         action="action_repair_line_summary"
         name="Repair Line Summary"
-        id="repair_line_summary_menu"
         parent="fleet.menu_fleet_reporting"
         sequence="4"
         groups="fleet.fleet_group_manager,fleet.fleet_group_user"

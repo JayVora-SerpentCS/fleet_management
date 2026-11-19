@@ -66,7 +66,7 @@ class UpdatePendingRepairHistory(models.Model):
                     }
                 )
                 applied_pending.unlink()
-            pending.write({"state": "confirm", "user_id": self._uid})
+            pending.write({"state": "confirm", "user_id": self.env.uid})
         return True
 
 
@@ -80,7 +80,9 @@ class PendingAppliedHistory(models.Model):
         "update.pending.repair.history", "Update Pending"
     )
     vehicle_rep_type_id = fields.Many2one("fleet.vehicle", "Vehicle")
-    repair_type_id = fields.Many2one("repair.type", "Repair Type")
+    repair_type_id = fields.Many2one(
+        "repair.type",
+    )
     name = fields.Char("Work Order #")
     categ_id = fields.Many2one("service.category", "Category")
     issue_date = fields.Date()
